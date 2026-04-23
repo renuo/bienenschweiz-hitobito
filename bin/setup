@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# make sure direnv is installed
+direnv version || { echo "direnv not found. Please install it first: https://direnv.net/docs/installation.html"; exit 1; }
+
+pushd hitobito
+    if [ ! -f Gemfile.local ]; then
+        ln -s Gemfile Gemfile.local
+    fi
+    direnv reload
+    bin/wagon activate bienenschweiz
+    bin/setup
+popd
