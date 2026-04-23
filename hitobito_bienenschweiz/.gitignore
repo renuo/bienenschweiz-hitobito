@@ -29,3 +29,7 @@ coverage
 
 db/schema.rb
 db/schema.rb.diff
+
+# custom local gemfile
+Gemfile.local
+Gemfile.local.lock
