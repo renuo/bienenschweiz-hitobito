@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+git submodule update --init --recursive
+
 # make sure direnv is installed
 direnv version || { echo "direnv not found. Please install it first: https://direnv.net/docs/installation.html"; exit 1; }
 
