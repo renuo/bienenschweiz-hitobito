@@ -1,0 +1,2 @@
+export BUNDLE_GEMFILE=Gemfile.local
+export RAILS_DB_SOCKET="/var/run/postgresql/.s.PGSQL.5432"
