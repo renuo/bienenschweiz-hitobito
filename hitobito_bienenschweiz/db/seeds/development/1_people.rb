@@ -19,24 +19,17 @@ class BienenschweizPersonSeeder < PersonSeeder
 
 end
 
-puzzlers = [
-  "Carlo Beltrame",
-  "Olivier Brian",
-  "Oliver Dietschi",
-  "Thomas Ellenberger",
-  "Daniel Illi",
-  "Niklas Jäggi",
-  "Andreas Maierhofer",
-  "Nils Rauch",
-  "Matthias Viehweger",
-  "Pascal Zumkehr",
+renuoers = [
+  "Christoph Hitz",
+  "Raphael Nestler",
+  "Michael Gerber"
 ]
 
 devs = {
   "Customer Name" => "customer@email.com"
 }
-puzzlers.each do |puz|
-  devs[puz] = "#{puz.split.last.downcase.gsub("ü", "ue").gsub("ä", "ae")}@puzzle.ch"
+renuoers.each do |ren|
+  devs[ren] = "#{ren.split.last.downcase.gsub("ü", "ue").gsub("ä", "ae")}@renuo.ch"
 end
 
 seeder = BienenschweizPersonSeeder.new

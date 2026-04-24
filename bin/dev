@@ -1,2 +1,2 @@
 cd hitobito
-exec bin/dev
+direnv exec bin/dev
