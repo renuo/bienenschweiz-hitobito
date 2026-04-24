@@ -16,7 +16,6 @@ pushd hitobito
     if [ ! -L Gemfile.local ]; then
         ln -s Gemfile Gemfile.local
     fi
-    direnv reload
     bin/wagon activate bienenschweiz
-    bin/setup
+    direnv exec bin/setup
 popd
