@@ -1,0 +1,27 @@
+name: "Rails Lint and Test"
+
+on:
+  push:
+    branches: ["develop", "main"]
+  pull_request:
+
+jobs:
+  wagon_rubocop:
+    name: rubocop
+    runs-on: "ubuntu-24.04"
+    env:
+      RAILS_DB_ADAPTER: nulldb
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: hitobito
+          bundler-cache: true
+
+      - name: rubocop
+        working-directory: hitobito_bienenschweiz
+        run: bundle exec rake app:rubocop
