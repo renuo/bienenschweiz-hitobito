@@ -5,7 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-
 class Group::Sektion < ::Group
   self.layer = true
 
@@ -47,5 +46,6 @@ class Group::Sektion < ::Group
     self.permissions = [:group_read]
   end
 
-  roles FachpersonBildung, FachpersonBildungInAusbildung, FachpersonProdukte, FachpersonProdukteInAusbildung, Kassier, Siegelimker, SiegelimkerProvisorisch, FachpersonZucht, FachpersonZuchtInAusbildung
+  roles FachpersonBildung, FachpersonBildungInAusbildung, FachpersonProdukte,
+    FachpersonProdukteInAusbildung, Kassier, Siegelimker, SiegelimkerProvisorisch, FachpersonZucht, FachpersonZuchtInAusbildung
 end

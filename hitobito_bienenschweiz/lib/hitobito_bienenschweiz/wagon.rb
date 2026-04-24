@@ -5,7 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-
 module HitobitoBienenschweiz
   class Wagon < Rails::Engine
     include Wagons::Wagon
@@ -42,6 +41,5 @@ module HitobitoBienenschweiz
       fixtures = root.join("db", "seeds")
       ENV["NO_ENV"] ? [fixtures] : [fixtures, File.join(fixtures, Rails.env)] # rubocop:disable Rails/EnvironmentVariableAccess -- This is initialization
     end
-
   end
 end

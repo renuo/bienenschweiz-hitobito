@@ -5,8 +5,7 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-
-require 'test_helper'
+require "test_helper"
 
 class HitobitoBienenschweizTest < ActiveSupport::TestCase
   test "truth" do
