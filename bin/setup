@@ -8,7 +8,7 @@ git submodule update --init --recursive
 direnv version || { echo "direnv not found. Please install it first: https://direnv.net/docs/installation.html"; exit 1; }
 
 pushd hitobito
-    if [ ! -f Gemfile.local ]; then
+    if [ ! -L Gemfile.local ]; then
         ln -s Gemfile Gemfile.local
     fi
     direnv reload
