@@ -10,6 +10,7 @@ direnv version || { echo "direnv not found. Please install it first: https://dir
 if [ ! -f .envrc ]; then
     echo "Copying default .envrc file"
     cp .envrc.example .envrc
+    direnv allow
 fi
 
 pushd hitobito
