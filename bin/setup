@@ -7,6 +7,11 @@ git submodule update --init --recursive
 # make sure direnv is installed
 direnv version || { echo "direnv not found. Please install it first: https://direnv.net/docs/installation.html"; exit 1; }
 
+if [ ! -f .envrc ]; then
+    echo "Copying default .envrc file"
+    cp .envrc.example .envrc
+fi
+
 pushd hitobito
     if [ ! -L Gemfile.local ]; then
         ln -s Gemfile Gemfile.local
