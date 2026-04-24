@@ -17,16 +17,16 @@ jobs:
         with:
           submodules: true
 
+      - name: "Copy files for wagon and update lockfile"
+        run: |
+          cp -v ../hitobito/.tool-versions ../hitobito/Gemfile.lock ./
+          bundle lock
+        working-directory: hitobito_bienenschweiz
+
       - uses: ruby/setup-ruby@v1
         with:
-          working-directory: hitobito
+          working-directory: hitobito_bienenschweiz
           bundler-cache: true
-
-      - name: "Bundle install for wagon"
-        run: |
-          cp -v ../hitobito/Gemfile.lock ./
-          bundle install
-        working-directory: hitobito_bienenschweiz
 
       - name: rubocop
         working-directory: hitobito_bienenschweiz
