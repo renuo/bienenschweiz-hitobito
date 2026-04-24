@@ -22,6 +22,12 @@ jobs:
           working-directory: hitobito
           bundler-cache: true
 
+      - name: "Bundle install for wagon"
+        run: |
+          cp -v ../hitobito/Gemfile.lock ./
+          bundle install
+        working-directory: hitobito_bienenschweiz
+
       - name: rubocop
         working-directory: hitobito_bienenschweiz
         run: bundle exec rake app:rubocop
