@@ -1,0 +1,42 @@
+de:
+  activerecord:
+    models:
+      group/root:
+        one: Dachverband
+        other: Dachverbände
+      group/root/administrator_bienen_schweiz:
+        one: Administrator BienenSchweiz
+        other: Administratoren BienenSchweiz
+      group/root/ehrenmitglied:
+        one: Ehrenmitglied
+        other: Ehrenmitglieder
+      group/root/ehrenpraesident:
+        one: Ehrenpräsident
+        other: Ehrenpräsidenten
+      group/root/erfassung_veranstaltungen:
+        one: Erfassung Veranstaltungen
+        other: Erfassung Veranstaltungen
+      group/root/mitglied:
+        one: Mitglied
+        other: Mitglieder
+      group/root/supervisor:
+        one: Supervisor/in
+        other: Supervisoren/innen
+      group/sektion:
+        one: Sektion
+        other: Sektionen
+      group/sektion/bildungsobperson:
+        one: Bildungsobmann/frau
+        other: Bildungsobmänner/frauen
+      group/sektion/honigobperson:
+        one: Honigobmann/frau
+        other: Honigobmänner/frauen
+      group/verband:
+        one: Verband
+        other: Verbände
+      group/verband/fachperson_bildung:
+        one: Fachperson Bildung
+        other: Fachpersonen Bildung
+      group/verband/fachperson_bildung_in_ausbildung:
+        one: Fachperson Bildung in Ausbildung
+        other: Fachpersonen Bildung in Ausbildung
