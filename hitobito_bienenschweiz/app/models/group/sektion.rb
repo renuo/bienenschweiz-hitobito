@@ -6,4 +6,18 @@
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
 
-Group::Root.seed_once(:parent_id, name: "Dachverband")
+class Group::Sektion < ::Group
+  self.layer = true
+
+  ### ROLES
+
+  class Bildungsobperson < ::Role
+    self.permissions = [:layer_and_below_full, :admin]
+  end
+
+  class Honigobperson < ::Role
+    self.permissions = [:group_read]
+  end
+
+  roles Bildungsobperson, Honigobperson
+end

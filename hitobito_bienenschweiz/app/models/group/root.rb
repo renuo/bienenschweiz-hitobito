@@ -11,18 +11,33 @@ class Group::Root < ::Group
   self.layer = true
 
   # TODO: define actual child group types
-  children Group::Root
+  children Group::Verband
 
   ### ROLES
 
   # TODO: define actual role types
-  class Leader < ::Role
+  class AdministratorBienenSchweiz < ::Role
     self.permissions = [:layer_and_below_full, :admin]
   end
 
-  class Member < ::Role
+  # TODO: figure out actual permissions
+  class Ehrenmitglied < ::Role
     self.permissions = [:group_read]
   end
 
-  roles Leader, Member
+  class Ehrenpraesident < ::Role
+    self.permissions = [:group_read]
+  end
+  class ErfassungVeranstaltungen < ::Role
+    self.permissions = [:group_read]
+  end
+  class Mitglied < ::Role
+    self.permissions = [:group_read]
+  end
+
+  class Supervisor < ::Role
+    self.permissions = [:group_read]
+  end
+
+  roles AdministratorBienenSchweiz, Ehrenmitglied, Ehrenpraesident, ErfassungVeranstaltungen, Mitglied, Supervisor
 end
