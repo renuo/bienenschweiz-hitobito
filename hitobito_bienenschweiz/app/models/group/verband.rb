@@ -13,13 +13,29 @@ class Group::Verband < ::Group
 
   ### ROLES
 
-  class FachpersonBildung < ::Role
+  class Bildungsobperson < ::Role
     self.permissions = [:layer_and_below_full, :admin]
   end
 
-  class FachpersonBildungInAusbildung < ::Role
+  class Honigobperson < ::Role
+    self.permissions = [:layer_and_below_full, :admin]
+  end
+
+  class HonigobpersonProvisorisch < ::Role
     self.permissions = [:group_read]
   end
 
-  roles FachpersonBildung, FachpersonBildungInAusbildung
+  class Zuchtobperson < ::Role
+    self.permissions = [:layer_and_below_full, :admin]
+  end
+
+  class Kantonalpraesidentin < ::Role
+    self.permissions = [:layer_and_below_full, :admin]
+  end
+
+  class Kassier < ::Role
+    self.permissions = [:group_read]
+  end
+
+  roles Bildungsobperson, Honigobperson, HonigobpersonProvisorisch, Zuchtobperson, Kantonalpraesidentin, Kassier
 end

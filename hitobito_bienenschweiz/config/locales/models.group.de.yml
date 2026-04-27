@@ -25,18 +25,51 @@ de:
       group/sektion:
         one: Sektion
         other: Sektionen
-      group/sektion/bildungsobperson:
-        one: Bildungsobmann/frau
-        other: Bildungsobmänner/frauen
-      group/sektion/honigobperson:
-        one: Honigobmann/frau
-        other: Honigobmänner/frauen
+      group/sektion/fachperson_bildung:
+        one: Fachperson Bildung
+        other: Fachpersonen Bildung
+      group/sektion/fachperson_bildung_in_ausbildung:
+        one: Fachperson Bildung (in Ausbildung)
+        other: Fachpersonen Bildung (in Ausbildung)
+      group/sektion/fachperson_produkte:
+        one: Fachperson Produkte
+        other: Fachpersonen Produkte
+      group/sektion/fachperson_produkte_in_ausbildung:
+        one: Fachperson Produkte (in Ausbildung)
+        other: Fachpersonen Produkte (in Ausbildung)
+      group/sektion/kassier:
+        one: Kassier/in
+        other: Kassier/innen
+      group/sektion/siegelimker:
+        one: Siegelimker/in
+        other: Siegelimker/innen
+      group/sektion/siegelimker_provisorisch:
+        one: Siegelimker/in provisorisch
+        other: Siegelimker/innen provisorisch
+      group/sektion/fachperson_zucht:
+        one: Fachperson Zucht
+        other: Fachpersonen Zucht
+      group/sektion/fachperson_zucht_in_ausbildung:
+        one: Fachperson Zucht (in Ausbildung)
+        other: Fachpersonen Zucht (in Ausbildung)
       group/verband:
         one: Verband
         other: Verbände
-      group/verband/fachperson_bildung:
-        one: Fachperson Bildung
-        other: Fachpersonen Bildung
-      group/verband/fachperson_bildung_in_ausbildung:
-        one: Fachperson Bildung in Ausbildung
-        other: Fachpersonen Bildung in Ausbildung
+      group/verband/bildungsobperson:
+        one: Bildungsobmann/frau
+        other: Bildungsobmänner/frauen
+      group/verband/honigobperson:
+        one: Honigobmann/frau
+        other: Honigobmänner/frauen
+      group/verband/honigobperson_provisorisch:
+        one: Honigobmann/frau (provisorisch)
+        other: Honigobmänner/frauen (provisorisch)
+      group/verband/zuchtobperson:
+        one: Zuchtobmann/frau
+        other: Zuchtobmänner/frauen
+      group/verband/kantonalpraesidentin:
+        one: Kantonalpräsident/in
+        other: Kantonalpräsidenten/innen
+      group/verband/kassier:
+        one: Kassier/in
+        other: Kassier/innen
