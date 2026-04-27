@@ -11,13 +11,41 @@ class Group::Sektion < ::Group
 
   ### ROLES
 
-  class Bildungsobperson < ::Role
+  class FachpersonBildung < ::Role
     self.permissions = [:layer_and_below_full, :admin]
   end
 
-  class Honigobperson < ::Role
+  class FachpersonBildungInAusbildung < ::Role
     self.permissions = [:group_read]
   end
 
-  roles Bildungsobperson, Honigobperson
+  class FachpersonProdukte < ::Role
+    self.permissions = [:layer_and_below_full, :admin]
+  end
+
+  class FachpersonProdukteInAusbildung < ::Role
+    self.permissions = [:group_read]
+  end
+
+  class Kassier < ::Role
+    self.permissions = [:group_read]
+  end
+
+  class Siegelimker < ::Role
+    self.permissions = [:layer_and_below_full, :admin]
+  end
+
+  class SiegelimkerProvisorisch < ::Role
+    self.permissions = [:group_read]
+  end
+
+  class FachpersonZucht < ::Role
+    self.permissions = [:layer_and_below_full, :admin]
+  end
+
+  class FachpersonZuchtInAusbildung < ::Role
+    self.permissions = [:group_read]
+  end
+
+  roles FachpersonBildung, FachpersonBildungInAusbildung, FachpersonProdukte, FachpersonProdukteInAusbildung, Kassier, Siegelimker, SiegelimkerProvisorisch, FachpersonZucht, FachpersonZuchtInAusbildung
 end
