@@ -1,4 +1,5 @@
 export BUNDLE_GEMFILE=Gemfile.local
+export RAILS_MAIL_DELIVERY_CONFIG='address: localhost, port: 2025'
 export RAILS_DB_SOCKET="/var/run/postgresql/.s.PGSQL.5432"
 export RAILS_DB_HOST=
 export RAILS_DB_PORT=
