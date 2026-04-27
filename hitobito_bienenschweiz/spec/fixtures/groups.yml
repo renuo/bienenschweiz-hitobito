@@ -8,7 +8,7 @@ root:
   parent:
   lft: 1
   rgt: 2
-  name: Hauptgruppe
+  name: Dachverband
   type: Group::Root
   email: root@example.net
   zip_code: 2843
