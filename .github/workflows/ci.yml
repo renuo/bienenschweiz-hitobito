@@ -17,6 +17,8 @@ jobs:
         with:
           submodules: true
 
+      - uses: ruby/setup-ruby@v1
+
       - name: "Copy files for wagon and update lockfile"
         run: |
           cp -v ../hitobito/.tool-versions ../hitobito/Gemfile.lock ./
