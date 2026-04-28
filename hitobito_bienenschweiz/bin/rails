@@ -1,12 +1,7 @@
-#!/usr/bin/env ruby
-# This command will automatically be run when you run "rails" with Rails
-# gems installed from the root of your application.
+#!/usr/bin/env bash
 
-ENGINE_ROOT = File.expand_path('../..', __FILE__)
+set -euo pipefail
+IFS=$'\n\t'
 
-ENV['BUNDLE_GEMFILE'] ||= File.expand_path('Gemfile', ENGINE_ROOT)
-ENGINE_PATH = File.expand_path('lib/hitobito_bienenschweiz/wagon', ENGINE_ROOT)
-
-load File.expand_path('../../app_root.rb', __FILE__)
-
-load File.expand_path('bin/rails', ENV['APP_ROOT'])
+cd ../hitobito
+bin/rails $@
