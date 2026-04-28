@@ -47,5 +47,6 @@ class Group::Sektion < ::Group
   end
 
   roles FachpersonBildung, FachpersonBildungInAusbildung, FachpersonProdukte,
-    FachpersonProdukteInAusbildung, Kassier, Siegelimker, SiegelimkerProvisorisch, FachpersonZucht, FachpersonZuchtInAusbildung
+    FachpersonProdukteInAusbildung, Kassier, Siegelimker, SiegelimkerProvisorisch,
+    FachpersonZucht, FachpersonZuchtInAusbildung
 end
