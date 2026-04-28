@@ -1,0 +1,2 @@
+# bin dir in root to not conflict when copying hitobito/bin
+/bin
