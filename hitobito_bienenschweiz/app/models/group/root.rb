@@ -5,7 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-
 # TODO: rename class to specific name and change all references
 class Group::Root < ::Group
   self.layer = true
@@ -28,9 +27,11 @@ class Group::Root < ::Group
   class Ehrenpraesident < ::Role
     self.permissions = [:group_read]
   end
+
   class ErfassungVeranstaltungen < ::Role
     self.permissions = [:group_read]
   end
+
   class Mitglied < ::Role
     self.permissions = [:group_read]
   end
@@ -39,5 +40,6 @@ class Group::Root < ::Group
     self.permissions = [:group_read]
   end
 
-  roles AdministratorBienenSchweiz, Ehrenmitglied, Ehrenpraesident, ErfassungVeranstaltungen, Mitglied, Supervisor
+  roles AdministratorBienenSchweiz, Ehrenmitglied, Ehrenpraesident, ErfassungVeranstaltungen,
+    Mitglied, Supervisor
 end
