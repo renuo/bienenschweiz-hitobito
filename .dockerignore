@@ -1,2 +1,7 @@
 # bin dir in root to not conflict when copying hitobito/bin
 /bin
+# Do not include credential files in the Docker image when building locally
+/.envrc
+/.envrc.example
+/README.md
+/.tool-versions
