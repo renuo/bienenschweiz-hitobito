@@ -20,11 +20,12 @@ $gray:                  #979CA6 !default;
 $gray-light:            #E8EBF0 !default;
 $gray-lighter:          #F8F9FA !default;
 $white:                 #fff !default;
-$bee-yellow:            #fdc300 !default;
+$bee-yellow:            #FFE500 !default;
+$gold:                  #9B7F30 !default;
 
 // Colors
 // ----------------------------
-$blue:                  #329897 !default;
+$blue:                  $gold;
 $blue-dark:             darken($blue, 10%) !default;
 $green:                 #8DB850 !default;
 $green-dark:            darken($green, 10%) !default;
@@ -37,15 +38,15 @@ $purple-dark:           #6A396F;
 $text-color:            $black !default;
 $border-color:          $gray-light !default;
 
-$page-background:       $bee-yellow;
+$page-background:       transparent;
 $content-background:    $gray-light;
-$footer-background:     $bee-yellow;
-$body-background:       $bee-yellow;
+$footer-background:     transparent;
+$body-background:       transparent;
 
 $focus-color:           $purple;
-$shadow-color:          darken($page-background, 10%);
-$link-color:            $blue !default;
-$link-hover-color:      $purple-dark !default;
+$shadow-color:          #c7c7c7;
+$link-color:            $gold !default;
+$link-hover-color:      $black !default;
 
 $footer-color:          $white;
 $footer-color-hover:    $white;

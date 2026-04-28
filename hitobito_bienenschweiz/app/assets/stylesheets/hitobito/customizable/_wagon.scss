@@ -1,0 +1,17 @@
+body {
+  background: url('../../../../assets/images/background.png') no-repeat left top fixed white;
+}
+
+.btn {
+  background: black;
+  color: white;
+  border-color: black;
+  &:hover,
+  &:focus,
+  &:active {
+    color: black;
+    background: $bee-yellow;
+    border-color: $bee-yellow;
+  }
+}
+
