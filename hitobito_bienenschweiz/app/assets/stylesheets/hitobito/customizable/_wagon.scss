@@ -6,6 +6,7 @@ body {
   background: black;
   color: white;
   border-color: black;
+
   &:hover,
   &:focus,
   &:active {
@@ -13,6 +14,7 @@ body {
     background: $bee-yellow;
     border-color: $bee-yellow;
   }
+
   &.btn-primary:hover,
   &.btn-warning:hover,
   &.btn-danger:hover,
@@ -25,4 +27,11 @@ body {
 
 #page-header > a {
   color: $gold;
+}
+
+#page-footer {
+  color: black;
+  .footer-content a {
+    color: $gold;
+  }
 }
