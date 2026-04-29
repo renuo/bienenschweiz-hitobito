@@ -13,5 +13,16 @@ body {
     background: $bee-yellow;
     border-color: $bee-yellow;
   }
+  &.btn-primary:hover,
+  &.btn-warning:hover,
+  &.btn-danger:hover,
+  &.btn-success:hover,
+  &.btn-info:hover,
+  &.btn-inverse:hover {
+    color: black;
+  }
 }
 
+#page-header > a {
+  color: $gold;
+}
