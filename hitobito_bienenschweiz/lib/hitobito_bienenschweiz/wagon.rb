@@ -23,7 +23,12 @@ module HitobitoBienenschweiz
       # extend application classes here
       Group.include Bienenschweiz::Group
 
-      PeopleController.permitted_attrs += [:salutation, :hive_count, :honey_yield, :export_to_website]
+      PeopleController.permitted_attrs += [
+        :salutation,
+        :hive_count,
+        :honey_yield,
+        :export_to_website
+      ]
     end
 
     initializer "bienenschweiz.add_settings" do |_app|
