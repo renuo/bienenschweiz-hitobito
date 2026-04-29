@@ -7,6 +7,11 @@
 # Settings relevant for the hitobito_bienenschweiz wagon
 # Overrides settings from the main application
 application:
+  logo:
+    image: bienenschweiz_logo.png # put under app/assets/images
+    height: 29 # pixel, has to bet set as the logo is a background image,
+    width: 250 # pixel, will also set the minimal width of the navigation
+    background_color: none # optional backgroundcolor, creates a box around the logo, if changed from 'none'
   languages:
     de: Deutsch
 
