@@ -14,3 +14,5 @@ group :development, :test do
   # Explicitly define the path for dependencies on other wagons.
   # gem 'hitobito_other_wagon', :path => "#{ENV['APP_ROOT']}/vendor/wagons"
 end
+
+gem "mysql2", "~> 0.5.7"
