@@ -99,7 +99,7 @@ jobs:
         working-directory: hitobito
 
       - name: "Prepare database"
-        run: bundle exec rake app:db:create app:db:schema:load
+        run: bundle exec rake app:db:create app:db:schema:load db:migrate
         working-directory: hitobito_bienenschweiz
 
       - name: "ci:setup:rspec"
