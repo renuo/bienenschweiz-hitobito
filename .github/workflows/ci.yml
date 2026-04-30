@@ -33,3 +33,132 @@ jobs:
       - name: rubocop
         working-directory: hitobito_bienenschweiz
         run: bundle exec rake app:rubocop
+
+  wagon_specs:
+    name: specs
+    runs-on: "ubuntu-24.04"
+    env:
+      WAGONS: bienenschweiz
+      HEADLESS: true
+      RAILS_DB_ADAPTER: postgresql
+      RAILS_DB_HOST: 127.0.0.1
+      RAILS_DB_PORT: 5432
+      RAILS_DB_USERNAME: hitobito
+      RAILS_DB_PASSWORD: hitobito
+      RAILS_DB_NAME: hitobito_test
+      RAILS_TEST_DB_NAME: hitobito_test
+      RAILS_ENV: test
+      DISABLE_TEST_SCHEMA_MAINTENANCE: true
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: hitobito
+          POSTGRES_PASSWORD: hitobito
+          POSTGRES_DB: hitobito_test
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U hitobito"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 10
+      memcached:
+        image: "memcached"
+        ports: ["11211:11211"]
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: "Install OS deps"
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get install -y libvips42
+
+      - uses: ruby/setup-ruby@v1
+
+      - name: "Copy files for wagon and update lockfile"
+        run: |
+          cp -v ../hitobito/.tool-versions ../hitobito/Gemfile.lock ./
+          bundle lock
+        working-directory: hitobito_bienenschweiz
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: hitobito_bienenschweiz
+          bundler-cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: hitobito/.tool-versions
+
+      - name: "Yarn install"
+        run: yarn install --frozen-lockfile
+        working-directory: hitobito
+
+      - name: "Prepare database"
+        run: bundle exec rake app:db:create app:db:schema:load
+        working-directory: hitobito_bienenschweiz
+
+      - name: "ci:setup:rspec"
+        run: bundle exec rake app:ci:setup:rspec
+        working-directory: hitobito_bienenschweiz
+
+      - name: "Run specs"
+        run: bundle exec rake spec:without_features
+        working-directory: hitobito_bienenschweiz
+
+      - name: "Upload capybara output"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capybara-output
+          path: hitobito_bienenschweiz/tmp/capybara
+          if-no-files-found: ignore
+
+  wagon_seeds:
+    name: seeds
+    runs-on: "ubuntu-24.04"
+    env:
+      WAGONS: bienenschweiz
+      HEADLESS: true
+      RAILS_DB_ADAPTER: postgresql
+      RAILS_DB_HOST: 127.0.0.1
+      RAILS_DB_PORT: 5432
+      RAILS_DB_USERNAME: hitobito
+      RAILS_DB_PASSWORD: hitobito
+      RAILS_DB_NAME: hitobito_development
+      RAILS_ENV: development
+      DISABLE_TEST_SCHEMA_MAINTENANCE: true
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: hitobito
+          POSTGRES_PASSWORD: hitobito
+          POSTGRES_DB: hitobito_development
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U hitobito"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: hitobito
+          bundler-cache: true
+
+      - name: "Run seeds"
+        run: bundle exec rake db:migrate wagon:migrate db:seed wagon:seed
+        working-directory: hitobito
