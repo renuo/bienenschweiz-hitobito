@@ -50,7 +50,7 @@ jobs:
       DISABLE_TEST_SCHEMA_MAINTENANCE: true
 
     services:
-      postgres:
+      postgres: &postgres_service
         image: postgres:16
         env:
           POSTGRES_USER: hitobito
@@ -63,9 +63,6 @@ jobs:
           --health-interval 10s
           --health-timeout 10s
           --health-retries 10
-      memcached:
-        image: "memcached"
-        ports: ["11211:11211"]
 
     steps:
       - uses: actions/checkout@v6
@@ -117,19 +114,9 @@ jobs:
       DISABLE_TEST_SCHEMA_MAINTENANCE: true
 
     services:
-      postgres:
-        image: postgres:16
+      postgres: *postgres_service
         env:
-          POSTGRES_USER: hitobito
-          POSTGRES_PASSWORD: hitobito
           POSTGRES_DB: hitobito_development
-        ports:
-          - "5432:5432"
-        options: >-
-          --health-cmd "pg_isready -U hitobito"
-          --health-interval 10s
-          --health-timeout 10s
-          --health-retries 10
 
     steps:
       - uses: actions/checkout@v6
