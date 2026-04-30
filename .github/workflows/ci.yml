@@ -90,14 +90,6 @@ jobs:
           working-directory: hitobito_bienenschweiz
           bundler-cache: true
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: hitobito/.tool-versions
-
-      - name: "Yarn install"
-        run: yarn install --frozen-lockfile
-        working-directory: hitobito
-
       - name: "Prepare database"
         run: bundle exec rake app:db:create app:db:schema:load db:migrate
         working-directory: hitobito_bienenschweiz
@@ -109,14 +101,6 @@ jobs:
       - name: "Run specs"
         run: bundle exec rake spec:without_features
         working-directory: hitobito_bienenschweiz
-
-      - name: "Upload capybara output"
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: capybara-output
-          path: hitobito_bienenschweiz/tmp/capybara
-          if-no-files-found: ignore
 
   wagon_seeds:
     name: seeds
