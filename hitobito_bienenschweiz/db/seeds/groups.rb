@@ -6,4 +6,4 @@
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
 
-Group::Root.seed_once(:parent_id, name: "Dachverband")
+Group::Dachverband.seed_once(:parent_id, name: "BienenSchweiz")

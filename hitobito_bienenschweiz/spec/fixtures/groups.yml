@@ -8,8 +8,8 @@ root:
   parent:
   lft: 1
   rgt: 2
-  name: Dachverband
-  type: Group::Root
+  name: BienenSchweiz
+  type: Group::Dachverband
   email: root@example.net
   zip_code: 2843
   town: Neu Carlscheid

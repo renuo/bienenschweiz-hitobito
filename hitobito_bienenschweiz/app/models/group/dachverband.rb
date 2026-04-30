@@ -5,8 +5,7 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-# TODO: rename class to specific name and change all references
-class Group::Root < ::Group
+class Group::Dachverband < ::Group
   self.layer = true
 
   # TODO: define actual child group types
