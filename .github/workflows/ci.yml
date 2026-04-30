@@ -38,7 +38,6 @@ jobs:
     name: specs
     runs-on: "ubuntu-24.04"
     env:
-      WAGONS: bienenschweiz
       HEADLESS: true
       RAILS_DB_ADAPTER: postgresql
       RAILS_DB_HOST: 127.0.0.1
@@ -123,7 +122,6 @@ jobs:
     name: seeds
     runs-on: "ubuntu-24.04"
     env:
-      WAGONS: bienenschweiz
       HEADLESS: true
       RAILS_DB_ADAPTER: postgresql
       RAILS_DB_HOST: 127.0.0.1
@@ -153,6 +151,14 @@ jobs:
       - uses: actions/checkout@v6
         with:
           submodules: true
+
+      - uses: ruby/setup-ruby@v1
+
+      - name: "Activate Wagonfile.ci and update lockfile"
+        run: |
+          cp -v Wagonfile.ci Wagonfile
+          bundle lock
+        working-directory: hitobito
 
       - uses: ruby/setup-ruby@v1
         with:
