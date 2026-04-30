@@ -3,5 +3,6 @@ export RAILS_MAIL_DELIVERY_CONFIG='address: localhost, port: 2025'
 export RAILS_DB_SOCKET="/var/run/postgresql/.s.PGSQL.5432"
 export RAILS_DB_HOST=
 export RAILS_DB_PORT=
-export RAILS_DB_USERNAME=
+export RAILS_DB_USERNAME=$(whoami)
 export RAILS_DB_PASSWORD=
+export HITOBITO_DEV_PASSWORD=bienen-schweiz
