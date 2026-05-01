@@ -4,22 +4,22 @@ de:
       group/dachverband:
         one: Dachverband
         other: Dachverbände
-      group/root/administrator_bienen_schweiz:
+      group/dachverband/administrator_bienen_schweiz:
         one: Administrator BienenSchweiz
         other: Administratoren BienenSchweiz
-      group/root/ehrenmitglied:
+      group/dachverband/ehrenmitglied:
         one: Ehrenmitglied
         other: Ehrenmitglieder
-      group/root/ehrenpraesident:
+      group/dachverband/ehrenpraesident:
         one: Ehrenpräsident
         other: Ehrenpräsidenten
-      group/root/erfassung_veranstaltungen:
+      group/dachverband/erfassung_veranstaltungen:
         one: Erfassung Veranstaltungen
         other: Erfassung Veranstaltungen
-      group/root/mitglied:
+      group/dachverband/mitglied:
         one: Mitglied
         other: Mitglieder
-      group/root/supervisor:
+      group/dachverband/supervisor:
         one: Supervisor/in
         other: Supervisoren/innen
       group/sektion:

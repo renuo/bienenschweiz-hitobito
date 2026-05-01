@@ -1,4 +1,4 @@
-name: "Rails Lint and Test"
+name: "Lint"
 
 on:
   push:
