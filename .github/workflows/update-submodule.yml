@@ -1,0 +1,47 @@
+name: "Update hitobito submodule"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"
+
+jobs:
+  update:
+    runs-on: "ubuntu-24.04"
+    env:
+      GH_TOKEN: ${{ secrets.SUBMODULE_UPDATE_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: develop
+          submodules: true
+          token: ${{ secrets.SUBMODULE_UPDATE_TOKEN }}
+
+      - name: "Update hitobito submodule"
+        run: git submodule update --remote hitobito
+
+      - name: "Create PR if there are changes"
+        run: |
+          if git diff --quiet; then
+            echo "No upstream changes."
+            exit 0
+          fi
+
+          NEW_SHA=$(git -C hitobito rev-parse --short HEAD)
+          BRANCH=chore/update-hitobito-submodule
+
+          git config user.name "hitobito-submodule-bot"
+          git config user.email "<>"
+
+          git checkout -B "$BRANCH"
+          git add hitobito
+          git commit -m "Update hitobito submodule to $NEW_SHA"
+          git push --force-with-lease origin "$BRANCH"
+
+          gh pr create \
+            --base develop \
+            --head "$BRANCH" \
+            --title "Update hitobito submodule to $NEW_SHA" \
+            --body "Automated daily update of the \`hitobito/\` submodule to upstream \`master\` (\`$NEW_SHA\`)." \
+            || gh pr edit "$BRANCH" --title "Update hitobito submodule to $NEW_SHA"
