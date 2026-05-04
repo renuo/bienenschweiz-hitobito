@@ -38,7 +38,7 @@ of Bienenschweiz.
     * Admin Sektion: [:layer_and_below_full]
     * Präsident/in: [:layer_and_below_full, :contact_data]
     * Kassier/in: [:layer_read, :contact_data]
-    * Erfassung Veranstaltungen: [:layer_full]
+    * Erfassung Veranstaltungen: [:layer_read]
     * Siegelimker/in: [:layer_read]
     * Siegelimker/in provisorisch: [:layer_read]
   * Bildung
