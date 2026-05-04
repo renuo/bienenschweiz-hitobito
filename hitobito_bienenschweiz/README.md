@@ -7,6 +7,7 @@ of Bienenschweiz.
 ## Bienenschweiz Organization Hierarchy
 
 <!-- roles:start -->
+(Output of rake app:hitobito:roles)
 * Dachverband
   * Dachverband
     * Administrator BienenSchweiz: [:admin, :layer_and_below_full]
