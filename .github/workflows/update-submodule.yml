@@ -16,7 +16,6 @@ jobs:
         with:
           ref: develop
           submodules: true
-          token: ${{ secrets.SUBMODULE_UPDATE_TOKEN }}
 
       - name: "Update hitobito submodule"
         run: git submodule update --remote hitobito
