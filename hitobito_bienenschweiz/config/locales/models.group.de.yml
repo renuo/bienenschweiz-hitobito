@@ -7,36 +7,60 @@ de:
       group/dachverband/administrator_bienen_schweiz:
         one: Administrator BienenSchweiz
         other: Administratoren BienenSchweiz
-      group/dachverband/ehrenmitglied:
-        one: Ehrenmitglied
-        other: Ehrenmitglieder
-      group/dachverband/ehrenpraesident:
-        one: Ehrenpräsident
-        other: Ehrenpräsidenten
-      group/dachverband/erfassung_veranstaltungen:
-        one: Erfassung Veranstaltungen
-        other: Erfassung Veranstaltungen
-      group/dachverband/mitglied:
-        one: Mitglied
-        other: Mitglieder
       group/dachverband/supervisor:
         one: Supervisor/in
         other: Supervisoren/innen
+      group/ehrenpersonen:
+        one: Ehrenpersonen
+        other: Ehrenpersonen
+      group/berater_info:
+        one: Berater-Infos an Händler
+        other: Berater-Infos an Händler
+      group/berater_info/mitglied:
+        one: Mitglied
+        other: Mitglieder
+      group/inspektion:
+        one: Inspektor/in
+        other: Inspektoren/innen
+      group/inspektion/inspektor:
+        one: Inspektor/in (kantonale Ansprechperson)
+        other: Inspektoren/innen (kantonale Ansprechperson)
+      group/zentralvorstand:
+        one: Zentralvorstand
+        other: Zentralvorstände
+      group/zentralvorstand/zentralpraesident:
+        one: Zentralpräsident/in
+        other: Zentralpräsidenten/innen
+      group/zentralvorstand/vizepraesident:
+        one: Vizepräsident/in
+        other: Vizepräsidenten/innen
+      group/zentralvorstand/geschaeftsfuehrer:
+        one: Geschäftsführer/in
+        other: Geschäftsführer/innen
+      group/zentralvorstand/mitglied:
+        one: Mitglied
+        other: Mitglieder
+      group/andere_mitglieder:
+        one: Andere Mitglieder
+        other: Andere Mitglieder
+      group/andere_mitglieder/anderes_mitglied:
+        one: Andere Mitglieder
+        other: Andere Mitglieder
+      group/ehrenpersonen/ehrenmitglied:
+        one: Ehrenmitglied
+        other: Ehrenmitglieder
+      group/ehrenpersonen/ehrenpraesident:
+        one: Ehrenpräsident
+        other: Ehrenpräsidenten
       group/sektion:
         one: Sektion
         other: Sektionen
-      group/sektion/fachperson_bildung:
-        one: Fachperson Bildung
-        other: Fachpersonen Bildung
-      group/sektion/fachperson_bildung_in_ausbildung:
-        one: Fachperson Bildung (in Ausbildung)
-        other: Fachpersonen Bildung (in Ausbildung)
-      group/sektion/fachperson_produkte:
-        one: Fachperson Produkte
-        other: Fachpersonen Produkte
-      group/sektion/fachperson_produkte_in_ausbildung:
-        one: Fachperson Produkte (in Ausbildung)
-        other: Fachpersonen Produkte (in Ausbildung)
+      group/sektion/admin_sektion:
+        one: Admin Sektion
+        other: Admins Sektion
+      group/sektion/praesident:
+        one: Präsident/in
+        other: Präsident/innen
       group/sektion/kassier:
         one: Kassier/in
         other: Kassier/innen
@@ -46,30 +70,55 @@ de:
       group/sektion/siegelimker_provisorisch:
         one: Siegelimker/in provisorisch
         other: Siegelimker/innen provisorisch
-      group/sektion/fachperson_zucht:
+      group/sektion/erfassung_veranstaltungen:
+        one: Erfassung Veranstaltungen
+        other: Erfassung Veranstaltungen
+      group/zucht:
+        one: Zucht
+        other: Zucht
+      group/zucht/fachperson_zucht:
         one: Fachperson Zucht
         other: Fachpersonen Zucht
-      group/sektion/fachperson_zucht_in_ausbildung:
+      group/zucht/fachperson_zucht_in_ausbildung:
         one: Fachperson Zucht (in Ausbildung)
         other: Fachpersonen Zucht (in Ausbildung)
-      group/verband:
-        one: Verband
-        other: Verbände
-      group/verband/bildungsobperson:
+      group/kantonalverband:
+        one: Kantonalverband
+        other: Kantonalverbände
+      group/kantonalverband/bildungsobperson:
         one: Bildungsobmann/frau
         other: Bildungsobmänner/frauen
-      group/verband/honigobperson:
+      group/kantonalverband/honigobperson:
         one: Honigobmann/frau
         other: Honigobmänner/frauen
-      group/verband/honigobperson_provisorisch:
+      group/kantonalverband/honigobperson_provisorisch:
         one: Honigobmann/frau (provisorisch)
         other: Honigobmänner/frauen (provisorisch)
-      group/verband/zuchtobperson:
+      group/kantonalverband/zuchtobperson:
         one: Zuchtobmann/frau
         other: Zuchtobmänner/frauen
-      group/verband/kantonalpraesidentin:
+      group/kantonalverband/kantonalpraesidentin:
         one: Kantonalpräsident/in
         other: Kantonalpräsidenten/innen
-      group/verband/kassier:
+      group/kantonalverband/kassier:
         one: Kassier/in
         other: Kassier/innen
+
+      group/bildung:
+        one: Bildung
+        other: Bildung
+      group/bildung/fachperson_bildung:
+        one: Fachperson Bildung
+        other: Fachpersonen Bildung
+      group/bildung/fachperson_bildung_in_ausbildung:
+        one: Fachperson Bildung (in Ausbildung)
+        other: Fachpersonen Bildung (in Ausbildung)
+      group/produkte:
+        one: Produkte
+        other: Produkte
+      group/produkte/fachperson_produkte:
+        one: Fachperson Produkte
+        other: Fachpersonen Produkte
+      group/produkte/fachperson_produkte_in_ausbildung:
+        one: Fachperson Produkte (in Ausbildung)
+        other: Fachpersonen Produkte (in Ausbildung)

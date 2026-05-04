@@ -8,45 +8,36 @@
 class Group::Sektion < ::Group
   self.layer = true
 
+  self.event_types = [Event, Event::Course]
+
+  children Group::Bildung, Group::Produkte, Group::Zucht
+
   ### ROLES
 
-  class FachpersonBildung < ::Role
-    self.permissions = [:layer_and_below_full, :admin]
+  class AdminSektion < ::Role
+    self.permissions = [:layer_and_below_full]
   end
 
-  class FachpersonBildungInAusbildung < ::Role
-    self.permissions = [:group_read]
-  end
-
-  class FachpersonProdukte < ::Role
-    self.permissions = [:layer_and_below_full, :admin]
-  end
-
-  class FachpersonProdukteInAusbildung < ::Role
-    self.permissions = [:group_read]
+  class Praesident < ::Role
+    self.permissions = [:layer_and_below_full, :contact_data]
   end
 
   class Kassier < ::Role
-    self.permissions = [:group_read]
+    self.permissions = [:layer_read, :contact_data]
+  end
+
+  class ErfassungVeranstaltungen < ::Role
+    self.permissions = [:layer_read]
   end
 
   class Siegelimker < ::Role
-    self.permissions = [:layer_and_below_full, :admin]
+    self.permissions = [:layer_read]
   end
 
   class SiegelimkerProvisorisch < ::Role
-    self.permissions = [:group_read]
+    self.permissions = [:layer_read]
   end
 
-  class FachpersonZucht < ::Role
-    self.permissions = [:layer_and_below_full, :admin]
-  end
-
-  class FachpersonZuchtInAusbildung < ::Role
-    self.permissions = [:group_read]
-  end
-
-  roles FachpersonBildung, FachpersonBildungInAusbildung, FachpersonProdukte,
-    FachpersonProdukteInAusbildung, Kassier, Siegelimker, SiegelimkerProvisorisch,
-    FachpersonZucht, FachpersonZuchtInAusbildung
+  roles AdminSektion, Praesident, Kassier, ErfassungVeranstaltungen, Siegelimker,
+    SiegelimkerProvisorisch
 end

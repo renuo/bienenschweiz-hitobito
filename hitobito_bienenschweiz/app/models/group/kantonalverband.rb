@@ -5,7 +5,7 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-class Group::Verband < ::Group
+class Group::Kantonalverband < ::Group
   self.layer = true
 
   children Group::Sektion
@@ -13,27 +13,27 @@ class Group::Verband < ::Group
   ### ROLES
 
   class Bildungsobperson < ::Role
-    self.permissions = [:layer_and_below_full, :admin]
+    self.permissions = [:contact_data, :layer_and_below_read]
   end
 
   class Honigobperson < ::Role
-    self.permissions = [:layer_and_below_full, :admin]
+    self.permissions = [:contact_data, :layer_and_below_read]
   end
 
   class HonigobpersonProvisorisch < ::Role
-    self.permissions = [:group_read]
+    self.permissions = [:layer_and_below_read]
   end
 
   class Zuchtobperson < ::Role
-    self.permissions = [:layer_and_below_full, :admin]
+    self.permissions = [:contact_data, :layer_and_below_read]
   end
 
   class Kantonalpraesidentin < ::Role
-    self.permissions = [:layer_and_below_full, :admin]
+    self.permissions = [:contact_data, :layer_and_below_full]
   end
 
   class Kassier < ::Role
-    self.permissions = [:group_read]
+    self.permissions = [:contact_data, :layer_and_below_read]
   end
 
   roles Bildungsobperson, Honigobperson, HonigobpersonProvisorisch, Zuchtobperson,

@@ -8,37 +8,20 @@
 class Group::Dachverband < ::Group
   self.layer = true
 
-  # TODO: define actual child group types
-  children Group::Verband
+  self.event_types = [Event, Event::Course]
+
+  children Group::Kantonalverband, Group::BeraterInfo, Group::Inspektion, Group::Zentralvorstand,
+    Group::Ehrenpersonen, Group::AndereMitglieder
 
   ### ROLES
 
-  # TODO: define actual role types
   class AdministratorBienenSchweiz < ::Role
-    self.permissions = [:layer_and_below_full, :admin]
-  end
-
-  # TODO: figure out actual permissions
-  class Ehrenmitglied < ::Role
-    self.permissions = [:group_read]
-  end
-
-  class Ehrenpraesident < ::Role
-    self.permissions = [:group_read]
-  end
-
-  class ErfassungVeranstaltungen < ::Role
-    self.permissions = [:group_read]
-  end
-
-  class Mitglied < ::Role
-    self.permissions = [:group_read]
+    self.permissions = [:admin, :layer_and_below_full]
   end
 
   class Supervisor < ::Role
-    self.permissions = [:group_read]
+    self.permissions = [:layer_and_below_full]
   end
 
-  roles AdministratorBienenSchweiz, Ehrenmitglied, Ehrenpraesident, ErfassungVeranstaltungen,
-    Mitglied, Supervisor
+  roles AdministratorBienenSchweiz, Supervisor
 end
