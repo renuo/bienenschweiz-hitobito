@@ -8,13 +8,15 @@
 class Group::Dachverband < ::Group
   self.layer = true
 
+  self.event_types = [Event, Event::Course]
+
   children Group::Kantonalverband, Group::BeraterInfo, Group::Inspektion, Group::Zentralvorstand,
     Group::Ehrenpersonen, Group::AndereMitglieder
 
   ### ROLES
 
   class AdministratorBienenSchweiz < ::Role
-    self.permissions = [:admin, :layer_and_below_full]
+    self.permissions = [:admin, :layer_and_below_full, :group_and_below_full, :layer_full]
   end
 
   class Supervisor < ::Role

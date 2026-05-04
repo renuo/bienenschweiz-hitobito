@@ -8,6 +8,8 @@
 class Group::Sektion < ::Group
   self.layer = true
 
+  self.event_types = [Event, Event::Course]
+
   children Group::Bildung, Group::Produkte, Group::Zucht
 
   ### ROLES
@@ -25,7 +27,7 @@ class Group::Sektion < ::Group
   end
 
   class ErfassungVeranstaltungen < ::Role
-    self.permissions = [:layer_full]
+    self.permissions = [:layer_read]
   end
 
   class Siegelimker < ::Role
