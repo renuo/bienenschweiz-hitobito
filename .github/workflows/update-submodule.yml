@@ -30,7 +30,7 @@ jobs:
           NEW_SHA=$(git -C hitobito rev-parse --short HEAD)
           BRANCH=chore/update-hitobito-submodule
 
-          git config user.name "hitobito-submodule-bot"
+          git config user.name "Hitobito Core Update Bot"
           git config user.email "<>"
 
           git checkout -B "$BRANCH"
