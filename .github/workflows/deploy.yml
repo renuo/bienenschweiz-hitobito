@@ -11,6 +11,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-24.04
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'main' || 'develop' }}
+      url: https://${{ github.ref == 'refs/heads/main' && 'TODO' || 'bienenschweiz-hitobito.renuoapp.ch' }}
     env:
       NCTL_API_CLIENT_ID: ${{ secrets.NCTL_API_CLIENT_ID }}
       NCTL_API_CLIENT_SECRET: ${{ secrets.NCTL_API_CLIENT_SECRET }}
