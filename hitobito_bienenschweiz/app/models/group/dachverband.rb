@@ -16,7 +16,7 @@ class Group::Dachverband < ::Group
   ### ROLES
 
   class AdministratorBienenSchweiz < ::Role
-    self.permissions = [:admin, :layer_and_below_full, :group_full, :group_read]
+    self.permissions = [:admin, :layer_and_below_full]
   end
 
   class Supervisor < ::Role
