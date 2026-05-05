@@ -62,7 +62,13 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          working-directory: hitobito
+          node-version-file: .tool-versions
+      - run: yarn install --frozen-lockfile
+        working-directory: hitobito
+
+      - name: "Run Webpacker"
+        run: bundle exec rake webpacker:compile
+        working-directory: hitobito
 
       - name: "Prepare database"
         run: bundle exec rake app:db:create app:db:schema:load db:migrate
@@ -71,11 +77,6 @@ jobs:
       - name: "ci:setup:rspec"
         run: bundle exec rake app:ci:setup:rspec
         working-directory: hitobito_bienenschweiz
-
-      - name: "webpack-test-compile"
-        run: bundle && yarn install --frozen-lockfile && bin/webpack-test-compile
-        working-directory: hitobito
-        shell: bash
 
       - name: "Run specs"
         run: bundle exec rake spec:without_features
