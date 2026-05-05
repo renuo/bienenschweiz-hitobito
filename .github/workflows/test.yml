@@ -48,6 +48,9 @@ jobs:
           sudo apt-get install -y libvips42
 
       - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: hitobito
+          bundler-cache: true
 
       - name: "Copy files for wagon and update lockfile"
         run: |
