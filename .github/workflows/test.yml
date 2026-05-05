@@ -69,7 +69,7 @@ jobs:
         working-directory: hitobito_bienenschweiz
 
       - name: "webpack-test-compile"
-        run: bin/webpack-test-compile
+        run: bundle && bin/webpack-test-compile
         working-directory: hitobito
 
       - name: "Run specs"
