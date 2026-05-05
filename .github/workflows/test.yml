@@ -21,6 +21,7 @@ jobs:
     runs-on: "ubuntu-24.04"
     env:
       DISABLE_TEST_SCHEMA_MAINTENANCE: true
+      HEADLESS: true
 
     services:
       postgres:
@@ -48,6 +49,18 @@ jobs:
           sudo apt-get install -y libvips42
 
       - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: hitobito
+          bundler-cache: true
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: hitobito/.tool-versions
+          cache: 'yarn'
+          cache-dependency-path: hitobito/yarn.lock
+
+      - run: yarn install --frozen-lockfile
+        working-directory: hitobito
 
       - name: "Copy files for wagon and update lockfile"
         run: |
@@ -71,6 +84,21 @@ jobs:
       - name: "Run specs"
         run: bundle exec rake spec:without_features
         working-directory: hitobito_bienenschweiz
+
+      - name: "Run Webpacker"
+        run: bundle exec rake webpacker:compile
+        working-directory: hitobito
+
+      - name: "Run feature specs"
+        run: bundle exec rake app:ci:setup:rspec app:spec:features:lenient
+        working-directory: hitobito_bienenschweiz
+
+      - name: "Upload capybara output"
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capybara-output
+          path: hitobito/tmp/capybara
 
   wagon_seeds:
     name: seeds
