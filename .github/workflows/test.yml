@@ -81,11 +81,6 @@ jobs:
         run: bundle exec rake app:ci:setup:rspec
         working-directory: hitobito_bienenschweiz
 
-      - name: "webpack-test-compile"
-        run: bundle && yarn install --frozen-lockfile && bin/webpack-test-compile
-        working-directory: hitobito
-        shell: bash
-
       - name: "Run specs"
         run: bundle exec rake spec:without_features
         working-directory: hitobito_bienenschweiz
