@@ -1,0 +1,9 @@
+de:
+  activerecord:
+    attributes:
+      person:
+        canton: Kanton
+        hive_count: Anzahl Völker
+        honey_yield: Honigertrag
+        export_to_website: Auf Webseite exportieren
+        num_ad_boards: Anzahl Werbetafeln

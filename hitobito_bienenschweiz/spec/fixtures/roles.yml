@@ -17,4 +17,4 @@ leader:
 member:
   person: member
   group: root
-  type: Group::Dachverband::Mitglied
+  type: Group::Dachverband::Supervisor
