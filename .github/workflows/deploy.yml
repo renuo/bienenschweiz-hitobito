@@ -61,3 +61,26 @@ jobs:
           done
           echo "Timed out waiting for deployment (600s)."
           exit 1
+
+      - name: "Notify Slack"
+        if: always() && job.status != 'cancelled'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          STATUS: ${{ job.status }}
+          APP: ${{ steps.target.outputs.app }}
+        run: |
+          if [ "$STATUS" = "success" ]; then
+            EMOJI=":rocket:"; TEXT="Deploy succeeded"
+          else
+            EMOJI=":x:"; TEXT="Deploy failed"
+          fi
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+          PAYLOAD=$(cat <<EOF
+          {
+            "text": "$EMOJI $TEXT: \`$APP\` (<$COMMIT_URL|${GITHUB_SHA:0:7}> by ${{ github.actor }}) — <$RUN_URL|run>"
+          }
+          EOF
+          )
+          curl -fsS -X POST -H 'Content-type: application/json' \
+            --data "$PAYLOAD" "$SLACK_WEBHOOK_URL"
