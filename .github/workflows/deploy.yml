@@ -1,0 +1,59 @@
+name: "Deploy to Deploio"
+
+on:
+  push:
+    branches: [develop, main]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    env:
+      NCTL_API_CLIENT_ID: ${{ secrets.NCTL_API_CLIENT_ID }}
+      NCTL_API_CLIENT_SECRET: ${{ secrets.NCTL_API_CLIENT_SECRET }}
+      NCTL_ORGANIZATION: ${{ secrets.NCTL_ORGANIZATION }}
+      NCTL_PROJECT: renuo-bienenschweiz
+
+    steps:
+      - name: "Pick target app"
+        id: target
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "app=hitobito-main" >> "$GITHUB_OUTPUT"
+          else
+            echo "app=hitobito-develop" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: "Install nctl"
+        run: |
+          echo "deb [trusted=yes] https://repo.nine.ch/deb/ /" \
+            | sudo tee /etc/apt/sources.list.d/repo.nine.ch.list
+          sudo apt-get update -qq
+          sudo apt-get install -y nctl
+
+      - name: "Authenticate"
+        run: nctl auth login
+
+      - name: "Trigger deploy"
+        run: |
+          nctl update app "${{ steps.target.outputs.app }}" \
+            --project "$NCTL_PROJECT" \
+            --git-revision="${{ github.sha }}"
+
+      - name: "Wait for deployment"
+        run: |
+          for i in $(seq 1 60); do
+            PHASE=$(nctl get app "${{ steps.target.outputs.app }}" -o yaml \
+              | awk '/^status:/{in_status=1} in_status && /  phase:/{print $2; exit}')
+            echo "phase: $PHASE (check $i/60)"
+            case "$PHASE" in
+              Running) echo "Deployment complete."; exit 0 ;;
+              Failed)  echo "Deployment failed."; exit 1 ;;
+            esac
+            sleep 10
+          done
+          echo "Timed out waiting for deployment (600s)."
+          exit 1
