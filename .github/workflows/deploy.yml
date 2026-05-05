@@ -41,7 +41,8 @@ jobs:
         run: |
           nctl update app "${{ steps.target.outputs.app }}" \
             --project "$NCTL_PROJECT" \
-            --git-revision="${{ github.sha }}"
+            --git-revision="${{ github.sha }}" \
+            --skip-repo-access-check
 
       - name: "Wait for deployment"
         run: |
