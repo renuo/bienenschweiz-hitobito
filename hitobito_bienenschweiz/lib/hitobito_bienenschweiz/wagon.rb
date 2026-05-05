@@ -27,7 +27,8 @@ module HitobitoBienenschweiz
         :salutation,
         :hive_count,
         :honey_yield,
-        :export_to_website
+        :export_to_website,
+        :num_ad_boards
       ]
     end
 
