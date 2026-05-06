@@ -135,6 +135,7 @@ namespace :mv do
         group.created_at = verband.created_at
         group.updated_at = verband.updated_at
         group.save!
+        try_add_website(group, verband)
       end
 
       InternStructure.where(structure_type: InternStructure.structure_types[:sektion]).find_each do |sektion|
@@ -145,6 +146,13 @@ namespace :mv do
         group.created_at = sektion.created_at
         group.updated_at = sektion.created_at
         group.save!
+        try_add_website(group, sektion)
+      end
+    end
+
+    def try_add_website(group, intern_structure)
+      if intern_structure.url.present?
+        group.social_accounts.where(label: :Website, name: intern_structure.url).first_or_create!
       end
     end
 
