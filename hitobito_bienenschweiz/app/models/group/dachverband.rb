@@ -11,7 +11,7 @@ class Group::Dachverband < ::Group
   self.event_types = [Event, Event::Course]
 
   self.default_children = [Group::BeraterInfo, Group::Inspektion, Group::Zentralvorstand,
-                           Group::Ehrenpersonen, Group::AndereMitglieder]
+    Group::Ehrenpersonen, Group::AndereMitglieder]
 
   children Group::Kantonalverband, Group::BeraterInfo, Group::Inspektion, Group::Zentralvorstand,
     Group::Ehrenpersonen, Group::AndereMitglieder
