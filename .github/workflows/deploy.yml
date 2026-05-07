@@ -1,0 +1,51 @@
+name: "Deploy to Deploio"
+
+on:
+  push:
+    branches: [develop, main]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'main' || 'develop' }}
+      url: https://${{ github.ref == 'refs/heads/main' && 'TODO' || 'bienenschweiz-hitobito.renuoapp.ch' }}
+    env:
+      NCTL_API_CLIENT_ID: ${{ secrets.NCTL_API_CLIENT_ID }}
+      NCTL_API_CLIENT_SECRET: ${{ secrets.NCTL_API_CLIENT_SECRET }}
+      NCTL_ORGANIZATION: ${{ secrets.NCTL_ORGANIZATION }}
+      NCTL_PROJECT: renuo-bienenschweiz
+
+    steps:
+      - name: "Pick target app"
+        id: target
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "app=hitobito-main" >> "$GITHUB_OUTPUT"
+          else
+            echo "app=hitobito-develop" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The renuo-cli needs Ruby 3.4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+
+      - run: gem install -q renuo-cli
+      - run: renuo ci setup
+
+      - name: "Trigger deploy"
+        run: |
+          renuo ci update-deploio-app "${{ steps.target.outputs.app }}" \
+             --project "$NCTL_PROJECT" \
+             --git-revision="${{ github.sha }}"
+
+      - name: "Wait for deployment"
+        run: |
+          renuo ci check-deploio-status "${{ steps.target.outputs.app }}" \
+             --project "$NCTL_PROJECT" \
+             --git-revision="${{ github.sha }}"
