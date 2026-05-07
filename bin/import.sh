@@ -8,5 +8,4 @@ pushd hitobito_bienenschweiz
   direnv exec bin/rails mv:import:groups
 popd
 
-#pg_dump ... > dump.sql
-#ech "Now import to staging"
+echo "MV data imported. Now create a dump with bin/dump_db.sh and import it to the staging/production database."
