@@ -30,57 +30,22 @@ jobs:
             echo "app=hitobito-develop" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: "Install nctl"
-        run: |
-          echo "deb [trusted=yes] https://repo.nine.ch/deb/ /" \
-            | sudo tee /etc/apt/sources.list.d/repo.nine.ch.list
-          sudo apt-get update -qq
-          sudo apt-get install -y nctl
+      # The renuo-cli needs Ruby 3.4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
 
-      - name: "Authenticate"
-        run: nctl auth login
+      - run: gem install -q renuo-cli
+      - run: renuo ci setup
 
       - name: "Trigger deploy"
         run: |
-          nctl update app "${{ steps.target.outputs.app }}" \
-            --project "$NCTL_PROJECT" \
-            --git-revision="${{ github.sha }}" \
-            --skip-repo-access-check
+          renuo ci update-deploio-app "${{ steps.target.outputs.app }}" \
+             --project "$NCTL_PROJECT" \
+             --git-revision="${{ github.sha }}"
 
       - name: "Wait for deployment"
         run: |
-          for i in $(seq 1 60); do
-            PHASE=$(nctl get app "${{ steps.target.outputs.app }}" -o yaml \
-              | awk '/^status:/{in_status=1} in_status && /  phase:/{print $2; exit}')
-            echo "phase: $PHASE (check $i/60)"
-            case "$PHASE" in
-              Running) echo "Deployment complete."; exit 0 ;;
-              Failed)  echo "Deployment failed."; exit 1 ;;
-            esac
-            sleep 10
-          done
-          echo "Timed out waiting for deployment (600s)."
-          exit 1
-
-      - name: "Notify Slack"
-        if: always() && job.status != 'cancelled'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          STATUS: ${{ job.status }}
-          APP: ${{ steps.target.outputs.app }}
-        run: |
-          if [ "$STATUS" = "success" ]; then
-            EMOJI=":rocket:"; TEXT="Deploy succeeded"
-          else
-            EMOJI=":x:"; TEXT="Deploy failed"
-          fi
-          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
-          PAYLOAD=$(cat <<EOF
-          {
-            "text": "$EMOJI $TEXT: \`$APP\` (<$COMMIT_URL|${GITHUB_SHA:0:7}> by ${{ github.actor }}) — <$RUN_URL|run>"
-          }
-          EOF
-          )
-          curl -fsS -X POST -H 'Content-type: application/json' \
-            --data "$PAYLOAD" "$SLACK_WEBHOOK_URL"
+          renuo ci check-deploio-status "${{ steps.target.outputs.app }}" \
+             --project "$NCTL_PROJECT" \
+             --git-revision="${{ github.sha }}"
