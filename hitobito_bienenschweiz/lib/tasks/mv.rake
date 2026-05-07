@@ -3,9 +3,6 @@ namespace :mv do
 
     task :members => :environment do
       failure_csv = "invalid_members.csv"
-      admin = Person.find(1)
-      group = Group.find(1)
-      role_type = Group::Root::Mitglied
 
       class MvRecord < ApplicationRecord
         self.abstract_class = true
@@ -86,10 +83,6 @@ namespace :mv do
             phone.label = :mobile
           end
           person.save!
-          if person.roles.empty?
-            PeopleManager.where(managed: person, manager: admin).first_or_create!
-            person.roles.create!(type: role_type.sti_name, group: group, start_on: 1.year.ago)
-          end
           success_count += 1
         rescue StandardError => e
           puts "--- Error importing member #{member.id}: #{e.message}"
@@ -285,13 +278,44 @@ namespace :mv do
         belongs_to :intern_structure
       end
 
+      admin = Person.find(1)
       scope = Membership
       total = scope.count
       mapped_count = 0
       scope.includes(:role).find_each do |membership|
         begin
-          role = find_role(membership)
-          mapped_count += 1 if role
+          role_type = find_role(membership)
+          if role_type.nil?
+            puts "Unknown mapping for #{membership.id} with role #{membership.role.name} (#{membership.role.name_t}) on structure type #{membership.intern_structure.structure_type}"
+            next
+          end
+          if role_type == -1
+            # puts "Skipping #{membership.id} with role #{membership.role.name} (#{membership.role.name_t}) on structure type #{membership.intern_structure.structure_type}"
+            next
+          end
+          group_class = role_type.model_name.to_s.deconstantize.constantize
+          group = membership.intern_structure.verein? ? Group.root : Group.find(membership.intern_structure_id + 1000)
+          person = Person.find(membership.member_id + 1000)
+          if group.is_a? group_class
+            # puts "Matched #{group_class}"
+          else
+            group = group.children.where(type: group_class.sti_name).first
+          end
+          # puts "Adding to #{group.inspect}"
+
+          # TODO: do we need/want this?
+          # PeopleManager.where(managed: person, manager: admin).first_or_create!
+
+          role_id = membership.id + 1000
+          role = person.roles.with_inactive.where(id: role_id).first_or_initialize
+          role.update(type: role_type.sti_name,
+                      group: group,
+                      start_on: membership.valid_from,
+                      end_on: membership.valid_until,
+                      created_at: membership.created_at,
+                      updated_at: membership.updated_at)
+          role.save!
+          mapped_count += 1
         rescue StandardError => e
           puts e.message
         end
