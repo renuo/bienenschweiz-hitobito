@@ -282,11 +282,13 @@ namespace :mv do
       scope = Membership
       total = scope.count
       mapped_count = 0
+      unknown_mappings = []
       scope.includes(:role).find_each do |membership|
         begin
           role_type = find_role(membership)
           if role_type.nil?
             puts "Unknown mapping for #{membership.id} with role #{membership.role.name} (#{membership.role.name_t}) on structure type #{membership.intern_structure.structure_type}"
+            unknown_mappings |= [[membership.role, membership.intern_structure.structure_type]]
             next
           end
           if role_type == -1
@@ -321,6 +323,10 @@ namespace :mv do
         end
       end
       puts "Mapped #{mapped_count}/#{total} roles"
+      puts "#{unknown_mappings.count} unknown mappings:"
+      unknown_mappings.each do |role, structure_type|
+        puts "#{role.name} (#{role.name_t}) on #{structure_type}"
+      end
     end
   end
 end
