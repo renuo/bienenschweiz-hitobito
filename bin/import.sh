@@ -6,6 +6,8 @@ popd
 
 pushd hitobito_bienenschweiz
   direnv exec bin/rails mv:import:groups
+  direnv exec bin/rails mv:import:members
+  direnv exec bin/rails mv:import:roles
 popd
 
 echo "MV data imported. Now create a dump with bin/dump_db.sh and import it to the staging/production database."
