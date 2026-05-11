@@ -14,5 +14,16 @@ module Bienenschweiz::Group
     # self.superior_attributes = [:bank_account]
 
     root_types Group::Dachverband
+
+    alias_method_chain :to_s, :code
+    alias_method_chain :display_name, :code
+  end
+
+  def to_s_with_code(_format = :default)
+    [code, name].compact.join(" ")
+  end
+
+  def display_name_with_code
+    [code, display_name_without_code].compact.join(" ")
   end
 end
