@@ -10,6 +10,8 @@ class Group::Sektion < ::Group
 
   self.event_types = [Event, Event::Course]
 
+  self.default_children = [Group::Bildung, Group::Produkte, Group::Zucht]
+
   children Group::Bildung, Group::Produkte, Group::Zucht
 
   ### ROLES
