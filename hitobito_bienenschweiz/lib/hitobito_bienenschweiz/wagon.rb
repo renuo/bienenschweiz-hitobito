@@ -30,6 +30,8 @@ module HitobitoBienenschweiz
         :export_to_website,
         :num_ad_boards
       ]
+
+      GroupsController.permitted_attrs += [:code]
     end
 
     initializer "bienenschweiz.add_settings" do |_app|
