@@ -1,19 +1,470 @@
-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
-#  or later. See the COPYING file at the top-level directory or at
-#  https://github.com/hitobito/hitobito_bienenschweiz.
-
-
+---
 root:
   parent:
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
   lft: 1
-  rgt: 2
+  rgt: 1654
   name: BienenSchweiz
   type: Group::Dachverband
-  email: root@example.net
-  zip_code: 2843
-  town: Neu Carlscheid
-  layer_group_id: <%= ActiveRecord::FixtureSet.identify(:root) %>
-
-# TODO add more groups
-# you could generate a good setup manually and dump it with rake fixtures:groups
+aargauer_kantonalverband:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauer_kantonalverband)%>"
+  lft: 2
+  rgt: 115
+  name: Aargauer Kantonalverband
+  type: Group::Kantonalverband
+aarau_und_umgebung:
+  parent: aargauer_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
+  lft: 3
+  rgt: 10
+  name: Aarau und Umgebung
+  type: Group::Sektion
+bildung_379:
+  parent: aarau_und_umgebung
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
+  lft: 4
+  rgt: 5
+  name: Bildung
+  type: Group::Bildung
+produkte_380:
+  parent: aarau_und_umgebung
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
+  lft: 6
+  rgt: 7
+  name: Produkte
+  type: Group::Produkte
+zucht_381:
+  parent: aarau_und_umgebung
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
+  lft: 8
+  rgt: 9
+  name: Zucht
+  type: Group::Zucht
+aargauisches_seetal:
+  parent: aargauer_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
+  lft: 11
+  rgt: 18
+  name: Aargauisches Seetal
+  type: Group::Sektion
+bildung_382:
+  parent: aargauisches_seetal
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
+  lft: 12
+  rgt: 13
+  name: Bildung
+  type: Group::Bildung
+produkte_383:
+  parent: aargauisches_seetal
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
+  lft: 14
+  rgt: 15
+  name: Produkte
+  type: Group::Produkte
+zucht_384:
+  parent: aargauisches_seetal
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
+  lft: 16
+  rgt: 17
+  name: Zucht
+  type: Group::Zucht
+baden:
+  parent: aargauer_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
+  lft: 19
+  rgt: 26
+  name: Baden
+  type: Group::Sektion
+bildung_367:
+  parent: baden
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
+  lft: 20
+  rgt: 21
+  name: Bildung
+  type: Group::Bildung
+produkte_368:
+  parent: baden
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
+  lft: 22
+  rgt: 23
+  name: Produkte
+  type: Group::Produkte
+zucht_369:
+  parent: baden
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
+  lft: 24
+  rgt: 25
+  name: Zucht
+  type: Group::Zucht
+andere_mitglieder:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
+  lft: 116
+  rgt: 117
+  name: Andere Mitglieder
+  type: Group::AndereMitglieder
+berater_infos_an_haendler:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
+  lft: 118
+  rgt: 119
+  name: Berater-Infos an Händler
+  type: Group::BeraterInfo
+berner_kantonalverband:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:berner_kantonalverband)%>"
+  lft: 120
+  rgt: 305
+  name: Berner Kantonalverband
+  type: Group::Kantonalverband
+aarberg:
+  parent: berner_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
+  lft: 121
+  rgt: 128
+  name: Aarberg
+  type: Group::Sektion
+bildung_97:
+  parent: aarberg
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
+  lft: 122
+  rgt: 123
+  name: Bildung
+  type: Group::Bildung
+produkte_98:
+  parent: aarberg
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
+  lft: 124
+  rgt: 125
+  name: Produkte
+  type: Group::Produkte
+zucht_99:
+  parent: aarberg
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
+  lft: 126
+  rgt: 127
+  name: Zucht
+  type: Group::Zucht
+bern_mittelland:
+  parent: berner_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
+  lft: 129
+  rgt: 136
+  name: Bern Mittelland
+  type: Group::Sektion
+bildung_61:
+  parent: bern_mittelland
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
+  lft: 130
+  rgt: 131
+  name: Bildung
+  type: Group::Bildung
+produkte_62:
+  parent: bern_mittelland
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
+  lft: 132
+  rgt: 133
+  name: Produkte
+  type: Group::Produkte
+zucht_63:
+  parent: bern_mittelland
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
+  lft: 134
+  rgt: 135
+  name: Zucht
+  type: Group::Zucht
+bienengantrisch:
+  parent: berner_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
+  lft: 137
+  rgt: 144
+  name: BienenGantrisch
+  type: Group::Sektion
+bildung_601:
+  parent: bienengantrisch
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
+  lft: 138
+  rgt: 139
+  name: Bildung
+  type: Group::Bildung
+produkte_602:
+  parent: bienengantrisch
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
+  lft: 140
+  rgt: 141
+  name: Produkte
+  type: Group::Produkte
+zucht_603:
+  parent: bienengantrisch
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
+  lft: 142
+  rgt: 143
+  name: Zucht
+  type: Group::Zucht
+bienensolothurn:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienensolothurn)%>"
+  lft: 306
+  rgt: 395
+  name: bienenSOLOTHURN
+  type: Group::Kantonalverband
+bienen_thal:
+  parent: bienensolothurn
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
+  lft: 307
+  rgt: 314
+  name: Bienen Thal
+  type: Group::Sektion
+bildung_211:
+  parent: bienen_thal
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
+  lft: 308
+  rgt: 309
+  name: Bildung
+  type: Group::Bildung
+produkte_212:
+  parent: bienen_thal
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
+  lft: 310
+  rgt: 311
+  name: Produkte
+  type: Group::Produkte
+zucht_213:
+  parent: bienen_thal
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
+  lft: 312
+  rgt: 313
+  name: Zucht
+  type: Group::Zucht
+bienendorneck:
+  parent: bienensolothurn
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
+  lft: 315
+  rgt: 322
+  name: bienenDORNECK
+  type: Group::Sektion
+bildung_199:
+  parent: bienendorneck
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
+  lft: 316
+  rgt: 317
+  name: Bildung
+  type: Group::Bildung
+produkte_200:
+  parent: bienendorneck
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
+  lft: 318
+  rgt: 319
+  name: Produkte
+  type: Group::Produkte
+zucht_201:
+  parent: bienendorneck
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
+  lft: 320
+  rgt: 321
+  name: Zucht
+  type: Group::Zucht
+bucheggberg:
+  parent: bienensolothurn
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
+  lft: 323
+  rgt: 330
+  name: Bucheggberg
+  type: Group::Sektion
+bildung_205:
+  parent: bucheggberg
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
+  lft: 324
+  rgt: 325
+  name: Bildung
+  type: Group::Bildung
+produkte_206:
+  parent: bucheggberg
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
+  lft: 326
+  rgt: 327
+  name: Produkte
+  type: Group::Produkte
+zucht_207:
+  parent: bucheggberg
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
+  lft: 328
+  rgt: 329
+  name: Zucht
+  type: Group::Zucht
+buendner_kantonalverband:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:buendner_kantonalverband)%>"
+  lft: 396
+  rgt: 501
+  name: Bündner Kantonalverband
+  type: Group::Kantonalverband
+albula_surses:
+  parent: buendner_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
+  lft: 397
+  rgt: 404
+  name: Albula Surses
+  type: Group::Sektion
+bildung_313:
+  parent: albula_surses
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
+  lft: 398
+  rgt: 399
+  name: Bildung
+  type: Group::Bildung
+produkte_314:
+  parent: albula_surses
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
+  lft: 400
+  rgt: 401
+  name: Produkte
+  type: Group::Produkte
+zucht_315:
+  parent: albula_surses
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
+  lft: 402
+  rgt: 403
+  name: Zucht
+  type: Group::Zucht
+bienenverein_am_hinterrhein:
+  parent: buendner_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
+  lft: 405
+  rgt: 412
+  name: Bienenverein am Hinterrhein
+  type: Group::Sektion
+bildung_316:
+  parent: bienenverein_am_hinterrhein
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
+  lft: 406
+  rgt: 407
+  name: Bildung
+  type: Group::Bildung
+produkte_317:
+  parent: bienenverein_am_hinterrhein
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
+  lft: 408
+  rgt: 409
+  name: Produkte
+  type: Group::Produkte
+zucht_318:
+  parent: bienenverein_am_hinterrhein
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
+  lft: 410
+  rgt: 411
+  name: Zucht
+  type: Group::Zucht
+bregaglia_bergell:
+  parent: buendner_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
+  lft: 413
+  rgt: 420
+  name: Bregaglia Bergell
+  type: Group::Sektion
+bildung_322:
+  parent: bregaglia_bergell
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
+  lft: 414
+  rgt: 415
+  name: Bildung
+  type: Group::Bildung
+produkte_323:
+  parent: bregaglia_bergell
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
+  lft: 416
+  rgt: 417
+  name: Produkte
+  type: Group::Produkte
+zucht_324:
+  parent: bregaglia_bergell
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
+  lft: 418
+  rgt: 419
+  name: Zucht
+  type: Group::Zucht
+ehrenpersonen:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
+  lft: 502
+  rgt: 503
+  name: Ehrenpersonen
+  type: Group::Ehrenpersonen
+freiburger_kantonalverband:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_kantonalverband)%>"
+  lft: 504
+  rgt: 521
+  name: Freiburger Kantonalverband
+  type: Group::Kantonalverband
+deutschfreiburger_seebezirk:
+  parent: freiburger_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
+  lft: 505
+  rgt: 512
+  name: Deutschfreiburger Seebezirk
+  type: Group::Sektion
+bildung_184:
+  parent: deutschfreiburger_seebezirk
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
+  lft: 506
+  rgt: 507
+  name: Bildung
+  type: Group::Bildung
+produkte_185:
+  parent: deutschfreiburger_seebezirk
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
+  lft: 508
+  rgt: 509
+  name: Produkte
+  type: Group::Produkte
+zucht_186:
+  parent: deutschfreiburger_seebezirk
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
+  lft: 510
+  rgt: 511
+  name: Zucht
+  type: Group::Zucht
+freiburger_sensebezirk:
+  parent: freiburger_kantonalverband
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
+  lft: 513
+  rgt: 520
+  name: Freiburger Sensebezirk
+  type: Group::Sektion
+bildung_181:
+  parent: freiburger_sensebezirk
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
+  lft: 514
+  rgt: 515
+  name: Bildung
+  type: Group::Bildung
+produkte_182:
+  parent: freiburger_sensebezirk
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
+  lft: 516
+  rgt: 517
+  name: Produkte
+  type: Group::Produkte
+zucht_183:
+  parent: freiburger_sensebezirk
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
+  lft: 518
+  rgt: 519
+  name: Zucht
+  type: Group::Zucht
+inspektor_in:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
+  lft: 702
+  rgt: 703
+  name: Inspektor/in
+  type: Group::Inspektion
+zentralvorstand:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
+  lft: 1520
+  rgt: 1521
+  name: Zentralvorstand
+  type: Group::Zentralvorstand

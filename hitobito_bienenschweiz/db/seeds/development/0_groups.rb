@@ -20,6 +20,9 @@ if root.address.blank?
   end
 end
 
+# uncomment this if you want to load the spec fixtures
+# ActiveRecord::FixtureSet.create_fixtures(Rails.root.join('../hitobito_bienenschweiz/spec/fixtures'), 'groups')
+
 # TODO: define more groups
 
 Group.rebuild!
