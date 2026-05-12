@@ -40,11 +40,10 @@ RSpec.describe GroupsController, type: :request do
     it "updates the group with the added fields" do
       expect do
         patch group_path(group), params: {group: group_params}
-      end.not_to change { Group.count }
-
-      group.reload
-      expect(group).to be_present
-      expect(group.code).to eq(2345)
+        group.reload
+      end
+        .to not_change(Group, :count)
+        .and change { group.code }.from(nil).to(2345)
     end
   end
 end
