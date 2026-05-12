@@ -8,12 +8,20 @@
 module Bienenschweiz::Group
   extend ActiveSupport::Concern
 
+  MAX_CODE_DIGITS = 6
+
   included do
     # Define additional used attributes
     # self.used_attributes += [:website, :bank_account, :description]
     # self.superior_attributes = [:bank_account]
 
     root_types Group::Dachverband
+
+    validates :code,
+      numericality: {only_integer: true, greater_than: 0,
+                     less_than_or_equal_to: 10**MAX_CODE_DIGITS},
+      uniqueness: true,
+      allow_nil: true
 
     alias_method_chain :to_s, :code
     alias_method_chain :display_name, :code
@@ -33,6 +41,6 @@ module Bienenschweiz::Group
   end
 
   def sorting_name
-    code.presence&.to_s&.rjust(6, "0") || display_name
+    code&.to_s&.rjust(MAX_CODE_DIGITS, "0") || display_name
   end
 end
