@@ -23,3 +23,29 @@ de:
       group/root/member:
         one: Mitglied
         description: Mitglieder sind alle anderen.
+
+    attributes:
+      qcontrol:
+        title: Beschreibung
+        document: Dokument
+        control_date: Kontrolldatum
+        with_voucher: "Gutschein Jungimker/-in / Betriebsprüfer/-in (beeinflusst Spese!)"
+        author_id: Erstellt von
+        author: Erstellt von
+        person_id: Kontrolliertes Mitglied
+        person: Kontrolliertes Mitglied
+        inspector: Betriebsprüfer
+        inspector_id: Betriebsprüfer
+        group_id: Sektion
+        group: Sektion
+        fee_ok?: autom. Spese
+        control_state: Resultat
+        control_states:
+          passed: erfüllt
+          not_passed: nicht erfüllt
+          partially_passed: erfüllt unter Vorbehalt
+          not_necessary: 'nicht nötig'
+  people:
+    tabs:
+      bienenschweiz_qcontrols: Betriebsprüfungen
+  qcontrol_default_title: 'Betriebsprüfung'
