@@ -125,6 +125,7 @@ namespace :mv do
           group.id = verband.id + 1000 # offset by 1000 to not conflict with admin or test data
         end
         group.parent = root_group
+        group.code = verband.code
         group.created_at = verband.created_at
         group.updated_at = verband.updated_at
         group.save!
@@ -136,6 +137,7 @@ namespace :mv do
           group.id = sektion.id + 1000
         end
         group.parent = Group::Kantonalverband.find(sektion.parent_id + 1000)
+        group.code = sektion.code
         group.created_at = sektion.created_at
         group.updated_at = sektion.created_at
         group.save!
