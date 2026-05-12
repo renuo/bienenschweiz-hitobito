@@ -19,7 +19,7 @@ module Bienenschweiz::Group
 
     validates :code,
       numericality: {only_integer: true, greater_than: 0,
-                     less_than_or_equal_to: 10**MAX_CODE_DIGITS},
+                     less_than: 10**MAX_CODE_DIGITS},
       uniqueness: true,
       allow_nil: true
 
