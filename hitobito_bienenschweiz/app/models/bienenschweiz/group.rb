@@ -17,6 +17,11 @@ module Bienenschweiz::Group
 
     alias_method_chain :to_s, :code
     alias_method_chain :display_name, :code
+
+    def self.order_by_type
+      joins("INNER JOIN group_type_orders ON group_type_orders.name = groups.type")
+        .reorder("group_type_orders.order_weight ASC, groups.code ASC, groups.name ASC")
+    end
   end
 
   def to_s_with_code(_format = :default)
