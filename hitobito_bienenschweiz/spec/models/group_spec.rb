@@ -9,4 +9,28 @@ require "spec_helper"
 
 describe Group do
   include_examples "group types"
+
+  describe "#sorting_name" do
+    subject(:sorting_name) { group.sorting_name }
+
+    context "when the group has a code" do
+      let(:group) {
+        Fabricate(:group, code: 100, name: "Test", type: Group::Kantonalverband.sti_name)
+      }
+
+      it "returns the code as a zero-padded string" do
+        expect(sorting_name).to eq("000100")
+      end
+    end
+
+    context "when the group does not have a code" do
+      let(:group) {
+        Fabricate(:group, code: nil, name: "Test", type: Group::Kantonalverband.sti_name)
+      }
+
+      it "returns the display name" do
+        expect(sorting_name).to eq("Test")
+      end
+    end
+  end
 end
