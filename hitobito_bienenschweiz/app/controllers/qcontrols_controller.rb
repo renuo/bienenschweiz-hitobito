@@ -14,8 +14,10 @@ class QcontrolsController < CrudController
 
   # load parents before authorization
   prepend_before_action :parent
+  # before_render_form :load_beekeepers
   before_render_form :load_inspectors
   before_render_form :load_sektionen
+  # before_render_form :load_other_people
 
   # skip authorization for create to assign_attributes before authorization
   skip_authorize_resource only: [:create]
@@ -41,6 +43,10 @@ class QcontrolsController < CrudController
     @person.qcontrols.build
   end
 
+  # def load_beekeepers
+  #   @beekeepers = Person.joins(:roles).where(roles: { type: [Group::Sektion::Siegelimker, Group::Sektion::SiegelimkerProvisorisch] })
+  # end
+
   def load_inspectors
     @inspectors = Person.joins(:roles)
       .where(roles: {type: [Group::Kader::FachpersonProdukte.sti_name]})
@@ -52,4 +58,8 @@ class QcontrolsController < CrudController
       .where(roles: {type: [Group::Siegelimker::Siegelimker.sti_name]})
     @sektionen = Group::Sektion.where(id: siegelimker_groups.select(:parent_id))
   end
+
+  # def load_other_people
+  #   @other_people = writables.where(id: entry.other_people_ids)
+  # end
 end
