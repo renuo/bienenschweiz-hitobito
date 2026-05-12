@@ -31,4 +31,8 @@ module Bienenschweiz::Group
   def display_name_with_code
     [code, display_name_without_code].compact.join(" ")
   end
+
+  def sorting_name
+    code.presence&.to_s&.rjust(6, "0") || display_name
+  end
 end
