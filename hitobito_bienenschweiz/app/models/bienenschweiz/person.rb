@@ -9,6 +9,6 @@ module Bienenschweiz::Person
   extend ActiveSupport::Concern
 
   included do
-    has_many :qcontrols
+    has_many :qcontrols, dependent: :destroy
   end
 end

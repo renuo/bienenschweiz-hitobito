@@ -10,11 +10,7 @@ class QcontrolAbility < AbilityDsl::Base
 
   on(Qcontrol) do
     permission(:layer_and_below_full).may(:read)
-    permission(:layer_and_below_full).may(:manage).if_admin
-  end
-
-  def person
-    subject.person
+    permission(:layer_and_below_full).may(:read, :create, :destroy).if_admin
   end
 
   def if_admin

@@ -24,6 +24,9 @@ de:
         one: Mitglied
         description: Mitglieder sind alle anderen.
 
+      qcontrol:
+        one: Betriebsprüfung
+        other: Betriebsprüfungen
     attributes:
       qcontrol:
         title: Beschreibung
