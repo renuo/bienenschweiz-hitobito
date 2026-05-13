@@ -8,10 +8,9 @@ module Bienenschweiz::Sheet::Person
   extend ActiveSupport::Concern
 
   prepended do
-    tabs.insert(1, Sheet::Tab.new(
+    tabs << Sheet::Tab.new(
       "people.tabs.bienenschweiz_qcontrols",
       :group_person_qcontrols_path
-      # if: ->(view, _group, person) { view.can?(:show_remarks, person) }
-    ))
+    )
   end
 end
