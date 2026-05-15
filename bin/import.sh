@@ -2,6 +2,13 @@
 
 set -euo pipefail
 
+git fetch --all --prune
+
+if ! git merge-base --is-ancestor origin/develop HEAD; then
+  echo "Error: Your local branch is not up-to-date with origin/develop."
+  exit 1
+fi
+
 git submodule update --init
 
 pushd hitobito
