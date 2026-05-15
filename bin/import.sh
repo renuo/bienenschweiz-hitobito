@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 pushd hitobito
   direnv exec bin/rails db:drop db:create db:migrate wagon:migrate db:seed wagon:seed NO_ENV=1
 popd
