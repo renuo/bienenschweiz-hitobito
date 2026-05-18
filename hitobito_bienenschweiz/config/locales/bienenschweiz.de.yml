@@ -48,7 +48,13 @@ de:
           not_passed: nicht erfüllt
           partially_passed: erfüllt unter Vorbehalt
           not_necessary: 'nicht nötig'
+    errors:
+      messages:
+        not_blank_inspectable: 'ist nicht gültig für Blanko-Betriebsprüfungen'
   people:
     tabs:
       bienenschweiz_qcontrols: Betriebsprüfungen
   qcontrol_default_title: 'Betriebsprüfung'
+  checklist_attachment_name: "Betriebspruefung.pdf"
+  blank_inspection_info:
+    subject: "Neuzertifizierung eines Siegelimkers"

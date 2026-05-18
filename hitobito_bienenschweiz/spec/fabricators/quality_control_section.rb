@@ -5,10 +5,8 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-Fabricator(:qcontrol) do
-  group
-  inspector { Fabricate(:person) }
-  control_date { Date.current }
-  with_voucher { false }
-  control_state { :passed }
+
+Fabricator(:quality_control_section) do
+  title { "Section #{Faker::Lorem.word}" }
+  number { sequence(:number) }
 end

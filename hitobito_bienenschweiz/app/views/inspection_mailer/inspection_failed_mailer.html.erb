@@ -1,0 +1,16 @@
+<p>Liebes BienenSchweiz-Sekretariat</p>
+
+<p>
+  Betriebsprüfer/-in <%= @qcontrol.inspector.member.try(:full_name) %> hat über die mobile App eine Betriebsprüfung für
+  den Siegelimker <%= @qcontrol.member.try(:full_name) %> erfasst und der/die Siegelimker/-in hat die Anforderungen nicht erfüllt!
+  Der Siegelimker-Rolle wurde automatisch ein Ende-Datum gesetzt. Ggf. möchten Sie noch weitere Massnahmen ergreifen.
+</p>
+
+<p>
+  Betriebsprüfer auf MV: <%= link_to @qcontrol.inspector.member.try(:full_name), person_url(@qcontrol.inspector.member) %>
+  <% if @qcontrol.member.present? %>
+      Siegelimker auf MV: <%= link_to @qcontrol.member.full_name, person_url(@qcontrol.member) %>
+  <% end %>
+</p>
+
+<%=render 'renuo_signature' %>

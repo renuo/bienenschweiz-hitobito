@@ -1,0 +1,34 @@
+<p>Liebes BienenSchweiz-Sekretariat</p>
+
+<p>
+  Am <%= I18n.l(@qcontrol.control_date, format: :default) %> hat Betriebsprüfer/in <%= link_to @inspector.full_name, person_url(@inspector) %> eine Neuzertifizierung
+  eines Siegelimkers erfasst. Der Siegelimker hat die Betriebsprüfung <%= @qcontrol.control_state ? @qcontrol.control_state_label : I18n.t("activerecord.attributes.qcontrol.control_states.not_necessary") %>.
+  <br/>
+  Hier sind die Daten des neu zu erfassenden Siegelimkers:
+</p>
+<table>
+  <thead>
+    <tr>
+      <% @member_columns.each do |key| %>
+        <th><%= I18n.t("activerecord.attributes.person.#{key}") %></th>
+      <% end %>
+      <th><%= I18n.t("activerecord.attributes.qcontrol.group_id") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <% @member_columns.each do |key| %>
+        <td><%= @new_member[key] %></td>
+      <% end %>
+      <td><%= @intern_structure.to_s %></td>
+    </tr>
+  </tbody>
+</table>
+<p>
+  Betriebsprüfer auf MV: <%= link_to @inspector.full_name, person_url(@inspector) %>
+  Betriebsprüfung auf MV: <%= @qcontrol.to_s %>
+</p>
+
+<p>Vergessen Sie nicht, in der MV die Blanko-Checkliste an den neu erstellten Siegelimker zuzuweisen.</p>
+
+<%=render 'renuo_signature' %>

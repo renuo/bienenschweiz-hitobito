@@ -1,0 +1,16 @@
+<p>Grüezi <%= @qcontrol.inspector_name %></p>
+
+<p>
+  Im Anhang erhalten Sie die soeben eingereichte Betriebsprüfung von Siegelimker/-in <%= @qcontrol.member.full_name %>.
+  Das aktuelle Honigreglement können Sie <%= link_to 'hier', 'https://bienen.ch/imkerei/honigqualitaet/' %> aufrufen.
+</p>
+
+<p>
+  Bitte beachten Sie, dass uns von der Siegelimkerin / dem Siegelimker KEINE E-Mail-Adresse bekannt ist. Wir legen der Imkerin/dem Imker eine Kopie der Checkliste dem Zertifikat bei.
+</p>
+
+<p>
+  Freundliche Grüsse
+</p>
+
+<%= render 'signature' %>

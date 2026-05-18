@@ -23,10 +23,8 @@ class Qcontrol < ApplicationRecord
   # where the quality control has been conducted
   belongs_to :group
 
-  # TODO: implement
-  # has_many :quality_control_answers, dependent: :destroy, inverse_of: :qcontrol
-  #
-  # accepts_nested_attributes_for :quality_control_answers, allow_destroy: true
+  has_many :quality_control_answers, dependent: :destroy, inverse_of: :qcontrol
+  accepts_nested_attributes_for :quality_control_answers, allow_destroy: true
 
   i18n_enum :control_state, %w[passed not_passed partially_passed]
   enum :fee_creation_state, %w[fee_not_required fee_not_created fee_ok]
@@ -40,12 +38,11 @@ class Qcontrol < ApplicationRecord
 
   validates :control_date, presence: true
 
-  # TODO: add back when implementing API
-  # validate do
-  #   if person.blank? && inspector && group && inspector.inspectable_groups.exclude?(group)
-  #     errors.add(:group_id, :not_blank_inspectable)
-  #   end
-  # end
+  validate do
+    if person.blank? && inspector && group && inspector.inspectable_groups.exclude?(group)
+      errors.add(:group_id, :not_blank_inspectable)
+    end
+  end
 
   # TODO: used for PDF, add back in when implementing that
   # get the newest one for every sektion

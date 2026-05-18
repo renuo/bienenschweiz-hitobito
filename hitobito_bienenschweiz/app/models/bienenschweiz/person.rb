@@ -10,5 +10,14 @@ module Bienenschweiz::Person
 
   included do
     has_many :qcontrols, dependent: :destroy
+
+    QCONTROLLER_ROLES=[Group::Produkte::FachpersonProdukte.sti_name, Group::Produkte::FachpersonProdukteInAusbildung.sti_name]
+    def qcontrol_inspector?
+      roles.any? { |role| QCONTROLLER_ROLES.include?(role.type) }
+    end
+
+    def inspectable_groups
+      groups.where(roles: {type: QCONTROLLER_ROLES}).map(&:parent)
+    end
   end
 end
