@@ -23,6 +23,7 @@ class QcontrolsController < CrudController
   def create
     assign_attributes
     authorize!(:create, entry)
+    entry.author = current_user
     if Qcontrol.transaction { save_entry }
       redirect_to(group_person_path(@group, @person))
     else

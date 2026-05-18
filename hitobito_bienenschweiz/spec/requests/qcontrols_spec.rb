@@ -92,6 +92,8 @@ RSpec.describe QcontrolsController, type: :request do
       expect(qcontrol.control_date).to eq(Date.new(2023, 5, 1))
       expect(qcontrol.with_voucher).to eq(true)
       expect(qcontrol.control_state).to eq("passed")
+      expect(qcontrol.author).to eq(admin)
+      expect(qcontrol.author_name).to eq(admin.full_name)
     end
 
     context "when the params are invalid" do
