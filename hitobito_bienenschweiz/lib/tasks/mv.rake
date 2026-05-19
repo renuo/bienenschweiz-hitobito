@@ -34,6 +34,7 @@ namespace :mv do
       total_count = 0
       success_count = 0
       email_duplicate_count = 0
+      import_without_validations = 0
       failed_members = {}
 
       scope = Member.all.includes(:login)
@@ -82,7 +83,14 @@ namespace :mv do
             phone.number = member.mobile
             phone.label = :mobile
           end
-          person.save!
+          person.validate
+          if person.errors.count == 1 && person.errors[:zip_code].present? && person.country != "CH"
+            puts "Importing member #{member.id} without validations"
+            person.save!(validate: false)
+            import_without_validations += 1
+          else
+            person.save!
+          end
           success_count += 1
         rescue StandardError => e
           puts "--- Error importing member #{member.id}: #{e.message}"
