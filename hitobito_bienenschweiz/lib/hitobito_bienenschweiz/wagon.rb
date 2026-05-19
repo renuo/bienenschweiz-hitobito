@@ -22,6 +22,7 @@ module HitobitoBienenschweiz
     config.to_prepare do
       # extend application classes here
       Group.include Bienenschweiz::Group
+      Person.include Bienenschweiz::Person
 
       PeopleController.permitted_attrs += [
         :salutation,
@@ -32,6 +33,9 @@ module HitobitoBienenschweiz
       ]
 
       GroupsController.permitted_attrs += [:code]
+
+      Sheet::Person.prepend Bienenschweiz::Sheet::Person
+      Ability.store.register QcontrolAbility
     end
 
     initializer "bienenschweiz.add_settings" do |_app|

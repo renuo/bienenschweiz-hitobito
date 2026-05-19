@@ -5,16 +5,10 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
+module Bienenschweiz::Person
+  extend ActiveSupport::Concern
 
-Rails.application.routes.draw do
-  extend LanguageRouteScope
-
-  language_scope do
-    # Define wagon routes here
-    resources :groups, only: [] do
-      resources :people, only: [] do
-        resources :qcontrols
-      end
-    end
+  included do
+    has_many :qcontrols, dependent: :destroy
   end
 end
