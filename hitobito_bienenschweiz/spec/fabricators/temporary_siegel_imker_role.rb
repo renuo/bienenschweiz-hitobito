@@ -5,12 +5,8 @@
 # or later. See the COPYING file at the top-level directory or at
 # https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
 
+Fabricator(:temporary_siegel_imker_role, from: :role) do
+  type { Group::Sektion::SiegelimkerProvisorisch.sti_name }
 
-Fabricator(:quality_control_answer) do
-  fulfilled { 'passed' }
-  deadline_at { Time.zone.today + rand(1..50).days }
-  qcontrol { Fabricate.build(:qcontrol) }
-  notes { Faker::Lorem.sentence }
-  quality_control_question
+  group { Fabricate(:group, type: Group::Sektion.sti_name) }
 end
-

@@ -6,21 +6,14 @@ module Api
         before_action :check_no_control_reason, only: :create
 
         def index
-          @inspections = Qcontrol.where(member_id: @beekeeper.id).order(control_date: :desc)
-          render json: @inspections.as_json(only: %i[id member_id author_id title control_date])
+          @inspections = Qcontrol.where(person_id: @beekeeper.id).order(control_date: :desc)
+          render json: @inspections.map(&:as_mobile_json)
         end
 
         def show
           @inspection = @beekeeper.qcontrols.find_by(id: params[:id])
           if @inspection
-            render json: @inspection.as_json(
-              only: %i[id title document control_date no_control_reason
-                       other_reason_for_no_control business_handover_to with_voucher],
-              include: { member: { only: %i[id firstname lastname] },
-                         author: { only: %i[id firstname lastname] },
-                         intern_structure: { only: %i[id code name] },
-                         quality_control_answers: { except: %i[updated_at created_at] } }
-            )
+            render json: @inspection.as_full_mobile_json
           else
             head :not_found
           end
@@ -32,7 +25,7 @@ module Api
           @qcontrol.author_name = 'VDRB-APP'
           @qcontrol.from_app = true
           @qcontrol.inspector_id = current_person.id
-          @qcontrol.member = @beekeeper
+          @qcontrol.person = @beekeeper
 
           if @qcontrol.save
             head :no_content
@@ -44,7 +37,7 @@ module Api
         private
 
         def set_beekeeper
-          @beekeeper = current_person.member.inspectable_beekeepers.find_by(id: params[:beekeeper_id])
+          @beekeeper = current_person.inspectable_beekeepers.find_by(id: params[:beekeeper_id])
           head :not_found if @beekeeper.blank?
         end
 
@@ -55,7 +48,7 @@ module Api
                                            { quality_control_answers_attributes: [%i[quality_control_question_id
                                                                                      deadline_at notes fulfilled]] }])
 
-          valid_memberships = @beekeeper.memberships.active.where(role: Role.qcontrol_beekeeper).order(:valid_from)
+          valid_memberships = @beekeeper.roles.where(type: Bienenschweiz::Person::BEEKEEPER_ROLES).order(:start_on)
           ret[:group_id] = valid_memberships.first.group_id
           ret[:no_control_reason] ||= :no_reason
           ret

@@ -58,3 +58,5 @@ de:
   checklist_attachment_name: "Betriebspruefung.pdf"
   blank_inspection_info:
     subject: "Neuzertifizierung eines Siegelimkers"
+  beeaudit:
+    empty_name_placeholder: "Unbekannt (%{id})"

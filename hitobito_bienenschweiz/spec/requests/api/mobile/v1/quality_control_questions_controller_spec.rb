@@ -1,17 +1,18 @@
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::QualityControlQuestionsController, type: :request do
-  let!(:fachperson_produkte) { Fabricate(:person) }
+  let!(:fachperson_produkte) { Fabricate(:fachperson_produkte, group_id: groups(:produkte_380).id) }
   let!(:qc_section) { Fabricate(:quality_control_section, version: QualityControlSection.version) }
   let!(:qc_questions) { Fabricate.times(5, :quality_control_question, quality_control_section: qc_section) }
   let(:auth_headers) { { 'Access-Token': fachperson_produkte.authentication_token } }
 
   before do
-    Fabricate(:role, type: Group::Inspektion::Inspektor.sti_name, person: fachperson_produkte, group: groups(:produkte_380))
+    fachperson_produkte.generate_authentication_token!
     get api_mobile_v1_quality_control_questions_path(format: :json), headers: auth_headers
   end
 
   it 'it includes all the sections' do
+    expect(response).to have_http_status(:ok)
     expect(json_response.length).to eq(QualityControlSection.count)
   end
 

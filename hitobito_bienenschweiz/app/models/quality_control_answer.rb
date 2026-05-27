@@ -1,6 +1,6 @@
 class QualityControlAnswer < ApplicationRecord
-  belongs_to :quality_control_question
-  belongs_to :qcontrol, inverse_of: :quality_control_answers
+  belongs_to :quality_control_question, optional: false
+  belongs_to :qcontrol, inverse_of: :quality_control_answers, optional: false
 
   enum :fulfilled, { not_passed: 'not_passed', passed: 'passed', partially_passed: 'partially_passed' }
   scope :of_section, lambda { |section|

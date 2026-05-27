@@ -23,23 +23,23 @@
   <tbody>
     <tr>
       <td>Vorname</td>
-      <td><%= @member.firstname %></td>
-      <td><%= @changes[:firstname] %></td>
+      <td><%= @member.first_name %></td>
+      <td><%= @changes[:first_name] %></td>
     </tr>
     <tr>
       <td>Nachname</td>
-      <td><%= @member.lastname %></td>
-      <td><%= @changes[:lastname] %></td>
+      <td><%= @member.last_name %></td>
+      <td><%= @changes[:last_name] %></td>
     </tr>
     <tr>
       <td>Adresse</td>
       <td><%= @member.full_address %></td>
-      <td><%= [@changes[:street], @changes[:house_no]].join(' ')%></td>
+      <td><%= [@changes[:street], @changes[:housenumber]].join(' ')%></td>
     </tr>
     <tr>
       <td>PLZ</td>
-      <td><%= @member.zip %></td>
-      <td><%= @changes[:zip] %></td>
+      <td><%= @member.zip_code %></td>
+      <td><%= @changes[:zip_code] %></td>
     </tr>
     <tr>
       <td>Ort</td>

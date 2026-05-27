@@ -10,7 +10,6 @@ Fabricator(:qcontrol) do
   end
   control_date { Date.current }
   with_voucher { false }
-  control_state { :passed }
 end
 
 Fabricator(:due_soon_qcontrol, from: :qcontrol) do

@@ -44,7 +44,7 @@ class InspectionMailer < ApplicationMailer
     @inspector = inspector
     @member = member
     @changes = changes
-    mail to: APP_NOTIFICATIONS_EMAIL, subject: "Antrag für eine Adressänderung von Siegelimker #{member.human_name}"
+    mail to: APP_NOTIFICATIONS_EMAIL, subject: "Antrag für eine Adressänderung von Siegelimker #{member.full_name}"
   end
 
   def blank_inspection_info_mailer(new_member, qcontrol_id)
@@ -82,17 +82,17 @@ class InspectionMailer < ApplicationMailer
 
   def inspection_failed_mailer(qcontrol_id)
     @qcontrol = Qcontrol.find(qcontrol_id)
-    mail to: APP_NOTIFICATIONS_EMAIL, subject: I18n.t('inspection_failed.subject', name: @qcontrol.member.human_name)
+    mail to: APP_NOTIFICATIONS_EMAIL, subject: I18n.t('inspection_failed.subject', name: @qcontrol.person.full_name)
   end
 
   def print_certificate_and_letter(qcontrol_id)
     tries ||= 3
     @qcontrol = Qcontrol.find(qcontrol_id)
     @member = @qcontrol.member
-    name = "#{I18n.t('inspection_mailer.print_certificate_and_letter.attachment_name', name: @member.human_name)}.pdf"
+    name = "#{I18n.t('inspection_mailer.print_certificate_and_letter.attachment_name', name: @member.full_name)}.pdf"
     attachments[name] = render_certificate_and_letter(@qcontrol)
     mail to: PRINTER_EMAIL, subject: I18n.t('inspection_mailer.print_certificate_and_letter.subject',
-                                            name: @member.human_name)
+                                            name: @member.full_name)
   rescue ImkerCertificateService::ImkerCertificateServiceError => e
     retry unless (tries -= 1).zero?
     Sentry.capture_exception(e) if defined?(Sentry)

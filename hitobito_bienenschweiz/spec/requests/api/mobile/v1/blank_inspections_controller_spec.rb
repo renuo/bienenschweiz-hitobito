@@ -54,7 +54,7 @@ RSpec.describe Api::Mobile::V1::BlankInspectionsController, type: :request do
              params: { inspection: qcontrol_params, member: new_member, format: :json }, headers: auth_headers
       end
 
-      it 'Fabricates a qcontrol and send the email' do
+      it 'creates a qcontrol and send the email' do
         expect(response).to have_http_status(:no_content)
         expect(Qcontrol.count).to eq(1)
         expect(InspectionMailer).to receive(:blank_inspection_info_mailer).and_call_original
@@ -109,7 +109,7 @@ RSpec.describe Api::Mobile::V1::BlankInspectionsController, type: :request do
     end
 
     context 'with group_id' do
-      let(:group_id_param) { group.id }
+      let(:group_id_param) { group.parent.id }
       let(:send_request) do
         post api_mobile_v1_blank_inspections_path,
              params: { inspection: qcontrol_params.merge(intern_structure_id: group_id_param),
@@ -119,6 +119,7 @@ RSpec.describe Api::Mobile::V1::BlankInspectionsController, type: :request do
       it 'stores the qcontrol with the requested intern structure' do
         expect do
           send_request
+          expect(response).to have_http_status(:no_content)
         end.to change(Qcontrol, :count).by(1)
         expect(Qcontrol.last.group).to eq group.parent
       end

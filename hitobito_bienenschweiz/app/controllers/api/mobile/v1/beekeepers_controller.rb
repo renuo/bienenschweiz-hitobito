@@ -5,21 +5,19 @@ module Api
         before_action :set_beekeeper, only: :update
 
         def index
-          @beekeepers = insert_empty_name_placeholders(inspectable_beekeepers.order(:lastname, :firstname))
-          render json: @beekeepers.as_json(only: %i[id firstname lastname affix_1 affix_2 affix_3 street
-                                                    house_no zip location kanton birthdate honey_yield hive_count],
-                                           methods: %i[telephone mobile email])
+          @beekeepers = insert_empty_name_placeholders(inspectable_beekeepers.order(:last_name, :first_name))
+          render json: @beekeepers.map(&:as_mobile_json)
         end
 
         def update
-          head :no_content, status: :ok if MemberChangeRequestService.new(@beekeeper, current_person.member,
+          head :no_content, status: :ok if MemberChangeRequestService.new(@beekeeper, current_person,
                                                                           beekeeper_params.to_h).request_change
         end
 
         private
 
         def inspectable_beekeepers
-          current_person.member.inspectable_beekeepers
+          current_person.inspectable_beekeepers
         end
 
         def set_beekeeper
@@ -33,12 +31,12 @@ module Api
 
         def insert_empty_name_placeholders(beekeepers)
           beekeepers.map do |beekeeper|
-            beekeeper['firstname'] ||= ''
-            beekeeper['lastname'] ||= ''
+            beekeeper['first_name'] ||= ''
+            beekeeper['last_name'] ||= ''
 
-            if beekeeper['firstname'].blank? && beekeeper['lastname'].blank?
-              beekeeper['lastname'] = I18n.t('members.empty_name_placeholder',
-                                             selectline_customer_number: beekeeper.selectline_customer_number,
+            if beekeeper['first_name'].blank? && beekeeper['last_name'].blank?
+              beekeeper['last_name'] = I18n.t('beeaudit.empty_name_placeholder',
+                                              id: beekeeper.id,
                                              locale: :de)
             end
 

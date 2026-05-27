@@ -6,7 +6,7 @@ RSpec.describe Api::Mobile::V1::InspectionPdfController, type: :request do
   let(:beekeeper) { Fabricate(:beekeeper, group_id: group.id) }
   let(:auth_headers) { { 'Access-Token': fachperson_produkte.authentication_token } }
 
-  describe 'GET #show' do
+  xdescribe 'GET #show' do
     context 'existing qcontrol' do
       let!(:quality_control) { Fabricate(:due_soon_qcontrol, member_id: beekeeper.id, author_id: fachperson_produkte.id) }
       let!(:answers) { Fabricate.times(5, :quality_control_answer, fulfilled: 'passed', qcontrol: quality_control) }

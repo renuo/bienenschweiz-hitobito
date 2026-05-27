@@ -1,19 +1,24 @@
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::SessionsController, type: :request do
-  let!(:fachperson_produkte) { Fabricate(:person, authentication_token: '7xpaJOim8rbDH-ibP30GZQ') }
+  let(:email) { Faker::Internet.email }
+  let(:password) { Faker::Internet.password(min_length: 12) }
+  let!(:person) {
+    person = Fabricate(:person, email:, password:)
+    person.generate_authentication_token!
+    person
+  }
 
   def perform_call
-      post api_mobile_v1_sessions_path, params: { user: { email: '', password: '' }, format: :json }
+      post api_mobile_v1_sessions_path, params: { user: { email: , password: }, format: :json }
   end
 
-  describe '#Fabricate' do
-    context 'user is allowed from kas' do
-      let(:cassette) { 'services/authentication_service_spec_ok' }
+  describe '#create' do
+    context 'user sends valid credentials' do
 
       context 'user has a quality fachperson_produkte role' do
         before do
-          Fabricate(:role, type: Group::Inspektion::Inspektor.sti_name, person: fachperson_produkte, group: Group::Inspektion.first)
+          Fabricate(:role, type: Group::Produkte::FachpersonProdukte, person:, group: groups(:produkte_380))
           perform_call
         end
 
@@ -22,12 +27,12 @@ RSpec.describe Api::Mobile::V1::SessionsController, type: :request do
         end
 
         it 'returns the user with intern structures' do
-          expect(json_response['id']).to eq fachperson_produkte.id
-          expect(json_response['inspectable_groups'].size).to eq fachperson_produkte.inspectable_groups.size
+          expect(json_response['id']).to eq person.id
+          expect(json_response['inspectable_intern_structures'].size).to eq person.inspectable_groups.size
         end
       end
 
-      context 'user does not have a quality fachperson_produkte role' do
+      context 'user does not have a quality person role' do
         before { perform_call }
 
         it 'returns unathorized' do
@@ -36,8 +41,8 @@ RSpec.describe Api::Mobile::V1::SessionsController, type: :request do
       end
     end
 
-    context 'user is not allowed from kas' do
-      let(:cassette) { 'services/authentication_service_spec_failed' }
+    context 'user sends invalid crendentials' do
+      let(:password) { 'wrongpassword' }
 
       before { perform_call }
 

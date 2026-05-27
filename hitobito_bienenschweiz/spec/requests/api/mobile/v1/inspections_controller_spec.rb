@@ -1,18 +1,22 @@
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
-  let!(:other_group) { groups(:aargauisches_seetal) }
-  let!(:fachperson_produkte) { Fabricate(:fachperson_produkte) }
-  let(:group) { fachperson_produkte.groups.first }
-  let(:beekeeper) { Fabricate(:beekeeper, group_id: group.id) }
-  let(:auth_headers) { { 'Access-Token': fachperson_produkte.authentication_token } }
+  let!(:fachperson_produkte) { Fabricate(:fachperson_produkte, group_id: group.id) }
+  let(:group) { groups(:produkte_380) }
+  let!(:other_group) { groups(:produkte_383) }
+  let(:beekeeper) { Fabricate(:beekeeper, group_id: group.parent.id) }
+  let(:auth_headers) { {'Access-Token': fachperson_produkte.authentication_token} }
+
+  before do
+    fachperson_produkte.generate_authentication_token!
+  end
 
   describe 'GET #index' do
-    let!(:quality_controls1) { Fabricate.times(2, :due_soon_qcontrol, member_id: beekeeper.id, author_id: fachperson_produkte.id) }
-    let!(:quality_controls2) { Fabricate.times(2, :due_soon_qcontrol, member_id: fachperson_produkte.id, author_id: fachperson_produkte.id) }
+    let!(:quality_controls1) { Fabricate.times(2, :due_soon_qcontrol, person_id: beekeeper.id, author_id: fachperson_produkte.id) }
+    let!(:quality_controls2) { Fabricate.times(2, :due_soon_qcontrol, person_id: fachperson_produkte.id, author_id: fachperson_produkte.id) }
 
     context 'beekeeper id is invalid' do
-      subject! { get api_mobile_v1_beekeeper_inspections_path('12345'), params: { format: :json }, headers: auth_headers }
+      subject! { get api_mobile_v1_beekeeper_inspections_path('12345'), params: {format: :json}, headers: auth_headers }
 
       it { expect(response).to have_http_status :not_found }
       it { expect(response.body).to eq '' }
@@ -21,7 +25,7 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
     context 'when beekeeper does not belong to the current fachperson_produkte' do
       subject! { get api_mobile_v1_beekeeper_inspections_path(other_beekeeper, format: :json), headers: auth_headers }
 
-      let(:other_beekeeper) { Fabricate(:beekeeper, group_id: other_group.id) }
+      let(:other_beekeeper) { Fabricate(:beekeeper, group_id: other_group.parent.id) }
 
       it { expect(response).to have_http_status :not_found }
     end
@@ -31,8 +35,8 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
 
       it { expect(response).to have_http_status :ok }
       it 'only contains the controls of the passed beekeeper with the correct data' do
-        expected_response = Qcontrol.where(member_id: beekeeper.id).order(control_date: :desc)
-                                    .as_json(only: %i[id member_id author_id title control_date])
+        expected_response = Qcontrol.where(person_id: beekeeper.id).order(control_date: :desc)
+          .map(&:as_mobile_json)
         expected_response.each do |er|
           er['control_date'] = er['control_date'].to_s
         end
@@ -42,7 +46,7 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
   end
 
   describe 'GET #show' do
-    let!(:quality_control) { Fabricate(:due_soon_qcontrol, member_id: beekeeper.id, author_id: fachperson_produkte.id) }
+    let!(:quality_control) { Fabricate(:due_soon_qcontrol, person_id: beekeeper.id, author_id: fachperson_produkte.id) }
     let!(:answers) { Fabricate.times(5, :quality_control_answer, fulfilled: 'passed', qcontrol: quality_control) }
 
     before { quality_control.quality_control_answers.reload }
@@ -59,7 +63,7 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
             headers: auth_headers
       end
 
-      let(:other_beekeeper) { Fabricate(:beekeeper, group_id: other_group.id) }
+      let(:other_beekeeper) { Fabricate(:beekeeper, group_id: other_group.parent.id) }
 
       it { expect(response).to have_http_status :not_found }
     end
@@ -71,19 +75,8 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
 
       it { expect(response).to have_http_status :ok }
       it 'contains the correct fields and data' do
-        expected_response = quality_control.as_json(only: %i[id title document control_date no_control_reason
-                                                             other_reason_for_no_control business_handover_to
-                                                             with_voucher],
-                                                    include: { person: { only: %i[id first_name last_name] },
-                                                               author: { only: %i[id first_name last_name] },
-                                                               group: { only: %i[id code name] },
-                                                               quality_control_answers: { except: %i[updated_at
-                                                                                                     Fabricated_at] } })
+        expected_response = quality_control.as_full_mobile_json
         expected_response['control_date'] = expected_response['control_date'].to_s
-        # There was a breaking change in carrierwave, that leads to different
-        # behavior for to_json and as_json:
-        # https://github.com/carrierwaveuploader/carrierwave/pull/1481
-        expected_response['document'] = { 'url' => nil }
         expect(json_response).to eq expected_response
       end
     end
@@ -102,14 +95,14 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
     end
 
     let(:qcontrol_params) do
-      Fabricate.attributes_for(:recent_qcontrol).except(:group, :author_name, :mass_import, :member_notified).merge(
-        group_id: group.id,
+      Fabricate.attributes_for(:recent_qcontrol).except(:group, :author_name, :mass_import, :person_notified, :inspector_id).merge(
+        group_id: group.parent.id,
         quality_control_answers_attributes: [quality_control_answer_1, quality_control_answer_2]
       )
     end
 
     let(:qcontrol_params_without_answers) do
-      Fabricate.attributes_for(:recent_qcontrol).except(:group).merge(group_id: group.id)
+      Fabricate.attributes_for(:recent_qcontrol).except(:group, :inspector_id).merge(group_id: group.parent.id)
     end
 
     subject(:qcontrol) { Qcontrol.last }
@@ -117,12 +110,12 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
     context 'not passed' do
       let(:quality_control_answer_1) do
         Fabricate.attributes_for(:quality_control_answer, fulfilled: 'not_passed',
-                                                quality_control_question_id: quality_control_question_1.id)
+                                 quality_control_question_id: quality_control_question_1.id)
       end
       it 'sends exactly two emails' do
         expect do
           post api_mobile_v1_beekeeper_inspections_path(beekeeper, format: :json),
-               params: { inspection: qcontrol_params }, headers: auth_headers
+               params: {inspection: qcontrol_params}, headers: auth_headers
         end.to have_enqueued_mail.exactly(2)
       end
     end
@@ -130,12 +123,12 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
     context 'passed' do
       let(:quality_control_answer_1) do
         Fabricate.attributes_for(:quality_control_answer, fulfilled: 'passed',
-                                                quality_control_question_id: quality_control_question_1.id)
+                                 quality_control_question_id: quality_control_question_1.id)
       end
       it 'sends exactly two emails' do
         expect do
           post api_mobile_v1_beekeeper_inspections_path(beekeeper, format: :json),
-               params: { inspection: qcontrol_params }, headers: auth_headers
+               params: {inspection: qcontrol_params}, headers: auth_headers
         end.to have_enqueued_mail.exactly(2)
       end
     end
@@ -145,75 +138,75 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
       let!(:siegel_imker_role) { Fabricate(:siegel_imker_role) }
       let!(:temporary_siegel_imker_role) { Fabricate(:temporary_siegel_imker_role) }
       before do
-        Fabricate(:membership,
-               role: role, person: other_beekeeper, group_id: group.id,
-               start_on: 1.year.ago, end_on: nil)
+        Fabricate(:role,
+                  type: Group::Sektion::Siegelimker, person: other_beekeeper, group_id: group.parent.id,
+                  start_on: 1.year.ago, end_on: nil)
       end
 
       context 'siegel imker' do
         let(:role) { siegel_imker_role }
-        it { Fabricates_with_correct_section }
+        it { creates_with_correct_section }
       end
 
       context 'siegel imker provisorisch' do
         let(:role) { temporary_siegel_imker_role }
-        it { Fabricates_with_correct_section }
+        it { creates_with_correct_section }
       end
 
-      def Fabricates_with_correct_section
+      def creates_with_correct_section
         post api_mobile_v1_beekeeper_inspections_path(other_beekeeper, format: :json),
-             params: { inspection: qcontrol_params }, headers: auth_headers
+             params: {inspection: qcontrol_params}, headers: auth_headers
         expect(response).to have_http_status(:no_content)
-        expect(qcontrol.group).to eq group
+        expect(qcontrol.group).to eq group.parent
       end
     end
 
     context 'beekeeper with more roles' do
       let!(:other_beekeeper) { Fabricate(:person) }
       before do
-        Fabricate(:membership,
-               role: Role.fachperson_produkte, person: other_beekeeper, group_id: other_group.id,
-               start_on: 1.year.ago, end_on: nil)
-        Fabricate(:membership,
-               role: Fabricate(:siegel_imker_role), person: other_beekeeper, group_id: group.id,
-               start_on: 1.year.ago, end_on: nil)
+        Fabricate(:role,
+                  type: Group::Produkte::FachpersonProdukte, person: other_beekeeper, group_id: other_group.id,
+                  start_on: 1.year.ago, end_on: nil)
+        Fabricate(:role,
+                  type: Group::Sektion::Siegelimker, person: other_beekeeper, group_id: group.parent.id,
+                  start_on: 1.year.ago, end_on: nil)
       end
 
       it 'assigns the correct intern structure' do
         post api_mobile_v1_beekeeper_inspections_path(other_beekeeper, format: :json),
-             params: { inspection: qcontrol_params }, headers: auth_headers
+             params: {inspection: qcontrol_params}, headers: auth_headers
         expect(response).to have_http_status(:no_content)
-        expect(qcontrol.group).to eq group
+        expect(qcontrol.group).to eq group.parent
       end
     end
 
     context 'beekeeper with more sections' do
-      let!(:recent_group) { Fabricate(:section) }
+      let!(:recent_group) { groups(:bienendorneck) }
       before do
         beekeeper.roles.first.update(end_on: 3.days.ago)
-        Fabricate(:membership, role: Role.fachperson_produkte, person: fachperson_produkte, group_id: other_group.id,
-                            start_on: 3.days.ago, end_on: nil)
-        Fabricate(:membership, role: Role.siegelimker, person: beekeeper, group_id: recent_group.id,
-                            start_on: 2.days.ago, end_on: nil)
-        Fabricate(:membership, role: Role.siegelimker, person: beekeeper, group_id: other_group.id,
-                            start_on: 3.days.ago, end_on: nil)
+        Fabricate(:role, type: Group::Produkte::FachpersonProdukte, person: fachperson_produkte, group_id: other_group.id,
+                  start_on: 3.days.ago, end_on: nil)
+        Fabricate(:role, type: Group::Sektion::Siegelimker, person: beekeeper, group_id: recent_group.id,
+                  start_on: 2.days.ago, end_on: nil)
+        Fabricate(:role, type: Group::Sektion::Siegelimker, person: beekeeper, group_id: other_group.parent.id,
+                  start_on: 3.days.ago, end_on: nil)
       end
 
       it 'assigns the first valid intern structure ordered by start_on' do
         post api_mobile_v1_beekeeper_inspections_path(beekeeper, format: :json),
-             params: { inspection: qcontrol_params }, headers: auth_headers
+             params: {inspection: qcontrol_params}, headers: auth_headers
         expect(response).to have_http_status(:no_content)
-        expect(qcontrol.group).to eq other_group
+        expect(qcontrol.group).to eq other_group.parent
       end
     end
 
     context 'with valid data' do
-      it 'can Fabricate an inspection' do
+      it 'can ceate an inspection' do
         expect { post_inspection(qcontrol_params) }.to change(Qcontrol, :count)
         expect(response).to have_http_status(:no_content)
         expect(qcontrol.quality_control_answers.count).to eq 2
-        expect(qcontrol.quality_control_answers[0]).to have_attributes(quality_control_answer_1)
-        expect(qcontrol.quality_control_answers[1]).to have_attributes(quality_control_answer_2)
+        expect(qcontrol.quality_control_answers[0]).to have_attributes(quality_control_answer_1.except(:qcontrol_id))
+        expect(qcontrol.quality_control_answers[1]).to have_attributes(quality_control_answer_2.except(:qcontrol_id))
         is_expected.to have_attributes qcontrol_params.except(
           :quality_control_answers_attributes, :no_control_reason, :mass_import
         ).merge(
@@ -250,7 +243,7 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
 
     context 'with invalid qcontrol data' do
       it 'fails to Fabricate an inspection' do
-        params_to_send =  qcontrol_params_without_answers.merge(
+        params_to_send = qcontrol_params_without_answers.merge(
           no_control_reason: Faker::Lorem.word
         )
         expect { post_inspection(params_to_send) }.to_not change(Qcontrol, :count)
@@ -259,8 +252,8 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
     end
 
     def post_inspection(params_to_send)
-      post api_mobile_v1_beekeeper_inspections_path(beekeeper, format: :json), params: { inspection: params_to_send },
-                                                                               headers: auth_headers
+      post api_mobile_v1_beekeeper_inspections_path(beekeeper, format: :json), params: {inspection: params_to_send},
+           headers: auth_headers
     end
 
     def works_with(params_to_merge)

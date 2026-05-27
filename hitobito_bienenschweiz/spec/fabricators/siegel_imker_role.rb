@@ -7,4 +7,6 @@
 
 Fabricator(:siegel_imker_role, from: :role) do
   type { Group::Sektion::Siegelimker.sti_name }
+
+  group { Fabricate(:group, type: Group::Sektion.sti_name) }
 end

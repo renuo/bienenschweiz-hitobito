@@ -2,24 +2,26 @@ require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
   let(:fachperson_produkte) do
-    Fabricate(:fachperson_produkte, group_id: group1.id)
+    Fabricate(:fachperson_produkte, group_id: groups(:produkte_383).id)
   end
   let(:beekeepers) { Fabricate.times(10, :person).sort_by { |b| [b.last_name, b.first_name] } }
-  let(:honey_chairman) { Fabricate(:honey_chairman, group_id: group1.id) }
+  let(:honey_chairman) { Fabricate(:honey_chairman, group_id: group1.parent.id) }
   let(:group1) { groups(:aargauisches_seetal) }
   let(:group2) { groups(:aarberg) }
   let(:auth_headers) { { 'Access-Token': fachperson_produkte.authentication_token } }
 
+  before do
+    fachperson_produkte.generate_authentication_token!
+  end
+
   def add_beekeeper_memberships
-    siegel_imker_role = Fabricate(:siegel_imker_role)
-    temporary_siegel_imker_role = Fabricate(:temporary_siegel_imker_role)
     beekeepers.each_with_index do |beekeeper, index|
       if index < 2
-        Fabricate(:membership, role: temporary_siegel_imker_role, person: beekeeper, group: group1)
+        Fabricate(:temporary_siegel_imker_role, person: beekeeper, group: group1)
       elsif index < 5
-        Fabricate(:membership, role: siegel_imker_role, person: beekeeper, group: group1)
+        Fabricate(:siegel_imker_role, person: beekeeper, group: group1)
       else
-        Fabricate(:membership, role: siegel_imker_role, person: beekeeper, group: group2)
+        Fabricate(:siegel_imker_role, person: beekeeper, group: group2)
       end
     end
   end
@@ -31,18 +33,19 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
     end
 
     it 'should contain all the siegel imkers' do
+      expect(response).to have_http_status(:ok)
       expect(json_response.length).to eq(5)
     end
 
     it 'should have the right fields' do
-      expected_keys = %w[id first_name last_name affix_1 affix_2 affix_3 street zip location
+      expected_keys = %w[id firstname lastname affix_1 affix_2 affix_3 street zip location
                          kanton birthdate house_no hive_count honey_yield telephone mobile email]
       expect(json_response.first.keys).to match_array(expected_keys)
     end
 
     it 'set the right data' do
-      expected_json = beekeepers.first.as_json
-      expected_json['birthdate'] = beekeepers.first.birthdate.to_fs(:db)
+      expected_json = beekeepers.first.as_mobile_json.stringify_keys
+      expected_json['birthdate'] = beekeepers.first&.birthday&.to_fs(:db)
       json_response.first.each_key do |key|
         expect(json_response.first[key]).to eq(expected_json[key])
       end
@@ -61,15 +64,15 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
         [
           Fabricate(:person, first_name: nil, last_name: 'Bar'),
           Fabricate(:person, first_name: 'Foo', last_name: nil),
-          Fabricate(:person, first_name: nil, last_name: nil, selectline_customer_number: '1234')
+          Fabricate(:person, first_name: nil, last_name: nil)
         ]
       end
 
       it 'should map nil fields to empty strings' do
         expect(json_response).to include(
-          a_hash_including('first_name' => '', 'last_name' => 'Bar'),
-          a_hash_including('first_name' => 'Foo', 'last_name' => ''),
-          a_hash_including('first_name' => '', 'last_name' => 'Unbekannt (1234)')
+          a_hash_including('firstname' => '', 'lastname' => 'Bar'),
+          a_hash_including('firstname' => 'Foo', 'lastname' => ''),
+          a_hash_including('firstname' => '', 'lastname' => "Unbekannt (#{beekeepers.last.id})")
         )
       end
     end
@@ -77,7 +80,7 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
 
   context '#update' do
     let(:changes) do
-      { first_name: 'foo', last_name: 'bar', street: 'foo&bar street', house_no: 1, zip: 1234,
+      { firstname: 'foo', lastname: 'bar', street: 'foo&bar street', house_no: 1, zip: 1234,
         location: 'footown', telephone: '0123456789', mobile: '0123456789',
         email: 'foo@bar.com', remark: 'Foo Bar.' }
     end
@@ -85,13 +88,16 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
     let(:beekeeper) { beekeepers.first }
     subject do
       add_beekeeper_memberships
-      beekeeper.update!(selectline_customer_number: '10001')
-        post api_mobile_v1_beekeeper_update_path(beekeeper), params: { person: changes }, headers: auth_headers
+      post api_mobile_v1_beekeeper_update_path(beekeeper), params: { member: changes }, headers: auth_headers
     end
 
+    it 'responds with success' do
+      subject
+      expect(response).to have_http_status(:no_content)
+    end
     it { expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1) }
     it { expect { subject }.to change { beekeeper.reload.email }.to(changes[:email]) }
-    it { expect(mail.subject).to eq("Antrag für eine Adressänderung von Siegelimker #{beekeeper.human_name}") }
+    it { expect(mail.subject).to eq("Antrag für eine Adressänderung von Siegelimker #{beekeeper.full_name}") }
     it { expect(mail.to).to eq([InspectionMailer::APP_NOTIFICATIONS_EMAIL]) }
     it { expect(mail.body.encoded).to match changes[:remark] }
 
