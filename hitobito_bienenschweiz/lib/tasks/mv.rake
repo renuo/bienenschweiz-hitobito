@@ -115,7 +115,7 @@ namespace :mv do
           csv << [m.id, m.selectline_customer_number, error]
         end
       end
-      puts "Imported #{success_count}/#{total_count} members (email duplicate: #{email_duplicate_count})"
+      puts "Imported #{success_count}/#{total_count} members (email duplicate: #{email_duplicate_count}, imported without zip validation: #{import_without_validations})"
     end
     task :groups => :environment do
       class MvRecord < ApplicationRecord
