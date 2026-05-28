@@ -1,9 +1,8 @@
 module Api
   module Mobile
     module V1
-      class AuthenticatedApiController < ApplicationController
+      class AuthenticatedApiController < ActionController::API
         respond_to :json
-        skip_before_action :verify_authenticity_token
 
         before_action :authenticate_kas_user!
         rescue_from ActiveRecord::RecordNotFound, with: :not_found

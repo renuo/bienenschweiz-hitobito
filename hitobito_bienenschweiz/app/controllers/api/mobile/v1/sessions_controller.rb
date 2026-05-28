@@ -1,9 +1,8 @@
 module Api
   module Mobile
     module V1
-      class SessionsController < ApplicationController
+      class SessionsController < ActionController::API
         respond_to :json
-        skip_before_action :verify_authenticity_token
 
         def create
           person = Person.find_by(email: user_params[:email])
