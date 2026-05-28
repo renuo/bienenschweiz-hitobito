@@ -62,19 +62,15 @@ RSpec.describe MemberChangeRequestService do
       let!(:person) { Fabricate(:beekeeper) }
 
       it {
-        VCR.use_cassette 'services/selectline/update_email', match_requests_on: %i[uri method body] do
-          expect { update_email }.to change { person.reload.email }.to('foo@bar.com')
-        end
+        expect { update_email }.to change { person.reload.email }.to('foo@bar.com')
       }
     end
 
     context 'person without an email' do
-      let!(:person) { Fabricate(:beekeeper) }
+      let!(:person) { Fabricate(:beekeeper, email: nil) }
 
       it {
-        VCR.use_cassette 'services/selectline/update_email', match_requests_on: %i[uri method body] do
-          expect { update_email }.to change { person.reload.email }.from(nil).to('foo@bar.com')
-        end
+        expect { update_email }.to change { person.reload.email }.from(nil).to('foo@bar.com')
       }
     end
   end
