@@ -46,7 +46,7 @@ jobs:
       - name: "Install OS deps"
         run: |
           sudo apt-get -qq update
-          sudo apt-get install -y libvips42
+          sudo apt-get install -y libvips42 direnv
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -65,6 +65,7 @@ jobs:
       - name: "Copy files for wagon and update lockfile"
         run: |
           cp -v ../.envrc.example ../.envrc
+          direnv allow
           cp -v ../hitobito/.tool-versions ../hitobito/Gemfile.lock ./
           bundle lock
         working-directory: hitobito_bienenschweiz
