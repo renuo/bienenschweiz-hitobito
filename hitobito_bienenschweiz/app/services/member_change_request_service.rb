@@ -20,7 +20,9 @@ class MemberChangeRequestService
     update_email
     update_beekeeper_info
 
-    changed_keys = requested_changes.select { |key, value| value.present? && member.try(key) != value }.keys
+    changed_keys = requested_changes.select { |key, value|
+      value.present? && member.try(key) != value
+    }.keys
     only_updated_beekeeper_info = changed_keys.difference(%i[hive_count honey_yield]).empty?
     return if only_updated_beekeeper_info
 

@@ -8,4 +8,3 @@
 Fabricator(:sektion, from: :group) do
   type { Group::Sektion }
 end
-

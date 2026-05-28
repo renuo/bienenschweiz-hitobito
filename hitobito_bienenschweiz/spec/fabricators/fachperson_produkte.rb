@@ -10,8 +10,7 @@ Fabricator(:fachperson_produkte, from: :person) do
 
   after_create do |person, transients|
     Fabricate(:role,
-              group_id: transients[:group_id],
-              type: Group::Produkte::FachpersonProdukte.sti_name, person:)
+      group_id: transients[:group_id],
+      type: Group::Produkte::FachpersonProdukte.sti_name, person:)
   end
 end
-

@@ -8,9 +8,9 @@ module Api
           return head :not_found if @qcontrol.nil?
 
           send_data PdfService.render(:checklist, @qcontrol),
-                    filename: 'Betriebspruefung.pdf',
-                    type: 'application/pdf',
-                    disposition: 'inline'
+            filename: "Betriebspruefung.pdf",
+            type: "application/pdf",
+            disposition: "inline"
         end
 
         private

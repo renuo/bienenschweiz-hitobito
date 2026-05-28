@@ -6,7 +6,8 @@
 Fabricator(:qcontrol) do
   group { Fabricate(:sektion) }
   inspector do |attrs|
-    Fabricate(:fachperson_produkte, group_id: Fabricate(:group, parent: attrs[:group], type: Group::Produkte.sti_name).id)
+    Fabricate(:fachperson_produkte,
+      group_id: Fabricate(:group, parent: attrs[:group], type: Group::Produkte.sti_name).id)
   end
   control_date { Date.current }
   with_voucher { false }
@@ -14,12 +15,14 @@ end
 
 Fabricator(:due_soon_qcontrol, from: :qcontrol) do
   control_date do
-    Faker::Date.between(from: InspectionService::PERIOD.ago, to: InspectionService::PERIOD.ago + InspectionService::TIMEFRAME)
+    Faker::Date.between(from: InspectionService::PERIOD.ago,
+      to: InspectionService::PERIOD.ago + InspectionService::TIMEFRAME)
   end
 end
 
 Fabricator(:recent_qcontrol, from: :qcontrol) do
   control_date do
-    Faker::Date.between(from: InspectionService::PERIOD.ago + InspectionService::TIMEFRAME, to: Time.zone.today)
+    Faker::Date.between(from: InspectionService::PERIOD.ago + InspectionService::TIMEFRAME,
+      to: Time.zone.today)
   end
 end

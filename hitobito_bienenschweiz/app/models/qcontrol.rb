@@ -135,32 +135,32 @@ class Qcontrol < ApplicationRecord
     )
   end
 
-  def as_full_mobile_json
+  def as_full_mobile_json # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     extra = {
       member: {
         id: person.id,
         firstname: person.first_name,
-        lastname: person.last_name,
+        lastname: person.last_name
       },
       intern_structure: {
         id: group.id,
         code: group.code,
-        name: group.name,
+        name: group.name
       },
-      quality_control_answers: quality_control_answers.map{|a|
+      quality_control_answers: quality_control_answers.map { |a|
         a.as_json(except: %i[updated_at created_at])
-      },
+      }
     }
     if author
       extra[:author] = {
         id: author.id,
         firstname: author.first_name,
-        lastname: author.last_name,
+        lastname: author.last_name
       }
     end
     as_json(
       only: %i[id title document control_date no_control_reason
-                       other_reason_for_no_control business_handover_to with_voucher],
+        other_reason_for_no_control business_handover_to with_voucher]
     ).merge(extra.deep_stringify_keys)
   end
 

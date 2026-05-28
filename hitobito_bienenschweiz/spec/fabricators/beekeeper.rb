@@ -12,9 +12,8 @@ Fabricator(:beekeeper, from: :person) do
 
   after_create do |person, transients|
     Fabricate(:role,
-              group_id: transients[:group_id] || Fabricate(:sektion).id,
-              type: Group::Sektion::Siegelimker.sti_name, person:,
-              start_on: transients[:membership_start_on], end_on: transients[:membership_end_on])
+      group_id: transients[:group_id] || Fabricate(:sektion).id,
+      type: Group::Sektion::Siegelimker.sti_name, person:,
+      start_on: transients[:membership_start_on], end_on: transients[:membership_end_on])
   end
 end
-

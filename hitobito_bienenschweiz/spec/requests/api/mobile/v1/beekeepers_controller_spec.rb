@@ -8,7 +8,7 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
   let(:honey_chairman) { Fabricate(:honey_chairman, group_id: group1.parent.id) }
   let(:group1) { groups(:aargauisches_seetal) }
   let(:group2) { groups(:aarberg) }
-  let(:auth_headers) { { 'Access-Token': fachperson_produkte.authentication_token } }
+  let(:auth_headers) { {"Access-Token": fachperson_produkte.authentication_token} }
 
   before do
     fachperson_produkte.generate_authentication_token!
@@ -26,99 +26,106 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
     end
   end
 
-  context '#index' do
+  context "#index" do
     before do
       add_beekeeper_memberships
       get api_mobile_v1_beekeepers_path(format: :json), headers: auth_headers
     end
 
-    it 'should contain all the siegel imkers' do
+    it "should contain all the siegel imkers" do
       expect(response).to have_http_status(:ok)
       expect(json_response.length).to eq(5)
     end
 
-    it 'should have the right fields' do
+    it "should have the right fields" do
       expected_keys = %w[id firstname lastname affix_1 affix_2 affix_3 street zip location
-                         kanton birthdate house_no hive_count honey_yield telephone mobile email]
+        kanton birthdate house_no hive_count honey_yield telephone mobile email]
       expect(json_response.first.keys).to match_array(expected_keys)
     end
 
-    it 'set the right data' do
+    it "set the right data" do
       expected_json = beekeepers.first.as_mobile_json.stringify_keys
-      expected_json['birthdate'] = beekeepers.first&.birthday&.to_fs(:db)
+      expected_json["birthdate"] = beekeepers.first&.birthday&.to_fs(:db)
       json_response.first.each_key do |key|
         expect(json_response.first[key]).to eq(expected_json[key])
       end
     end
 
-    it 'should only include that beekeepers that can be inspected by current fachperson_produkte' do
-      expect(json_response.map { |b| b['id'] }).to eq(beekeepers[0..4].map(&:id))
+    it "should only include that beekeepers that can be inspected by current fachperson_produkte" do
+      expect(json_response.map { |b| b["id"] }).to eq(beekeepers[0..4].map(&:id))
     end
 
-    it 'should only include the beekeepers with role siegel_imker (not the honey chairman)' do
-      expect(json_response.map { |b| b['id'] }).to_not include(honey_chairman.id)
+    it "should only include the beekeepers with role siegel_imker (not the honey chairman)" do
+      expect(json_response.map { |b| b["id"] }).to_not include(honey_chairman.id)
     end
 
-    context 'when a either first_name or last_name are nil' do
+    context "when a either first_name or last_name are nil" do
       let(:beekeepers) do
         [
-          Fabricate(:person, first_name: nil, last_name: 'Bar'),
-          Fabricate(:person, first_name: 'Foo', last_name: nil),
+          Fabricate(:person, first_name: nil, last_name: "Bar"),
+          Fabricate(:person, first_name: "Foo", last_name: nil),
           Fabricate(:person, first_name: nil, last_name: nil)
         ]
       end
 
-      it 'should map nil fields to empty strings' do
+      it "should map nil fields to empty strings" do
         expect(json_response).to include(
-          a_hash_including('firstname' => '', 'lastname' => 'Bar'),
-          a_hash_including('firstname' => 'Foo', 'lastname' => ''),
-          a_hash_including('firstname' => '', 'lastname' => "Unbekannt (#{beekeepers.last.id})")
+          a_hash_including("firstname" => "", "lastname" => "Bar"),
+          a_hash_including("firstname" => "Foo", "lastname" => ""),
+          a_hash_including("firstname" => "", "lastname" => "Unbekannt (#{beekeepers.last.id})")
         )
       end
     end
   end
 
-  context '#update' do
+  context "#update" do
     let(:changes) do
-      { firstname: 'foo', lastname: 'bar', street: 'foo&bar street', house_no: 1, zip: 1234,
-        location: 'footown', telephone: '0123456789', mobile: '0123456789',
-        email: 'foo@bar.com', remark: 'Foo Bar.' }
+      {firstname: "foo", lastname: "bar", street: "foo&bar street", house_no: 1, zip: 1234,
+       location: "footown", telephone: "0123456789", mobile: "0123456789",
+       email: "foo@bar.com", remark: "Foo Bar."}
     end
-    let(:mail) { InspectionMailer.address_update_request_mail(fachperson_produkte, beekeepers.first, changes) }
+    let(:mail) {
+      InspectionMailer.address_update_request_mail(fachperson_produkte, beekeepers.first, changes)
+    }
     let(:beekeeper) { beekeepers.first }
+
     subject do
       add_beekeeper_memberships
-      post api_mobile_v1_beekeeper_update_path(beekeeper), params: { member: changes }, headers: auth_headers
+      post api_mobile_v1_beekeeper_update_path(beekeeper), params: {member: changes},
+        headers: auth_headers
     end
 
-    it 'responds with success' do
+    it "responds with success" do
       subject
       expect(response).to have_http_status(:no_content)
     end
     it { expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1) }
     it { expect { subject }.to change { beekeeper.reload.email }.to(changes[:email]) }
-    it { expect(mail.subject).to eq("Antrag für eine Adressänderung von Siegelimker #{beekeeper.full_name}") }
+    it {
+      expect(mail.subject)
+        .to eq("Antrag für eine Adressänderung von Siegelimker #{beekeeper.full_name}")
+    }
     it { expect(mail.to).to eq([InspectionMailer::APP_NOTIFICATIONS_EMAIL]) }
     it { expect(mail.body.encoded).to match changes[:remark] }
 
-    it 'renders the old values' do
+    it "renders the old values" do
       beekeeper.as_json(only: %i[first_name last_name street house_no zip location],
-                        methods: %i[telephone email]).each_value do |field|
+        methods: %i[telephone email]).each_value do |field|
         expect(mail.body.encoded).to match(CGI.escapeHTML(field)) if field
       end
     end
 
-    it 'renders the proposed changes' do
+    it "renders the proposed changes" do
       changes.each_value do |value|
         expect(mail.body.encoded).to match(CGI.escapeHTML(value.to_s))
       end
     end
 
-    context 'when beekeeper is not inspectable by the fachperson_produkte' do
-      let(:group){ groups(:aarberg) }
+    context "when beekeeper is not inspectable by the fachperson_produkte" do
+      let(:group) { groups(:aarberg) }
       let(:beekeeper) { Fabricate(:beekeeper, group_id: group.id) }
 
-      it 'is not permitted' do
+      it "is not permitted" do
         expect { subject }.not_to(change { ActionMailer::Base.deliveries.count })
         expect(response).to have_http_status :not_found
       end

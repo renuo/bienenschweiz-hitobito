@@ -12,7 +12,7 @@ module Bienenschweiz::Person
     Group::Produkte::FachpersonProdukte.sti_name,
     Group::Produkte::FachpersonProdukteInAusbildung.sti_name,
     Group::Kantonalverband::Honigobperson.sti_name,
-    Group::Kantonalverband::HonigobpersonProvisorisch.sti_name,
+    Group::Kantonalverband::HonigobpersonProvisorisch.sti_name
   ].freeze
 
   BEEKEEPER_ROLES = [
@@ -20,7 +20,7 @@ module Bienenschweiz::Person
     Group::Sektion::SiegelimkerProvisorisch.sti_name
   ]
 
-  included do
+  included do # rubocop:disable Metrics/BlockLength
     has_many :qcontrols, dependent: :destroy
 
     def qcontrol_inspector?
@@ -36,10 +36,10 @@ module Bienenschweiz::Person
     }
 
     def inspectable_groups
-      roles.
-        where(type: QCONTROLLER_ROLES).
-        includes(:group).
-        sort_by do |role|
+      roles
+        .where(type: QCONTROLLER_ROLES)
+        .includes(:group)
+        .sort_by do |role|
         [role.is_a?(Group::Produkte::FachpersonProdukte) ? 0 : 1, -role.start_on.to_time.to_i]
       end.map do |role|
         group = role.group
@@ -64,7 +64,7 @@ module Bienenschweiz::Person
       end
     end
 
-    def as_mobile_json
+    def as_mobile_json # rubocop:disable Metrics/MethodLength
       {
         id:,
         firstname: first_name,
@@ -82,16 +82,16 @@ module Bienenschweiz::Person
         hive_count:,
         telephone:,
         mobile:,
-        email:,
+        email:
       }
     end
 
     def address_affixes
-      address_care_of&.split(', ') || []
+      address_care_of&.split(", ") || []
     end
 
     def full_address
-      [street, housenumber].join(' ')
+      [street, housenumber].join(" ")
     end
 
     def telephone

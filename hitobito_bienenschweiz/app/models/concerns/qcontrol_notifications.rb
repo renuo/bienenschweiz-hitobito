@@ -32,7 +32,8 @@ module QcontrolNotifications
 
   def notify_beekeeper_and_inspector(copy_to_secretary = false)
     if person.email.present?
-      InspectionMailer.beekeeper_and_inspector_checklist_pdf_mailer(id, copy_to_secretary).deliver_later
+      InspectionMailer.beekeeper_and_inspector_checklist_pdf_mailer(id,
+        copy_to_secretary).deliver_later
     else
       InspectionMailer.only_inspector_checklist_pdf_mailer(id, copy_to_secretary).deliver_later
     end

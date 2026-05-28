@@ -5,8 +5,9 @@ module Api
         def index
           @sections = QualityControlSection.for_current_version
           render json: @sections.as_json(only: %i[id title number],
-                                         include: { quality_control_questions:
-                                                        { only: %i[id title number description inspection_notes] } })
+            include: {quality_control_questions:
+                           {only: %i[id title number description
+                             inspection_notes]}})
         end
       end
     end

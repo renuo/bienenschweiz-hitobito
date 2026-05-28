@@ -19,7 +19,10 @@ class InspectionService
     end
     filtered_structures.map do |structure|
       reminder = inspection_reminder(structure)
-      OpenStruct.new(reminder: reminder, mail: InspectionMailer.public_send(mailer, reminder)) if reminder.any?
+      if reminder.any?
+        OpenStruct.new(reminder: reminder,
+          mail: InspectionMailer.public_send(mailer, reminder))
+      end
     end
   end
 
@@ -37,37 +40,42 @@ class InspectionService
     ).compact
   end
 
+  # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize
   def log_and_deliver(reminder_mails, no_sleep: false)
-    Rails.logger.info "Going to send #{reminder_mails.size} emails to the following email addresses:"
+    Rails.logger
+      .info "Going to send #{reminder_mails.size} emails to the following email addresses:"
     reminder_mails.each do |mail|
       Rails.logger.info formatted_intern_structure(mail.reminder)
     end
     reminder_mails.each_with_index.map do |reminder_mail, index|
       Rails.logger.info(
-        "Sending email (index #{index}/#{reminder_mails.size - 1}) to #{formatted_intern_structure(reminder_mail.reminder)}"
+        "Sending email (index #{index}/#{reminder_mails.size - 1}) to \
+#{formatted_intern_structure(reminder_mail.reminder)}"
       )
       begin
-        # since the mail cannot be run in a queue (because cannot be serialized easily) we use a try/catch block
+        # since the mail cannot be run in a queue (because cannot be serialized easily)
+        # we use a try/catch block
         unless Rails.env.test? || no_sleep
-          Rails.logger.info 'Waiting 5 minutes to not be blocked by bluewin'
+          Rails.logger.info "Waiting 5 minutes to not be blocked by bluewin"
           sleep(5.minutes)
         end
         reminder_mail.mail.deliver_now
       rescue StandardError => e
-        Rails.logger.error "Failed to send email to #{formatted_intern_structure(reminder_mail.reminder)}"
+        Rails.logger
+          .error "Failed to send email to #{formatted_intern_structure(reminder_mail.reminder)}"
         if defined?(Sentry)
-          retry_cmd = "heroku run bin/rails r \"InspectionService.new.retry_failed_inspection_reminder(#{index})\" })"
-          Sentry.capture_exception(e, extra: { failed_index: index, retry_command: retry_cmd })
+          Sentry.capture_exception(e, extra: {failed_index: index})
         else
           throw e
         end
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize
 
   def inspection_reminder(intern_structure)
     case intern_structure.structure_type
-    when 'sektion'
+    when "sektion"
       members = intern_structure.members.siegel_imkers.alive
       inspectors = intern_structure.members.inspectors.alive.distinct
     else
@@ -79,6 +87,7 @@ class InspectionService
   end
 
   def formatted_intern_structure(reminder)
-    "#{reminder.intern_structure.name} (#{reminder.intern_structure.kanton}): #{reminder.inspector_emails.join(',')}"
+    intern_structure = reminder.intern_structure
+    "#{intern_structure.name} (#{intern_structure.kanton}): #{reminder.inspector_emails.join(",")}"
   end
 end

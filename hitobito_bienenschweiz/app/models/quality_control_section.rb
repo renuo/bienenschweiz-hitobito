@@ -13,7 +13,8 @@ class QualityControlSection < ApplicationRecord
   # the versioning needs to be reflected also in
   # the mobile app since the app can submit quality controls that were conducted in the past.
   # (e.g. edge case: control on 30-05, new questions on 01-06, submitted on 02-06)
-  # This is not implemented yet. If this will be necessary, the Api::Mobile::V1::QualityControlQuestionsController
+  # This is not implemented yet. If this will be necessary,
+  # the Api::Mobile::V1::QualityControlQuestionsController
   # needs to be adjusted to return the questions applicable for a specific control date
   scope :for_current_version, lambda {
     where(version: version)

@@ -1,50 +1,60 @@
 class InspectionMailer < ApplicationMailer
-  INSPECTION_REPLY_TO_EMAIL = ENV['INSPECTION_REPLY_TO_EMAIL']
-  INSPECTION_BCC_EMAIL = ENV['INSPECTION_BCC_EMAIL']
-  CANTONAL_INSPECTOR_CC_EMAIL = ENV['CANTONAL_INSPECTOR_CC_EMAIL']
-  CANTONAL_INSPECTOR_BCC_EMAIL = ENV['CANTONAL_INSPECTOR_BCC_EMAIL']
-  SECRETARY_EMAIL = ENV['SECRETARY_EMAIL']
-  APP_NOTIFICATIONS_EMAIL = ENV['APP_NOTIFICATIONS_EMAIL']
-  CHECKLIST_MEMBER_EMAIL = ENV['CHECKLIST_MEMBER_EMAIL']
-  CHECKLIST_INSPECTOR_EMAIL = ENV['CHECKLIST_INSPECTOR_EMAIL']
-  PRINTER_EMAIL = ENV['PRINTER_EMAIL']
+  # rubocop:disable Rails/EnvironmentVariableAccess
+  INSPECTION_REPLY_TO_EMAIL = ENV["INSPECTION_REPLY_TO_EMAIL"]
+  INSPECTION_BCC_EMAIL = ENV["INSPECTION_BCC_EMAIL"]
+  CANTONAL_INSPECTOR_CC_EMAIL = ENV["CANTONAL_INSPECTOR_CC_EMAIL"]
+  CANTONAL_INSPECTOR_BCC_EMAIL = ENV["CANTONAL_INSPECTOR_BCC_EMAIL"]
+  SECRETARY_EMAIL = ENV["SECRETARY_EMAIL"]
+  APP_NOTIFICATIONS_EMAIL = ENV["APP_NOTIFICATIONS_EMAIL"]
+  CHECKLIST_MEMBER_EMAIL = ENV["CHECKLIST_MEMBER_EMAIL"]
+  CHECKLIST_INSPECTOR_EMAIL = ENV["CHECKLIST_INSPECTOR_EMAIL"]
+  PRINTER_EMAIL = ENV["PRINTER_EMAIL"]
+  # rubocop:enable Rails/EnvironmentVariableAccess
 
   default reply_to: INSPECTION_REPLY_TO_EMAIL
 
   def sectional_inspection_reminder_mail(reminder)
-    xlsx = render_to_string handlers: [:axlsx], formats: [:xlsx], template: 'structure_exports/attachment_export',
-                            locals: { members: reminder.related_member_data }
-    attachments["Siegelimker Sektion #{reminder.intern_structure.name}.xlsx"] = { mime_type: Mime[:xlsx], content: xlsx }
+    xlsx = render_to_string handlers: [:axlsx], formats: [:xlsx],
+      template: "structure_exports/attachment_export",
+      locals: {members: reminder.related_member_data}
+    attachments["Siegelimker Sektion #{reminder.intern_structure.name}.xlsx"] =
+      {mime_type: Mime[:xlsx], content: xlsx}
 
-    honey_image_path = Rails.root.join('app/assets/images/honey.png')
-    attachments.inline['honey.png'] = File.read(honey_image_path)
+    honey_image_path = Rails.root.join("app", "assets", "images", "honey.png", "assets",
+      "images", "honey.png")
+    attachments.inline["honey.png"] = File.read(honey_image_path)
 
     mail to: reminder.inspector_emails,
-         cc: reminder.president_emails,
-         bcc: INSPECTION_BCC_EMAIL,
-         subject: "Automatischer Mail-Versand der Listen Siegelimker - Sektion: #{reminder.intern_structure.name}"
+      cc: reminder.president_emails,
+      bcc: INSPECTION_BCC_EMAIL,
+      subject: "Automatischer Mail-Versand der Listen Siegelimker - Sektion: \
+#{reminder.intern_structure.name}"
   end
 
   def cantonal_inspection_reminder_mail(reminder)
-    xlsx = render_to_string handlers: [:axlsx], formats: [:xlsx], template: 'structure_exports/attachment_export',
-                            locals: { members: reminder.related_member_data }
+    xlsx = render_to_string handlers: [:axlsx], formats: [:xlsx],
+      template: "structure_exports/attachment_export",
+      locals: {members: reminder.related_member_data}
     attachment_name = "Siegelimker Kanton #{reminder.intern_structure.kanton}.xlsx"
-    attachments[attachment_name] = { mime_type: Mime[:xlsx], content: xlsx }
+    attachments[attachment_name] = {mime_type: Mime[:xlsx], content: xlsx}
 
-    honey_image_path = Rails.root.join('app/assets/images/honey.png')
-    attachments.inline['honey.png'] = File.read(honey_image_path)
+    honey_image_path = Rails.root.join("app", "assets", "images", "honey.png", "assets",
+      "images", "honey.png")
+    attachments.inline["honey.png"] = File.read(honey_image_path)
 
     mail to: reminder.inspector_emails,
-         cc: CANTONAL_INSPECTOR_CC_EMAIL,
-         bcc: "#{INSPECTION_BCC_EMAIL}, #{CANTONAL_INSPECTOR_BCC_EMAIL}",
-         subject: "Automatischer Mail-Versand der Listen Siegelimker - Kanton: #{reminder.intern_structure.kanton}"
+      cc: CANTONAL_INSPECTOR_CC_EMAIL,
+      bcc: "#{INSPECTION_BCC_EMAIL}, #{CANTONAL_INSPECTOR_BCC_EMAIL}",
+      subject: "Automatischer Mail-Versand der Listen Siegelimker - Kanton: \
+#{reminder.intern_structure.kanton}"
   end
 
   def address_update_request_mail(inspector, member, changes)
     @inspector = inspector
     @member = member
     @changes = changes
-    mail to: APP_NOTIFICATIONS_EMAIL, subject: "Antrag für eine Adressänderung von Siegelimker #{member.full_name}"
+    mail to: APP_NOTIFICATIONS_EMAIL,
+      subject: "Antrag für eine Adressänderung von Siegelimker #{member.full_name}"
   end
 
   def blank_inspection_info_mailer(new_member, qcontrol_id)
@@ -55,16 +65,18 @@ class InspectionMailer < ApplicationMailer
     @member_columns = %i[first_name last_name email]
     # TODO: implement
     # @member_columns = %i[first_name last_name email phone mobile street house_no zip location]
-    # attachments[I18n.t('checklist_attachment_name')] = PdfService.render(:blank_checklist, @qcontrol, @new_member)
-    mail to: APP_NOTIFICATIONS_EMAIL, subject: I18n.t('blank_inspection_info.subject')
+    # attachments[I18n.t('checklist_attachment_name')] =
+    #   PdfService.render(:blank_checklist, @qcontrol, @new_member)
+    mail to: APP_NOTIFICATIONS_EMAIL, subject: I18n.t("blank_inspection_info.subject")
   end
 
-  # email sent to beekeeper and inspector when a quality control is created and is passed /partially passed
+  # email sent to beekeeper and inspector when a quality control is created
+  # and is passed /partially passed
   def beekeeper_and_inspector_checklist_pdf_mailer(qcontrol_id, copy_to_secretary)
     load_qcontrol_and_attach(qcontrol_id)
     cc = [inspector_email]
     cc << APP_NOTIFICATIONS_EMAIL if copy_to_secretary
-    mail to: member_email, cc: cc, subject: I18n.t('beekeeper_and_inspector_checklist.subject')
+    mail to: member_email, cc: cc, subject: I18n.t("beekeeper_and_inspector_checklist.subject")
   end
 
   # email sent to inspector when a quality control is created and is passed / partially passed
@@ -72,27 +84,30 @@ class InspectionMailer < ApplicationMailer
   def only_inspector_checklist_pdf_mailer(qcontrol_id, copy_to_secretary)
     load_qcontrol_and_attach(qcontrol_id)
     cc = copy_to_secretary ? APP_NOTIFICATIONS_EMAIL : nil
-    mail to: inspector_email, cc: cc, subject: I18n.t('only_inspector_checklist.subject')
+    mail to: inspector_email, cc: cc, subject: I18n.t("only_inspector_checklist.subject")
   end
 
   def inspection_not_necessary_mailer(qcontrol_id)
     @qcontrol = Qcontrol.find(qcontrol_id)
-    mail to: APP_NOTIFICATIONS_EMAIL, subject: I18n.t('inspection_not_necessary.subject')
+    mail to: APP_NOTIFICATIONS_EMAIL, subject: I18n.t("inspection_not_necessary.subject")
   end
 
   def inspection_failed_mailer(qcontrol_id)
     @qcontrol = Qcontrol.find(qcontrol_id)
-    mail to: APP_NOTIFICATIONS_EMAIL, subject: I18n.t('inspection_failed.subject', name: @qcontrol.person.full_name)
+    mail to: APP_NOTIFICATIONS_EMAIL,
+      subject: I18n.t("inspection_failed.subject", name: @qcontrol.person.full_name)
   end
 
   def print_certificate_and_letter(qcontrol_id)
     tries ||= 3
     @qcontrol = Qcontrol.find(qcontrol_id)
     @member = @qcontrol.member
-    name = "#{I18n.t('inspection_mailer.print_certificate_and_letter.attachment_name', name: @member.full_name)}.pdf"
+    name = "#{I18n.t("inspection_mailer.print_certificate_and_letter.attachment_name",
+      name: @member.full_name)}.pdf"
     attachments[name] = render_certificate_and_letter(@qcontrol)
-    mail to: PRINTER_EMAIL, subject: I18n.t('inspection_mailer.print_certificate_and_letter.subject',
-                                            name: @member.full_name)
+    mail to: PRINTER_EMAIL,
+      subject: I18n.t("inspection_mailer.print_certificate_and_letter.subject",
+        name: @member.full_name)
   rescue ImkerCertificateService::ImkerCertificateServiceError => e
     retry unless (tries -= 1).zero?
     Sentry.capture_exception(e) if defined?(Sentry)
@@ -102,25 +117,26 @@ class InspectionMailer < ApplicationMailer
   private
 
   def render_certificate_and_letter(qcontrol)
-    combined_pdf = Tempfile.new(["certificate_letter_#{qcontrol.id}", '.pdf'])
+    combined_pdf = Tempfile.new(["certificate_letter_#{qcontrol.id}", ".pdf"])
     certificate = render_certificate(qcontrol).path
     letter = render_letter(qcontrol).path
     sub = Subexec.run("pdftk #{certificate} #{letter} cat output #{combined_pdf.path}")
     if sub.exitstatus != 0
       raise ImkerCertificateService::ImkerCertificateServiceError,
-            "Certificate and letter concatenation failed with Exit Code #{sub.exitstatus}, Output was: #{sub.output}"
+        "Certificate and letter concatenation failed with Exit Code #{sub.exitstatus},\
+ Output was: #{sub.output}"
     end
     combined_pdf.read
   end
 
   def render_certificate(qcontrol)
-    certificate = Tempfile.new(["certificate_#{qcontrol.id}", '.pdf'])
+    certificate = Tempfile.new(["certificate_#{qcontrol.id}", ".pdf"])
     ImkerCertificateService.new(qcontrol).render_certificate(certificate.path)
     certificate
   end
 
   def render_letter(qcontrol)
-    letter = Tempfile.new(["letter_#{qcontrol.id}", '.pdf'])
+    letter = Tempfile.new(["letter_#{qcontrol.id}", ".pdf"])
     letter.binmode
     letter.write PdfService.render(:certificate_letter, qcontrol)
     letter.close
@@ -129,7 +145,7 @@ class InspectionMailer < ApplicationMailer
 
   def load_qcontrol_and_attach(qcontrol_id)
     @qcontrol = Qcontrol.find(qcontrol_id)
-    attachments[I18n.t('checklist_attachment_name')] = PdfService.render(:checklist, @qcontrol)
+    attachments[I18n.t("checklist_attachment_name")] = PdfService.render(:checklist, @qcontrol)
   end
 
   def member_email

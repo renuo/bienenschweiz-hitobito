@@ -5,7 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-
 Fabricator(:quality_control_section) do
   title { "Section #{Faker::Lorem.word}" }
   number { sequence(:number) }

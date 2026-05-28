@@ -22,7 +22,7 @@ module Api
         def create
           Rails.logger.info("Creating Qcontrol: #{params[:inspection]}")
           @qcontrol = @beekeeper.qcontrols.build(inspection_params)
-          @qcontrol.author_name = 'VDRB-APP'
+          @qcontrol.author_name = "VDRB-APP"
           @qcontrol.from_app = true
           @qcontrol.inspector_id = current_person.id
           @qcontrol.person = @beekeeper
@@ -30,7 +30,7 @@ module Api
           if @qcontrol.save
             head :no_content
           else
-            render status: :unprocessable_content, json: { errors: @qcontrol.errors }
+            render status: :unprocessable_content, json: {errors: @qcontrol.errors}
           end
         end
 
@@ -44,11 +44,13 @@ module Api
         def inspection_params
           # TODO: When changing something here, change it also in `blank_inspections_controller`
           ret = params.expect(inspection: [:group_id, :title, :control_date, :no_control_reason,
-                                           :other_reason_for_no_control, :business_handover_to, :with_voucher,
-                                           { quality_control_answers_attributes: [%i[quality_control_question_id
-                                                                                     deadline_at notes fulfilled]] }])
+            :other_reason_for_no_control, :business_handover_to, :with_voucher,
+            {quality_control_answers_attributes: [%i[quality_control_question_id
+              deadline_at notes fulfilled]]}])
 
-          valid_memberships = @beekeeper.roles.where(type: Bienenschweiz::Person::BEEKEEPER_ROLES).order(:start_on)
+          valid_memberships = @beekeeper.roles.where(
+            type: Bienenschweiz::Person::BEEKEEPER_ROLES
+          ).order(:start_on)
           ret[:group_id] = valid_memberships.first.group_id
           ret[:no_control_reason] ||= :no_reason
           ret
@@ -56,11 +58,12 @@ module Api
 
         def check_no_control_reason
           # inspired_by: https://github.com/rails/rails/issues/13971
-          return unless inspection_params.key?('no_control_reason')
+          return unless inspection_params.key?("no_control_reason")
           return if Qcontrol.no_control_reasons.key?(inspection_params[:no_control_reason])
 
           render status: :unprocessable_content, json: {
-            errors: "no_control_reason: #{inspection_params[:no_control_reason]} not in enum value list"
+            errors:
+              "no_control_reason: #{inspection_params[:no_control_reason]} not in enum value list"
           }
         end
       end

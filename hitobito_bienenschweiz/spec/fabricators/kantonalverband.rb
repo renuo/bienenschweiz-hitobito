@@ -8,4 +8,3 @@
 Fabricator(:kantonalverband, from: :group) do
   type { Group::Kantonalverband }
 end
-
