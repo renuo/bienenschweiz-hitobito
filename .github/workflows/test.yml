@@ -64,6 +64,7 @@ jobs:
 
       - name: "Copy files for wagon and update lockfile"
         run: |
+          cp -v ../.envrc.example ../.envrc
           cp -v ../hitobito/.tool-versions ../hitobito/Gemfile.lock ./
           bundle lock
         working-directory: hitobito_bienenschweiz
