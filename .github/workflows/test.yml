@@ -84,6 +84,7 @@ jobs:
       - name: "Run specs"
         run: |
           source ../.envrc.example
+          unset BUNDLE_GEMFILE
           bundle exec rake spec:without_features
         working-directory: hitobito_bienenschweiz
 
