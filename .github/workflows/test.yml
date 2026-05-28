@@ -64,7 +64,6 @@ jobs:
 
       - name: "Copy files for wagon and update lockfile"
         run: |
-          source ../.envrc.example
           cp -v ../hitobito/.tool-versions ../hitobito/Gemfile.lock ./
           bundle lock
         working-directory: hitobito_bienenschweiz
@@ -83,7 +82,9 @@ jobs:
         working-directory: hitobito_bienenschweiz
 
       - name: "Run specs"
-        run: bundle exec rake spec:without_features
+        run: |
+          source ../.envrc.example
+          bundle exec rake spec:without_features
         working-directory: hitobito_bienenschweiz
 
       - name: "Run Webpacker"
