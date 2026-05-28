@@ -46,7 +46,7 @@ jobs:
       - name: "Install OS deps"
         run: |
           sudo apt-get -qq update
-          sudo apt-get install -y libvips42 direnv
+          sudo apt-get install -y libvips42
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -64,8 +64,7 @@ jobs:
 
       - name: "Copy files for wagon and update lockfile"
         run: |
-          cp -v ../.envrc.example ../.envrc
-          direnv allow
+          source ../.envrc.example
           cp -v ../hitobito/.tool-versions ../hitobito/Gemfile.lock ./
           bundle lock
         working-directory: hitobito_bienenschweiz
@@ -84,7 +83,7 @@ jobs:
         working-directory: hitobito_bienenschweiz
 
       - name: "Run specs"
-        run: bundle exec direnv exec rake spec:without_features
+        run: bundle exec rake spec:without_features
         working-directory: hitobito_bienenschweiz
 
       - name: "Run Webpacker"
