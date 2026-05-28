@@ -84,7 +84,7 @@ jobs:
         working-directory: hitobito_bienenschweiz
 
       - name: "Run specs"
-        run: bundle exec rake spec:without_features
+        run: direnv exec bundle exec rake spec:without_features
         working-directory: hitobito_bienenschweiz
 
       - name: "Run Webpacker"
