@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: These tasks are only needed for the migration process. Can be deleted
+# after the migration.
 namespace :courses do
   def export_models = [Event::KindCategory, Event::Kind, QualificationKind]
 
