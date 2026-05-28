@@ -22,7 +22,7 @@ RSpec.describe Api::Mobile::V1::QualityControlQuestionsController, type: :reques
     expect(json_response.first["quality_control_questions"]
                .count).to eq(qc_section.quality_control_questions.count)
     expect(json_response.first["quality_control_questions"]
-               .map { |row| row["number"] }).to eq(qc_questions.map(&:number))
+             .pluck("number")).to eq(qc_questions.map(&:number))
   end
 
   it "sets the right data for the section" do

@@ -52,11 +52,11 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
     end
 
     it "should only include that beekeepers that can be inspected by current fachperson_produkte" do
-      expect(json_response.map { |b| b["id"] }).to eq(beekeepers[0..4].map(&:id))
+      expect(json_response.map { |b| b["id"] }).to eq(beekeepers[0..4].pluck(:id))
     end
 
     it "should only include the beekeepers with role siegel_imker (not the honey chairman)" do
-      expect(json_response.map { |b| b["id"] }).to_not include(honey_chairman.id)
+      expect(json_response.pluck('id')).to_not include(honey_chairman.id)
     end
 
     context "when a either first_name or last_name are nil" do
