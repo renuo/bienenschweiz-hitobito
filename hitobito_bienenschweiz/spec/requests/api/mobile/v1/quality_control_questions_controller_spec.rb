@@ -1,3 +1,11 @@
+# frozen_string_literal: true
+
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::QualityControlQuestionsController, type: :request do
@@ -6,10 +14,9 @@ RSpec.describe Api::Mobile::V1::QualityControlQuestionsController, type: :reques
   let!(:qc_questions) {
     Fabricate.times(5, :quality_control_question, quality_control_section: qc_section)
   }
-  let(:auth_headers) { {"Access-Token": fachperson_produkte.authentication_token} }
+  let(:auth_headers) { {"Access-Token": fachperson_produkte.beeaudit_authentication_token} }
 
   before do
-    fachperson_produkte.generate_authentication_token!
     get api_mobile_v1_quality_control_questions_path(format: :json), headers: auth_headers
   end
 

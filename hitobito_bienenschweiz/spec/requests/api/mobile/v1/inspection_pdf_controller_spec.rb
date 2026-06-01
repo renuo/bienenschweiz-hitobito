@@ -1,10 +1,18 @@
+# frozen_string_literal: true
+
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::InspectionPdfController, type: :request do
   let(:fachperson_produkte) { Fabricate(:fachperson_produkte) }
   let(:group) { fachperson_produkte.groups.first }
   let(:beekeeper) { Fabricate(:beekeeper, group_id: group.id) }
-  let(:auth_headers) { {"Access-Token": fachperson_produkte.authentication_token} }
+  let(:auth_headers) { {"Access-Token": fachperson_produkte.beeaudit_authentication_token} }
 
   xdescribe "GET #show" do
     context "existing qcontrol" do

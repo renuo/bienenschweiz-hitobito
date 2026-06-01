@@ -1,3 +1,11 @@
+# frozen_string_literal: true
+
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
@@ -8,11 +16,7 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
   let(:honey_chairman) { Fabricate(:honey_chairman, group_id: group1.parent.id) }
   let(:group1) { groups(:aargauisches_seetal) }
   let(:group2) { groups(:aarberg) }
-  let(:auth_headers) { {"Access-Token": fachperson_produkte.authentication_token} }
-
-  before do
-    fachperson_produkte.generate_authentication_token!
-  end
+  let(:auth_headers) { {"Access-Token": fachperson_produkte.beeaudit_authentication_token} }
 
   def add_beekeeper_memberships
     beekeepers.each_with_index do |beekeeper, index|

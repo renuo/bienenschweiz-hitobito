@@ -1,13 +1,17 @@
+# frozen_string_literal: true
+
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::SessionsController, type: :request do
   let(:email) { Faker::Internet.email }
   let(:password) { Faker::Internet.password(min_length: 12) }
-  let!(:person) {
-    person = Fabricate(:person, email:, password:)
-    person.generate_authentication_token!
-    person
-  }
+  let!(:person) { Fabricate(:person, email:, password:) }
 
   def perform_call
     post api_mobile_v1_sessions_path, params: {user: {email:, password:}, format: :json}

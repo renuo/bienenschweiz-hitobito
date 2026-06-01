@@ -23,6 +23,10 @@ module Bienenschweiz::Person
   included do # rubocop:disable Metrics/BlockLength
     has_many :qcontrols, dependent: :destroy
 
+    def beeaudit_authentication_token
+      signed_id(expires_in: 2.months, purpose: :beeaudit)
+    end
+
     def qcontrol_inspector?
       roles.any? { |role| QCONTROLLER_ROLES.include?(role.type) }
     end
