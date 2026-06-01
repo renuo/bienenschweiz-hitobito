@@ -5,7 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-
 class QualityControlAnswer < ApplicationRecord
   belongs_to :quality_control_question, optional: false
   belongs_to :qcontrol, inverse_of: :quality_control_answers, optional: false

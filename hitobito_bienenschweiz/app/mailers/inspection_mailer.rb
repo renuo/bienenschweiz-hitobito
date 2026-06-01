@@ -5,7 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-
 class InspectionMailer < ApplicationMailer
   # rubocop:disable Rails/EnvironmentVariableAccess
   INSPECTION_REPLY_TO_EMAIL = ENV["INSPECTION_REPLY_TO_EMAIL"]
