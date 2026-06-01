@@ -11,7 +11,7 @@ module Api
       class AuthenticatedApiController < ActionController::API
         respond_to :json
 
-        before_action :authenticate_kas_user!
+        before_action :authenticate_inspector!
         rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
         protected
@@ -22,7 +22,7 @@ module Api
           head :bad_request
         end
 
-        def authenticate_kas_user!
+        def authenticate_inspector!
           authentication_token = request.headers["Access-Token"] || params[:access_token]
           if authentication_token.blank?
             render json: {}, status: :unauthorized
