@@ -5,7 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-
 # TODO: These tasks are only needed for the migration process. Can be deleted
 # after the migration.
 namespace :courses do
