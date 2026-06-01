@@ -5,7 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
