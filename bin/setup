@@ -20,3 +20,7 @@ pushd hitobito
     bin/wagon activate bienenschweiz
     direnv exec bin/setup
 popd
+
+
+puts "\n== Creating pre-push hook link =="
+system 'ln -s ../../bin/fastcheck .git/hooks/pre-push'

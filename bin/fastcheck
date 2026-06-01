@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "Executing rubocop"
+pushd hitobito_bienenschweiz
+  if ! bundle exec rubocop -D -c .rubocop.yml --fail-fast
+  then
+    echo 'rubocop detected issues!'
+    bundle exec rubocop -A -D -c .rubocop.yml
+    echo 'Tried to auto correct the issues, but must be reviewed manually, commit aborted'
+    exit 1
+  fi
+popd
+
+echo "Executing license inserter"
+pushd hitobito_bienenschweiz
+  rake app:license:insert
+popd
