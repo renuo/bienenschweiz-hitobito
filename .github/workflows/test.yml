@@ -127,6 +127,11 @@ jobs:
         with:
           submodules: true
 
+      - name: "Install OS deps"
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get install -y libvips42
+
       - uses: ruby/setup-ruby@v1
 
       - name: "Activate Wagonfile.ci and update lockfile"
