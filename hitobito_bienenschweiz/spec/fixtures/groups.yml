@@ -26,27 +26,27 @@ aarau_und_umgebung:
   rgt: 10
   name: Aarau und Umgebung
   type: Group::Sektion
-bildung_379:
+vorstand_379:
   parent: aarau_und_umgebung
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
   lft: 4
   rgt: 5
-  name: Bildung
-  type: Group::Bildung
-produkte_380:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_380:
   parent: aarau_und_umgebung
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
   lft: 6
   rgt: 7
-  name: Produkte
-  type: Group::Produkte
-zucht_381:
+  name: Kader
+  type: Group::Kader
+sektion_admin_381:
   parent: aarau_und_umgebung
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
   lft: 8
   rgt: 9
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 aargauisches_seetal:
   parent: aargauer_kantonalverband
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
@@ -54,27 +54,27 @@ aargauisches_seetal:
   rgt: 18
   name: Aargauisches Seetal
   type: Group::Sektion
-bildung_382:
+vorstand_382:
   parent: aargauisches_seetal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
   lft: 12
   rgt: 13
-  name: Bildung
-  type: Group::Bildung
-produkte_383:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_383:
   parent: aargauisches_seetal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
   lft: 14
   rgt: 15
-  name: Produkte
-  type: Group::Produkte
-zucht_384:
+  name: Kader
+  type: Group::Kader
+sektion_admin_384:
   parent: aargauisches_seetal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
   lft: 16
   rgt: 17
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 baden:
   parent: aargauer_kantonalverband
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
@@ -82,41 +82,41 @@ baden:
   rgt: 26
   name: Baden
   type: Group::Sektion
-bildung_367:
+vorstand_367:
   parent: baden
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
   lft: 20
   rgt: 21
-  name: Bildung
-  type: Group::Bildung
-produkte_368:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_368:
   parent: baden
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
   lft: 22
   rgt: 23
-  name: Produkte
-  type: Group::Produkte
-zucht_369:
+  name: Kader
+  type: Group::Kader
+sektion_admin_369:
   parent: baden
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
   lft: 24
   rgt: 25
-  name: Zucht
-  type: Group::Zucht
-andere_mitglieder:
+  name: Administrator
+  type: Group::SektionAdministrator
+mitglieder:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
   lft: 116
   rgt: 117
-  name: Andere Mitglieder
-  type: Group::AndereMitglieder
-berater_infos_an_haendler:
+  name: Mitglieder
+  type: Group::Mitglieder
+themenbezogene_kontakte:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
   lft: 118
   rgt: 119
-  name: Berater-Infos an Händler
-  type: Group::BeraterInfo
+  name: ThemenbezogeneKontakte
+  type: Group::ThemenbezogeneKontakte
 berner_kantonalverband:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:berner_kantonalverband)%>"
@@ -131,27 +131,27 @@ aarberg:
   rgt: 128
   name: Aarberg
   type: Group::Sektion
-bildung_97:
+vorstand_97:
   parent: aarberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
   lft: 122
   rgt: 123
-  name: Bildung
-  type: Group::Bildung
-produkte_98:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_98:
   parent: aarberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
   lft: 124
   rgt: 125
-  name: Produkte
-  type: Group::Produkte
-zucht_99:
+  name: Kader
+  type: Group::Kader
+sektion_admin_99:
   parent: aarberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
   lft: 126
   rgt: 127
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 bern_mittelland:
   parent: berner_kantonalverband
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
@@ -159,27 +159,27 @@ bern_mittelland:
   rgt: 136
   name: Bern Mittelland
   type: Group::Sektion
-bildung_61:
+vorstand_61:
   parent: bern_mittelland
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
   lft: 130
   rgt: 131
-  name: Bildung
-  type: Group::Bildung
-produkte_62:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_62:
   parent: bern_mittelland
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
   lft: 132
   rgt: 133
-  name: Produkte
-  type: Group::Produkte
-zucht_63:
+  name: Kader
+  type: Group::Kader
+sektion_admin_63:
   parent: bern_mittelland
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
   lft: 134
   rgt: 135
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 bienengantrisch:
   parent: berner_kantonalverband
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
@@ -187,27 +187,27 @@ bienengantrisch:
   rgt: 144
   name: BienenGantrisch
   type: Group::Sektion
-bildung_601:
+vorstand_601:
   parent: bienengantrisch
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
   lft: 138
   rgt: 139
-  name: Bildung
-  type: Group::Bildung
-produkte_602:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_602:
   parent: bienengantrisch
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
   lft: 140
   rgt: 141
-  name: Produkte
-  type: Group::Produkte
-zucht_603:
+  name: Kader
+  type: Group::Kader
+sektion_admin_603:
   parent: bienengantrisch
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
   lft: 142
   rgt: 143
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 bienensolothurn:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienensolothurn)%>"
@@ -222,27 +222,27 @@ bienen_thal:
   rgt: 314
   name: Bienen Thal
   type: Group::Sektion
-bildung_211:
+vorstand_211:
   parent: bienen_thal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
   lft: 308
   rgt: 309
-  name: Bildung
-  type: Group::Bildung
-produkte_212:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_212:
   parent: bienen_thal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
   lft: 310
   rgt: 311
-  name: Produkte
-  type: Group::Produkte
-zucht_213:
+  name: Kader
+  type: Group::Kader
+sektion_admin_213:
   parent: bienen_thal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
   lft: 312
   rgt: 313
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 bienendorneck:
   parent: bienensolothurn
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
@@ -250,27 +250,27 @@ bienendorneck:
   rgt: 322
   name: bienenDORNECK
   type: Group::Sektion
-bildung_199:
+vorstand_199:
   parent: bienendorneck
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
   lft: 316
   rgt: 317
-  name: Bildung
-  type: Group::Bildung
-produkte_200:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_200:
   parent: bienendorneck
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
   lft: 318
   rgt: 319
-  name: Produkte
-  type: Group::Produkte
-zucht_201:
+  name: Kader
+  type: Group::Kader
+sektion_admin_201:
   parent: bienendorneck
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
   lft: 320
   rgt: 321
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 bucheggberg:
   parent: bienensolothurn
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
@@ -278,27 +278,27 @@ bucheggberg:
   rgt: 330
   name: Bucheggberg
   type: Group::Sektion
-bildung_205:
+vorstand_205:
   parent: bucheggberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
   lft: 324
   rgt: 325
-  name: Bildung
-  type: Group::Bildung
-produkte_206:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_206:
   parent: bucheggberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
   lft: 326
   rgt: 327
-  name: Produkte
-  type: Group::Produkte
-zucht_207:
+  name: Kader
+  type: Group::Kader
+sektion_admin_207:
   parent: bucheggberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
   lft: 328
   rgt: 329
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 buendner_kantonalverband:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:buendner_kantonalverband)%>"
@@ -313,27 +313,27 @@ albula_surses:
   rgt: 404
   name: Albula Surses
   type: Group::Sektion
-bildung_313:
+vorstand_313:
   parent: albula_surses
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
   lft: 398
   rgt: 399
-  name: Bildung
-  type: Group::Bildung
-produkte_314:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_314:
   parent: albula_surses
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
   lft: 400
   rgt: 401
-  name: Produkte
-  type: Group::Produkte
-zucht_315:
+  name: Kader
+  type: Group::Kader
+sektion_admin_315:
   parent: albula_surses
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
   lft: 402
   rgt: 403
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 bienenverein_am_hinterrhein:
   parent: buendner_kantonalverband
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
@@ -341,27 +341,27 @@ bienenverein_am_hinterrhein:
   rgt: 412
   name: Bienenverein am Hinterrhein
   type: Group::Sektion
-bildung_316:
+vorstand_316:
   parent: bienenverein_am_hinterrhein
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
   lft: 406
   rgt: 407
-  name: Bildung
-  type: Group::Bildung
-produkte_317:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_317:
   parent: bienenverein_am_hinterrhein
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
   lft: 408
   rgt: 409
-  name: Produkte
-  type: Group::Produkte
-zucht_318:
+  name: Kader
+  type: Group::Kader
+sektion_admin_318:
   parent: bienenverein_am_hinterrhein
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
   lft: 410
   rgt: 411
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 bregaglia_bergell:
   parent: buendner_kantonalverband
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
@@ -369,34 +369,27 @@ bregaglia_bergell:
   rgt: 420
   name: Bregaglia Bergell
   type: Group::Sektion
-bildung_322:
+vorstand_322:
   parent: bregaglia_bergell
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
   lft: 414
   rgt: 415
-  name: Bildung
-  type: Group::Bildung
-produkte_323:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_323:
   parent: bregaglia_bergell
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
   lft: 416
   rgt: 417
-  name: Produkte
-  type: Group::Produkte
-zucht_324:
+  name: Kader
+  type: Group::Kader
+sektion_admin_324:
   parent: bregaglia_bergell
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
   lft: 418
   rgt: 419
-  name: Zucht
-  type: Group::Zucht
-ehrenpersonen:
-  parent: root
-  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
-  lft: 502
-  rgt: 503
-  name: Ehrenpersonen
-  type: Group::Ehrenpersonen
+  name: Administrator
+  type: Group::SektionAdministrator
 freiburger_kantonalverband:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_kantonalverband)%>"
@@ -411,27 +404,27 @@ deutschfreiburger_seebezirk:
   rgt: 512
   name: Deutschfreiburger Seebezirk
   type: Group::Sektion
-bildung_184:
+vorstand_184:
   parent: deutschfreiburger_seebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
   lft: 506
   rgt: 507
-  name: Bildung
-  type: Group::Bildung
-produkte_185:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_185:
   parent: deutschfreiburger_seebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
   lft: 508
   rgt: 509
-  name: Produkte
-  type: Group::Produkte
-zucht_186:
+  name: Kader
+  type: Group::Kader
+sektion_admin_186:
   parent: deutschfreiburger_seebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
   lft: 510
   rgt: 511
-  name: Zucht
-  type: Group::Zucht
+  name: Administrator
+  type: Group::SektionAdministrator
 freiburger_sensebezirk:
   parent: freiburger_kantonalverband
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
@@ -439,34 +432,27 @@ freiburger_sensebezirk:
   rgt: 520
   name: Freiburger Sensebezirk
   type: Group::Sektion
-bildung_181:
+vorstand_181:
   parent: freiburger_sensebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
   lft: 514
   rgt: 515
-  name: Bildung
-  type: Group::Bildung
-produkte_182:
+  name: Vorstand
+  type: Group::SektionVorstand
+kader_182:
   parent: freiburger_sensebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
   lft: 516
   rgt: 517
-  name: Produkte
-  type: Group::Produkte
-zucht_183:
+  name: Kader
+  type: Group::Kader
+sektion_admin_183:
   parent: freiburger_sensebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
   lft: 518
   rgt: 519
-  name: Zucht
-  type: Group::Zucht
-inspektor_in:
-  parent: root
-  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
-  lft: 702
-  rgt: 703
-  name: Inspektor/in
-  type: Group::Inspektion
+  name: Administrator
+  type: Group::SektionAdministrator
 zentralvorstand:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"

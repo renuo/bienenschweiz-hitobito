@@ -23,7 +23,7 @@ RSpec.describe PeopleController, type: :request do
     }
 
     before do
-      Fabricate(:role, person:, group:, type: Group::Dachverband::Supervisor.sti_name)
+      Fabricate(:role, person:, group:, type: Group::Dachverband::AdministratorBienenSchweiz.sti_name)
     end
 
     it "shows the added fields" do
@@ -53,7 +53,7 @@ RSpec.describe PeopleController, type: :request do
     end
 
     before do
-      Fabricate(:role, person:, group:, type: Group::Dachverband::Supervisor.sti_name)
+      Fabricate(:role, person:, group:, type: Group::Dachverband::AdministratorBienenSchweiz.sti_name)
     end
 
     it "updates the person with the added fields" do

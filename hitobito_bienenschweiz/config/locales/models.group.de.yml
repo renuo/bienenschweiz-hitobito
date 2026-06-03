@@ -16,115 +16,188 @@ de:
       group/dachverband/supervisor:
         one: Supervisor/in
         other: Supervisoren/innen
-      group/ehrenpersonen:
-        one: Ehrenpersonen
-        other: Ehrenpersonen
-      group/berater_info:
-        one: Berater-Infos an Händler
-        other: Berater-Infos an Händler
-      group/berater_info/mitglied:
-        one: Mitglied
+
+      group/mitglieder:
+        one: Mitglieder
         other: Mitglieder
-      group/inspektion:
-        one: Inspektor/in
-        other: Inspektoren/innen
-      group/inspektion/inspektor:
-        one: Inspektor/in (kantonale Ansprechperson)
-        other: Inspektoren/innen (kantonale Ansprechperson)
+      group/mitglieder/ehrenmitglied:
+        one: Ehrenmitglied
+        other: Ehrenmitglieder
+      group/mitglieder/ehrenpraesident:
+        one: Ehrenpräsident
+        other: Ehrenpräsidenten
+      group/mitglieder/anderes_mitglied:
+        one: Andere Mitglieder
+        other: Andere Mitglieder
+
       group/zentralvorstand:
         one: Zentralvorstand
         other: Zentralvorstände
-      group/zentralvorstand/zentralpraesident:
-        one: Zentralpräsident/in
-        other: Zentralpräsidenten/innen
+      group/zentralvorstand/praesident:
+        one: Präsident
+        other: Präsidenten
       group/zentralvorstand/vizepraesident:
+        one: Vizepräsident
+        other: Vizepräsidenten
+      group/zentralvorstand/finanzen:
+        one: Finanzen
+        other: Finanzen
+      group/zentralvorstand/beisitzer:
+        one: Beisitzer
+        other: Beisitzer
+
+      group/shop:
+        one: Shop
+        other: Shops
+      group/shop/kunde:
+        one: Kunde
+        other: Kunden
+
+      group/bienen_zeitung:
+        one: BienenZeitung
+        other: BienenZeitung
+      group/bienen_zeitung/abo:
+        one: Abo
+        other: Abos
+
+      group/themenbezogene_kontakte:
+        one: ThemenbezogeneKontakte
+        other: ThemenbezogeneKontakte
+      group/themenbezogene_kontakte/haendler:
+        one: Händler
+        other: Händler
+      group/themenbezogene_kontakte/inserenten:
+        one: Inserenten
+        other: Inserenten
+      group/themenbezogene_kontakte/mitarbeitende:
+        one: Mitarbeitende
+        other: Mitarbeitende
+      group/themenbezogene_kontakte/supervisor:
+        one: Supervisor
+        other: Supervisoren
+
+      group/kantonalverband:
+        one: Kantonalverband
+        other: Kantonalverbände
+      group/kantonalverband/admin_kanton:
+        one: AdminKanton
+        other: AdminKantone
+
+      group/kantonalverband_administrator:
+        one: Administrator
+        other: Administratoren
+      group/kantonalverband_administrator/kontakte:
+        one: Kontakte
+        other: Kontakte
+      group/kantonalverband_administrator/veranstaltungen_kurse:
+        one: Veranstaltungen/Kurse
+        other: Veranstaltungen/Kurse
+
+      group/kantonalverband_vorstand:
+        one: Vorstand
+        other: Vorstände
+      group/kantonalverband_vorstand/bildung:
+        one: Bildung
+        other: Bildung
+      group/kantonalverband_vorstand/produkte:
+        one: Produkte
+        other: Produkte
+      group/kantonalverband_vorstand/zucht:
+        one: Zucht
+        other: Zucht
+      group/kantonalverband_vorstand/praesident:
+        one: Präsident/in
+        other: Präsident/innen
+      group/kantonalverband_vorstand/vizepraesident:
         one: Vizepräsident/in
-        other: Vizepräsidenten/innen
-      group/zentralvorstand/geschaeftsfuehrer:
-        one: Geschäftsführer/in
-        other: Geschäftsführer/innen
-      group/zentralvorstand/mitglied:
-        one: Mitglied
-        other: Mitglieder
-      group/andere_mitglieder:
-        one: Andere Mitglieder
-        other: Andere Mitglieder
-      group/andere_mitglieder/anderes_mitglied:
-        one: Andere Mitglieder
-        other: Andere Mitglieder
-      group/ehrenpersonen/ehrenmitglied:
-        one: Ehrenmitglied
-        other: Ehrenmitglieder
-      group/ehrenpersonen/ehrenpraesident:
-        one: Ehrenpräsident
-        other: Ehrenpräsidenten
+        other: Vizepräsident/innen
+      group/kantonalverband_vorstand/kassier:
+        one: Kassier/in
+        other: Kassier/innen
+      group/kantonalverband_vorstand/aktuar:
+        one: Aktuar/in
+        other: Aktuar/innen
+      group/kantonalverband_vorstand/beisitzer:
+        one: Beisitzer/in
+        other: Beisitzer/innen
+
+      group/sektion_vorstand:
+        one: Vorstand
+        other: Vorstände
+      group/sektion_vorstand/bildung:
+        one: Bildung
+        other: Bildung
+      group/sektion_vorstand/produkte:
+        one: Produkte
+        other: Produkte
+      group/sektion_vorstand/zucht:
+        one: Zucht
+        other: Zucht
+      group/sektion_vorstand/praesident:
+        one: Präsident/in
+        other: Präsident/innen
+      group/sektion_vorstand/vizepraesident:
+        one: Vizepräsident/in
+        other: Vizepräsident/innen
+      group/sektion_vorstand/kassier:
+        one: Kassier/in
+        other: Kassier/innen
+      group/sektion_vorstand/aktuar:
+        one: Aktuar/in
+        other: Aktuar/innen
+      group/sektion_vorstand/beisitzer:
+        one: Beisitzer/in
+        other: Beisitzer/innen
+
       group/sektion:
         one: Sektion
         other: Sektionen
       group/sektion/admin_sektion:
         one: Admin Sektion
         other: Admins Sektion
-      group/sektion/praesident:
-        one: Präsident/in
-        other: Präsident/innen
-      group/sektion/kassier:
-        one: Kassier/in
-        other: Kassier/innen
-      group/sektion/siegelimker:
+
+      group/siegelimker:
         one: Siegelimker/in
         other: Siegelimker/innen
-      group/sektion/siegelimker_provisorisch:
-        one: Siegelimker/in provisorisch
-        other: Siegelimker/innen provisorisch
-      group/sektion/erfassung_veranstaltungen:
+      group/siegelimker/siegelimker:
+        one: Siegelimker/in
+        other: Siegelimker/innen
+
+      group/sektion_administrator:
+        one: Administrator
+        other: Administratoren
+      group/sektion_administrator/erfassung_veranstaltungen:
         one: Erfassung Veranstaltungen
         other: Erfassung Veranstaltungen
-      group/zucht:
-        one: Zucht
-        other: Zucht
-      group/zucht/fachperson_zucht:
-        one: Fachperson Zucht
-        other: Fachpersonen Zucht
-      group/zucht/fachperson_zucht_in_ausbildung:
-        one: Fachperson Zucht (in Ausbildung)
-        other: Fachpersonen Zucht (in Ausbildung)
-      group/kantonalverband:
-        one: Kantonalverband
-        other: Kantonalverbände
-      group/kantonalverband/bildungsobperson:
-        one: Bildungsobmann/frau
-        other: Bildungsobmänner/frauen
-      group/kantonalverband/honigobperson:
-        one: Honigobmann/frau
-        other: Honigobmänner/frauen
-      group/kantonalverband/honigobperson_provisorisch:
-        one: Honigobmann/frau (provisorisch)
-        other: Honigobmänner/frauen (provisorisch)
-      group/kantonalverband/zuchtobperson:
-        one: Zuchtobmann/frau
-        other: Zuchtobmänner/frauen
-      group/kantonalverband/kantonalpraesidentin:
-        one: Kantonalpräsident/in
-        other: Kantonalpräsidenten/innen
-      group/kantonalverband/kassier:
-        one: Kassier/in
-        other: Kassier/innen
+      group/sektion_administrator/kontakte:
+        one: Kontakte
+        other: Kontakte
 
-      group/bildung:
-        one: Bildung
-        other: Bildung
-      group/bildung/fachperson_bildung:
+      group/sektion_mitglieder:
+        one: Mitglieder
+        other: Mitglieder
+      group/sektion_mitglieder/ehrenmitglied:
+        one: Ehrenmitglied
+        other: Ehrenmitglieder
+      group/sektion_mitglieder/freimitglied:
+        one: Freimitglied
+        other: Freimitglieder
+      group/sektion_mitglieder/veteranen:
+        one: Veteranen
+        other: Veteranen
+      group/sektion_mitglieder/mitglied:
+        one: Mitglied
+        other: Mitglieder
+
+      group/kader:
+        one: Kader
+        other: Kader
+      group/kader/fachperson_bildung:
         one: Fachperson Bildung
         other: Fachpersonen Bildung
-      group/bildung/fachperson_bildung_in_ausbildung:
-        one: Fachperson Bildung (in Ausbildung)
-        other: Fachpersonen Bildung (in Ausbildung)
-      group/produkte:
-        one: Produkte
-        other: Produkte
-      group/produkte/fachperson_produkte:
+      group/kader/fachperson_produkte:
         one: Fachperson Produkte
         other: Fachpersonen Produkte
-      group/produkte/fachperson_produkte_in_ausbildung:
-        one: Fachperson Produkte (in Ausbildung)
-        other: Fachpersonen Produkte (in Ausbildung)
+      group/kader/fachperson_zucht_vermehrung:
+        one: Fachperson Zucht & Vermehrung
+        other: Fachpersonen Zucht & Vermehrung
