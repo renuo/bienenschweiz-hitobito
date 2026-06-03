@@ -24,6 +24,8 @@ module HitobitoBienenschweiz
       Group.include Bienenschweiz::Group
       Person.include Bienenschweiz::Person
 
+      GroupResource.include Bienenschweiz::GroupResource
+
       PeopleController.permitted_attrs += [
         :salutation,
         :hive_count,
