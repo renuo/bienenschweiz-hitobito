@@ -1,5 +1,8 @@
 namespace :mv do
   namespace :import do
+    GROUP_ID_OFFSET = 10_000
+    MEMBER_ID_OFFSET = 10_000
+    ROLE_ID_OFFSET = 10_000
 
     task :members => :environment do
       failure_csv = "invalid_members.csv"
@@ -41,7 +44,7 @@ namespace :mv do
       # scope = scope.limit(100)
       scope.find_each do |member|
         total_count += 1
-        new_id = member.id + 1000 # offset by 1000 to not conflict with admin or test data
+        new_id = member.id + ::MEMBER_ID_OFFSET # offset to not conflict with admin or test data
         person = Person.where(id: new_id).first_or_initialize do |person|
           person.id = new_id
         end
@@ -130,7 +133,7 @@ namespace :mv do
       root_group = Group::Dachverband.first
       InternStructure.where(structure_type: InternStructure.structure_types[:verband]).find_each do |verband|
         group = Group::Kantonalverband.where(name: verband.name).first_or_initialize do |group|
-          group.id = verband.id + 1000 # offset by 1000 to not conflict with admin or test data
+          group.id = verband.id + GROUP_ID_OFFSET
         end
         group.parent = root_group
         group.code = verband.code
@@ -142,13 +145,18 @@ namespace :mv do
 
       InternStructure.where(structure_type: InternStructure.structure_types[:sektion]).find_each do |sektion|
         group = Group::Sektion.where(name: sektion.name).first_or_initialize do |group|
-          group.id = sektion.id + 1000
+          group.id = sektion.id + GROUP_ID_OFFSET
         end
-        group.parent = Group::Kantonalverband.find(sektion.parent_id + 1000)
+        group.parent = Group::Kantonalverband.find(sektion.parent_id + GROUP_ID_OFFSET)
         group.code = sektion.code
         group.created_at = sektion.created_at
         group.updated_at = sektion.created_at
-        group.save!
+        begin
+          group.save!
+        rescue StandardError => e
+          puts "Error importing sektion #{sektion.id}: #{e.message}"
+          p sektion
+        end
         try_add_website(group, sektion)
       end
     end
@@ -171,21 +179,21 @@ namespace :mv do
       when "verband"
         case membership.role.name_t
         when "P", "KP"
-          Group::Kantonalverband::Kantonalpraesidentin
+          Group::KantonalverbandVorstand::Praesident
         when "K"
-          Group::Kantonalverband::Kassier
+          Group::KantonalverbandVorstand::Kassier
         when "B", "B-PROV", "H", "Z", "Z-PROV", "SI", 'SI-PROV'
           # only exists on Sektion.
         when "INSP", "B-INFO", "SU"
           # only exists on Verein
         when "BO"
-          Group::Kantonalverband::Bildungsobperson
+          Group::KantonalverbandVorstand::Bildung
         when "ZO"
-          Group::Kantonalverband::Zuchtobperson
+          Group::KantonalverbandVorstand::Zucht
         when "HO"
-          Group::Kantonalverband::Honigobperson
+          Group::KantonalverbandVorstand::Produkte
         when "HO-PROV"
-          Group::Kantonalverband::HonigobpersonProvisorisch
+          # no longer a thing
         when "H-PROV"
           # only exists on Sektion
         when "INS", "KP-prov"
@@ -205,27 +213,27 @@ namespace :mv do
       when "sektion"
         case membership.role.name_t
         when "B"
-          Group::Bildung::FachpersonBildung
+          Group::Kader::FachpersonBildung
         when "B-PROV"
-          Group::Bildung::FachpersonBildungInAusbildung
+          # no longer a thing
         when "Z"
-          Group::Zucht::FachpersonZucht
+          Group::Kader::FachpersonZuchtVermehrung
         when "Z-PROV"
-          Group::Zucht::FachpersonZuchtInAusbildung
+          # no longer a thing
         when "P"
-          Group::Sektion::Praesident
+          Group::SektionVorstand::Praesident
         when "K"
-          Group::Sektion::Kassier
+          Group::SektionVorstand::Kassier
         when "H"
-          Group::Produkte::FachpersonProdukte
+          Group::Kader::FachpersonProdukte
         when "H-PROV"
-          Group::Produkte::FachpersonProdukteInAusbildung
+          # no longer a thing
         when "SI"
-          Group::Sektion::Siegelimker
+          Group::Siegelimker::Siegelimker
         when "SI-PROV"
-          Group::Sektion::SiegelimkerProvisorisch
+          # no longer a thing
         when "EV"
-          Group::Sektion::ErfassungVeranstaltungen
+          Group::SektionAdministrator::ErfassungVeranstaltungen
         when "HAN", "INS", "BEA", 'SM'
           # marked as archived and ignored
           return -1
@@ -246,17 +254,17 @@ namespace :mv do
         when "A"
           Group::Dachverband::AdministratorBienenSchweiz
         when "SU"
-          Group::Dachverband::Supervisor
+          Group::ThemenbezogeneKontakte::Supervisor
         when "EP"
-          Group::Ehrenpersonen::Ehrenpraesident
+          Group::Mitglieder::Ehrenpraesident
         when "EM"
-          Group::Ehrenpersonen::Ehrenmitglied
+          Group::Mitglieder::Ehrenmitglied
         when "ZV"
-          Group::Zentralvorstand::Mitglied
+          Group::Zentralvorstand::Beisitzer
         when 'Mitglied VDRB' # Probably?
-          Group::BeraterInfo::Mitglied
+          Group::Mitglieder::AnderesMitglied
         when 'INSP'
-          Group::Inspektion::Inspektor
+          # currently not mapped
         when "EV", 'SI'
           # only exists on Sektion now
         when 'H-PROV'
@@ -306,8 +314,8 @@ namespace :mv do
             next
           end
           group_class = role_type.model_name.to_s.deconstantize.constantize
-          group = membership.intern_structure.verein? ? Group.root : Group.find(membership.intern_structure_id + 1000)
-          person = Person.find(membership.member_id + 1000)
+          group = membership.intern_structure.verein? ? Group.root : Group.find(membership.intern_structure_id + ::GROUP_ID_OFFSET)
+          person = Person.find(membership.member_id + ::MEMBER_ID_OFFSET)
           if group.is_a? group_class
             # puts "Matched #{group_class}"
           else
@@ -318,7 +326,7 @@ namespace :mv do
           # TODO: do we need/want this?
           # PeopleManager.where(managed: person, manager: admin).first_or_create!
 
-          role_id = membership.id + 1000
+          role_id = membership.id + ROLE_ID_OFFSET
           role = person.roles.with_inactive.where(id: role_id).first_or_initialize
           role.update(type: role_type.sti_name,
                       group: group,
