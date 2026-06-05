@@ -10,9 +10,13 @@ class Group::Sektion < ::Group
 
   self.event_types = [Event, Event::Course]
 
-  self.default_children = [Group::Bildung, Group::Produkte, Group::Zucht]
+  self.default_children = [
+    Group::Siegelimker, Group::SektionAdministrator, Group::SektionMitglieder,
+    Group::SektionVorstand, Group::Kader
+  ]
 
-  children Group::Bildung, Group::Produkte, Group::Zucht
+  children Group::Siegelimker, Group::SektionAdministrator, Group::SektionMitglieder,
+    Group::SektionVorstand, Group::Kader
 
   ### ROLES
 
@@ -20,26 +24,5 @@ class Group::Sektion < ::Group
     self.permissions = [:layer_and_below_full]
   end
 
-  class Praesident < ::Role
-    self.permissions = [:layer_and_below_full, :contact_data]
-  end
-
-  class Kassier < ::Role
-    self.permissions = [:layer_read, :contact_data]
-  end
-
-  class ErfassungVeranstaltungen < ::Role
-    self.permissions = [:layer_read]
-  end
-
-  class Siegelimker < ::Role
-    self.permissions = [:layer_read]
-  end
-
-  class SiegelimkerProvisorisch < ::Role
-    self.permissions = [:layer_read]
-  end
-
-  roles AdminSektion, Praesident, Kassier, ErfassungVeranstaltungen, Siegelimker,
-    SiegelimkerProvisorisch
+  roles AdminSektion
 end

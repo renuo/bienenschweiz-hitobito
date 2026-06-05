@@ -5,18 +5,16 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-class Group::Kantonalverband < ::Group
-  self.layer = true
-
-  self.event_types = [Event, Event::Course]
-  self.default_children = [Group::KantonalverbandAdministrator, Group::KantonalverbandVorstand]
-  children Group::Sektion, Group::KantonalverbandAdministrator, Group::KantonalverbandVorstand
-
+class Group::KantonalverbandAdministrator < ::Group
   ### ROLES
 
-  class AdminKanton < ::Role
+  class Kontakte < ::Role
     self.permissions = [:layer_full]
   end
 
-  roles AdminKanton
+  class VeranstaltungenKurse < ::Role
+    self.permissions = [:layer_full]
+  end
+
+  roles Kontakte, VeranstaltungenKurse
 end

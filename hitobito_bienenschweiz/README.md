@@ -11,44 +11,63 @@ of Bienenschweiz.
 * Dachverband
   * Dachverband
     * Administrator BienenSchweiz: [:admin, :layer_and_below_full]
-    * Supervisor/in: [:layer_and_below_full]
-  * Berater-Infos an Händler
-    * Mitglied: []
-  * Inspektor/in
-    * Inspektor/in (kantonale Ansprechperson): []
-  * Zentralvorstand
-    * Zentralpräsident/in: [:contact_data]
-    * Vizepräsident/in: [:contact_data]
-    * Geschäftsführer/in: [:contact_data]
-    * Mitglied: [:contact_data]
-  * Ehrenpersonen
-    * Ehrenmitglied: []
-    * Ehrenpräsident: []
-  * Andere Mitglieder
+  * Mitglieder
+    * Ehrenmitglied: [:contact_data]
+    * Ehrenpräsident: [:contact_data]
     * Andere Mitglieder: []
+  * Zentralvorstand
+    * Präsident: [:contact_data, :layer_and_below_read]
+    * Vizepräsident: [:contact_data, :layer_and_below_read]
+    * Finanzen: [:contact_data, :layer_and_below_read]
+    * Beisitzer: [:contact_data, :layer_and_below_read]
+  * Shop
+    * Kunde: []
+  * BienenZeitung
+    * Abo: []
+  * ThemenbezogeneKontakte
+    * Händler: []
+    * Inserenten: []
+    * Mitarbeitende: [:layer_and_below_read]
+    * Supervisor: [:layer_and_below_read]
 * Kantonalverband < Dachverband
   * Kantonalverband
-    * Bildungsobmann/frau: [:contact_data, :layer_and_below_read]
-    * Honigobmann/frau: [:contact_data, :layer_and_below_read]
-    * Honigobmann/frau (provisorisch): [:layer_and_below_read]
-    * Zuchtobmann/frau: [:contact_data, :layer_and_below_read]
-    * Kantonalpräsident/in: [:contact_data, :layer_and_below_full]
+    * AdminKanton: [:layer_full]
+  * Administrator
+    * Kontakte: [:layer_full]
+    * Veranstaltungen/Kurse: [:layer_full]
+  * Vorstand
+    * Bildung: [:contact_data, :layer_and_below_read]
+    * Produkte: [:contact_data, :layer_and_below_read]
+    * Zucht: [:contact_data, :layer_and_below_read]
+    * Präsident/in: [:contact_data, :layer_and_below_read]
+    * Vizepräsident/in: [:contact_data, :layer_and_below_read]
     * Kassier/in: [:contact_data, :layer_and_below_read]
+    * Aktuar/in: [:contact_data, :layer_and_below_read]
+    * Beisitzer/in: [:contact_data, :layer_and_below_read]
 * Sektion < Kantonalverband
   * Sektion
     * Admin Sektion: [:layer_and_below_full]
-    * Präsident/in: [:layer_and_below_full, :contact_data]
-    * Kassier/in: [:layer_read, :contact_data]
-    * Erfassung Veranstaltungen: [:layer_read]
+  * Siegelimker/in
     * Siegelimker/in: [:layer_read]
-    * Siegelimker/in provisorisch: [:layer_read]
-  * Bildung
-    * Fachperson Bildung: [:layer_read]
-    * Fachperson Bildung (in Ausbildung): [:layer_read]
-  * Produkte
-    * Fachperson Produkte: [:layer_read]
-    * Fachperson Produkte (in Ausbildung): [:layer_read]
-  * Zucht
-    * Fachperson Zucht: [:layer_read]
-    * Fachperson Zucht (in Ausbildung): [:layer_read]
+  * Administrator
+    * Erfassung Veranstaltungen: []
+    * Kontakte: []
+  * Mitglieder
+    * Ehrenmitglied: []
+    * Freimitglied: []
+    * Veteranen: []
+    * Mitglied: []
+  * Vorstand
+    * Bildung: [:contact_data, :layer_and_below_read]
+    * Produkte: [:contact_data, :layer_and_below_read]
+    * Zucht: [:contact_data, :layer_and_below_read]
+    * Präsident/in: [:contact_data, :layer_and_below_read]
+    * Vizepräsident/in: [:contact_data, :layer_and_below_read]
+    * Kassier/in: [:contact_data, :layer_and_below_read]
+    * Aktuar/in: [:contact_data, :layer_and_below_read]
+    * Beisitzer/in: [:contact_data, :layer_and_below_read]
+  * Kader
+    * Fachperson Bildung: [:contact_data, :layer_read]
+    * Fachperson Produkte: [:contact_data, :layer_read]
+    * Fachperson Zucht & Vermehrung: [:contact_data, :layer_read]
 <!-- roles:end -->

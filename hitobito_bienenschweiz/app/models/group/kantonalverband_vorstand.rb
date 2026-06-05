@@ -5,8 +5,20 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-class Group::Zentralvorstand < ::Group
+class Group::KantonalverbandVorstand < ::Group
   ### ROLES
+
+  class Bildung < ::Role
+    self.permissions = [:contact_data, :layer_and_below_read]
+  end
+
+  class Produkte < ::Role
+    self.permissions = [:contact_data, :layer_and_below_read]
+  end
+
+  class Zucht < ::Role
+    self.permissions = [:contact_data, :layer_and_below_read]
+  end
 
   class Praesident < ::Role
     self.permissions = [:contact_data, :layer_and_below_read]
@@ -16,7 +28,11 @@ class Group::Zentralvorstand < ::Group
     self.permissions = [:contact_data, :layer_and_below_read]
   end
 
-  class Finanzen < ::Role
+  class Kassier < ::Role
+    self.permissions = [:contact_data, :layer_and_below_read]
+  end
+
+  class Aktuar < ::Role
     self.permissions = [:contact_data, :layer_and_below_read]
   end
 
@@ -24,5 +40,5 @@ class Group::Zentralvorstand < ::Group
     self.permissions = [:contact_data, :layer_and_below_read]
   end
 
-  roles Praesident, Vizepraesident, Finanzen, Beisitzer
+  roles Bildung, Produkte, Zucht, Praesident, Vizepraesident, Kassier, Aktuar, Beisitzer
 end

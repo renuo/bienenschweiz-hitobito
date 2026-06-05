@@ -5,16 +5,20 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-class Group::Produkte < ::Group
+class Group::Kader < ::Group
   ### ROLES
 
+  class FachpersonBildung < ::Role
+    self.permissions = [:contact_data, :layer_read]
+  end
+
   class FachpersonProdukte < ::Role
-    self.permissions = [:layer_read]
+    self.permissions = [:contact_data, :layer_read]
   end
 
-  class FachpersonProdukteInAusbildung < ::Role
-    self.permissions = [:layer_read]
+  class FachpersonZuchtVermehrung < ::Role
+    self.permissions = [:contact_data, :layer_read]
   end
 
-  roles FachpersonProdukte, FachpersonProdukteInAusbildung
+  roles FachpersonBildung, FachpersonProdukte, FachpersonZuchtVermehrung
 end

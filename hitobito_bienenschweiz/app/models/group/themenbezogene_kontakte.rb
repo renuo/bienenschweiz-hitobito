@@ -5,12 +5,24 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-class Group::AndereMitglieder < ::Group
+class Group::ThemenbezogeneKontakte < ::Group
   ### ROLES
 
-  class AnderesMitglied < ::Role
+  class Haendler < ::Role
     self.permissions = []
   end
 
-  roles AnderesMitglied
+  class Inserenten < ::Role
+    self.permissions = []
+  end
+
+  class Mitarbeitende < ::Role
+    self.permissions = [:layer_and_below_read]
+  end
+
+  class Supervisor < ::Role
+    self.permissions = [:layer_and_below_read]
+  end
+
+  roles Haendler, Inserenten, Mitarbeitende, Supervisor
 end

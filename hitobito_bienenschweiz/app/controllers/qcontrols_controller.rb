@@ -42,11 +42,14 @@ class QcontrolsController < CrudController
   end
 
   def load_inspectors
-    @inspectors = Person.joins(:roles).where(roles: {type: [Group::Inspektion::Inspektor.sti_name]})
+    @inspectors = Person.joins(:roles)
+      .where(roles: {type: [Group::Kader::FachpersonProdukte.sti_name]})
   end
 
   def load_sektionen
-    @sektionen = @person.groups.where(roles: {type: [Group::Sektion::Siegelimker.sti_name,
-      Group::Sektion::SiegelimkerProvisorisch.sti_name]}).uniq
+    siegelimker_groups = @person.groups
+      .where(type: Group::Siegelimker.sti_name)
+      .where(roles: {type: [Group::Siegelimker::Siegelimker.sti_name]})
+    @sektionen = Group::Sektion.where(id: siegelimker_groups.select(:parent_id))
   end
 end

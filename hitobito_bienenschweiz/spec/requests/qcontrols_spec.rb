@@ -11,23 +11,20 @@ RSpec.describe QcontrolsController, type: :request do
   let(:root) { Group.root }
   let(:sektion) { groups(:aarau_und_umgebung) }
   let(:verband) { groups(:aargauer_kantonalverband) }
-  let(:verband_inspektion) { Fabricate(:group, parent: root, type: Group::Inspektion.sti_name) }
   let(:admin) { people(:admin) }
 
-  let(:beekeeper) {
-    Fabricate(:person)
-  }
-
-  let(:inspector) {
-    Fabricate(:person)
-  }
+  let(:beekeeper) { Fabricate(:person) }
+  let(:inspector) { Fabricate(:person) }
+  let(:siegelimker_group) { Fabricate(:group, parent: sektion, type: Group::Siegelimker.sti_name) }
 
   before do
     roles(:admin)
     sign_in(admin)
-    Fabricate(:role, person: beekeeper, group: sektion, type: Group::Sektion::Siegelimker.sti_name)
-    Fabricate(:role, person: inspector, group: verband_inspektion,
-      type: Group::Inspektion::Inspektor.sti_name)
+    Fabricate(:role, person: beekeeper, group: siegelimker_group,
+      type: Group::Siegelimker::Siegelimker.sti_name)
+    kader = Fabricate(:group, parent: sektion, type: Group::Kader.sti_name)
+    Fabricate(:role, person: inspector, group: kader,
+      type: Group::Kader::FachpersonProdukte.sti_name)
   end
 
   describe "#index" do
@@ -72,11 +69,6 @@ RSpec.describe QcontrolsController, type: :request do
         with_voucher: true,
         control_state: "passed"
       }
-    end
-
-    before do
-      Fabricate(:role, person: beekeeper, group: sektion,
-        type: Group::Sektion::Siegelimker.sti_name)
     end
 
     it "creates a new qcontrol" do
