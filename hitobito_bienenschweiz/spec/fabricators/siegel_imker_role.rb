@@ -8,5 +8,8 @@
 Fabricator(:siegel_imker_role, from: :role) do
   transient :sektion
   type { Group::Siegelimker::Siegelimker.sti_name }
-  group { |attrs| Fabricate(:group, type: Group::Siegelimker.sti_name, parent: attrs[:sektion] || Fabricate(:sektion)) }
+  group { |attrs|
+    Fabricate(:group, type: Group::Siegelimker.sti_name,
+      parent: attrs[:sektion] || Fabricate(:sektion))
+  }
 end
