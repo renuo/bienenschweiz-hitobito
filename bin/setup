@@ -22,5 +22,7 @@ pushd hitobito
 popd
 
 
-puts "\n== Creating pre-push hook link =="
-system 'ln -s ../../bin/fastcheck .git/hooks/pre-push'
+if [ ! -f .git/hooks/pre-push ]; then
+    echo -e "\n== Creating pre-push hook link =="
+    ln -s ../../bin/fastcheck .git/hooks/pre-push
+fi
