@@ -2,6 +2,14 @@
 
 Combined wagon and composition repository for the Bienenschweiz Hitobito instance
 
+## Environments
+
+| Branch  | Domain                                             | Deployment |
+| ------- | -------------------------------------------------- | ---------- |
+| develop | https://bienenschweiz-hitobito-develop.renuoapp.ch | auto       |
+| main    | TODO                                               | release    |
+
+
 ## Setup
 
 See [./hitobito/doc/developer/local_setup.md](https://github.com/hitobito/hitobito/blob/master/doc/developer/local_setup.md)
