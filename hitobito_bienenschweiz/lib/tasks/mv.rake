@@ -4,7 +4,7 @@ namespace :mv do
     MEMBER_ID_OFFSET = 10_000
     ROLE_ID_OFFSET = 10_000
 
-    task :members => :environment do
+    task members: :environment do
       failure_csv = "invalid_members.csv"
 
       class MvRecord < ApplicationRecord
@@ -31,7 +31,6 @@ namespace :mv do
       end
 
       class User < KasRecord
-
       end
 
       total_count = 0
@@ -51,10 +50,12 @@ namespace :mv do
         begin
           person.first_name = member.firstname
           person.last_name = member.lastname
-          person.address_care_of = [member.affix_1, member.affix_2, member.affix_3].map(&:presence).compact.join(", ")
+          person.address_care_of = [member.affix_1, member.affix_2,
+            member.affix_3].map(&:presence).compact.join(", ")
           person.street = member.street
           person.housenumber = member.house_no
-          person.postbox = [member.pobox, member.pobox_zip, member.pobox_zip_ex].map(&:presence).compact.join(", ")
+          person.postbox = [member.pobox, member.pobox_zip,
+            member.pobox_zip_ex].map(&:presence).compact.join(", ")
           person.salutation = member.salutation
           person.hive_count = member.hive_count
           person.honey_yield = member.honey_yield
@@ -111,16 +112,15 @@ namespace :mv do
         end
       end
       CSV.open(failure_csv, "w",
-               write_headers: true,
-               :headers => ["id", "selectline_number", "error"]
-      ) do |csv|
+        write_headers: true,
+        headers: ["id", "selectline_number", "error"]) do |csv|
         failed_members.each do |m, error|
           csv << [m.id, m.selectline_customer_number, error]
         end
       end
       puts "Imported #{success_count}/#{total_count} members (email duplicate: #{email_duplicate_count}, imported without zip validation: #{import_without_validations})"
     end
-    task :groups => :environment do
+    task groups: :environment do
       class MvRecord < ApplicationRecord
         self.abstract_class = true
         connects_to database: {reading: :mv, writing: :mv}
@@ -168,13 +168,13 @@ namespace :mv do
     end
 
     def find_role(membership)
-      ad_roles = ['SI_We', 'SI_WE', 'SI WE', 'SI_WE 2020'] # the different spellings are for different years ...
+      ad_roles = ["SI_We", "SI_WE", "SI WE", "SI_WE 2020"] # the different spellings are for different years ...
       if ad_roles.include?(membership.role.name_t)
         # needs to be mapped to num_ad_boards later??
         return -1
       end
       # this one isn't included in the mapping table at all. shows up on verein and sektion
-      return nil if membership.role.name_t == 'Ansprechsperson Asiatische Hornisse'
+      return nil if membership.role.name_t == "Ansprechsperson Asiatische Hornisse"
       case membership.intern_structure.structure_type
       when "verband"
         case membership.role.name_t
@@ -182,7 +182,7 @@ namespace :mv do
           Group::KantonalverbandVorstand::Praesident
         when "K"
           Group::KantonalverbandVorstand::Kassier
-        when "B", "B-PROV", "H", "Z", "Z-PROV", "SI", 'SI-PROV'
+        when "B", "B-PROV", "H", "Z", "Z-PROV", "SI", "SI-PROV"
           # only exists on Sektion.
         when "INSP", "B-INFO", "SU"
           # only exists on Verein
@@ -198,13 +198,13 @@ namespace :mv do
           # only exists on Sektion
         when "INS", "KP-prov"
           # marked as archived and ignored
-          return -1
-        when /IB_(\d+|F)/, 'Kaderkurs 0'
+          -1
+        when /IB_(\d+|F)/, "Kaderkurs 0"
           # needs to be mapped to courses later
-          return -1
+          -1
         when "FA", "FA_F", "IK", "BS_EK", /BS_VK_B\d/
           # needs to be mapped to qualifications later
-          return -1
+          -1
         when "EV"
           # only exists on Sektion now
         else
@@ -234,12 +234,12 @@ namespace :mv do
           # no longer a thing
         when "EV"
           Group::SektionAdministrator::ErfassungVeranstaltungen
-        when "HAN", "INS", "BEA", 'SM'
+        when "HAN", "INS", "BEA", "SM"
           # marked as archived and ignored
-          return -1
-        when /IB_\d+/, 'Kaderkurs 0'
+          -1
+        when /IB_\d+/, "Kaderkurs 0"
           # needs to be mapped to courses later
-          return -1
+          -1
         when "INSP"
           # only exists on Verein
         when "KP"
@@ -249,7 +249,7 @@ namespace :mv do
         end
       when "verein"
         case membership.role.name_t
-        when "sekretariat", "HAN", 'Mitglied Kontrollstelle', "INS", 'HK'
+        when "sekretariat", "HAN", "Mitglied Kontrollstelle", "INS", "HK"
           # marked as archived and ignored
         when "A"
           Group::Dachverband::AdministratorBienenSchweiz
@@ -261,13 +261,13 @@ namespace :mv do
           Group::Mitglieder::Ehrenmitglied
         when "ZV"
           Group::Zentralvorstand::Beisitzer
-        when 'Mitglied VDRB' # Probably?
+        when "Mitglied VDRB" # Probably?
           Group::Mitglieder::AnderesMitglied
-        when 'INSP'
+        when "INSP"
           # currently not mapped
-        when "EV", 'SI'
+        when "EV", "SI"
           # only exists on Sektion now
-        when 'H-PROV'
+        when "H-PROV"
           # only exists on Verband
         else
           raise "Unspecified role #{membership.role.name_t} (#{membership.role.name}) for verein"
@@ -277,7 +277,7 @@ namespace :mv do
       end
     end
 
-    task :roles => :environment do
+    task roles: :environment do
       class MvRecord < ApplicationRecord
         self.abstract_class = true
         connects_to database: {reading: :mv, writing: :mv}
@@ -292,7 +292,7 @@ namespace :mv do
       end
 
       class Membership < MvRecord
-        belongs_to :role, class_name: "MvRole", foreign_key: :role_id
+        belongs_to :role, class_name: "MvRole"
         belongs_to :intern_structure
       end
 
@@ -302,43 +302,41 @@ namespace :mv do
       mapped_count = 0
       unknown_mappings = []
       scope.includes(:role).find_each do |membership|
-        begin
-          role_type = find_role(membership)
-          if role_type.nil?
-            puts "Unknown mapping for #{membership.id} with role #{membership.role.name} (#{membership.role.name_t}) on structure type #{membership.intern_structure.structure_type}"
-            unknown_mappings |= [[membership.role, membership.intern_structure.structure_type]]
-            next
-          end
-          if role_type == -1
-            # puts "Skipping #{membership.id} with role #{membership.role.name} (#{membership.role.name_t}) on structure type #{membership.intern_structure.structure_type}"
-            next
-          end
-          group_class = role_type.model_name.to_s.deconstantize.constantize
-          group = membership.intern_structure.verein? ? Group.root : Group.find(membership.intern_structure_id + ::GROUP_ID_OFFSET)
-          person = Person.find(membership.member_id + ::MEMBER_ID_OFFSET)
-          if group.is_a? group_class
-            # puts "Matched #{group_class}"
-          else
-            group = group.children.where(type: group_class.sti_name).first
-          end
-          # puts "Adding to #{group.inspect}"
-
-          # TODO: do we need/want this?
-          # PeopleManager.where(managed: person, manager: admin).first_or_create!
-
-          role_id = membership.id + ROLE_ID_OFFSET
-          role = person.roles.with_inactive.where(id: role_id).first_or_initialize
-          role.update(type: role_type.sti_name,
-                      group: group,
-                      start_on: membership.valid_from,
-                      end_on: membership.valid_until,
-                      created_at: membership.created_at,
-                      updated_at: membership.updated_at)
-          role.save!
-          mapped_count += 1
-        rescue StandardError => e
-          puts e.message
+        role_type = find_role(membership)
+        if role_type.nil?
+          puts "Unknown mapping for #{membership.id} with role #{membership.role.name} (#{membership.role.name_t}) on structure type #{membership.intern_structure.structure_type}"
+          unknown_mappings |= [[membership.role, membership.intern_structure.structure_type]]
+          next
         end
+        if role_type == -1
+          # puts "Skipping #{membership.id} with role #{membership.role.name} (#{membership.role.name_t}) on structure type #{membership.intern_structure.structure_type}"
+          next
+        end
+        group_class = role_type.model_name.to_s.deconstantize.constantize
+        group = membership.intern_structure.verein? ? Group.root : Group.find(membership.intern_structure_id + ::GROUP_ID_OFFSET)
+        person = Person.find(membership.member_id + ::MEMBER_ID_OFFSET)
+        if group.is_a? group_class
+          # puts "Matched #{group_class}"
+        else
+          group = group.children.where(type: group_class.sti_name).first
+        end
+        # puts "Adding to #{group.inspect}"
+
+        # TODO: do we need/want this?
+        # PeopleManager.where(managed: person, manager: admin).first_or_create!
+
+        role_id = membership.id + ROLE_ID_OFFSET
+        role = person.roles.with_inactive.where(id: role_id).first_or_initialize
+        role.update(type: role_type.sti_name,
+          group: group,
+          start_on: membership.valid_from,
+          end_on: membership.valid_until,
+          created_at: membership.created_at,
+          updated_at: membership.updated_at)
+        role.save!
+        mapped_count += 1
+      rescue StandardError => e
+        puts e.message
       end
       puts "Mapped #{mapped_count}/#{total} roles"
       puts "#{unknown_mappings.count} unknown mappings:"
