@@ -9,15 +9,12 @@ module Bienenschweiz::Person
   extend ActiveSupport::Concern
 
   QCONTROLLER_ROLES = [
-    Group::Produkte::FachpersonProdukte.sti_name,
-    Group::Produkte::FachpersonProdukteInAusbildung.sti_name,
-    Group::Kantonalverband::Honigobperson.sti_name,
-    Group::Kantonalverband::HonigobpersonProvisorisch.sti_name
+    Group::Kader::FachpersonProdukte.sti_name,
+    Group::KantonalverbandVorstand::Produkte.sti_name
   ].freeze
 
   BEEKEEPER_ROLES = [
-    Group::Sektion::Siegelimker.sti_name,
-    Group::Sektion::SiegelimkerProvisorisch.sti_name
+    Group::Siegelimker::Siegelimker.sti_name
   ]
 
   included do # rubocop:disable Metrics/BlockLength
@@ -35,24 +32,17 @@ module Bienenschweiz::Person
       self.class.qcontrol_beekeepers_from(inspectable_groups)
     end
 
-    scope :qcontrol_beekeepers_from, lambda { |group|
-      where(id: Role.active.where(group: group, type: BEEKEEPER_ROLES).select(:person_id))
+    scope :qcontrol_beekeepers_from, lambda { |sektionen|
+      siegelimker_groups = Group.where(type: Group::Siegelimker.sti_name, parent_id: sektionen)
+      active_roles = Role.active.where(group: siegelimker_groups, type: BEEKEEPER_ROLES)
+      where(id: active_roles.select(:person_id))
     }
 
     def inspectable_groups
-      roles
-        .where(type: QCONTROLLER_ROLES)
-        .includes(:group)
-        .sort_by do |role|
-        [role.is_a?(Group::Produkte::FachpersonProdukte) ? 0 : 1, -role.start_on.to_time.to_i]
-      end.map do |role|
-        group = role.group
-        if group.is_a?(Group::Kantonalverband)
-          group.children.where(type: Group::Sektion.sti_name).to_a
-        else
-          group.parent
-        end
-      end.flatten.uniq
+      sorted_roles = roles.where(type: QCONTROLLER_ROLES).includes(:group).sort_by do |r|
+        [r.is_a?(Group::Kader::FachpersonProdukte) ? 0 : 1, -r.start_on.to_time.to_i]
+      end
+      sorted_roles.flat_map { |r| sektionen_for_role(r) }.uniq
     end
 
     def inspectable_intern_structures
@@ -104,6 +94,17 @@ module Bienenschweiz::Person
 
     def mobile
       phone_numbers.where(label: :mobile).first&.number
+    end
+
+    private
+
+    def sektionen_for_role(role)
+      group = role.group
+      if group.is_a?(Group::KantonalverbandVorstand)
+        group.parent.children.where(type: Group::Sektion.sti_name).to_a
+      else
+        [group.parent]
+      end
     end
   end
 end

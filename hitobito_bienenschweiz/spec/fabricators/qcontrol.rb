@@ -14,7 +14,7 @@ Fabricator(:qcontrol) do
   group { Fabricate(:sektion) }
   inspector do |attrs|
     Fabricate(:fachperson_produkte,
-      group_id: Fabricate(:group, parent: attrs[:group], type: Group::Produkte.sti_name).id)
+      group_id: Fabricate(:group, parent: attrs[:group], type: Group::Kader.sti_name).id)
   end
   control_date { Date.current }
   with_voucher { false }

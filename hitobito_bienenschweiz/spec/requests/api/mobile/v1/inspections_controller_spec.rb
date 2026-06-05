@@ -9,8 +9,8 @@ require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
   let!(:fachperson_produkte) { Fabricate(:fachperson_produkte, group_id: group.id) }
-  let(:group) { groups(:produkte_380) }
-  let!(:other_group) { groups(:produkte_383) }
+  let(:group) { groups(:kader_380) }
+  let!(:other_group) { groups(:kader_383) }
   let(:beekeeper) { Fabricate(:beekeeper, group_id: group.parent.id) }
   let(:auth_headers) { {"Access-Token": fachperson_produkte.beeaudit_authentication_token} }
 
@@ -168,28 +168,17 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
 
     context "different beekeeper roles" do
       let!(:other_beekeeper) { Fabricate(:person) }
-      let!(:siegel_imker_role) { Fabricate(:siegel_imker_role) }
-      let!(:temporary_siegel_imker_role) { Fabricate(:temporary_siegel_imker_role) }
+      let!(:unrelated_siegel_imker) { Fabricate(:siegel_imker_role) }
 
       before do
+        siegelimker_group = Fabricate(:group, type: Group::Siegelimker.sti_name,
+          parent: group.parent)
         Fabricate(:role,
-          type: Group::Sektion::Siegelimker, person: other_beekeeper, group_id: group.parent.id,
+          type: Group::Siegelimker::Siegelimker, person: other_beekeeper, group: siegelimker_group,
           start_on: 1.year.ago, end_on: nil)
       end
 
-      context "siegel imker" do
-        let(:role) { siegel_imker_role }
-
-        it { creates_with_correct_section }
-      end
-
-      context "siegel imker provisorisch" do
-        let(:role) { temporary_siegel_imker_role }
-
-        it { creates_with_correct_section }
-      end
-
-      def creates_with_correct_section
+      it "creates with the correct section" do
         post api_mobile_v1_beekeeper_inspections_path(other_beekeeper, format: :json),
           params: {inspection: qcontrol_params}, headers: auth_headers
         expect(response).to have_http_status(:no_content)
@@ -202,10 +191,12 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
 
       before do
         Fabricate(:role,
-          type: Group::Produkte::FachpersonProdukte, person: other_beekeeper,
+          type: Group::Kader::FachpersonProdukte, person: other_beekeeper,
           group_id: other_group.id, start_on: 1.year.ago, end_on: nil)
+        siegelimker_group = Fabricate(:group, type: Group::Siegelimker.sti_name,
+          parent: group.parent)
         Fabricate(:role,
-          type: Group::Sektion::Siegelimker, person: other_beekeeper, group_id: group.parent.id,
+          type: Group::Siegelimker::Siegelimker, person: other_beekeeper, group: siegelimker_group,
           start_on: 1.year.ago, end_on: nil)
       end
 
@@ -222,12 +213,16 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
 
       before do
         beekeeper.roles.first.update(end_on: 3.days.ago)
-        Fabricate(:role, type: Group::Produkte::FachpersonProdukte, person: fachperson_produkte,
+        Fabricate(:role, type: Group::Kader::FachpersonProdukte, person: fachperson_produkte,
           group_id: other_group.id, start_on: 3.days.ago, end_on: nil)
-        Fabricate(:role, type: Group::Sektion::Siegelimker, person: beekeeper,
-          group_id: recent_group.id, start_on: 2.days.ago, end_on: nil)
-        Fabricate(:role, type: Group::Sektion::Siegelimker, person: beekeeper,
-          group_id: other_group.parent.id, start_on: 3.days.ago, end_on: nil)
+        recent_siegelimker = Fabricate(:group, type: Group::Siegelimker.sti_name,
+          parent: recent_group)
+        Fabricate(:role, type: Group::Siegelimker::Siegelimker, person: beekeeper,
+          group: recent_siegelimker, start_on: 2.days.ago, end_on: nil)
+        seetal_siegelimker = Fabricate(:group, type: Group::Siegelimker.sti_name,
+          parent: other_group.parent)
+        Fabricate(:role, type: Group::Siegelimker::Siegelimker, person: beekeeper,
+          group: seetal_siegelimker, start_on: 3.days.ago, end_on: nil)
       end
 
       it "assigns the first valid intern structure ordered by start_on" do

@@ -57,8 +57,8 @@ module Api
 
           valid_memberships = @beekeeper.roles.where(
             type: Bienenschweiz::Person::BEEKEEPER_ROLES
-          ).order(:start_on)
-          ret[:group_id] = valid_memberships.first.group_id
+          ).order(:start_on).includes(:group)
+          ret[:group_id] = valid_memberships.first.group.parent_id
           ret[:no_control_reason] ||= :no_reason
           ret
         end

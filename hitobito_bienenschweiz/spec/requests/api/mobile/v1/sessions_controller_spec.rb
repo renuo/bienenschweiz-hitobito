@@ -20,8 +20,8 @@ RSpec.describe Api::Mobile::V1::SessionsController, type: :request do
     context "user sends valid credentials" do
       context "user has a quality fachperson_produkte role" do
         before do
-          Fabricate(:role, type: Group::Produkte::FachpersonProdukte, person:,
-            group: groups(:produkte_380))
+          Fabricate(:role, type: Group::Kader::FachpersonProdukte, person:,
+            group: groups(:kader_380))
           perform_call
         end
 

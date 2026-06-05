@@ -8,7 +8,7 @@
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::QualityControlQuestionsController, type: :request do
-  let!(:fachperson_produkte) { Fabricate(:fachperson_produkte, group_id: groups(:produkte_380).id) }
+  let!(:fachperson_produkte) { Fabricate(:fachperson_produkte, group_id: groups(:kader_380).id) }
   let!(:qc_section) { Fabricate(:quality_control_section, version: QualityControlSection.version) }
   let!(:qc_questions) {
     Fabricate.times(5, :quality_control_question, quality_control_section: qc_section)

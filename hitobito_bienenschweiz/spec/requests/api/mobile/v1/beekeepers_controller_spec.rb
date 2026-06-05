@@ -9,7 +9,7 @@ require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
   let(:fachperson_produkte) do
-    Fabricate(:fachperson_produkte, group_id: groups(:produkte_383).id)
+    Fabricate(:fachperson_produkte, group_id: groups(:kader_383).id)
   end
   let(:beekeepers) { Fabricate.times(10, :person).sort_by { |b| [b.last_name, b.first_name] } }
   let(:honey_chairman) { Fabricate(:honey_chairman, group_id: group1.parent.id) }
@@ -19,13 +19,8 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
 
   def add_beekeeper_memberships
     beekeepers.each_with_index do |beekeeper, index|
-      if index < 2
-        Fabricate(:temporary_siegel_imker_role, person: beekeeper, group: group1)
-      elsif index < 5
-        Fabricate(:siegel_imker_role, person: beekeeper, group: group1)
-      else
-        Fabricate(:siegel_imker_role, person: beekeeper, group: group2)
-      end
+      sektion = (index < 5) ? group1 : group2
+      Fabricate(:siegel_imker_role, person: beekeeper, sektion:)
     end
   end
 

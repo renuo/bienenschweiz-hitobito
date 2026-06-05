@@ -10,9 +10,6 @@ require "spec_helper"
 describe Person do
   describe "#inspectable_groups" do
     let(:person) { Fabricate(:person) }
-    let(:inspector_role) { create :inspector_role }
-    let(:honey_chairman_role) { create :honey_chairman_role }
-    let(:siegel_imker_role) { create :siegel_imker_role }
     let(:verband) { groups(:aargauer_kantonalverband) }
 
     context "without any roles" do
@@ -22,7 +19,7 @@ describe Person do
     end
 
     context "with one active role as an inspector" do
-      let(:group) { groups(:produkte_380) }
+      let(:group) { groups(:kader_380) }
       let(:person) { Fabricate(:fachperson_produkte, group_id: group.id) }
 
       it "returns Sektion of that group" do
@@ -39,34 +36,16 @@ describe Person do
       end
     end
 
-    # TODO: cleanup before merge
-    # We no longer have this case as the role type is restricted by group type
-    # context 'with one active role not in a verband' do
-    #   let(:intern_structure) { create :verein }
-    #   let!(:role) { create(:role, person: person, role: inspector_role, intern_structure:) }
-    #   it 'returns that intern structure' do
-    #     expect(person.inspectable_groups).to be_empty
-    #   end
-    # end
-    #
-    # context 'with one active role not in a sektion that has a section child' do
-    #   let!(:child_section) { create :section, parent: intern_structure }
-    #   let(:intern_structure) { create :verein }
-    #   let!(:role) { create(:role, person: person, role: inspector_role, intern_structure:) }
-    #   it 'returns that intern structure' do
-    #     expect(person.inspectable_groups).to contain_exactly(child_section)
-    #   end
-    # end
-
     context "with multiple roles as both inspector and chairman" do
-      let(:group) { groups(:produkte_380) }
+      let(:group) { groups(:kader_380) }
       let(:person) { Fabricate(:fachperson_produkte, group_id: group.id) }
       let(:other_verband) { Fabricate(:kantonalverband) }
       let!(:other_sektion) { Fabricate(:sektion, parent: other_verband, name: "AAA") }
       let!(:chairman_role) {
-        Fabricate(:role,
-          group_id: other_verband.id,
-          type: Group::Kantonalverband::Honigobperson, person:)
+        kv_vorstand = Fabricate(:group, type: Group::KantonalverbandVorstand.sti_name,
+          parent: other_verband)
+        Fabricate(:role, group_id: kv_vorstand.id,
+          type: Group::KantonalverbandVorstand::Produkte.sti_name, person:)
       }
 
       it "returns the intern structure from the inspector role first" do
@@ -75,21 +54,22 @@ describe Person do
     end
 
     context "with multiple active roles as inspector" do
-      let(:group) { groups(:produkte_380) }
-      let(:other_produkte_group) { groups(:produkte_602) }
+      let(:group) { groups(:kader_380) }
+      let(:other_kader_group) { groups(:kader_602) }
       let(:person) { Fabricate(:fachperson_produkte, group_id: group.id) }
 
       let!(:other_inspector_role) {
         Fabricate(:role,
-          group_id: other_produkte_group.id,
-          type: Group::Produkte::FachpersonProdukte, person:)
+          group_id: other_kader_group.id,
+          type: Group::Kader::FachpersonProdukte, person:)
       }
       let(:other_verband) { Fabricate(:kantonalverband) }
       let!(:other_sektion) { Fabricate(:sektion, parent: other_verband, name: "AAA") }
       let!(:chairman_role) {
-        Fabricate(:role,
-          group_id: other_verband.id,
-          type: Group::Kantonalverband::Honigobperson, person:)
+        kv_vorstand = Fabricate(:group, type: Group::KantonalverbandVorstand.sti_name,
+          parent: other_verband)
+        Fabricate(:role, group_id: kv_vorstand.id,
+          type: Group::KantonalverbandVorstand::Produkte.sti_name, person:)
       }
 
       it "returns the intern structure from the inspector role first" do
@@ -102,7 +82,7 @@ describe Person do
 
   describe "#inspectable_intern_structures" do
     context "with one active role as an inspector" do
-      let(:group) { groups(:produkte_380) }
+      let(:group) { groups(:kader_380) }
       let(:sektion) { groups(:aarau_und_umgebung) }
       let(:person) { Fabricate(:fachperson_produkte, group_id: group.id) }
 
@@ -122,25 +102,26 @@ describe Person do
     let(:aargau_canton) { groups(:aargauer_kantonalverband) }
     let(:bern_canton) { groups(:berner_kantonalverband) }
     let(:aarau) { groups(:aarau_und_umgebung) }
-    let(:aarau_produkte) { groups(:produkte_380) }
+    let(:aarau_kader) { groups(:kader_380) }
     let(:seetal) { groups(:aargauisches_seetal) }
     let(:aarberg) { groups(:aarberg) }
     let(:bern_mittelland) { groups(:bern_mittelland) }
     let(:aarau_inspector) do
-      Fabricate(:fachperson_produkte, group_id: aarau_produkte.id, last_name: "Inspektor")
+      Fabricate(:fachperson_produkte, group_id: aarau_kader.id, last_name: "Inspektor")
     end
     let(:bern_inspector) do
       Fabricate(:honey_chairman, group_id: bern_canton.id)
     end
 
     before do
-      Fabricate(:siegel_imker_role, person: beekeepers[0], group: aarau)
-      Fabricate(:siegel_imker_role, person: beekeepers[1], group: seetal)
-      Fabricate(:siegel_imker_role, person: beekeepers[2], group: aarberg)
-      Fabricate(:siegel_imker_role, person: beekeepers[3], group: bern_mittelland)
-      Fabricate(:siegel_imker_role, person: beekeepers[4], group: seetal, start_on: 1.day.from_now)
-      Fabricate(:siegel_imker_role, person: beekeepers[5], group: aarau, end_on: 1.day.ago)
-      Fabricate(:siegel_imker_role, person: aarau_inspector, group: aarau)
+      Fabricate(:siegel_imker_role, person: beekeepers[0], sektion: aarau)
+      Fabricate(:siegel_imker_role, person: beekeepers[1], sektion: seetal)
+      Fabricate(:siegel_imker_role, person: beekeepers[2], sektion: aarberg)
+      Fabricate(:siegel_imker_role, person: beekeepers[3], sektion: bern_mittelland)
+      Fabricate(:siegel_imker_role, person: beekeepers[4], sektion: seetal,
+        start_on: 1.day.from_now)
+      Fabricate(:siegel_imker_role, person: beekeepers[5], sektion: aarau, end_on: 1.day.ago)
+      Fabricate(:siegel_imker_role, person: aarau_inspector, sektion: aarau)
     end
 
     it "contains the beekeepers from the same group as inspector including himself" do

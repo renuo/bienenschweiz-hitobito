@@ -6,7 +6,7 @@
 # https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
 
 Fabricator(:siegel_imker_role, from: :role) do
-  type { Group::Sektion::Siegelimker.sti_name }
-
-  group { Fabricate(:group, type: Group::Sektion.sti_name) }
+  transient :sektion
+  type { Group::Siegelimker::Siegelimker.sti_name }
+  group { |attrs| Fabricate(:group, type: Group::Siegelimker.sti_name, parent: attrs[:sektion] || Fabricate(:sektion)) }
 end

@@ -8,7 +8,7 @@
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::BlankInspectionsController, type: :request do
-  let(:group) { groups(:produkte_380) }
+  let(:group) { groups(:kader_380) }
   let(:fachperson_produkte) { Fabricate(:fachperson_produkte, group_id: group.id) }
   let(:auth_headers) { {"Access-Token": fachperson_produkte.beeaudit_authentication_token} }
 
@@ -78,13 +78,15 @@ RSpec.describe Api::Mobile::V1::BlankInspectionsController, type: :request do
     context "when fachperson_produkte has multiple intern structures" do
       let(:sektion) { groups(:aargauisches_seetal) }
       let!(:beekeeper_membership) do
+        siegelimker_group = Fabricate(:group, type: Group::Siegelimker.sti_name, parent: sektion)
         Fabricate(:role,
-          type: Group::Sektion::Siegelimker.sti_name, person: fachperson_produkte, group: sektion,
-          start_on: 1.day.ago, end_on: nil)
+          type: Group::Siegelimker::Siegelimker.sti_name, person: fachperson_produkte,
+          group: siegelimker_group, start_on: 1.day.ago, end_on: nil)
       end
       let(:fachperson_produkte_section) {
         fachperson_produkte.groups
-          .where(roles: {type: Group::Produkte::FachpersonProdukte.sti_name}).first.parent
+          .where(type: Group::Kader.sti_name)
+          .where(roles: {type: Group::Kader::FachpersonProdukte.sti_name}).first.parent
       }
 
       it "assigns the intern structure where the user is fachperson_produkte" do
@@ -101,15 +103,16 @@ RSpec.describe Api::Mobile::V1::BlankInspectionsController, type: :request do
 
     context "when fachperson_produkte has multiple intern structures as honey chairman" do
       let!(:honey_chairman_membership) do
+        kv_vorstand = Fabricate(:group, type: Group::KantonalverbandVorstand.sti_name,
+          parent: groups(:aargauer_kantonalverband))
         Fabricate(:role,
-          type: Group::Kantonalverband::Honigobperson.sti_name, person: fachperson_produkte,
-          group: groups(:aargauer_kantonalverband), start_on: 2.years.ago, end_on: nil)
+          type: Group::KantonalverbandVorstand::Produkte.sti_name, person: fachperson_produkte,
+          group: kv_vorstand, start_on: 2.years.ago, end_on: nil)
       end
       let(:fachperson_produkte_section) {
-        fachperson_produkte.groups.where(
-          roles: {type: Group::Kantonalverband::Honigobperson.sti_name}
-        )
-          .first.children.first
+        fachperson_produkte.groups
+          .where(type: Group::Kader.sti_name)
+          .where(roles: {type: Group::Kader::FachpersonProdukte.sti_name}).first.parent
       }
 
       before do

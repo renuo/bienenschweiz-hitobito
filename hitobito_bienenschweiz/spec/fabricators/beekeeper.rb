@@ -11,9 +11,11 @@ Fabricator(:beekeeper, from: :person) do
   membership_end_on { nil }
 
   after_create do |person, transients|
+    sektion = Group.find(transients[:group_id] || Fabricate(:sektion).id)
+    siegelimker_group = Fabricate(:group, type: Group::Siegelimker.sti_name, parent: sektion)
     Fabricate(:role,
-      group_id: transients[:group_id] || Fabricate(:sektion).id,
-      type: Group::Sektion::Siegelimker.sti_name, person:,
+      group_id: siegelimker_group.id,
+      type: Group::Siegelimker::Siegelimker.sti_name, person:,
       start_on: transients[:membership_start_on], end_on: transients[:membership_end_on])
   end
 end

@@ -13,9 +13,9 @@ RSpec.describe "Login", type: :request do
       Fabricate(:person, email: sent_email, password:,
         authentication_token: "7xpaJOim8rbDH-ibP30GZQ")
     }
-    let(:group) { groups(:produkte_380) }
+    let(:group) { groups(:kader_380) }
     let!(:role) {
-      Fabricate(:role, type: Group::Produkte::FachpersonProdukte.sti_name,
+      Fabricate(:role, type: Group::Kader::FachpersonProdukte.sti_name,
         person: fachperson_produkte,
         group:)
     }

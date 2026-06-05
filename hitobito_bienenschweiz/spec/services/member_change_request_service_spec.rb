@@ -15,7 +15,7 @@ RSpec.describe MemberChangeRequestService do
   }
   let(:intern_structure) { groups(:aargauer_kantonalverband) }
   let(:inspector) do
-    Fabricate(:fachperson_produkte, group_id: groups(:produkte_383).id)
+    Fabricate(:fachperson_produkte, group_id: groups(:kader_383).id)
   end
 
   describe "#request_change" do

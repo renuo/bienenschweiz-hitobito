@@ -36,12 +36,10 @@ module Api
               deadline_at notes fulfilled]]}
           ])
           inspectable_groups = current_person.groups
-            .where(roles: {type: [
-              Group::Produkte::FachpersonProdukte.sti_name,
-              Group::Produkte::FachpersonProdukteInAusbildung.sti_name
-            ]})
+            .where(type: Group::Kader.sti_name)
+            .where(roles: {type: [Group::Kader::FachpersonProdukte.sti_name]})
             .order(roles: {start_on: "asc"})
-          ret[:group_id] = ret.delete(:intern_structure_id) || inspectable_groups.first.parent.id
+          ret[:group_id] = ret.delete(:intern_structure_id) || inspectable_groups.first.parent_id
           ret[:no_control_reason] ||= :no_reason
           ret
         end

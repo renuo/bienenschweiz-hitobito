@@ -9,8 +9,10 @@ Fabricator(:honey_chairman, from: :person) do
   transient :group_id
 
   after_create do |person, transients|
+    kv = Group.find(transients[:group_id])
+    kv_vorstand = Fabricate(:group, type: Group::KantonalverbandVorstand.sti_name, parent: kv)
     Fabricate(:role,
-      group_id: transients[:group_id],
-      type: Group::Kantonalverband::Honigobperson.sti_name, person:)
+      group_id: kv_vorstand.id,
+      type: Group::KantonalverbandVorstand::Produkte.sti_name, person:)
   end
 end

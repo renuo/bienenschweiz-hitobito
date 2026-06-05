@@ -14,7 +14,7 @@ RSpec.describe QcontrolsController, type: :request do
   let(:admin) { people(:admin) }
 
   let(:beekeeper) { Fabricate(:person) }
-  let(:inspector) { Fabricate(:person) }
+  let(:fachperson_produkte) { Fabricate(:person) }
   let(:siegelimker_group) { Fabricate(:group, parent: sektion, type: Group::Siegelimker.sti_name) }
 
   before do
@@ -23,7 +23,7 @@ RSpec.describe QcontrolsController, type: :request do
     Fabricate(:role, person: beekeeper, group: siegelimker_group,
       type: Group::Siegelimker::Siegelimker.sti_name)
     kader = Fabricate(:group, parent: sektion, type: Group::Kader.sti_name)
-    Fabricate(:role, person: inspector, group: kader,
+    Fabricate(:role, person: fachperson_produkte, group: kader,
       type: Group::Kader::FachpersonProdukte.sti_name)
   end
 
