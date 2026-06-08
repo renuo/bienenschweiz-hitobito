@@ -12,15 +12,16 @@ module Api
         respond_to :json
 
         before_action :authenticate_inspector!
-        rescue_from ActiveRecord::RecordNotFound, with: :not_found
+        rescue_from ActiveRecord::RecordNotFound do
+          render json: {}, status: :not_found
+        end
+        rescue_from ActionController::ParameterMissing do
+          head :bad_request
+        end
 
         protected
 
         attr_reader :current_person
-
-        rescue_from ActionController::ParameterMissing do |exception|
-          head :bad_request
-        end
 
         def authenticate_inspector!
           authentication_token = request.headers["Access-Token"] || params[:access_token]
@@ -33,10 +34,6 @@ module Api
             render json: {},
               status: :unauthorized
           end
-        end
-
-        def not_found
-          render json: {}, status: :not_found
         end
       end
     end
