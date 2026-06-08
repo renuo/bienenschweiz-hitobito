@@ -29,7 +29,7 @@ module Api
         def create
           Rails.logger.info("Creating Qcontrol: #{params[:inspection]}")
           @qcontrol = @beekeeper.qcontrols.build(inspection_params)
-          @qcontrol.author_name = "VDRB-APP"
+          @qcontrol.author_name = "Beeaudit"
           @qcontrol.from_app = true
           @qcontrol.inspector_id = current_person.id
           @qcontrol.person = @beekeeper

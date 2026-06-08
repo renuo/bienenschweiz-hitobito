@@ -245,7 +245,7 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
         is_expected.to have_attributes qcontrol_params.except(
           :quality_control_answers_attributes, :no_control_reason, :mass_import
         ).merge(
-          author_name: "VDRB-APP", certificate_printed: true
+          author_name: "Beeaudit", certificate_printed: true
         )
       end
 
@@ -312,7 +312,7 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
       is_expected.to have_attributes params_to_send.except(
         :quality_control_answers_attributes, :mass_import, :member_notified
       ).merge(
-        author_name: "VDRB-APP"
+        author_name: "Beeaudit"
       )
     end
   end

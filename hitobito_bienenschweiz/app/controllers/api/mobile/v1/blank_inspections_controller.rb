@@ -14,7 +14,7 @@ module Api
           Rails.logger.info("Member params: #{params[:member]}")
           Rails.logger.info("Qcontrol params: #{params[:inspection]}")
           @qcontrol = Qcontrol.new(inspection_params)
-          @qcontrol.author_name = "VDRB-APP"
+          @qcontrol.author_name = "Beeaudit"
           @qcontrol.from_app = true
           @qcontrol.inspector_id = current_person.id
 
