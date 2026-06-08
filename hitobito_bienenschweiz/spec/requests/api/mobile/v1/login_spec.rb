@@ -10,7 +10,7 @@ require "spec_helper"
 RSpec.describe "Login", type: :request do
   context "/api/mobile/v1/sessions" do
     let!(:fachperson_produkte) {
-      Fabricate(:fachperson_produkte, email: sent_email, password:)
+      Fabricate(:person, email: sent_email, password:)
     }
     let(:group) { groups(:kader_380) }
     let!(:role) {
