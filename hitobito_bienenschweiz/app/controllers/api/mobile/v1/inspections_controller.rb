@@ -50,7 +50,7 @@ module Api
 
         def inspection_params
           # TODO: When changing something here, change it also in `blank_inspections_controller`
-          ret = params.expect(inspection: [:group_id, :title, :control_date, :no_control_reason,
+          ret = params.expect(inspection: [:intern_structure_id, :title, :control_date, :no_control_reason,
             :other_reason_for_no_control, :business_handover_to, :with_voucher,
             {quality_control_answers_attributes: [%i[quality_control_question_id
               deadline_at notes fulfilled]]}])
