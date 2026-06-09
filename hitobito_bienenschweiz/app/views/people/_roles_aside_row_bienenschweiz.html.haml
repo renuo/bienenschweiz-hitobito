@@ -1,0 +1,7 @@
+- if can?(:edit, role)
+  %td
+    = link_to(edit_group_role_path(role.group, role), title: Role.human_attribute_name(:export_to_website)) do
+      - if role.export_to_website
+        = icon(:eye)
+      - else
+        = icon(:eye_slash)
