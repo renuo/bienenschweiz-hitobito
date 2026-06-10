@@ -117,6 +117,20 @@ class Qcontrol < ApplicationRecord
   #   @inspector_name ||= inspector&.display_name
   # end
 
+  def first_qcontrol?
+    previous_qcontrols.empty?
+  end
+
+  def previous_qcontrol
+    @previous_qcontrol ||= previous_qcontrols.first
+  end
+
+  def previous_qcontrols
+    return Qcontrol.none if person.blank?
+
+    person.qcontrols.before(control_date).order(id: :desc)
+  end
+
   def no_control_necessary?
     !control_performed?
   end

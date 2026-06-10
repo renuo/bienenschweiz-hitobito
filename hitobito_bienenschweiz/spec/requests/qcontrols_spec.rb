@@ -111,6 +111,22 @@ RSpec.describe QcontrolsController, type: :request do
     end
   end
 
+  describe "#checklist" do
+    let!(:qcontrol) {
+      Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
+        control_date: Date.new(2023, 1, 1), control_state: "passed")
+    }
+
+    it "sends the checklist pdf inline" do
+      get checklist_group_person_qcontrol_path(sektion, beekeeper, qcontrol)
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("application/pdf")
+      expect(response.headers["Content-Disposition"]).to include("inline")
+      expect(response.headers["Content-Disposition"])
+        .to include(Export::Pdf::Qcontrol::Checklist.filename(qcontrol))
+    end
+  end
+
   describe "#destroy" do
     let!(:qcontrol) {
       Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
