@@ -3,6 +3,8 @@ namespace :mv do
     GROUP_ID_OFFSET = 10_000
     MEMBER_ID_OFFSET = 10_000
     ROLE_ID_OFFSET = 10_000
+    QCONTROL_ID_OFFSET = 10_000
+    QUALITY_CONTROL_ANSWER_ID_OFFSET = 10_000
 
     task members: :environment do
       failure_csv = "invalid_members.csv"
@@ -343,6 +345,82 @@ namespace :mv do
       unknown_mappings.each do |role, structure_type|
         puts "#{role.name} (#{role.name_t}) on #{structure_type}"
       end
+    end
+
+    task quality_controls: :environment do
+      class MvRecord < ApplicationRecord
+        self.abstract_class = true
+        connects_to database: {reading: :mv, writing: :mv}
+      end
+
+      class KasRecord < ApplicationRecord
+        self.abstract_class = true
+        connects_to database: {reading: :kas, writing: :kas}
+      end
+
+      # Mv prefix to not conflict with the identically named wagon models
+      class MvQualityControlSection < MvRecord
+        self.table_name = "quality_control_sections"
+      end
+
+      class MvQualityControlQuestion < MvRecord
+        self.table_name = "quality_control_questions"
+      end
+
+      class MvQcontrol < MvRecord
+        self.table_name = "qcontrols"
+      end
+
+      class MvQualityControlAnswer < MvRecord
+        self.table_name = "quality_control_answers"
+      end
+
+      class User < KasRecord
+      end
+
+      # upsert_all skips callbacks (qcontrols send notification mails on create)
+      # and validations, imports the data as-is and is idempotent.
+      import = lambda do |model, rows|
+        rows.each_slice(1000) { |slice| model.upsert_all(slice) }
+        puts "Imported #{rows.count} #{model.model_name.human(count: rows.count)}"
+      end
+
+      # sections and questions are reference data and keep their original ids
+      import.call(QualityControlSection, MvQualityControlSection.find_each.map(&:attributes))
+      import.call(QualityControlQuestion, MvQualityControlQuestion.find_each.map(&:attributes))
+
+      # inspector_id references a kas user in MV, but a person in hitobito
+      inspector_member_ids = User.where.not(member_id: nil).pluck(:id, :member_id).to_h
+
+      qcontrol_rows = MvQcontrol.find_each.map do |qcontrol|
+        inspector_member_id = inspector_member_ids[qcontrol.inspector_id]
+        qcontrol.attributes.except("member_id", "intern_structure_id").merge(
+          "id" => qcontrol.id + QCONTROL_ID_OFFSET,
+          "person_id" => qcontrol.member_id && qcontrol.member_id + MEMBER_ID_OFFSET,
+          "author_id" => qcontrol.author_id && qcontrol.author_id + MEMBER_ID_OFFSET,
+          "group_id" => qcontrol.intern_structure_id + GROUP_ID_OFFSET,
+          "inspector_id" => inspector_member_id && inspector_member_id + MEMBER_ID_OFFSET
+        )
+      end
+      import.call(Qcontrol, qcontrol_rows)
+
+      answer_rows = MvQualityControlAnswer.find_each.map do |answer|
+        answer.attributes.merge(
+          "id" => answer.id + QUALITY_CONTROL_ANSWER_ID_OFFSET,
+          "qcontrol_id" => answer.qcontrol_id + QCONTROL_ID_OFFSET
+        )
+      end
+      import.call(QualityControlAnswer, answer_rows)
+
+      # report references to people/groups that are missing (e.g. failed member imports)
+      missing = {
+        people: Qcontrol.where.not(person_id: nil).where.not(person_id: Person.select(:id)).count,
+        authors: Qcontrol.where.not(author_id: nil).where.not(author_id: Person.select(:id)).count,
+        inspectors: Qcontrol.where.not(inspector_id: nil).where.not(inspector_id: Person.select(:id)).count,
+        groups: Qcontrol.where.not(group_id: Group.select(:id)).count,
+        kas_inspectors: MvQcontrol.where.not(inspector_id: nil).where.not(inspector_id: inspector_member_ids.keys).count
+      }
+      puts "Qcontrols with dangling references: #{missing.map { |k, v| "#{k}: #{v}" }.join(", ")}"
     end
   end
 end
