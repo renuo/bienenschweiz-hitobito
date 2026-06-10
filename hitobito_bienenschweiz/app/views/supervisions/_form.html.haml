@@ -1,0 +1,14 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+= entry_form do |f|
+  = f.labeled_i18n_enum_field :kind, Supervision.kind_labels, class: 'form-select form-select-sm'
+  = f.labeled :course_type_id do
+    = f.collection_select :course_type_id, @course_types, :id, :to_s, {}, class: 'form-select form-select-sm'
+  = f.labeled_input_fields :check_date
+  = f.labeled :supervisor_id do
+    = f.collection_select :supervisor_id, @supervisors, :id, :to_s, {include_blank: true}, class: 'form-select form-select-sm'
+  = f.labeled_i18n_enum_field :result, Supervision.result_labels, class: 'form-select form-select-sm'

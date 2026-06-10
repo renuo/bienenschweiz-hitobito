@@ -39,6 +39,7 @@ module HitobitoBienenschweiz
 
       Sheet::Person.prepend Bienenschweiz::Sheet::Person
       Ability.store.register QcontrolAbility
+      Ability.store.register SupervisionAbility
 
       TableDisplay.register_column(Person, TableDisplays::PublicColumn, :canton_short)
       Person::FILTER_ATTRS << [:canton_short, :string]

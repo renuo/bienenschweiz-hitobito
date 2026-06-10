@@ -27,6 +27,10 @@ de:
       qcontrol:
         one: Betriebsprüfung
         other: Betriebsprüfungen
+
+      supervision:
+        one: Supervision
+        other: Supervisionen
     attributes:
       qcontrol:
         title: Beschreibung
@@ -48,12 +52,38 @@ de:
           not_passed: nicht erfüllt
           partially_passed: erfüllt unter Vorbehalt
           not_necessary: 'nicht nötig'
+      supervision:
+        check_date: Kontrolldatum
+        kind: 'Art der Supervision'
+        course_type: 'Kurs / Tätigkeit'
+        course_type_id: 'Kurs / Tätigkeit'
+        result: Resultat
+        supervisor: Supervisor
+        supervisor_id: Supervisor
+        author: Erstellt von
+        author_id: Erstellt von
+        person: Mitglied
+        person_id: Mitglied
+        document: Dokument
+        kinds:
+          supervision: Supervision
+          feedback: Kursfeedback
+        results:
+          fulfilled: 'vollständig erfüllt'
+          partially_fulfilled: 'mehrheitlich erfüllt'
+          not_fulfilled: 'nicht erfüllt'
+          good: 'gut bis sehr gut'
+          enough: 'genügend'
+          not_enough: 'ungenügend'
+          no_statement: 'keine Angabe'
     errors:
       messages:
         not_blank_inspectable: 'ist nicht gültig für Blanko-Betriebsprüfungen'
+        no_supervisor_role: 'muss eine Person mit aktiver Supervisor-Rolle sein'
   people:
     tabs:
       bienenschweiz_qcontrols: Betriebsprüfungen
+      bienenschweiz_supervisions: Supervisionen
   qcontrol_default_title: 'Betriebsprüfung'
   checklist_attachment_name: "Betriebspruefung.pdf"
   blank_inspection_info:

@@ -12,5 +12,10 @@ module Bienenschweiz::Sheet::Person
       "people.tabs.bienenschweiz_qcontrols",
       :group_person_qcontrols_path
     )
+    tabs << Sheet::Tab.new(
+      "people.tabs.bienenschweiz_supervisions",
+      :group_person_supervisions_path,
+      if: ->(view, _group, _person) { view.can?(:index, Supervision) }
+    )
   end
 end
