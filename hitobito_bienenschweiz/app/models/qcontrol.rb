@@ -9,8 +9,7 @@ class Qcontrol < ApplicationRecord
   include I18nEnums
   # TODO: implmeent fee creation in kas
   # include FeeCreation
-  # TODO: notification emails
-  # include QcontrolNotifications
+  include QcontrolNotifications
 
   # TODO documents
   # mount_uploader :document, AssetUploader
@@ -21,14 +20,12 @@ class Qcontrol < ApplicationRecord
   belongs_to :author, class_name: "Person", optional: true
   belongs_to :inspector, class_name: "Person", optional: true
   # where the quality control has been conducted
-  belongs_to :group
+  belongs_to :group, optional: false
 
-  # TODO: implement
-  # has_many :quality_control_answers, dependent: :destroy, inverse_of: :qcontrol
-  #
-  # accepts_nested_attributes_for :quality_control_answers, allow_destroy: true
+  has_many :quality_control_answers, dependent: :destroy, inverse_of: :qcontrol
+  accepts_nested_attributes_for :quality_control_answers, allow_destroy: true
 
-  i18n_enum :control_state, %w[passed not_passed partially_passed]
+  i18n_enum :control_state, %w[passed not_passed partially_passed], queries: true
   enum :fee_creation_state, %w[fee_not_required fee_not_created fee_ok]
 
   enum :no_control_reason, {
@@ -40,12 +37,11 @@ class Qcontrol < ApplicationRecord
 
   validates :control_date, presence: true
 
-  # TODO: add back when implementing API
-  # validate do
-  #   if person.blank? && inspector && group && inspector.inspectable_groups.exclude?(group)
-  #     errors.add(:group_id, :not_blank_inspectable)
-  #   end
-  # end
+  validate do
+    if person.blank? && inspector && group && inspector.inspectable_groups.exclude?(group)
+      errors.add(:group_id, :not_blank_inspectable)
+    end
+  end
 
   # TODO: used for PDF, add back in when implementing that
   # get the newest one for every sektion
@@ -76,7 +72,7 @@ class Qcontrol < ApplicationRecord
   # }
 
   # before_validation :update_doc_attributes
-  # before_save :set_control_state
+  before_save :set_control_state
   before_create :set_author_name
   after_create :update_person_role
 
@@ -121,18 +117,52 @@ class Qcontrol < ApplicationRecord
   #   @inspector_name ||= inspector&.display_name
   # end
 
-  # TODO: add back for API
-  # def no_control_necessary?
-  #   !control_performed?
-  # end
-  #
-  # def control_performed?
-  #   no_control_reason.nil? || no_reason?
-  # end
-  #
-  # def quality_control_sections
-  #   QualityControlSection.for_version(created_at)
-  # end
+  def no_control_necessary?
+    !control_performed?
+  end
+
+  def control_performed?
+    no_control_reason.nil? || no_reason?
+  end
+
+  def quality_control_sections
+    QualityControlSection.for_version(created_at)
+  end
+
+  def as_mobile_json
+    as_json(only: %i[id author_id title control_date]).merge(
+      "member_id" => person_id
+    )
+  end
+
+  def as_full_mobile_json # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    extra = {
+      member: {
+        id: person.id,
+        firstname: person.first_name,
+        lastname: person.last_name
+      },
+      intern_structure: {
+        id: group.id,
+        code: group.code,
+        name: group.name
+      },
+      quality_control_answers: quality_control_answers.map { |a|
+        a.as_json(except: %i[updated_at created_at])
+      }
+    }
+    if author
+      extra[:author] = {
+        id: author.id,
+        firstname: author.first_name,
+        lastname: author.last_name
+      }
+    end
+    as_json(
+      only: %i[id title document control_date no_control_reason
+        other_reason_for_no_control business_handover_to with_voucher]
+    ).merge(extra.deep_stringify_keys)
+  end
 
   protected
 
@@ -160,17 +190,16 @@ class Qcontrol < ApplicationRecord
     end
   end
 
-  # TODO add back for API where state is calculated
-  # def set_control_state
-  #   return if control_state
-  #
-  #   answer_states = quality_control_answers.map(&:fulfilled)
-  #   self.control_state = if answer_states.include?("not_passed")
-  #     "not_passed"
-  #   elsif answer_states.include?("partially_passed")
-  #     "partially_passed"
-  #   elsif answer_states.include?("passed")
-  #     "passed"
-  #   end
-  # end
+  def set_control_state
+    return if control_state
+
+    answer_states = quality_control_answers.map(&:fulfilled)
+    self.control_state = if answer_states.include?("not_passed")
+      "not_passed"
+    elsif answer_states.include?("partially_passed")
+      "partially_passed"
+    elsif answer_states.include?("passed")
+      "passed"
+    end
+  end
 end

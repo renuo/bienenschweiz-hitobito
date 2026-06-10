@@ -14,7 +14,7 @@ RSpec.describe QcontrolsController, type: :request do
   let(:admin) { people(:admin) }
 
   let(:beekeeper) { Fabricate(:person) }
-  let(:inspector) { Fabricate(:person) }
+  let(:fachperson_produkte) { Fabricate(:person) }
   let(:siegelimker_group) { Fabricate(:group, parent: sektion, type: Group::Siegelimker.sti_name) }
 
   before do
@@ -23,20 +23,20 @@ RSpec.describe QcontrolsController, type: :request do
     Fabricate(:role, person: beekeeper, group: siegelimker_group,
       type: Group::Siegelimker::Siegelimker.sti_name)
     kader = Fabricate(:group, parent: sektion, type: Group::Kader.sti_name)
-    Fabricate(:role, person: inspector, group: kader,
+    Fabricate(:role, person: fachperson_produkte, group: kader,
       type: Group::Kader::FachpersonProdukte.sti_name)
   end
 
   describe "#index" do
     let!(:qcontrols) {
       [
-        Fabricate(:qcontrol, person: beekeeper, inspector: inspector, group: sektion,
+        Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
           control_date: Date.new(2023, 1, 1), with_voucher: true),
-        Fabricate(:qcontrol, person: beekeeper, inspector: inspector, group: sektion,
+        Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
           control_date: Date.new(2023, 2, 1), with_voucher: false),
-        Fabricate(:qcontrol, person: beekeeper, inspector: inspector, group: sektion,
+        Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
           control_date: Date.new(2023, 3, 1), with_voucher: true),
-        Fabricate(:qcontrol, person: beekeeper, inspector: inspector, group: sektion,
+        Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
           control_date: Date.new(2023, 4, 1), with_voucher: false)
       ]
     }
@@ -55,7 +55,7 @@ RSpec.describe QcontrolsController, type: :request do
       get new_group_person_qcontrol_path(sektion, beekeeper)
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Betriebsprüfung")
-      expect(response.body).to include(inspector.full_name)
+      expect(response.body).to include(fachperson_produkte.full_name)
       expect(response.body).to include(sektion.name)
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe QcontrolsController, type: :request do
     let(:qcontrol_params) do
       {
         group_id: sektion.id,
-        inspector_id: inspector.id,
+        inspector_id: fachperson_produkte.id,
         control_date: Date.new(2023, 5, 1),
         with_voucher: true,
         control_state: "passed"
@@ -80,7 +80,7 @@ RSpec.describe QcontrolsController, type: :request do
       expect(qcontrol).to be_present
       expect(qcontrol.group).to eq(sektion)
       expect(qcontrol.person).to eq(beekeeper)
-      expect(qcontrol.inspector).to eq(inspector)
+      expect(qcontrol.inspector).to eq(fachperson_produkte)
       expect(qcontrol.control_date).to eq(Date.new(2023, 5, 1))
       expect(qcontrol.with_voucher).to eq(true)
       expect(qcontrol.control_state).to eq("passed")
@@ -92,7 +92,7 @@ RSpec.describe QcontrolsController, type: :request do
       let(:qcontrol_params) do
         {
           group_id: sektion.id,
-          inspector_id: inspector.id,
+          inspector_id: fachperson_produkte.id,
           control_date: nil, # invalid control date
           with_voucher: true,
           control_state: "passed"
@@ -113,7 +113,7 @@ RSpec.describe QcontrolsController, type: :request do
 
   describe "#destroy" do
     let!(:qcontrol) {
-      Fabricate(:qcontrol, person: beekeeper, inspector: inspector, group: sektion,
+      Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
         control_date: Date.new(2023, 1, 1), with_voucher: true)
     }
 
