@@ -80,6 +80,7 @@ de:
       messages:
         not_blank_inspectable: 'ist nicht gültig für Blanko-Betriebsprüfungen'
         no_supervisor_role: 'muss eine Person mit aktiver Supervisor-Rolle sein'
+        not_allowed_for_kind: 'ist für %{kind} nicht zulässig'
   people:
     tabs:
       bienenschweiz_qcontrols: Betriebsprüfungen

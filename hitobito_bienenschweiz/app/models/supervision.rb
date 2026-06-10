@@ -17,9 +17,9 @@ class Supervision < ApplicationRecord
 
   validates :check_date, :kind, :result, presence: true
   validate :assert_supervisor_role, if: :supervisor_id
+  # only on create: legacy data imported from MV may violate the mapping
+  validate :assert_result_allowed_for_kind, on: :create
 
-  # Documents which results belong to which kind. Not validated: the old
-  # app only enforced this in the UI and legacy data may violate it.
   KINDS = {
     supervision: %w[fulfilled partially_fulfilled not_fulfilled],
     feedback: %w[good enough not_enough no_statement]
@@ -37,6 +37,14 @@ class Supervision < ApplicationRecord
   def assert_supervisor_role
     unless Person.supervisors.exists?(id: supervisor_id)
       errors.add(:supervisor_id, :no_supervisor_role)
+    end
+  end
+
+  def assert_result_allowed_for_kind
+    return if kind.blank? || result.blank?
+
+    unless KINDS.fetch(kind.to_sym, []).include?(result)
+      errors.add(:result, :not_allowed_for_kind, kind: kind_label)
     end
   end
 end

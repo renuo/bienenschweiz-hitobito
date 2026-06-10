@@ -26,7 +26,8 @@ class SupervisionsController < CrudController
   private
 
   def build_entry
-    @person.supervisions.build
+    # default to a valid kind/result combination for the initial form state
+    @person.supervisions.build(kind: "supervision", result: "fulfilled")
   end
 
   def load_supervisors
