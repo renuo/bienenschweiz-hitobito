@@ -91,7 +91,7 @@ describe Person do
           "id" => sektion.id,
           "name" => sektion.name,
           "structure_type" => "sektion",
-          "kanton" => sektion.canton
+          "kanton" => sektion.canton_short
         }])
       end
     end
