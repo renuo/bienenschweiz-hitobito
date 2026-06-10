@@ -53,7 +53,7 @@ module Bienenschweiz::Person
           "id" => group.id,
           "structure_type" => "sektion",
           "name" => group.name,
-          "kanton" => group.canton
+          "kanton" => group.canton_short
         }
       end
     end
@@ -70,7 +70,7 @@ module Bienenschweiz::Person
         house_no: housenumber,
         zip: zip_code,
         location: town,
-        kanton: canton,
+        kanton: canton_short,
         birthdate: birthday,
         honey_yield:,
         hive_count:,
@@ -94,6 +94,10 @@ module Bienenschweiz::Person
 
     def mobile
       phone_numbers.where(label: :mobile).first&.number
+    end
+
+    def canton_short
+      canton&.upcase
     end
 
     private

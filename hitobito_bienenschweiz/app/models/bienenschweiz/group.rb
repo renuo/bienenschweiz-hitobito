@@ -30,6 +30,10 @@ module Bienenschweiz::Group
       joins("INNER JOIN group_type_orders ON group_type_orders.name = groups.type")
         .reorder("group_type_orders.order_weight ASC, groups.code ASC, groups.name ASC")
     end
+
+    def canton_short
+      canton&.upcase
+    end
   end
 
   def to_s_with_code(_format = :default)

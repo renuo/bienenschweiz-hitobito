@@ -8,7 +8,7 @@ de:
   activerecord:
     attributes:
       person:
-        canton: Kanton
+        canton_short: Kanton
         hive_count: Anzahl Völker
         honey_yield: Honigertrag
         export_to_website: Auf Webseite exportieren
