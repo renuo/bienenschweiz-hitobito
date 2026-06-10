@@ -8,7 +8,8 @@
 class SupervisionsController < CrudController
   self.nesting = Group, Person
 
-  self.permitted_attrs = [:check_date, :supervisor_id, :kind, :course_type_id, :result]
+  self.permitted_attrs = [:check_date, :supervisor_id, :kind, :course_type_id, :result,
+    :document]
 
   decorates :group, :person
 
@@ -19,7 +20,7 @@ class SupervisionsController < CrudController
 
   def create
     entry.author = current_user
-    super
+    super(location: index_path)
   end
 
   private

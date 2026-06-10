@@ -16,7 +16,6 @@ class AddSupervisions < ActiveRecord::Migration[8.0]
       t.string "kind", null: false
       t.integer "course_type_id", null: false
       t.integer "person_id", null: false
-      t.string "document"
       t.datetime "created_at", precision: nil, null: false
       t.datetime "updated_at", precision: nil, null: false
       t.index ["author_id"], name: "index_supervisions_on_author_id"

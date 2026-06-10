@@ -8,8 +8,7 @@
 class Supervision < ApplicationRecord
   include I18nEnums
 
-  # TODO: documents
-  # mount_uploader :document, AssetUploader
+  has_one_attached :document
 
   belongs_to :person
   belongs_to :author, class_name: "Person"
@@ -28,6 +27,10 @@ class Supervision < ApplicationRecord
 
   i18n_enum :kind, KINDS.keys.map(&:to_s), queries: true
   i18n_enum :result, KINDS.values.flatten, queries: true
+
+  def to_s
+    "#{I18n.t("activerecord.attributes.supervision.kinds.#{kind}")} (#{check_date})"
+  end
 
   private
 

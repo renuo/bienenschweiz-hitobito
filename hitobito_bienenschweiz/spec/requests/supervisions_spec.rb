@@ -45,6 +45,15 @@ RSpec.describe SupervisionsController, type: :request do
       expect(response.body).to include("gut bis sehr gut")
       expect(response.body).to include(course_type.label)
     end
+
+    it "links the attached document" do
+      supervisions.first.document.attach(
+        io: Rails.root.join("spec", "fixtures", "files", "logo-icon.png").open,
+        filename: "logo-icon.png", content_type: "image/png"
+      )
+      get group_person_supervisions_path(sektion, person)
+      expect(response.body).to include("logo-icon.png")
+    end
   end
 
   describe "#new" do
@@ -83,6 +92,22 @@ RSpec.describe SupervisionsController, type: :request do
       expect(supervision.kind).to eq("supervision")
       expect(supervision.course_type).to eq(course_type)
       expect(supervision.result).to eq("partially_fulfilled")
+    end
+
+    context "with a document" do
+      let(:document) do
+        Rack::Test::UploadedFile.new(Rails.root.join("spec", "fixtures", "files",
+          "logo-icon.png"), "image/png")
+      end
+
+      it "attaches the document" do
+        post group_person_supervisions_path(sektion, person),
+          params: {supervision: supervision_params.merge(document: document)}
+
+        supervision = Supervision.last
+        expect(supervision.document).to be_attached
+        expect(supervision.document.filename.to_s).to eq("logo-icon.png")
+      end
     end
 
     context "when the supervisor has no supervisor role" do
