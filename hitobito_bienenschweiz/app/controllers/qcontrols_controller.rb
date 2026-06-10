@@ -35,6 +35,13 @@ class QcontrolsController < CrudController
     super(location: person_path(@person))
   end
 
+  def checklist
+    pdf = Export::Pdf::Qcontrol::Checklist.new(entry).render
+    filename = Export::Pdf::Qcontrol::Checklist.filename(entry)
+
+    send_data pdf, type: :pdf, disposition: "inline", filename: filename
+  end
+
   private
 
   def build_entry

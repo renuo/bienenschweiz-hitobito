@@ -4,4 +4,7 @@
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 
-= crud_table(:name, :group, :author, :inspector, :control_state, :control_date, :fee_ok?)
+= crud_table do |t|
+  - t.sortable_attrs(:name, :group, :author, :inspector, :control_state, :control_date, :fee_ok?)
+  - t.col(:checklist) do |qc|
+    = link_to("checkist", checklist_group_person_qcontrol_path(qc.group, qc.person, qc), target: '_blank')
