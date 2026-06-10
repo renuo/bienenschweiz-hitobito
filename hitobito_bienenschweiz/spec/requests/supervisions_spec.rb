@@ -64,7 +64,10 @@ RSpec.describe SupervisionsController, type: :request do
       expect(response.body).to include("Kurs / Tätigkeit")
       expect(response.body).to include(supervisor.full_name)
       expect(response.body).to include(course_type.to_s)
-      expect(response.body).to include("data-supervision-kind")
+      expect(response.body).to include('data-controller="supervision-form"')
+      expect(response.body).to include('data-supervision-form-target="kind"')
+      expect(response.body).to include('data-supervision-form-target="result"')
+      expect(response.body).to include('data-supervision-form-target="supervisor"')
       # results of the not selected kind are rendered hidden
       expect(response.body).to match(/<option data-kind="feedback" hidden="hidden"/)
       expect(response.body).not_to match(/<option data-kind="supervision" hidden/)

@@ -4,14 +4,14 @@
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 
-= entry_form do |f|
-  = f.labeled_i18n_enum_field :kind, Supervision.kind_labels, class: 'form-select form-select-sm', data: {supervision_kind: true}
+= entry_form(html: {data: {controller: 'supervision-form'}}) do |f|
+  = f.labeled_i18n_enum_field :kind, Supervision.kind_labels, class: 'form-select form-select-sm', data: {supervision_form_target: 'kind', action: 'supervision-form#switchKind'}
   = f.labeled :course_type_id do
     = f.collection_select :course_type_id, @course_types, :id, :to_s, {}, class: 'form-select form-select-sm'
   = f.labeled_input_fields :check_date
   = f.labeled :supervisor_id do
-    = f.collection_select :supervisor_id, @supervisors, :id, :to_s, {include_blank: true}, class: 'form-select form-select-sm', disabled: f.object.feedback?, data: {supervision_supervisor: true}
+    = f.collection_select :supervisor_id, @supervisors, :id, :to_s, {include_blank: true}, class: 'form-select form-select-sm', disabled: f.object.feedback?, data: {supervision_form_target: 'supervisor'}
   = f.labeled :result do
-    = f.select :result, supervision_result_options(f.object), {}, class: 'form-select form-select-sm', data: {supervision_result: true}
+    = f.select :result, supervision_result_options(f.object), {}, class: 'form-select form-select-sm', data: {supervision_form_target: 'result'}
   = f.labeled :document do
     = f.file_field :document, class: 'mw-100 mw-md-60ch form-control form-control-sm'
