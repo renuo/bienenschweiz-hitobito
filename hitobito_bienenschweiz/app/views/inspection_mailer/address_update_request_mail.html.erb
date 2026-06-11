@@ -1,0 +1,68 @@
+<p>Liebes BienenSchweiz-Sekretariat</p>
+
+<p>
+  Betriebsprüfer/in <%= @inspector.full_name %> hat über die mobile App einen Antrag für eine Adressänderung für
+  Siegelimker/in <%= @member.full_name %> gestellt.
+</p>
+<p>
+  Bemerkung:
+  <br/>
+  <%= @changes[:remark] %>
+</p>
+<p>
+  Die beantragten Änderungen lauten wie folgt:
+</p>
+<table>
+  <thead>
+    <tr>
+      <th>Attribut</th>
+      <th>alter Wert</th>
+      <th>neuer Wert</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Vorname</td>
+      <td><%= @member.first_name %></td>
+      <td><%= @changes[:first_name] %></td>
+    </tr>
+    <tr>
+      <td>Nachname</td>
+      <td><%= @member.last_name %></td>
+      <td><%= @changes[:last_name] %></td>
+    </tr>
+    <tr>
+      <td>Adresse</td>
+      <td><%= @member.full_address %></td>
+      <td><%= [@changes[:street], @changes[:housenumber]].join(' ')%></td>
+    </tr>
+    <tr>
+      <td>PLZ</td>
+      <td><%= @member.zip_code %></td>
+      <td><%= @changes[:zip_code] %></td>
+    </tr>
+    <tr>
+      <td>Ort</td>
+      <td><%= @member.location%></td>
+      <td><%= @changes[:location] %></td>
+    </tr>
+    <tr>
+      <td>Telefon Nr.</td>
+      <td><%= @member.telephone%></td>
+      <td><%= @changes[:telephone] %></td>
+    </tr>
+    <tr>
+      <td>Mobile Tel. Nr.</td>
+      <td><%= @member.mobile %></td>
+      <td><%= @changes[:mobile] %></td>
+    </tr>
+    <tr>
+      <td>E-Mail Adresse</td>
+      <td><%= @member.email %></td>
+      <td><%= @changes[:email] %></td>
+    </tr>
+  </tbody>
+</table><br/>
+<p>Wenn nur die E-Mail-Adressen geändert oder hinzugefügt wurde, ist diese durch die Meldung direkt in Hitobito gespeichert worden! Aus diesem Grund kann es sein, dass der alte und neue Wert identisch sind.</p>
+
+<%=render 'renuo_signature' %>

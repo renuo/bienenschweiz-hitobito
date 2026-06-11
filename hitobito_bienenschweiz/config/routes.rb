@@ -17,4 +17,19 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  namespace :api, defaults: { formats: :json } do
+    namespace :mobile do
+      namespace :v1 do
+        resources :quality_control_questions, only: :index
+        resources :blank_inspections, only: :create
+        resources :beekeepers, only: :index do
+          resources :inspections, only: %i[index show create]
+        end
+        resources :inspection_pdf, only: :show
+        post 'beekeepers/:id' => 'beekeepers#update', as: :beekeeper_update
+        resources :sessions, only: [:create]
+      end
+    end
+  end
 end

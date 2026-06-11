@@ -14,6 +14,14 @@ env:
   RAILS_DB_NAME: hitobito_test
   RAILS_TEST_DB_NAME: hitobito_test
   RAILS_ENV: test
+  SECRETARY_EMAIL: 11@renuo.ch
+  APP_NOTIFICATIONS_EMAIL: 11@renuo.ch
+  CANTONAL_INSPECTOR_BCC_EMAIL: 11@renuo.ch
+  CANTONAL_INSPECTOR_CC_EMAIL: 11@renuo.ch
+  INSPECTION_REPLY_TO_EMAIL: 11@renuo.ch
+  INSPECTION_BCC_EMAIL: 11@renuo.ch
+  DEFAULT_FROM_EMAIL: 11@renuo.ch
+  PRINTER_EMAIL: 11@renuo.ch
 
 jobs:
   wagon_specs:

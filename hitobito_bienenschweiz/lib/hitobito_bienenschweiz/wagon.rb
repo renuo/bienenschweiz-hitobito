@@ -39,6 +39,9 @@ module HitobitoBienenschweiz
 
       Sheet::Person.prepend Bienenschweiz::Sheet::Person
       Ability.store.register QcontrolAbility
+
+      TableDisplay.register_column(Person, TableDisplays::PublicColumn, :canton_short)
+      Person::FILTER_ATTRS << [:canton_short, :string]
     end
 
     initializer "bienenschweiz.add_settings" do |_app|

@@ -1,0 +1,7 @@
+Dieses Email beinhaltet das Zertifikat und den Begleitbrief zum Zertifikat für <b><%= @member.full_name %></b>.
+
+<% if @member.present? %>
+  Siegelimker auf MV: <%= link_to @member.full_name, person_url(@member) %>
+<% end %>
+
+<%= render 'renuo_signature' %>

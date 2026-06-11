@@ -5,10 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-Fabricator(:qcontrol) do
-  group
-  inspector { Fabricate(:person) }
-  control_date { Date.current }
-  with_voucher { false }
-  control_state { :passed }
+def json_response
+  JSON.parse(response.body)
 end
