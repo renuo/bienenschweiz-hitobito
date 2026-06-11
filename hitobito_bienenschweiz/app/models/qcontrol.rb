@@ -128,7 +128,7 @@ class Qcontrol < ApplicationRecord
   def previous_qcontrols
     return Qcontrol.none if person.blank?
 
-    person.qcontrols.before(control_date).order(id: :desc)
+    person.qcontrols.before(control_date).order(control_date: :desc)
   end
 
   def no_control_necessary?

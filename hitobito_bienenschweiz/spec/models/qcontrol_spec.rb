@@ -39,5 +39,29 @@ describe Qcontrol do
       expect(orphan.previous_qcontrol).to be_nil
       expect(orphan.first_qcontrol?).to be(true)
     end
+
+    context "when there are previous qcontrols not created in order of date" do
+      let(:qcontrol) do
+        Fabricate(:qcontrol, person: person, group: group,
+          control_date: Date.new(2026, 5, 1), control_state: "passed")
+      end
+      let(:previous1) do
+        Fabricate(:qcontrol, person: person, group: group,
+          control_date: Date.new(2024, 4, 1), control_state: "passed")
+      end
+      let(:previous2) do
+        Fabricate(:qcontrol, person: person, group: group,
+          control_date: Date.new(2025, 4, 1), control_state: "passed")
+      end
+
+      before do
+        previous2
+        previous1
+      end
+
+      it "gives the previous one by control_date" do
+        expect(qcontrol.previous_qcontrol).to eq(previous2)
+      end
+    end
   end
 end
