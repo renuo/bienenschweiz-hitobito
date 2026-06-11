@@ -1,0 +1,12 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+- if can?(:edit, role)
+  %td
+    = link_to(edit_group_role_path(role.group, role), title: Role.human_attribute_name(:export_to_website)) do
+      - if role.export_to_website
+        = icon(:eye)
+      - else
+        = icon(:eye_slash)
