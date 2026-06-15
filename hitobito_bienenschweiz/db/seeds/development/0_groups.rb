@@ -23,6 +23,31 @@ end
 # uncomment this if you want to load the spec fixtures
 # ActiveRecord::FixtureSet.create_fixtures(Rails.root.join('../hitobito_bienenschweiz/spec/fixtures'), 'groups')
 
-# TODO: define more groups
+Group::Kantonalverband.seed_once(:id, {
+  id: 10128,
+  parent_id: root.id,
+  name: "Aargauer Kantonalverband",
+  code: 1900
+}, {
+  id: 10017,
+  parent_id: root.id,
+  name: "Berner Kantonalverband",
+  code: 200
+})
+
+aargauer_kantonalverband = Group::Kantonalverband.find(10128)
+berner_kantonalverband = Group::Kantonalverband.find(10017)
+
+Group::Sektion.seed_once(:id, {
+  id: 10139,
+  parent_id: aargauer_kantonalverband.id,
+  name: "Aarau und Umgebung",
+  code: 1911
+}, {
+  id: 10034,
+  parent_id: berner_kantonalverband.id,
+  name: "Aarberg",
+  code: 217,
+})
 
 Group.rebuild!
