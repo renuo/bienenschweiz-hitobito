@@ -13,7 +13,11 @@ Rails.application.routes.draw do
     # Define wagon routes here
     resources :groups, only: [] do
       resources :people, only: [] do
-        resources :qcontrols
+        resources :qcontrols do
+          member do
+            get :checklist, as: :checklist
+          end
+        end
       end
     end
   end

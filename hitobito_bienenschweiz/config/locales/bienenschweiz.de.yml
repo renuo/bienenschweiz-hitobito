@@ -60,3 +60,48 @@ de:
     subject: "Neuzertifizierung eines Siegelimkers"
   beeaudit:
     empty_name_placeholder: "Unbekannt (%{id})"
+  checklist:
+    point: 'Prüfpunkt'
+    criterium: 'Prüfkriterium'
+    passed: 'Erfüllt'
+    partially_passed: 'U. Vorb. erfüllt'
+    not_passed: 'Nicht erfüllt'
+    notes: 'Massnahmen/Bemerkungen'
+    deadline: 'Termin'
+    title: 'Checkliste für die Betriebsprüfung'
+    subtitle: 'für das Honig-Qualitätssiegel-Programm apisuisse'
+    header_description: Diese Checkliste ist von dem/der Betriebsprüfer/in zusammen mit dem/der Imker/in auszufüllen. Sie soll die heute anzuwendende, gute imkerliche Praxis widerspiegeln.
+                                   Basis für die Betriebsprüfung ist das aktuelle Honigreglement von apisuisse.
+    control_title: 'Betriebsprüfung'
+    date: 'Datum'
+    section_no: 'Sektion Nr.'
+    beekeeper_data: 'Angaben Imker/in'
+    inspector_data: 'Angaben Betriebsprüfer/in'
+    first_name: 'Vorname'
+    last_name: 'Name'
+    street: 'Strasse/Nr.'
+    city: 'PLZ/Ort'
+    email: 'Email'
+    tel: 'Tel. oder Natel Nr'
+    type_of_control:
+      title: 'Art der Betriebsprüfung'
+      new_certification: 'Neuzertifizierung'
+      periodic_control: 'periodische Kontrolle / Datum der letzten Kontrolle:'
+      voucher_for_young_beekeeper: 'Gutschein für Jungimker/-in / Betriebsprüfer/-in folgt'
+    no_control_needed:
+      title: 'Keine Betriebsprüfung infolge'
+      termination_of_business: 'Betriebsaufgabe'
+      resignation_from_certification_program: 'Austritt aus Qualitätssiegel-Programm'
+      beekeeper_deceased: 'Imker/in verstorben'
+    control_state:
+      title: 'Die Berechtigung zum Bezug des Qualitätssiegels apisuisse wird'
+      passed: 'vollumfänglich erteilt'
+      partially_passed: 'unter Vorbehalt erteilt (nicht erfüllte Punkte)'
+      not_passed: 'nicht erteilt'
+      notice: '* Die Verantwortung der Nachkontrolle liegt beim/bei der Betriebsprüfer/in, die Kosten sind vollumfänglich durch den/die Imker/in zu tragen. Falls die Nachkontrolle negativ ausfällt, bitten wir um Bescheid per E-Mail.'
+    footer_notice: 'Der/die  Imker/in  verpflichtet  sich,  die  Bestimmungen des Reglements zum Honig-Qualitätssiegel apisuisse einzuhalten. Er/Sie entrichtet dem/der Betriebsprüfer/in Fr. 30.- für die Kontrolle (Ausnahme bei Neuzertifizierung: Gutschein für Jungimker/in).
+                    Gegen den Entscheid des/r Betriebsprüfers/in kann der/die Imker/in innerhalb von 20 Tagen beim/bei der zuständigen Honigobmann/frau (siehe Imkerkalender) schriftlich Rekurs einreichen. Er/Sie sendet dazu eine Kopie seiner Checkliste. Der Rekurs enthält zudem eine Begründung und einen Antrag.'
+    email_notice: 'Der/die Imker/in erhält ein Doppel dieser Checkliste sowie ein aktuelles Honigreglement.'
+    footer:
+      left: 'Checkliste für die Betriebskontrolle'
+      right: 'Honigkommission apisuisse %{year}'

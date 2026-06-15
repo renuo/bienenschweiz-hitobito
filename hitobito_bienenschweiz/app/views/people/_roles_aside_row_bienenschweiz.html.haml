@@ -3,8 +3,10 @@
 -#  or later. See the COPYING file at the top-level directory or at
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-
-= crud_table do |t|
-  - t.col("") do |qc|
-    = link_to(icon(:download), checklist_group_person_qcontrol_path(qc.group, qc.person, qc), target: '_blank')
-  - t.sortable_attrs(:name, :group, :author, :inspector, :control_state, :control_date, :fee_ok?)
+- if can?(:edit, role)
+  %td
+    = link_to(edit_group_role_path(role.group, role), title: Role.human_attribute_name(:export_to_website)) do
+      - if role.export_to_website
+        = icon(:eye)
+      - else
+        = icon(:eye_slash)
