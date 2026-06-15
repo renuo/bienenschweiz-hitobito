@@ -20,7 +20,7 @@ if root.address.blank?
   end
 end
 
-# uncomment this if you want to load the spec fixtures
+# uncomment this if you want to load the spec fixtures and comment out the `seed_once` calls in this file
 # ActiveRecord::FixtureSet.create_fixtures(Rails.root.join('../hitobito_bienenschweiz/spec/fixtures'), 'groups')
 
 Group::Kantonalverband.seed_once(:id, {
