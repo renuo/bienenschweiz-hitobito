@@ -1,0 +1,79 @@
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+---
+- id: 4
+  title: Anforderungen Standort
+  number: 1
+  version: 1
+- id: 14
+  title: Fütterung
+  number: 2
+  version: 1
+- id: 24
+  title: Honiggewinnung, -verarbeitung und -lagerung
+  number: 3
+  version: 1
+- id: 34
+  title: Wabenbau/ -lager
+  number: 4
+  version: 1
+- id: 44
+  title: Tierverkehr und Tiergesundheit
+  number: 5
+  version: 1
+- id: 54
+  title: Deklaration und Dokumentationen
+  number: 6
+  version: 1
+- id: 55
+  title: Anforderungen Standort
+  number: 1
+  version: 2
+- id: 56
+  title: Fütterung
+  number: 2
+  version: 2
+- id: 57
+  title: Honiggewinnung, -verarbeitung und -lagerung
+  number: 3
+  version: 2
+- id: 58
+  title: Wabenbau/ -lager
+  number: 4
+  version: 2
+- id: 59
+  title: Tierverkehr und Tiergesundheit
+  number: 5
+  version: 2
+- id: 60
+  title: Deklaration und Dokumentationen
+  number: 6
+  version: 2
+- id: 61
+  title: Anforderungen Standort
+  number: 1
+  version: 3
+- id: 62
+  title: Fütterung
+  number: 2
+  version: 3
+- id: 63
+  title: Honiggewinnung, -verarbeitung und -lagerung
+  number: 3
+  version: 3
+- id: 64
+  title: Wabenbau/ -lager
+  number: 4
+  version: 3
+- id: 65
+  title: Tierverkehr und Tiergesundheit
+  number: 5
+  version: 3
+- id: 66
+  title: Deklaration und Dokumentationen
+  number: 6
+  version: 3

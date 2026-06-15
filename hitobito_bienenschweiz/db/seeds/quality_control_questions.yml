@@ -1,0 +1,831 @@
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+---
+- id: 4
+  number: 1
+  title: Alle Standorte liegen ganzjährig innerhalb der Schweizer Grenzen.
+  description: ''
+  quality_control_section_id: 4
+  inspection_notes: Siegelimker garantieren ihren Kunden, dass der Qualitätshonig
+    ausschliesslich aus der Schweiz stammt.
+- id: 14
+  number: 2
+  title: Die Ordnung am Standort ist gut.
+  description: Es gibt keine für Bienen oder Schädlinge offen zugängliche Wabenteile
+    oder Futterreste.
+  quality_control_section_id: 4
+  inspection_notes: Der Standort der Bienen ist aufgeräumt. Offen zugängliche Wabenteile
+    können zu Gesundheits- oder Schädlingsproblemen führen. Die Werkzeuge sind funktionsfähig
+    und sauber.
+- id: 24
+  number: 3
+  title: Leere Beuten sind gründlich gereinigt
+  description: oder bienendicht verschlossen.
+  quality_control_section_id: 4
+  inspection_notes: Nicht gereinigte offene Beuten stellen ein Gesundheitsrisiko dar.
+- id: 34
+  number: 4
+  title: Für die Reinigung steht Wasser in Trinkwasserqualität zur Verfügung.
+  description: ''
+  quality_control_section_id: 4
+  inspection_notes: Das Lebensmittelrecht schreibt vor, dass Hände sowie Geräte und
+    Werkzeuge, die für die Lebensmittelproduktion verwendet werden, mit Wasser in
+    Trinkwasserqualität gereinigt werden.
+- id: 44
+  number: 1
+  title: Die Völker werden nur gefüttert,
+  description: |-
+    wenn keine Waben zur Honiggewinnung in den Völkern sind.
+    Davon ausgenommen ist die Fütterung in Trachtlücken mit Futterwaben oder Honig aus dem eigenen Betrieb.
+  quality_control_section_id: 14
+  inspection_notes: Bei Fütterung mit aufgesetzten Honigwaben kann Fütterungszucker
+    in den Honig gelangen. So verfälschter Honig widerspricht den Anforderungen der
+    Lebensmittelgesetzgebung.
+- id: 54
+  number: 2
+  title: 'Flüssigfütterung wird nur eingesetzt:'
+  description: |2-
+
+    - Zum Aufbau des Wintervorrates nach Entfernung der Honigaufsätze.
+    - Für Jungvölker und Schwärme.
+     - Für Pflegevölker in der Königinnenzucht.
+     - Zum Überbrücken von Trachtlücken. Honigwaben dürfen erst zwei Wochen danach wieder aufgesetzt werden. Fütterung und Aufsetzen sind zu dokumentieren.
+  quality_control_section_id: 14
+  inspection_notes: Der Imker ist verantwortlich, dass durch massvolle Fütterung der
+    Honig nicht verfälscht wird. Flüssigfütterung während Trachtlücken ist diesbezüglich
+    heikel. Ein Wiederaufsetzen der Waben zur Honiggewinnung darf deshalb frühestens
+    zwei Wochen nach Beendigung der Futteraufnahme durch die Trachtvölker erfolgen.
+    Die verabreichte Menge an Futter, das Datum der Verfütterung, das Ende der Futteraufnahme
+    und das Wiederaufsetzen der Honigwaben muss dokumentiert werden.
+- id: 64
+  number: 1
+  title: Der Honig wird vor der Ernte auf  Reife geprüft.
+  description: ''
+  quality_control_section_id: 24
+  inspection_notes: Vor der Ernte wird der Honig auf seine Reife geprüft. Das einfachste
+    Verfahren ist die Spritzprobe. Der Wassergehalt kann mit einem Refraktometer bestimmt
+    werden.
+- id: 74
+  number: 2
+  title: Die Honigernte weist einen Wassergehalt von max. 18.5%  auf.
+  description: ''
+  quality_control_section_id: 24
+  inspection_notes: Der genaue Wassergehalt kann nur mit einem Refraktometer bestimmt
+    werden. Jeder Siegelimker muss daher <b>Zugang</b> zu einem Refraktometer haben.
+- id: 84
+  number: 3
+  title: Es werden ausschliesslich Waben ohne Brut geschleudert.
+  description: ''
+  quality_control_section_id: 24
+  inspection_notes: Es werden ausschliesslich Waben ohne Brut geschleudert.
+- id: 94
+  number: 4
+  title: Die Räume zur Honiggewinnung und -verarbeitung
+  description: sind bienendicht und erlauben ein Arbeiten nach den Vorgaben der Schweizerischen
+    Gesetzgebung.
+  quality_control_section_id: 24
+  inspection_notes: 'Ein Raum kann auch für die Tage der Honiggewinnung und –verarbeitung
+    entsprechend der Vorgaben hergerichtet werden: bienendicht, frei von Schädlingen
+    und Ungeziefer, keine Lagerung von Reinigungs- und Desinfektionsmitteln, Haustiere
+    haben keinen Zutritt.'
+- id: 104
+  number: 5
+  title: Geräte und Gefässe zur Honiggewinnung, -lagerung und -verarbeitung
+  description: sind in einwandfreiem Zustand. Sie bestehen aus für Lebensmittel zugelassenen
+    Materialien.
+  quality_control_section_id: 24
+  inspection_notes: 'Einrichtungen zur Entdeckelung, Honigschleuder, Kläreinrichtungen
+    sowie Lager- und Verkaufsgefässe  müssen in einwandfreiem Zustand und aus lebensmittelechten
+    Materialien bestehen: Lebensmittelechter Kunststoff, Glas, Metall: generell frei
+    von Rost, Chromnickelstahl, Weissblech, Aluminium ist für die Verarbeitung aber
+    nicht für Lagerung zugelassen. Falls die Honigschleuder eine Schmierung benötigt,
+    muss diese mit speziellem, lebens-mitteltauglichem Fett erfolgen.'
+- id: 114
+  number: 6
+  title: Nach der Ernte des Honigs und beim Schleuderprozess
+  description: dürfen keine Honigtrocknungsverfahren angewendet werden.
+  quality_control_section_id: 24
+  inspection_notes: Zu früh geernteter Honig enthält zu viel Wasser und zu wenig von
+    den Bienen zugesetzte Inhaltsstoffe. Falls der Honig nach dem entnehmen der Waben
+    ausnahmsweise nicht unmittelbar geschleudert wird, müssen die Waben trocken und
+    in warmer Umgebung zwischengelagert werden. Ein Luftentfeuchter im Schleuderraum
+    ist zulässig.
+- id: 124
+  number: 7
+  title: Die verwendete Siebung gewährleistet,
+  description: dass der natürlich gesammelte Pollen restlos im Honig erhalten bleibt.
+  quality_control_section_id: 24
+  inspection_notes: Honig muss allen Pollen enthalten, der bei der Sammeltätigkeit
+    der Bienen natürlich in den Nektar gelangt. Siebe oder Seihtücher mit weniger
+    als 0.2 mm Loch-Durchmesser sind nicht zulässig.
+- id: 134
+  number: 8
+  title: Der Honig wird so verarbeitet und gelagert,
+  description: dass der Goldsiegel-Grenzwert von 15 mg HMF/ kg nicht überschritten
+    wird.
+  quality_control_section_id: 24
+  inspection_notes: Zu warme Lagerung und Aufwärmen zur Verflüssigung kann den HMF
+    – Gehalt des Honigs schnell über den geforderten Höchstwert steigen lassen. Auch
+    Licht beeinflusst den Honig negativ. Honig soll deshalb dunkel und kühl gelagert
+    werden.
+- id: 144
+  number: 9
+  title: Kandierter Honig wird schonend und unter 40 Grad C verflüssigt.
+  description: Bei Anwendung des Durchlauf-Verflüssigungsverfahrens (z. B. Mellitherm)
+    wird der Honig gemäss Temperaturvorgaben in der Betriebsanleitung verarbeitet.
+  quality_control_section_id: 24
+  inspection_notes: Bei erhöhten Temperaturen entsteht im Honig HMF und wertvolle
+    Inhaltsstoffe werden geschädigt. Nur eine vorsichtige Verflüssigung, bei welcher
+    der Honig unter 40° C bleibt, ist akzeptabel. Dabei darf das umgebende Wasserbad
+    oder die Warmluft bis ca. 45° C warm sein. Grundsätzlich soll die Dauer der Verflüssigung
+    möglichst kurz sein. Da beim Durchlauf-Verflüssigungs-Verfahren der Honig nur
+    sehr kurzzeitig erwärmt wird, kann dabei der Thermostat auf 70° gestellt werden.
+    Es muss sichergesellt sein, dass der Honig rasch ablaufen kann.
+- id: 154
+  number: 10
+  title: Die Räume zur Honiglagerung sind frei
+  description: von Schädlingen, kühl, dunkel, geruchsneutral und trocken.
+  quality_control_section_id: 24
+  inspection_notes: Honig soll dunkel und kühl gelagert werden. Damit verändert er
+    sich nur sehr langsam. Insbesondere der HMF-Gehalt nimmt nur geringfügig zu, so
+    dass er auch nach drei Jahren die Qualitätsanforderungen problemlos erfüllt.
+- id: 164
+  number: 1
+  title: Mindestens 25 % aller Brutwaben
+  description: werden jährlich erneuert oder die Völker werden periodisch auf Neubau
+    gesetzt.
+  quality_control_section_id: 34
+  inspection_notes: In den Brutwaben reichern sich Puppenhäutchen, Schadstoffe, Bakterien
+    und Viren an. Deshalb sollen sie regelmässig erneuert werden. Damit wird ein wesentlicher
+    Beitrag zu gesunden Völkern geleistet. Brutwaben dürfen generell nicht mehr als
+    vier Jahre als sein.
+- id: 174
+  number: 2
+  title: 'Honigwaben sind hell und weisen einen wachstypischen Geruch auf. '
+  description: Bebrütete Honigwaben werden spätestens am Ende der Saison ausgemustert.
+  quality_control_section_id: 34
+  inspection_notes: Bebrütete Honigwaben, die mit Honig gefüllt wurden, dürfen geschleudert
+    werden, wenn alle Brut geschlüpft ist. Ende Saison werden sie als Honigwaben ausgemustert.
+- id: 184
+  number: 3
+  title: Die Wabenlager sind sauber, geruchsneutral und frei von Schädlingen.
+  description: ''
+  quality_control_section_id: 34
+  inspection_notes: Das gilt sowohl für Brut- wie Honigwaben.
+- id: 194
+  number: 4
+  title: Die Vorratswaben enthalten kein verdorbenes Futter.
+  description: ''
+  quality_control_section_id: 34
+  inspection_notes: Sowohl Pollen wie auch Futter kann durch die Lagerung verderben.
+- id: 204
+  number: 1
+  title: Das Bestandesblatt wird jedes Jahr geführt,
+  description: und es kann vorgelegt werden.
+  quality_control_section_id: 44
+  inspection_notes: Führen des jährlichen Bestandeskontrollblattes gemäss Tierseuchenverordnung
+- id: 214
+  number: 2
+  title: In den Bienenvölkern und im Wabenlager
+  description: werden ausschliesslich vom BGD empfohlene Mittel eingesetzt. Das Lager
+    an erlaubten Mitteln ist sauber und geordnet.
+  quality_control_section_id: 44
+  inspection_notes: Jedes Behandlungsmittel stellt eine potentielle Gefahr für die
+    Reinheit des Honigs dar. Rückstände können unbemerkt von den Bienen und Waben
+    in den Honig gelangen. <a href="http://www.bienen.ch/fileadmin/user_upload_relaunch/Dokumente/Bienengesundheit/empfohlene_imkereipraeparate.pdf">Download
+    Liste der empfohlenen Imkereipräparate</a>. Nicht alle von Swissmedic zugelassenen
+    Mittel sind auch von BGD/ZBF empfohlen.
+- id: 224
+  number: 1
+  title: Die Selbstkontrolle
+  description: wird auf dem apisuisse-Formular oder im Imkerkalender geführt und wird
+    während drei Jahren aufbewahrt.
+  quality_control_section_id: 54
+  inspection_notes: Mit dem Selbstkontrollformular dokumentiert der Imker seinen Betrieb.
+    Apisuisse hat als Hilfsmittel ein eigenes Formular entwickelt. Es ist Bestandteil
+    des Imkerkalenders und kann auch dort geführt werden.
+- id: 234
+  number: 2
+  title: Auf allen Gebinden, die in den Verkehr gebracht werden,
+  description: entspricht die Deklaration den gesetzlichen Vorschriften.
+  quality_control_section_id: 54
+  inspection_notes: 'Zwingende Angaben: Sachbezeichnung "Honig", Name und vollständige
+    Adresse des Produzenten oder Abfüllers, Nettogewicht, Mintesthaltbarkeitsdatum,
+    Warenlos, Produktionsland (wenn nicht aus Sachbezeichnung oder Adresse des Produzenten
+    ersichtlich)'
+- id: 244
+  number: 3
+  title: Auf allen Gebinden, welche in den Verkehr gebracht werden
+  description: und die Anforderungen des apisuisse-Honigreglements erfüllen, ist das
+    Goldsiegel vorhanden.
+  quality_control_section_id: 54
+  inspection_notes: Das Goldsiegelpogramm wir zu einem wesentlichen Teil durch den
+    Verkauf der Goldsiegel finanziert. Somit ist es auch eine Verpflichtung, diese
+    zu verwenden.
+- id: 254
+  number: 4
+  title: Die Abfüllgewichte sind korrekt.
+  description: ''
+  quality_control_section_id: 54
+  inspection_notes: Das Nettogewicht darf in Einzelfällen höchstens 1,5 % unter dem
+    angegebenen Gewicht liegen. Die Gläser müssen jedoch im Durchschnitt das Nettogewicht
+    aufweisen.
+- id: 264
+  number: 5
+  title: Die Rückstellmuster der letzten drei Jahre sind vorhanden.
+  description: ''
+  quality_control_section_id: 54
+  inspection_notes: 'Für jedes Warenlos muss mindestens ein Rückstellmuster mit vollständiger
+    Beschriftung und Versiegelung vorhanden sein: 250g in Originalgebinde. Die Muster
+    werden bis zum Ende des Minteshalbarkeitsdatums aufbewahrt. Der Betriebsprüfer
+    kann für die Verbandsanalyse ein Rückstellmuster auswählen. Der Imker überlässt
+    dieses kostenlos und hat Anrecht auf die Ergebnisse der Untersuchung.'
+- id: 274
+  number: 6
+  title: Wird Honig zwecks Vermarktung zugekauft,
+  description: ist Lieferant, Menge und Siegelqualität dokumentiert. Eine Kopie der
+    Checkliste der letzten Betriebsprüfung des Lieferanten liegt vor. Auf dem Verkaufsgebinde
+    muss entweder der Produzent (Lieferant) oder der Abfüller (geprüfter Imker als
+    Verkäufer) ersichtlich sein.
+  quality_control_section_id: 54
+  inspection_notes: Zugekaufter Honig muss von einem Imker mit Siegel-Zertifikat stammen
+    (oder von einem Imker, der ein anderes anerkanntes Label tragen darf). Menge und
+    Lieferant, sowie dessen Siegelqualität müssen notiert werden. Wird Fremdhonig
+    verwendet, so darf er nicht als „aus eigener Imkerei“ deklariert werden.
+- id: 284
+  number: 7
+  title: Mindestens zwei Weiterbildungen pro Jahr wurden besucht.
+  description: Es gelten Veranstaltungen von apisuisse, apiservice und der Landesverbände,
+    sowie der Sektionen und Kantonalverbände von VDRB, SAR, STA.
+  quality_control_section_id: 54
+  inspection_notes: Der Siegelimker arbeitet nach der "Guten imkerlichen Praxis".
+    Dazu sind auch regelmässige Weiterbildungen nötig, welche auf dem Selbstkontrollblatt
+    dokumentiert werden.
+- id: 285
+  number: 1
+  title: Nur Mitglieder einer Sektion von BienenSchweiz, SAR oder FTA können am apisuisse
+    Goldsiegel Programm teilnehmen.
+  description: ''
+  quality_control_section_id: 55
+  inspection_notes: Tritt ein Imker/eine Imkerin aus der Sektion aus, muss er/sie
+    die restlichen Goldsiegel an den/die Betriebsprüfer/in zurückgeben.
+- id: 286
+  number: 2
+  title: Alle Bienenstandorte liegen ganzjährig innerhalb der Schweizer Grenzen.
+  description: ''
+  quality_control_section_id: 55
+  inspection_notes: Siegelimker/innen garantieren ihren Kunden/innen, dass der Qualitätshonig
+    ausschliesslich aus der Schweiz stammt.
+- id: 287
+  number: 3
+  title: Die Ordnung am Standort ist gut.
+  description: Es gibt keine für Bienen oder Schädlinge offen zugängliche Wabenteile
+    oder Futterreste.
+  quality_control_section_id: 55
+  inspection_notes: Der Standort der Bienen ist aufgeräumt. Offen zugängliche Wabenteile
+    können zu Gesundheits- oder Schädlingsproblemen führen. Die Werkzeuge sind funktionsfähig
+    und sauber.
+- id: 288
+  number: 4
+  title: Leere Beuten sind gründlich gereinigt
+  description: oder bienendicht verschlossen.
+  quality_control_section_id: 55
+  inspection_notes: Nicht gereinigte offene Beuten stellen ein Gesundheitsrisiko dar.
+- id: 289
+  number: 5
+  title: Für die Reinigung steht Wasser in Trinkwasserqualität zur Verfügung.
+  description: ''
+  quality_control_section_id: 55
+  inspection_notes: Das Lebensmittelrecht schreibt vor, dass Hände sowie Geräte und
+    Werkzeuge, die für die Lebensmittelproduktion verwendet werden, mit Wasser in
+    Trinkwasserqualität gereinigt werden.
+- id: 290
+  number: 1
+  title: In Trachtlücken wird genügend Honig als Futter belassen
+  description: und Flüssigfütterung / Futterteig nur in Ausnahmefällen gegeben. Honigwaben
+    dürfen erst zwei Wochen nach Beendigung der Futteraufnahme (flüssig und fest)
+    wieder aufgesetzt werden. Davon ausgenommen ist die Fütterung mit Honig aus dem
+    eigenen Betrieb.
+  quality_control_section_id: 56
+  inspection_notes: Bei Fütterung mit aufgesetzten Honigwaben kann Fütterungszucker
+    in den Honig gelangen. So verfälschter Honig widerspricht den Anforderungen der
+    Lebensmittelgesetzgebung.
+- id: 291
+  number: 2
+  title: 'Flüssigfütterung wird nur eingesetzt:'
+  description: |
+    - Zum Aufbau des Wintervorrates nach Entfernung der Honigaufsätze.
+    - Für Jungvölker und Schwärme.
+    - Für Pflegevölker in der Königinnenzucht.
+    - Zum Überbrücken von Trachtlücken.
+    Fütterung und Aufsetzen sind zu dokumentieren.
+  quality_control_section_id: 56
+  inspection_notes: Der/die Imker/in ist verantwortlich, dass durch massvolle Fütterung
+    der Honig nicht verfälscht wird. Flüssigfütterung während Trachtlücken ist diesbezüglich
+    heikel. Ein Wiederaufsetzen der Waben zur Honiggewinnung darf deshalb frühestens
+    zwei Wochen nach Beendigung der Futteraufnahme durch die Trachtvölker erfolgen.
+    Die verabreichte Menge an Futter, das Datum der Verfütterung, das Ende der Futteraufnahme
+    und das Wiederaufsetzen der Honigwaben muss dokumentiert werden.
+- id: 292
+  number: 1
+  title: Der Honig wird vor der Ernte auf  Reife geprüft.
+  description: ''
+  quality_control_section_id: 57
+  inspection_notes: Vor der Ernte wird der Honig auf seine Reife geprüft. Das einfachste
+    Verfahren ist die Spritzprobe. Der Wassergehalt kann mit einem Refraktometer bestimmt
+    werden.
+- id: 293
+  number: 2
+  title: Die Honigernte weist einen Wassergehalt von max. 18.5% auf.
+  description: ''
+  quality_control_section_id: 57
+  inspection_notes: Der genaue Wassergehalt kann nur mit einem Refraktometer bestimmt
+    werden. Jede/r Siegelimker/in muss daher <b>Zugang</b> zu einem Refraktometer
+    haben.
+- id: 294
+  number: 3
+  title: Es werden ausschliesslich Waben ohne Brut geschleudert.
+  description: ''
+  quality_control_section_id: 57
+  inspection_notes: Es werden ausschliesslich Waben ohne Brut geschleudert.
+- id: 295
+  number: 4
+  title: Die Räume zur Honiggewinnung und -verarbeitung
+  description: sind bienendicht und erlauben ein Arbeiten nach den Vorgaben der Schweizerischen
+    Gesetzgebung.
+  quality_control_section_id: 57
+  inspection_notes: 'Ein Raum kann auch für die Tage der Honiggewinnung und –verarbeitung
+    entsprechend der Vorgaben hergerichtet werden: bienendicht, frei von Schädlingen
+    und Ungeziefer, keine Lagerung von Reinigungs- und Desinfektionsmitteln, Haustiere
+    haben keinen Zutritt.'
+- id: 296
+  number: 5
+  title: Geräte und Gefässe zur Honiggewinnung, -lagerung und -verarbeitung
+  description: sind in einwandfreiem Zustand. Sie bestehen aus für Lebensmittel zugelassenen
+    Materialien.
+  quality_control_section_id: 57
+  inspection_notes: 'Einrichtungen zur Entdeckelung, Honigschleuder, Kläreinrichtungen
+    sowie Lager- und Verkaufsgefässe  müssen in einwandfreiem Zustand und aus lebensmittelechten
+    Materialien bestehen: Lebensmittelechter Kunststoff, Glas, Chromnickelstahl, Metall
+    generell frei von Rost, Weissblech ist daher nur zugelassen, sofern die Beschichtung
+    völlig einwandfrei ist. Aluminium ist für die Verarbeitung aber nicht für die
+    Lagerung zugelassen.\nFalls die Honigschleuder eine Schmierung benötigt, muss
+    diese mit speziellem, lebensmitteltauglichem Fett erfolgen.'
+- id: 297
+  number: 6
+  title: Nach der Ernte des Honigs und beim Schleuderprozess
+  description: dürfen keine maschinellen Honigtrocknungsverfahren angewendet werden.
+  quality_control_section_id: 57
+  inspection_notes: Zu früh geernteter Honig enthält zu viel Wasser und zu wenig von
+    den Bienen zugesetzte Inhaltsstoffe. Falls der Honig nach dem entnehmen der Waben
+    ausnahmsweise nicht unmittelbar geschleudert wird, müssen die Waben trocken und
+    in warmer Umgebung zwischengelagert werden. Ein Luftentfeuchter im Schleuderraum
+    ist zulässig.
+- id: 298
+  number: 7
+  title: Die verwendete Siebung >0.2mm gewährleistet,
+  description: dass der natürlich gesammelte Pollen restlos im Honig erhalten bleibt.
+  quality_control_section_id: 57
+  inspection_notes: Honig muss allen Pollen enthalten, der bei der Sammeltätigkeit
+    der Bienen natürlich in den Nektar gelangt. Siebe oder Seihtücher mit weniger
+    als 0.2 mm Loch-Durchmesser sind nicht zulässig.
+- id: 299
+  number: 8
+  title: Der Honig wird so verarbeitet und gelagert,
+  description: dass der Goldsiegel- Grenzwert von 15 mg HMF/ kg nicht überschritten
+    wird.
+  quality_control_section_id: 57
+  inspection_notes: Zu warme Lagerung und Aufwärmen zur Verflüssigung kann den HMF
+    – Gehalt des Honigs schnell über den geforderten Höchstwert steigen lassen. Auch
+    Licht beeinflusst den Honig negativ. Honig soll deshalb dunkel und kühl gelagert
+    werden.
+- id: 300
+  number: 9
+  title: Kristallisierter Honig wird schonend und unter 40 Grad C verflüssigt.
+  description: Bei Anwendung des Durchlauf-Verflüssigungsverfahrens (z. B. Mellitherm)
+    wird der Honig gemäss Temperaturvorgaben in der Betriebsanleitung verarbeitet.
+  quality_control_section_id: 57
+  inspection_notes: Bei erhöhten Temperaturen entsteht im Honig HMF und wertvolle
+    Inhaltsstoffe werden geschädigt. Nur eine vorsichtige Verflüssigung, bei welcher
+    der Honig unter 40° C bleibt, ist akzeptabel. Dabei darf das umgebende Wasserbad
+    oder die Warmluft bis ca. 45° C warm sein. Grundsätzlich soll die Dauer der Verflüssigung
+    möglichst kurz sein. Da beim Durchlauf-Verflüssigungs-Verfahren der Honig nur
+    sehr kurzzeitig erwärmt wird, kann dabei der Thermostat auf 70° gestellt werden.
+    Es muss sichergesellt sein, dass der Honig rasch ablaufen kann.
+- id: 301
+  number: 10
+  title: Die Räume zur Honiglagerung sind frei
+  description: von Schädlingen, kühl, dunkel, geruchsneutral und trocken. Eine Temperatur
+    um 15°C wird angestrebt.
+  quality_control_section_id: 57
+  inspection_notes: Honig soll dunkel und kühl gelagert werden. Damit verändert er
+    sich nur sehr langsam. Insbesondere der HMF-Gehalt nimmt nur geringfügig zu, so
+    dass er auch nach drei Jahren die Qualitätsanforderungen problemlos erfüllt.
+- id: 302
+  number: 1
+  title: Mindestens ein Drittel aller Brutwaben
+  description: werden jährlich erneuert oder die Völker werden periodisch auf Neubau
+    gesetzt.
+  quality_control_section_id: 58
+  inspection_notes: In den Brutwaben reichern sich Puppenhäutchen, Schadstoffe, Bakterien
+    und Viren an. Deshalb sollen sie regelmässig erneuert werden. Damit wird ein wesentlicher
+    Beitrag zu gesunden Völkern geleistet. Brutwaben dürfen generell nicht mehr als
+    vier Jahre als sein.
+- id: 303
+  number: 2
+  title: 'Honigwaben sind hell und weisen einen wachstypischen Geruch auf. '
+  description: Bebrütete Honigwaben werden spätestens am Ende der Saison ausgemustert.
+  quality_control_section_id: 58
+  inspection_notes: Bebrütete Honigwaben, die mit Honig gefüllt wurden, dürfen geschleudert
+    werden, wenn alle Brut geschlüpft ist. Ende Saison werden sie als Honigwaben ausgemustert.
+- id: 304
+  number: 3
+  title: Die Wabenlager sind sauber, geruchsneutral und frei von Schädlingen.
+  description: ''
+  quality_control_section_id: 58
+  inspection_notes: Das gilt sowohl für Brut- wie Honigwaben.
+- id: 305
+  number: 4
+  title: Die Vorratswaben enthalten kein verdorbenes Futter.
+  description: ''
+  quality_control_section_id: 58
+  inspection_notes: Sowohl Pollen wie auch Futter kann durch die Lagerung verderben.
+- id: 306
+  number: 1
+  title: Das Bestandeskontrollblatt wird jedes Jahr geführt,
+  description: und kann vorgelegt werden.
+  quality_control_section_id: 59
+  inspection_notes: Führen des jährlichen Bestandeskontrollblattes gemäss Tierseuchenverordnung
+- id: 307
+  number: 2
+  title: In den Bienenvölkern und im Wabenlager
+  description: werden ausschliesslich vom BGD empfohlene Mittel eingesetzt. Das Lager
+    der erlaubten Mittel ist sauber und geordnet.
+  quality_control_section_id: 59
+  inspection_notes: Jedes Behandlungsmittel stellt eine potentielle Gefahr für die
+    Reinheit des Honigs dar. Rückstände können unbemerkt von den Bienen und Waben
+    in den Honig gelangen. Die Liste der empfohlenen Imkereipräparate kann unter <a
+    href="https://www.bienen.ch/">www.bienen.ch</a> heruntergeladen werden. Nicht
+    alle von Swissmedic zugelassenen Mittel sind auch von BGD/ZBF empfohlen.
+- id: 308
+  number: 1
+  title: Die Selbstkontrolle
+  description: wird auf dem apisuisse-Formular oder im Imkerkalender geführt und wird
+    während drei Jahren aufbewahrt.
+  quality_control_section_id: 60
+  inspection_notes: Mit dem Selbstkontrollformular dokumentiert der/die Imker/in seinen
+    Betrieb. apisuisse hat als Hilfsmittel ein eigenes Formular entwickelt. Es ist
+    Bestandteil des Imkerkalenders und kann auch dort geführt werden.
+- id: 309
+  number: 2
+  title: Auf allen Gebinden, welche in den Verkehr gebracht werden,
+  description: entspricht die Deklaration den gesetzlichen Vorschriften.
+  quality_control_section_id: 60
+  inspection_notes: 'Zwingende Angaben: Sachbezeichnung "Honig", Name und vollständige
+    Adresse des/der Produzenten/in oder Abfüllers/in, Nettogewicht, Mindesthaltbarkeitsdatum
+    (Erntejahr +3 Jahre), Warenlos, Produktionsland (wenn nicht aus Sachbezeichnung
+    oder Adresse des/der Produzenten/in ersichtlich)'
+- id: 310
+  number: 3
+  title: Auf allen Gebinden, die in den Verkehr gebracht werden
+  description: und die Anforderungen des apisuisse-Honigreglements erfüllen, ist das
+    Goldsiegel vorhanden.
+  quality_control_section_id: 60
+  inspection_notes: Das Goldsiegelpogramm wird zu einem wesentlichen Teil durch den
+    Verkauf der Goldsiegel finanziert. Somit ist es auch eine Verpflichtung, diese
+    zu verwenden.
+- id: 311
+  number: 4
+  title: Die Abfüllgewichte sind korrekt.
+  description: "(Ø +/- 1.5%)"
+  quality_control_section_id: 60
+  inspection_notes: Das Nettogewicht darf in Einzelfällen höchstens 1,5 % unter dem
+    angegebenen Gewicht liegen. Die Gläser müssen jedoch im Durchschnitt das Nettogewicht
+    aufweisen.
+- id: 312
+  number: 5
+  title: Die Mindesthaltbarkeitsdauer
+  description: "(maximal 3 Jahre nach Ende des Produktionsjahres) ist korrekt angegeben
+    und dem Wassergehalt angepasst."
+  quality_control_section_id: 60
+  inspection_notes: Die Mindesthaltbarkeitsdauer stellt einen Richtwert dar. Honig
+    ist bei korrekter Lagerung viel länger haltbar.
+- id: 313
+  number: 6
+  title: Die Rückstellmuster über den Zeitraum der Mindesthaltbarkeitsdauer sind vorhanden.
+  description: ''
+  quality_control_section_id: 60
+  inspection_notes: 'Für jedes Warenlos muss mindestens ein Rückstellmuster mit vollständiger
+    Beschriftung und Versiegelung vorhanden sein: 250g in Originalgebinde. Die Muster
+    werden bis zum Ende des Mindesthaltbarkeitsdatums aufbewahrt. Der/die Betriebsprüfer/in
+    kann für die Verbandsanalyse ein Rückstellmuster auswählen. Der/die Imker/in überlässt
+    dieses kostenlos und hat Anrecht auf die Ergebnisse der Untersuchung.'
+- id: 314
+  number: 7
+  title: Wird Honig zwecks Vermarktung zugekauft,
+  description: ist Lieferant/in, Menge und Siegelqualität dokumentiert. Eine Kopie
+    der Checkliste der letzten Qualitätskontrolle des/der Lieferanten/in liegt vor.
+    Auf dem Verkaufsgebinde muss entweder der/die Produzent/in (Lieferant/in) oder
+    der/die Abfüller/in (geprüfte/r Imker/in als Verkäufer/in) ersichtlich sein.
+  quality_control_section_id: 60
+  inspection_notes: Zugekaufter Honig muss von einem/r Imker/in mit Siegel-Zertifikat
+    stammen (oder von einem/r Imker/in, der/die ein anderes anerkanntes Label tragen
+    darf). Menge und Lieferant/in, sowie dessen Siegelqualität müssen notiert werden.
+    Wird Fremdhonig verwendet, so darf er nicht als „aus eigener Imkerei“ deklariert
+    werden.
+- id: 315
+  number: 8
+  title: Mindestens zwei Weiterbildungen pro Jahr werden besucht.
+  description: Es gelten Veranstaltungen von apisuisse, apiservice und der Landesverbände,
+    sowie der Sektionen und Kantonalverbände von BienenSchweiz, SAR, FTA.
+  quality_control_section_id: 60
+  inspection_notes: Der/die Siegelimker/in arbeitet nach der "Guten imkerlichen Praxis".
+    Dazu sind auch regelmässige Weiterbildungen nötig, welche auf dem Selbstkontrollblatt
+    dokumentiert werden.
+- id: 316
+  number: 1
+  title: Nur Mitglieder einer Sektion von BienenSchweiz, SAR oder FTA können am apisuisse
+    Goldsiegel Programm teilnehmen.
+  description: ''
+  quality_control_section_id: 61
+  inspection_notes: Tritt ein Imker/eine Imkerin aus der Sektion aus, muss er/sie
+    die restlichen Goldsiegel an den/die Betriebsprüfer/in zurückgeben.
+- id: 317
+  number: 2
+  title: Alle Bienenstandorte liegen ganzjährig innerhalb der Schweizer und Lichtensteinischen
+    Grenzen.
+  description: ''
+  quality_control_section_id: 61
+  inspection_notes: Siegelimker/innen garantieren ihren Kunden/innen, dass der Qualitätshonig
+    ausschliesslich aus der Schweiz stammt.
+- id: 318
+  number: 3
+  title: Die Ordnung am Standort ist gut.
+  description: Es gibt keine für Bienen oder Schädlinge offen zugängliche Wabenteile
+    oder Futterreste.
+  quality_control_section_id: 61
+  inspection_notes: Der Standort der Bienen ist aufgeräumt. Offen zugängliche Wabenteile
+    können zu Gesundheits- oder Schädlingsproblemen führen. Die Werkzeuge sind funktionsfähig
+    und sauber.
+- id: 319
+  number: 4
+  title: Leere Beuten sind gründlich gereinigt
+  description: oder bienendicht verschlossen.
+  quality_control_section_id: 61
+  inspection_notes: Nicht gereinigte offene Beuten stellen ein Gesundheitsrisiko dar.
+- id: 320
+  number: 5
+  title: Für die Reinigung steht Wasser in Trinkwasserqualität zur Verfügung.
+  description: ''
+  quality_control_section_id: 61
+  inspection_notes: Das Lebensmittelrecht schreibt vor, dass Hände sowie Geräte und
+    Werkzeuge, die für die Lebensmittelproduktion verwendet werden, mit Wasser in
+    Trinkwasserqualität gereinigt werden.
+- id: 321
+  number: 1
+  title: In Trachtlücken wird genügend Honig als Futter belassen
+  description: und Flüssigfütterung / Futterteig nur in Ausnahmefällen gegeben. Honigwaben
+    dürfen erst zwei Wochen nach Beendigung der Futteraufnahme (flüssig und fest)
+    wieder aufgesetzt werden. Davon ausgenommen ist die Fütterung mit Honig aus dem
+    eigenen Betrieb.
+  quality_control_section_id: 62
+  inspection_notes: Bei Fütterung mit aufgesetzten Honigwaben kann Fütterungszucker
+    in den Honig gelangen. So verfälschter Honig widerspricht den Anforderungen der
+    Lebensmittelgesetzgebung.
+- id: 322
+  number: 2
+  title: 'Flüssigfütterung wird nur eingesetzt:'
+  description: |
+    - Zum Aufbau des Wintervorrates nach Entfernung der Honigaufsätze.
+    - Für Jungvölker und Schwärme.
+    - Für Pflegevölker in der Königinnenzucht.
+    - Zum Überbrücken von Trachtlücken.
+    Fütterung und Aufsetzen sind zu dokumentieren.
+  quality_control_section_id: 62
+  inspection_notes: Der/die Imker/in ist verantwortlich, dass durch massvolle Fütterung
+    der Honig nicht verfälscht wird. Flüssigfütterung während Trachtlücken ist diesbezüglich
+    heikel. Ein Wiederaufsetzen der Waben zur Honiggewinnung darf deshalb frühestens
+    zwei Wochen nach Beendigung der Futteraufnahme durch die Trachtvölker erfolgen.
+    Die verabreichte Menge an Futter, das Datum der Verfütterung, das Ende der Futteraufnahme
+    und das Wiederaufsetzen der Honigwaben muss dokumentiert werden.
+- id: 323
+  number: 1
+  title: Der Honig wird vor der Ernte auf  Reife geprüft.
+  description: ''
+  quality_control_section_id: 63
+  inspection_notes: Vor der Ernte wird der Honig auf seine Reife geprüft. Das einfachste
+    Verfahren ist die Spritzprobe. Der Wassergehalt kann mit einem Refraktometer bestimmt
+    werden.
+- id: 324
+  number: 2
+  title: Die Honigernte weist einen Wassergehalt von max. 18.5% auf.
+  description: ''
+  quality_control_section_id: 63
+  inspection_notes: Der genaue Wassergehalt kann nur mit einem Refraktometer bestimmt
+    werden. Jede/r Siegelimker/in muss daher <b>Zugang</b> zu einem Refraktometer
+    haben.
+- id: 325
+  number: 3
+  title: Es werden ausschliesslich Waben ohne Brut geschleudert.
+  description: ''
+  quality_control_section_id: 63
+  inspection_notes: Es werden ausschliesslich Waben ohne Brut geschleudert.
+- id: 326
+  number: 4
+  title: Die Räume zur Honiggewinnung und -verarbeitung
+  description: sind geruchsneutral und bienendicht und erlauben ein Arbeiten nach
+    den Vorgaben der Schweizerischen Gesetzgebung. Die Kleidung ist in hygienisch
+    einwandfreiem Zustand.
+  quality_control_section_id: 63
+  inspection_notes: 'Ein Raum kann auch für die Tage der Honiggewinnung und –verarbeitung
+    entsprechend der Vorgaben hergerichtet werden: bienendicht, frei von Schädlingen
+    und Ungeziefer, keine Lagerung von Reinigungs- und Desinfektionsmitteln, Haustiere
+    haben keinen Zutritt.'
+- id: 327
+  number: 5
+  title: Geräte und Gefässe zur Honiggewinnung, -lagerung und -verarbeitung
+  description: sind in einwandfreiem Zustand. Sie bestehen aus für Lebensmittel zugelassenen
+    Materialien.
+  quality_control_section_id: 63
+  inspection_notes: 'Einrichtungen zur Entdeckelung, Honigschleuder, Kläreinrichtungen
+    sowie Lager- und Verkaufsgefässe  müssen in einwandfreiem Zustand und aus lebensmittelechten
+    Materialien bestehen: Lebensmittelechter Kunststoff, Glas, Chromnickelstahl, Metall
+    generell frei von Rost, Weissblech ist daher nur zugelassen, sofern die Beschichtung
+    völlig einwandfrei ist. Aluminium ist für die Verarbeitung aber nicht für die
+    Lagerung zugelassen.\nFalls die Honigschleuder eine Schmierung benötigt, muss
+    diese mit speziellem, lebensmitteltauglichem Fett erfolgen.'
+- id: 328
+  number: 6
+  title: Nach der Ernte des Honigs und beim Schleuderprozess
+  description: dürfen keine maschinellen Honigtrocknungsverfahren angewendet werden.
+  quality_control_section_id: 63
+  inspection_notes: Zu früh geernteter Honig enthält zu viel Wasser und zu wenig von
+    den Bienen zugesetzte Inhaltsstoffe. Falls der Honig nach dem entnehmen der Waben
+    ausnahmsweise nicht unmittelbar geschleudert wird, müssen die Waben trocken und
+    in warmer Umgebung zwischengelagert werden. Ein Luftentfeuchter im Schleuderraum
+    ist zulässig.
+- id: 329
+  number: 7
+  title: Die verwendete Siebung >0.2mm gewährleistet,
+  description: dass der natürlich gesammelte Pollen restlos im Honig erhalten bleibt.
+  quality_control_section_id: 63
+  inspection_notes: Honig muss allen Pollen enthalten, der bei der Sammeltätigkeit
+    der Bienen natürlich in den Nektar gelangt. Siebe oder Seihtücher mit weniger
+    als 0.2 mm Loch-Durchmesser sind nicht zulässig.
+- id: 330
+  number: 8
+  title: Der Honig wird so verarbeitet und gelagert,
+  description: dass der Goldsiegel- Grenzwert von 15 mg HMF/ kg nicht überschritten
+    wird.
+  quality_control_section_id: 63
+  inspection_notes: Zu warme Lagerung und Aufwärmen zur Verflüssigung kann den HMF
+    – Gehalt des Honigs schnell über den geforderten Höchstwert steigen lassen. Auch
+    Licht beeinflusst den Honig negativ. Honig soll deshalb dunkel und kühl gelagert
+    werden.
+- id: 331
+  number: 9
+  title: Kristallisierter Honig wird schonend und unter 40 Grad C verflüssigt.
+  description: Bei Anwendung des Durchlauf-Verflüssigungsverfahrens (z. B. Mellitherm)
+    wird der Honig gemäss Temperaturvorgaben in der Betriebsanleitung verarbeitet.
+  quality_control_section_id: 63
+  inspection_notes: Bei erhöhten Temperaturen entsteht im Honig HMF und wertvolle
+    Inhaltsstoffe werden geschädigt. Nur eine vorsichtige Verflüssigung, bei welcher
+    der Honig unter 40° C bleibt, ist akzeptabel. Dabei darf das umgebende Wasserbad
+    oder die Warmluft bis ca. 45° C warm sein. Grundsätzlich soll die Dauer der Verflüssigung
+    möglichst kurz sein. Da beim Durchlauf-Verflüssigungs-Verfahren der Honig nur
+    sehr kurzzeitig erwärmt wird, kann dabei der Thermostat auf 70° gestellt werden.
+    Es muss sichergesellt sein, dass der Honig rasch ablaufen kann.
+- id: 332
+  number: 10
+  title: Die Räume zur Honiglagerung sind frei
+  description: von Schädlingen, kühl, dunkel, geruchsneutral und trocken. Eine Temperatur
+    um 15°C wird angestrebt.
+  quality_control_section_id: 63
+  inspection_notes: Honig soll dunkel und kühl gelagert werden. Damit verändert er
+    sich nur sehr langsam. Insbesondere der HMF-Gehalt nimmt nur geringfügig zu, so
+    dass er auch nach drei Jahren die Qualitätsanforderungen problemlos erfüllt.
+- id: 333
+  number: 1
+  title: Mindestens ein Drittel aller Brutwaben
+  description: werden jährlich erneuert oder die Völker werden periodisch auf Neubau
+    gesetzt.
+  quality_control_section_id: 64
+  inspection_notes: In den Brutwaben reichern sich Puppenhäutchen, Schadstoffe, Bakterien
+    und Viren an. Deshalb sollen sie regelmässig erneuert werden. Damit wird ein wesentlicher
+    Beitrag zu gesunden Völkern geleistet. Brutwaben dürfen generell nicht mehr als
+    vier Jahre als sein.
+- id: 334
+  number: 2
+  title: 'Honigwaben sind hell und weisen einen wachstypischen Geruch auf. '
+  description: Bebrütete Honigwaben werden spätestens am Ende der Saison ausgemustert.
+  quality_control_section_id: 64
+  inspection_notes: Bebrütete Honigwaben, die mit Honig gefüllt wurden, dürfen geschleudert
+    werden, wenn alle Brut geschlüpft ist. Ende Saison werden sie als Honigwaben ausgemustert.
+- id: 335
+  number: 3
+  title: Die Wabenlager sind sauber, geruchsneutral und frei von Schädlingen.
+  description: ''
+  quality_control_section_id: 64
+  inspection_notes: Das gilt sowohl für Brut- wie Honigwaben.
+- id: 336
+  number: 4
+  title: Die Vorratswaben enthalten kein verdorbenes Futter.
+  description: ''
+  quality_control_section_id: 64
+  inspection_notes: Sowohl Pollen wie auch Futter kann durch die Lagerung verderben.
+- id: 337
+  number: 1
+  title: Das Bestandeskontrollblatt wird jedes Jahr geführt,
+  description: und kann vorgelegt werden.
+  quality_control_section_id: 65
+  inspection_notes: Führen des jährlichen Bestandeskontrollblattes gemäss Tierseuchenverordnung
+- id: 338
+  number: 2
+  title: In den Bienenvölkern und im Wabenlager
+  description: werden ausschliesslich vom BGD empfohlene Mittel eingesetzt. Das Lager
+    der erlaubten Mittel ist sauber und geordnet.
+  quality_control_section_id: 65
+  inspection_notes: Jedes Behandlungsmittel stellt eine potentielle Gefahr für die
+    Reinheit des Honigs dar. Rückstände können unbemerkt von den Bienen und Waben
+    in den Honig gelangen. Die Liste der empfohlenen Imkereipräparate kann unter <a
+    href="https://www.bienen.ch/">www.bienen.ch</a> heruntergeladen werden. Nicht
+    alle von Swissmedic zugelassenen Mittel sind auch von BGD/ZBF empfohlen.
+- id: 339
+  number: 1
+  title: Die Selbstkontrolle
+  description: wird auf dem apisuisse-Formular oder im Imkerkalender geführt und wird
+    während drei Jahren aufbewahrt.
+  quality_control_section_id: 66
+  inspection_notes: Mit dem Selbstkontrollformular dokumentiert der/die Imker/in seinen
+    Betrieb. apisuisse hat als Hilfsmittel ein eigenes Formular entwickelt. Es ist
+    Bestandteil des Imkerkalenders und kann auch dort geführt werden.
+- id: 340
+  number: 2
+  title: Auf allen Gebinden, welche in den Verkehr gebracht werden,
+  description: entspricht die Deklaration den gesetzlichen Vorschriften.
+  quality_control_section_id: 66
+  inspection_notes: 'Zwingende Angaben: Sachbezeichnung "Honig", Name und vollständige
+    Adresse des/der Produzenten/in oder Abfüllers/in, Nettogewicht, Mindesthaltbarkeitsdatum
+    (Erntejahr +3 Jahre), Warenlos, Produktionsland (wenn nicht aus Sachbezeichnung
+    oder Adresse des/der Produzenten/in ersichtlich)'
+- id: 341
+  number: 3
+  title: Auf allen Gebinden, die in den Verkehr gebracht werden
+  description: und die Anforderungen des apisuisse-Honigreglements erfüllen, ist das
+    Goldsiegel vorhanden.
+  quality_control_section_id: 66
+  inspection_notes: Das Goldsiegelpogramm wird zu einem wesentlichen Teil durch den
+    Verkauf der Goldsiegel finanziert. Somit ist es auch eine Verpflichtung, diese
+    zu verwenden.
+- id: 342
+  number: 4
+  title: Die Abfüllgewichte sind korrekt.
+  description: "(Ø +/- 1.5%)"
+  quality_control_section_id: 66
+  inspection_notes: Das Nettogewicht darf in Einzelfällen höchstens 1,5 % unter dem
+    angegebenen Gewicht liegen. Die Gläser müssen jedoch im Durchschnitt das Nettogewicht
+    aufweisen.
+- id: 343
+  number: 5
+  title: Die Mindesthaltbarkeitsdauer
+  description: "(maximal 3 Jahre nach Ende des Produktionsjahres) ist korrekt angegeben
+    und dem Wassergehalt angepasst."
+  quality_control_section_id: 66
+  inspection_notes: Die Mindesthaltbarkeitsdauer stellt einen Richtwert dar. Honig
+    ist bei korrekter Lagerung viel länger haltbar.
+- id: 344
+  number: 6
+  title: Die Rückstellmuster über den Zeitraum der Mindesthaltbarkeitsdauer sind vorhanden.
+  description: ''
+  quality_control_section_id: 66
+  inspection_notes: 'Für jedes Warenlos muss mindestens ein Rückstellmuster mit vollständiger
+    Beschriftung und Versiegelung vorhanden sein: 250g in Originalgebinde. Die Muster
+    werden bis zum Ende des Mindesthaltbarkeitsdatums aufbewahrt. Der/die Betriebsprüfer/in
+    kann für die Verbandsanalyse ein Rückstellmuster auswählen. Der/die Imker/in überlässt
+    dieses kostenlos und hat Anrecht auf die Ergebnisse der Untersuchung.'
+- id: 345
+  number: 7
+  title: Wird Honig zwecks Vermarktung zugekauft,
+  description: ist Lieferant/in, Menge und Siegelqualität dokumentiert. Eine Kopie
+    der Checkliste der letzten Qualitätskontrolle des/der Lieferanten/in liegt vor.
+    Auf dem Verkaufsgebinde muss entweder der/die Produzent/in (Lieferant/in) oder
+    der/die Abfüller/in (geprüfte/r Imker/in als Verkäufer/in) ersichtlich sein.
+  quality_control_section_id: 66
+  inspection_notes: Zugekaufter Honig muss von einem/r Imker/in mit Siegel-Zertifikat
+    stammen (oder von einem/r Imker/in, der/die ein anderes anerkanntes Label tragen
+    darf). Menge und Lieferant/in, sowie dessen Siegelqualität müssen notiert werden.
+    Wird Fremdhonig verwendet, so darf er nicht als „aus eigener Imkerei“ deklariert
+    werden.
+- id: 346
+  number: 8
+  title: Mindestens zwei Weiterbildungen pro Jahr werden besucht.
+  description: Es gelten Veranstaltungen von apisuisse, apiservice, der Landesverbände,
+    sowie der Sektionen und Kantonalverbände von BienenSchweiz, SAR, FTA.
+  quality_control_section_id: 66
+  inspection_notes: Der/die Siegelimker/in arbeitet nach der "Guten imkerlichen Praxis".
+    Dazu sind auch regelmässige Weiterbildungen nötig, welche auf dem Selbstkontrollblatt
+    dokumentiert werden.
