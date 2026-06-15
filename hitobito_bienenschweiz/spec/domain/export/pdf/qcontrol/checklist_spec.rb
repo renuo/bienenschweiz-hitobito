@@ -80,6 +80,74 @@ describe Export::Pdf::Qcontrol::Checklist do
     expect(text.count("×")).to eq(2)
   end
 
+  it "renders all column headers" do
+    expect(text).to include("Prüfpunkt")
+    expect(text).to include("Prüfkriterium")
+    expect(text).to include("Erfüllt")
+    expect(text).to include("U. Vorb. erfüllt")
+    expect(text).to include("Nicht erfüllt")
+    expect(text).to include("Massnahmen/Bemerkungen")
+    expect(text).to include("Termin")
+  end
+
+  context "with a not_passed answer" do
+    let(:question_three) do
+      Fabricate(:quality_control_question, quality_control_section: section, number: 3,
+        title: "Frage drei", description: nil)
+    end
+
+    before do
+      Fabricate(:quality_control_answer, qcontrol: qcontrol,
+        quality_control_question: question_three, fulfilled: "not_passed",
+        notes: nil, deadline_at: nil)
+    end
+
+    it "renders a tick for the not_passed column" do
+      expect(text).to include("Frage drei")
+      expect(text.count("×")).to eq(3)
+    end
+
+    it "renders answer number in section.question format" do
+      expect(text).to include("1.3")
+    end
+  end
+
+  context "with answers in multiple sections" do
+    let(:section_two) do
+      Fabricate(:quality_control_section, number: 2, title: "Bienenvolk",
+        version: QualityControlSection.version)
+    end
+    let(:question_three) do
+      Fabricate(:quality_control_question, quality_control_section: section_two,
+        number: 1, title: "Erste Frage Bienenvolk", description: nil)
+    end
+
+    before do
+      Fabricate(:quality_control_answer, qcontrol: qcontrol,
+        quality_control_question: question_three, fulfilled: "passed",
+        notes: nil, deadline_at: nil)
+    end
+
+    it "renders both section titles" do
+      expect(text).to include("Standort")
+      expect(text).to include("Bienenvolk")
+    end
+
+    it "renders section header numbers for both sections" do
+      expect(text).to include("1.")
+      expect(text).to include("2.")
+    end
+
+    it "renders answer number in the second section" do
+      expect(text).to include("2.1")
+      expect(text).to include("Erste Frage Bienenvolk")
+    end
+
+    it "renders one tick per answer across both sections" do
+      expect(text.count("×")).to eq(3)
+    end
+  end
+
   it "renders the page footer" do
     # the footer is drawn with a repeater (form xobject),
     # which PDF::Inspector does not extract
