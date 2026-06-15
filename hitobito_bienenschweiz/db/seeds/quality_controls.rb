@@ -15,4 +15,3 @@ QualityControlSection.seed(:id, *sections.map(&:symbolize_keys))
 
 questions = YAML.load_file(seeds_path.join("quality_control_questions.yml"))
 QualityControlQuestion.seed(:id, *questions.map(&:symbolize_keys))
-
