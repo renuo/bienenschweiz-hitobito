@@ -11,4 +11,6 @@
     = f.collection_select :inspector_id, @inspectors, :id, :to_s, {}, class: 'form-select form-select-sm'
   = f.labeled_input_fields :control_date, :with_voucher
   = f.labeled_i18n_enum_field :control_state, Qcontrol.control_state_labels, class: 'form-select form-select-sm'
+  = f.labeled :document do
+    = f.file_field :document, class: 'mw-100 mw-md-60ch form-control form-control-sm'
 
