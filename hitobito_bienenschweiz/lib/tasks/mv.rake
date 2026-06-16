@@ -347,11 +347,23 @@ namespace :mv do
       end
     end
 
-    task quality_controls: :environment do
+    task :quality_controls, [:redo_docs] => :environment do |t, args|
+      require 'carrierwave'
+
+      class AssetUploader < CarrierWave::Uploader::Base
+        def store_dir
+          "uploads/#{model.class.to_s.pluralize.underscore.gsub('mv_','')}/#{model.member_id}/#{model.id}"
+        end
+
+        def remove!
+          nil
+        end
+      end
       class MvRecord < ApplicationRecord
         self.abstract_class = true
         connects_to database: {reading: :mv, writing: :mv}
       end
+      require 'carrierwave/orm/activerecord'
 
       class KasRecord < ApplicationRecord
         self.abstract_class = true
@@ -369,6 +381,7 @@ namespace :mv do
 
       class MvQcontrol < MvRecord
         self.table_name = "qcontrols"
+        mount_uploader :document, AssetUploader
       end
 
       class MvQualityControlAnswer < MvRecord
@@ -392,17 +405,30 @@ namespace :mv do
       # inspector_id references a kas user in MV, but a person in hitobito
       inspector_member_ids = User.where.not(member_id: nil).pluck(:id, :member_id).to_h
 
-      qcontrol_rows = MvQcontrol.find_each.map do |qcontrol|
-        inspector_member_id = inspector_member_ids[qcontrol.inspector_id]
-        qcontrol.attributes.except("member_id", "intern_structure_id").merge(
-          "id" => qcontrol.id + QCONTROL_ID_OFFSET,
-          "person_id" => qcontrol.member_id && qcontrol.member_id + MEMBER_ID_OFFSET,
-          "author_id" => qcontrol.author_id && qcontrol.author_id + MEMBER_ID_OFFSET,
-          "group_id" => qcontrol.intern_structure_id + GROUP_ID_OFFSET,
+      MvQcontrol.find_each.map do |mv_qcontrol|
+        inspector_member_id = inspector_member_ids[mv_qcontrol.inspector_id]
+        qcontrol = Qcontrol.where(id: mv_qcontrol.id + QCONTROL_ID_OFFSET).first_or_initialize
+        qcontrol.update(mv_qcontrol.attributes.except("id", "member_id", "intern_structure_id", "document", "content_type", "file_size").merge(
+          "person_id" => mv_qcontrol.member_id && mv_qcontrol.member_id + MEMBER_ID_OFFSET,
+          "author_id" => mv_qcontrol.author_id && mv_qcontrol.author_id + MEMBER_ID_OFFSET,
+          "group_id" => mv_qcontrol.intern_structure_id + GROUP_ID_OFFSET,
           "inspector_id" => inspector_member_id && inspector_member_id + MEMBER_ID_OFFSET
-        )
+        ))
+        if (args[:redo_docs] == "true" || !qcontrol.document.attached?) && mv_qcontrol.document.present?
+          Tempfile.open("qcontrol-#{mv_qcontrol.id}") do |f|
+            f.binmode
+            f.write(mv_qcontrol.document.file.read)
+            f.rewind
+            qcontrol.document.attach(
+              io: f,
+              filename: mv_qcontrol.document.file.filename,
+              content_type: mv_qcontrol.content_type,
+            )
+            qcontrol.save(validate: false)
+            f.close
+          end
+        end
       end
-      import.call(Qcontrol, qcontrol_rows)
 
       answer_rows = MvQualityControlAnswer.find_each.map do |answer|
         answer.attributes.merge(
