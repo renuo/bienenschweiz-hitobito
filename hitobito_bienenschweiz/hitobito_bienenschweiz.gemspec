@@ -17,5 +17,8 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*"] + ["Rakefile"]
   # to match core Gemfile.lock which is otherwise not considered locally
   s.dependencies << Gem::Dependency.new("haml", "~> 6.3.0")
+  s.add_dependency "carrierwave", "~> 3.0"
+  s.add_dependency "carrierwave-aws"
+  s.add_dependency "mysql2"
   # rubocop:enable Style/SingleSpaceBeforeFirstArg
 end
