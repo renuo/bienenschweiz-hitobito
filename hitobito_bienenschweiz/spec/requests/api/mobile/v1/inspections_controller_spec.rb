@@ -243,7 +243,8 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
         expect(qcontrol.quality_control_answers[1])
           .to have_attributes(quality_control_answer_2.except(:qcontrol_id))
         is_expected.to have_attributes qcontrol_params.except(
-          :quality_control_answers_attributes, :no_control_reason, :mass_import, :intern_structure_id, :group_id
+          :quality_control_answers_attributes, :no_control_reason, :mass_import,
+          :intern_structure_id, :group_id
         ).merge(
           author_name: "Beeaudit", certificate_printed: true
         )
@@ -311,7 +312,8 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
       expect { post_inspection(params_to_send) }.to change(Qcontrol, :count)
       expect(response).to have_http_status(:no_content)
       is_expected.to have_attributes params_to_send.except(
-        :quality_control_answers_attributes, :mass_import, :member_notified, :intern_structure_id, :group_id
+        :quality_control_answers_attributes, :mass_import, :member_notified,
+        :intern_structure_id, :group_id
       ).merge(
         author_name: "Beeaudit"
       )
