@@ -11,8 +11,8 @@ class Qcontrol < ApplicationRecord
   # include FeeCreation
   include QcontrolNotifications
 
-  # TODO documents
-  # mount_uploader :document, AssetUploader
+  has_one_attached :document
+  validates :document, content_type: {in: ["application/pdf", "image/jpeg", "image/png"]}
 
   # the imker
   belongs_to :person, optional: true
@@ -71,7 +71,6 @@ class Qcontrol < ApplicationRecord
   #     ])
   # }
 
-  # before_validation :update_doc_attributes
   before_save :set_control_state
   before_create :set_author_name
   after_create :update_person_role
@@ -180,14 +179,6 @@ class Qcontrol < ApplicationRecord
 
   protected
 
-  # Add back when implementing document upload
-  # def update_doc_attributes
-  #   return unless document.present? && document_changed?
-  #
-  #   self.content_type = document.file.content_type
-  #   self.file_size = document.file.size
-  # end
-  #
   def update_person_role
     nil if person.nil?
 

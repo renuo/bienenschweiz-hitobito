@@ -6,5 +6,8 @@
 
 = crud_table do |t|
   - t.col("") do |qc|
-    = link_to(icon(:download), checklist_group_person_qcontrol_path(qc.group, qc.person, qc), target: '_blank')
+    - if upload_exists?(qc, :document)
+      = link_to(icon(:download), upload_url(qc, :document), target: :_blank, rel: :noopener, title: upload_name(qc, :document))
+    - else
+      = link_to(icon(:download), checklist_group_person_qcontrol_path(qc.group, qc.person, qc), target: :_blank)
   - t.sortable_attrs(:name, :group, :author, :inspector, :control_state, :control_date, :fee_ok?)

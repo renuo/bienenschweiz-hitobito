@@ -8,7 +8,8 @@
 class QcontrolsController < CrudController
   self.nesting = Group, Person
 
-  self.permitted_attrs = [:group_id, :inspector_id, :control_date, :with_voucher, :control_state]
+  self.permitted_attrs = [:group_id, :inspector_id, :control_date, :with_voucher, :control_state,
+    :document]
 
   decorates :group, :person
 
