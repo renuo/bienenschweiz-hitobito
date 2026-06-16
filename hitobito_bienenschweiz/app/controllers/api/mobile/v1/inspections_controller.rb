@@ -59,6 +59,9 @@ module Api
           valid_memberships = @beekeeper.roles.where(
             type: Bienenschweiz::Person::BEEKEEPER_ROLES
           ).order(:start_on).includes(:group)
+
+          # for legacy reason we have to accept it but it was always overwritten even before
+          ret.delete(:intern_structure_id)
           ret[:group_id] = valid_memberships.first.group.parent_id
           ret[:no_control_reason] ||= :no_reason
           ret
