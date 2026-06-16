@@ -1,3 +1,11 @@
+# frozen_string_literal: true
+
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
 namespace :mv do
   namespace :import do
     GROUP_ID_OFFSET = 10_000
@@ -42,7 +50,7 @@ namespace :mv do
       failed_members = {}
 
       scope = Member.all.includes(:login)
-      # scope = scope.limit(100)
+      scope = scope.limit(1000)
       scope.find_each do |member|
         total_count += 1
         new_id = member.id + ::MEMBER_ID_OFFSET # offset to not conflict with admin or test data
@@ -447,6 +455,13 @@ namespace :mv do
         kas_inspectors: MvQcontrol.where.not(inspector_id: nil).where.not(inspector_id: inspector_member_ids.keys).count
       }
       puts "Qcontrols with dangling references: #{missing.map { |k, v| "#{k}: #{v}" }.join(", ")}"
+    end
+
+    task reset_id_sequences: :environment do
+      ActiveRecord::Base.connection.tables.each do |t|
+        puts "Resetting primary key sequence for #{t}"
+        ActiveRecord::Base.connection.reset_pk_sequence!(t)
+      end
     end
   end
 end
