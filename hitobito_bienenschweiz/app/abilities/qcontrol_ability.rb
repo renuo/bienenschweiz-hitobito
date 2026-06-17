@@ -10,7 +10,8 @@ class QcontrolAbility < AbilityDsl::Base
 
   on(Qcontrol) do
     permission(:layer_and_below_full).may(:read, :checklist, :certificate)
-    permission(:layer_and_below_full).may(:read, :checklist, :certificate, :create, :destroy).if_admin
+    permission(:layer_and_below_full).may(:read, :checklist, :certificate, :create,
+      :destroy).if_admin
   end
 
   def if_admin
