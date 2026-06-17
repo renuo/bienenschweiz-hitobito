@@ -126,14 +126,14 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
     let(:qcontrol_params) do
       Fabricate.attributes_for(:recent_qcontrol)
         .except(:group, :author_name, :mass_import, :person_notified, :inspector_id).merge(
-          group_id: group.parent.id,
+          intern_structure_id: group.parent.id,
           quality_control_answers_attributes: [quality_control_answer_1, quality_control_answer_2]
         )
     end
 
     let(:qcontrol_params_without_answers) do
       Fabricate.attributes_for(:recent_qcontrol).except(:group,
-        :inspector_id).merge(group_id: group.parent.id)
+        :inspector_id).merge(intern_structure_id: group.parent.id)
     end
 
     subject(:qcontrol) { Qcontrol.last }
@@ -243,10 +243,12 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
         expect(qcontrol.quality_control_answers[1])
           .to have_attributes(quality_control_answer_2.except(:qcontrol_id))
         is_expected.to have_attributes qcontrol_params.except(
-          :quality_control_answers_attributes, :no_control_reason, :mass_import
+          :quality_control_answers_attributes, :no_control_reason, :mass_import,
+          :intern_structure_id, :group_id
         ).merge(
           author_name: "Beeaudit", certificate_printed: true
         )
+        is_expected.to have_attributes group_id: group.parent_id
       end
 
       it { works_with(no_control_reason: "no_reason") }
@@ -310,7 +312,8 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
       expect { post_inspection(params_to_send) }.to change(Qcontrol, :count)
       expect(response).to have_http_status(:no_content)
       is_expected.to have_attributes params_to_send.except(
-        :quality_control_answers_attributes, :mass_import, :member_notified
+        :quality_control_answers_attributes, :mass_import, :member_notified,
+        :intern_structure_id, :group_id
       ).merge(
         author_name: "Beeaudit"
       )
