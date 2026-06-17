@@ -73,7 +73,7 @@ class Qcontrol < ApplicationRecord
 
   before_save :set_control_state
   before_create :set_author_name
-  after_create :update_person_role
+  after_create :update_beekeeper_role
 
   # TODO: Add back when implementing PDF
   # hacking
@@ -179,12 +179,20 @@ class Qcontrol < ApplicationRecord
 
   protected
 
-  def update_person_role
-    nil if person.nil?
+  def update_beekeeper_role
+    return if person.nil?
 
-    # TODO: implement/rework
-    # roles.update(valid_until: (Time.zone.today + 20.days)) if not_passed?
-    # roles.update(valid_until: Time.zone.today) if no_control_necessary?
+    beekeeper_role.update(end_on: (Time.zone.today + 20.days)) if not_passed?
+    beekeeper_role.update(end_on: Time.zone.today) if no_control_necessary?
+  end
+
+  def beekeeper_role
+    return nil if person.nil?
+
+    person.roles.find_by(
+      group_id: group.children.find_by(type: Group::Siegelimker.sti_name).id,
+      type: Group::Siegelimker::Siegelimker.sti_name
+    )
   end
 
   def set_author_name
