@@ -127,6 +127,34 @@ RSpec.describe QcontrolsController, type: :request do
     end
   end
 
+  describe "#certificate" do
+    let!(:qcontrol) {
+      Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
+        control_date: Date.new(2023, 1, 1), control_state: "passed")
+    }
+
+    it "sends the certificate pdf inline" do
+      get certificate_group_person_qcontrol_path(sektion, beekeeper, qcontrol)
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("application/pdf")
+      expect(response.headers["Content-Disposition"]).to include("inline")
+      expect(response.headers["Content-Disposition"])
+        .to include(Export::Pdf::Qcontrol::Certificate.filename(qcontrol))
+    end
+
+    context "as a person without layer_and_below_full" do
+      let(:reader) { Fabricate(:person) }
+
+      before { sign_in(reader) }
+
+      it "raises access denied" do
+        expect {
+          get certificate_group_person_qcontrol_path(sektion, beekeeper, qcontrol)
+        }.to raise_error(CanCan::AccessDenied)
+      end
+    end
+  end
+
   describe "#destroy" do
     let!(:qcontrol) {
       Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
