@@ -19,6 +19,8 @@ module HitobitoBienenschweiz
       #{config.root}/app/jobs
     ]
 
+    config.action_mailer.preview_paths << "#{config.root}/spec/mailers/previews"
+
     config.to_prepare do
       # extend application classes here
       Group.include Bienenschweiz::Group
