@@ -16,7 +16,6 @@ Rails.application.routes.draw do
           member do
             get :checklist, as: :checklist
             get :certificate, as: :certificate
-            get :certificate_letter, as: :certificate_letter
           end
         end
         resources :supervisions
