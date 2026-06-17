@@ -24,6 +24,12 @@ module HitobitoBienenschweiz
       Group.include Bienenschweiz::Group
       Person.include Bienenschweiz::Person
 
+      NavigationHelper::MAIN << {label: :qcontrols,
+       url: :orphan_qcontrols_path,
+       icon_name: "money-bill-alt",
+       if: ->(_) { can?(:manage_orphans, Qcontrol) },
+       active_for: %w[orphan_qcontrols]}
+
       GroupResource.include Bienenschweiz::GroupResource
 
       PeopleController.permitted_attrs += [

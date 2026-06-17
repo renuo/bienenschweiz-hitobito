@@ -1,0 +1,31 @@
+-# Copyright (c) 2026. BienenSchweiz. This file is part of
+-# hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-# or later. See the COPYING file at the top-level directory or at
+-# https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
+
+- title t('.title', count: @qcontrols.count)
+
+= form_tag bulk_update_orphan_qcontrols_path, method: :patch do
+  %table.table
+    %thead
+      %tr
+        %th= Qcontrol.human_attribute_name(:control_date)
+        %th= Qcontrol.human_attribute_name(:group)
+        %th= Qcontrol.human_attribute_name(:author)
+        %th= Qcontrol.human_attribute_name(:person)
+        %th
+    %tbody
+      - @qcontrols.each do |qcontrol|
+        %tr
+          %td= l(qcontrol.control_date)
+          %td= qcontrol.group.to_s
+          %td= qcontrol.author&.to_s || qcontrol.author_name
+          %td
+            = select_tag "qcontrols[#{qcontrol.id}][person_id]",
+              options_from_collection_for_select(@people_by_sektion[qcontrol.group_id] || [], :id, :list_name),
+              include_blank: true,
+              class: "form-select form-select-sm"
+          %td
+            = link_to icon(:"trash-alt"), orphan_qcontrol_path(qcontrol), data: { turbo_method: :delete, turbo_confirm: t("global.confirm_delete") }, class: "btn btn-sm btn-outline-danger"
+  - if @qcontrols.any?
+    = submit_tag t(".update"), class: "btn btn-primary mt-2"

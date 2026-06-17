@@ -81,6 +81,15 @@ de:
         not_blank_inspectable: 'ist nicht gültig für Blanko-Betriebsprüfungen'
         no_supervisor_role: 'muss eine Person mit aktiver Supervisor-Rolle sein'
         not_allowed_for_kind: 'ist für %{kind} nicht zulässig'
+  orphan_qcontrols:
+    title: Blanko-Betriebsprüfungen
+    index:
+      title: Blanko-Betriebsprüfungen (%{count})
+      update: Aktualisieren
+    destroy:
+      success: Betriebsprüfung wurde gelöscht.
+      error: Betriebsprüfung konnte nicht gelöscht werden.
+
   people:
     tabs:
       bienenschweiz_qcontrols: Betriebsprüfungen
@@ -136,3 +145,5 @@ de:
     footer:
       left: 'Checkliste für die Betriebskontrolle'
       right: 'Honigkommission apisuisse %{year}'
+  navigation:
+    qcontrols: Betriebsprüfungen

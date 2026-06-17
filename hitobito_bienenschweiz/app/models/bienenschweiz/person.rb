@@ -107,6 +107,10 @@ module Bienenschweiz::Person
       canton&.upcase
     end
 
+    def list_name
+      full_name(:list)
+    end
+
     private
 
     def sektionen_for_role(role)
