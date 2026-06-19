@@ -10,4 +10,10 @@
       = link_to(icon(:download), upload_url(qc, :document), target: :_blank, rel: :noopener, title: upload_name(qc, :document))
     - else
       = link_to(icon(:download), checklist_group_person_qcontrol_path(qc.group, qc.person, qc), target: :_blank)
-  - t.sortable_attrs(:name, :group, :author, :inspector, :control_state, :control_date, :fee_ok?)
+  - t.sortable_attrs(:name, :group)
+  - t.sortable_attr(:author) do |qc|
+    - if qc.author.present?
+      = link_to qc.author, person_path(qc.author_id)
+    - else
+      = qc.author_name
+  - t.sortable_attrs(:inspector, :control_state, :control_date, :fee_ok?)
