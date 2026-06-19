@@ -17,7 +17,8 @@ describe InspectionService do
   describe "#build_structure_mails" do
     context "when the group has no active Siegelimkers" do
       it "returns an empty array" do
-        expect(service.build_structure_mails([sektion], :sectional_inspection_reminder_mail)).to be_empty
+        expect(service.build_structure_mails([sektion],
+          :sectional_inspection_reminder_mail)).to be_empty
       end
     end
 
@@ -25,22 +26,26 @@ describe InspectionService do
       let!(:beekeeper_role) { Fabricate(:siegel_imker_role, sektion: sektion) }
 
       before do
-        allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail).and_return(mail_double)
+        allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail)
+          .and_return(mail_double)
       end
 
       it "returns one result per group with Siegelimkers" do
-        result = service.build_structure_mails([sektion], :sectional_inspection_reminder_mail)
+        result = service.build_structure_mails([sektion],
+          :sectional_inspection_reminder_mail)
         expect(result.length).to eq(1)
       end
 
       it "includes a GroupInspectionReminder for the group" do
-        result = service.build_structure_mails([sektion], :sectional_inspection_reminder_mail)
+        result = service.build_structure_mails([sektion],
+          :sectional_inspection_reminder_mail)
         expect(result.first.reminder).to be_a(GroupInspectionReminder)
         expect(result.first.reminder.group).to eq(sektion)
       end
 
       it "includes the mail returned by the mailer" do
-        result = service.build_structure_mails([sektion], :sectional_inspection_reminder_mail)
+        result = service.build_structure_mails([sektion],
+          :sectional_inspection_reminder_mail)
         expect(result.first.mail).to eq(mail_double)
       end
 
@@ -56,7 +61,8 @@ describe InspectionService do
       let!(:beekeeper_role) { Fabricate(:siegel_imker_role, sektion: sektion) }
 
       before do
-        allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail).and_return(mail_double)
+        allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail)
+          .and_return(mail_double)
       end
 
       it "only includes groups that have active Siegelimkers" do
@@ -71,8 +77,10 @@ describe InspectionService do
 
   describe "#deliver_inspection_reminders" do
     before do
-      allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail).and_return(mail_double)
-      allow(InspectionMailer).to receive(:cantonal_inspection_reminder_mail).and_return(mail_double)
+      allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail)
+        .and_return(mail_double)
+      allow(InspectionMailer).to receive(:cantonal_inspection_reminder_mail)
+        .and_return(mail_double)
     end
 
     context "when there are groups with active Siegelimkers" do
@@ -96,8 +104,10 @@ describe InspectionService do
     let!(:beekeeper_role) { Fabricate(:siegel_imker_role, sektion: sektion) }
 
     before do
-      allow(InspectionMailer).to receive(:cantonal_inspection_reminder_mail).and_return(mail_double)
-      allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail).and_return(mail_double)
+      allow(InspectionMailer).to receive(:cantonal_inspection_reminder_mail)
+        .and_return(mail_double)
+      allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail)
+        .and_return(mail_double)
     end
 
     it "delivers exactly one mail at the specified index" do
@@ -126,17 +136,20 @@ describe InspectionService do
       let!(:beekeeper_role) { Fabricate(:siegel_imker_role, sektion: sektion) }
 
       before do
-        allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail).and_return(mail_double)
+        allow(InspectionMailer).to receive(:sectional_inspection_reminder_mail)
+          .and_return(mail_double)
       end
 
       it "uses FachpersonProdukte from the Kader group as inspectors" do
-        result = service.build_structure_mails([sektion], :sectional_inspection_reminder_mail)
+        result = service.build_structure_mails([sektion],
+          :sectional_inspection_reminder_mail)
         expect(result.first.reminder.inspector_emails).to include(inspector.email)
       end
 
       it "does not assign inactive inspectors" do
         inspector_role.update!(end_on: 1.day.ago)
-        result = service.build_structure_mails([sektion], :sectional_inspection_reminder_mail)
+        result = service.build_structure_mails([sektion],
+          :sectional_inspection_reminder_mail)
         expect(result.first.reminder.inspector_emails).not_to include(inspector.email)
       end
     end
@@ -153,17 +166,20 @@ describe InspectionService do
       let!(:beekeeper_role) { Fabricate(:siegel_imker_role, sektion: sektion) }
 
       before do
-        allow(InspectionMailer).to receive(:cantonal_inspection_reminder_mail).and_return(mail_double)
+        allow(InspectionMailer).to receive(:cantonal_inspection_reminder_mail)
+          .and_return(mail_double)
       end
 
       it "uses KantonalverbandVorstand::Produkte as inspectors" do
-        result = service.build_structure_mails([kantonalverband], :cantonal_inspection_reminder_mail)
+        result = service.build_structure_mails([kantonalverband],
+          :cantonal_inspection_reminder_mail)
         expect(result.first.reminder.inspector_emails).to include(produkte_person.email)
       end
 
       it "does not assign inactive inspectors" do
         produkte_role.update!(end_on: 1.day.ago)
-        result = service.build_structure_mails([kantonalverband], :cantonal_inspection_reminder_mail)
+        result = service.build_structure_mails([kantonalverband],
+          :cantonal_inspection_reminder_mail)
         expect(result.first.reminder.inspector_emails).not_to include(produkte_person.email)
       end
     end
