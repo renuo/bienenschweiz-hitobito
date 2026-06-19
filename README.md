@@ -15,3 +15,21 @@ Combined wagon and composition repository for the Bienenschweiz Hitobito instanc
 See [./hitobito/doc/developer/local_setup.md](https://github.com/hitobito/hitobito/blob/master/doc/developer/local_setup.md)
 
 `bin/setup` tries to automate this as much as possible.
+
+### Inspection reminders
+
+```
+nctl exec app hitobito-main -p renuo-bienenschweiz bin/rails r 'InspectionReminderJob.perform_later'
+```
+
+The output will be sent to the logs. If some mails fail, it will log an error to Sentry and print out the indexes.
+[The error will also be printed in the logs](app/services/inspection_service.rb#L58) so you can also inspect the logs.
+
+The separate tasks can be run with
+
+```
+nctl exec app hitobito-main -p renuo-bienenschweiz bin/rails r 'InspectionService.new.retry_failed_inspection_reminder({{INDEX}})'
+```
+
+The index and command can be found in the logs or also Sentry (as extra argument `failed_index`).
+
