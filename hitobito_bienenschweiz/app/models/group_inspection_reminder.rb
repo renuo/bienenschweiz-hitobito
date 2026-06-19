@@ -44,22 +44,7 @@ class GroupInspectionReminder
   def related_member_data
     return [] if sektion_ids.empty?
 
-    query_siegelimkers.map do |person|
-      control_date = person.max_control_date&.to_date
-      [
-        person.sektion_name,
-        person.last_name.to_s,
-        person.first_name.to_s,
-        person.address_affixes[0].to_s,
-        person.full_address.to_s,
-        person.zip_code.to_s,
-        person.town.to_s,
-        person.telephone,
-        person.mobile,
-        person.email,
-        (control_date || Time.zone.at(0).to_date).strftime("%d.%m.%Y")
-      ]
-    end
+    query_siegelimkers.map { |person| person_row(person) }
   end
 
   private
@@ -72,26 +57,54 @@ class GroupInspectionReminder
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
+  def person_row(person)
+    control_date = person.max_control_date&.to_date
+    [
+      person.sektion_name,
+      person.last_name.to_s,
+      person.first_name.to_s,
+      person.address_affixes[0].to_s,
+      person.full_address.to_s,
+      person.zip_code.to_s,
+      person.town.to_s,
+      person.telephone,
+      person.mobile,
+      person.email,
+      (control_date || Time.zone.at(0).to_date).strftime("%d.%m.%Y")
+    ]
+  end
+  # rubocop:enable Metrics/AbcSize
+
   def query_siegelimkers
     Person
-      .joins(<<~SQL)
-        INNER JOIN roles AS si_roles
-          ON si_roles.person_id = people.id
-          AND si_roles.type = '#{Group::Siegelimker::Siegelimker.sti_name}'
-          AND (si_roles.end_on IS NULL OR si_roles.end_on >= '#{Date.current}')
-          AND (si_roles.start_on IS NULL OR si_roles.start_on <= '#{Date.current}')
-        INNER JOIN groups AS si_groups
-          ON si_groups.id = si_roles.group_id
-          AND si_groups.type = '#{Group::Siegelimker.sti_name}'
-          AND si_groups.deleted_at IS NULL
-        INNER JOIN groups AS sektionen
-          ON sektionen.id = si_groups.parent_id
-          AND sektionen.deleted_at IS NULL
-      SQL
+      .joins(siegelimker_join_sql)
       .where(sektionen: {id: sektion_ids})
       .left_joins(:qcontrols)
-      .select("people.*, sektionen.name AS sektion_name, MAX(qcontrols.control_date) AS max_control_date")
+      .select(siegelimker_select)
       .group("people.id, sektionen.name")
       .order(Arel.sql("sektionen.name ASC, max_control_date ASC NULLS FIRST"))
+  end
+
+  def siegelimker_join_sql
+    <<~SQL
+      INNER JOIN roles AS si_roles
+        ON si_roles.person_id = people.id
+        AND si_roles.type = '#{Group::Siegelimker::Siegelimker.sti_name}'
+        AND (si_roles.end_on IS NULL OR si_roles.end_on >= '#{Date.current}')
+        AND (si_roles.start_on IS NULL OR si_roles.start_on <= '#{Date.current}')
+      INNER JOIN groups AS si_groups
+        ON si_groups.id = si_roles.group_id
+        AND si_groups.type = '#{Group::Siegelimker.sti_name}'
+        AND si_groups.deleted_at IS NULL
+      INNER JOIN groups AS sektionen
+        ON sektionen.id = si_groups.parent_id
+        AND sektionen.deleted_at IS NULL
+    SQL
+  end
+
+  def siegelimker_select
+    "people.*, sektionen.name AS sektion_name, " \
+      "MAX(qcontrols.control_date) AS max_control_date"
   end
 end

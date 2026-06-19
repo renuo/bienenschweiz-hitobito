@@ -40,7 +40,8 @@ class InspectionService
 
   # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize
   def log_and_deliver(reminder_mails, no_sleep: false)
-    Rails.logger.info "Going to send #{reminder_mails.size} emails to the following email addresses:"
+    Rails.logger.info \
+      "Going to send #{reminder_mails.size} emails to the following email addresses:"
     reminder_mails.each do |mail|
       Rails.logger.info formatted_group(mail.reminder)
     end
@@ -68,29 +69,38 @@ class InspectionService
   # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/AbcSize
 
   def inspection_reminder(group)
-    inspectors = case group
-    when Group::Sektion
-      kader_groups = Group.where(type: Group::Kader.sti_name, parent_id: group.id)
-      Person.joins(:roles)
-        .where(roles: {type: Group::Kader::FachpersonProdukte.sti_name, group: kader_groups})
-        .merge(Role.active)
-        .distinct
-    when Group::Kantonalverband
-      vorstand_groups = Group.where(type: Group::KantonalverbandVorstand.sti_name,
-        parent_id: group.id)
-      Person.joins(:roles)
-        .where(roles: {type: Group::KantonalverbandVorstand::Produkte.sti_name,
-                       group: vorstand_groups})
-        .merge(Role.active)
-        .distinct
-    else
-      Person.none
-    end
+    GroupInspectionReminder.new(group, inspectors_for(group))
+  end
 
-    GroupInspectionReminder.new(group, inspectors)
+  def inspectors_for(group)
+    case group
+    when Group::Sektion then sektion_inspectors(group)
+    when Group::Kantonalverband then kantonalverband_inspectors(group)
+    else Person.none
+    end
+  end
+
+  def sektion_inspectors(sektion)
+    kader_groups = Group.where(type: Group::Kader.sti_name, parent_id: sektion.id)
+    Person.joins(:roles)
+      .where(roles: {type: Group::Kader::FachpersonProdukte.sti_name, group: kader_groups})
+      .merge(Role.active)
+      .distinct
+  end
+
+  def kantonalverband_inspectors(kantonalverband)
+    vorstand_groups = Group.where(type: Group::KantonalverbandVorstand.sti_name,
+      parent_id: kantonalverband.id)
+    Person.joins(:roles)
+      .where(roles: {type: Group::KantonalverbandVorstand::Produkte.sti_name,
+                     group: vorstand_groups})
+      .merge(Role.active)
+      .distinct
   end
 
   def formatted_group(reminder)
-    "#{reminder.group.name} (#{reminder.group.canton_short}): #{reminder.inspector_emails.join(",")}"
+    name = reminder.group.name
+    canton = reminder.group.canton_short
+    "#{name} (#{canton}): #{reminder.inspector_emails.join(",")}"
   end
 end
