@@ -10,10 +10,10 @@ class Supervision < ApplicationRecord
 
   has_one_attached :document
 
-  belongs_to :person
-  belongs_to :author, class_name: "Person"
+  belongs_to :person, optional: false
+  belongs_to :author, class_name: "Person", optional: false
   belongs_to :supervisor, class_name: "Person", optional: true
-  belongs_to :course_type, class_name: "Event::Kind"
+  belongs_to :course_type, class_name: "Event::Kind", optional: false
 
   validates :check_date, :kind, :result, presence: true
   validate :assert_supervisor_role, if: :supervisor_id
