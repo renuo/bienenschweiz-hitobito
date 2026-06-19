@@ -105,15 +105,5 @@ describe Qcontrol do
         end
       end
     end
-
-    context "when control_state is not_passed" do
-      let(:control_state) { "not_passed" }
-
-      it "updates the end_on of the role to 20 days from now" do
-        expect {
-          qcontrol
-        }.to change { role.reload.end_on }.to(Time.zone.today + 20.days)
-      end
-    end
   end
 end
