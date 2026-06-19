@@ -8,7 +8,7 @@
 require "spec_helper"
 
 describe Qcontrol do
-  let(:group) { Fabricate(:sektion) }
+  let(:group) { groups(:aarau_und_umgebung) }
   let(:person) { Fabricate(:person) }
 
   describe "#previous_qcontrol" do
