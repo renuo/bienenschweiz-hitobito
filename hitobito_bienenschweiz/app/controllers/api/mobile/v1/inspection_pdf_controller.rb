@@ -14,17 +14,18 @@ module Api
         def show
           return head :not_found if @qcontrol.nil?
 
-          send_data PdfService.render(:checklist, @qcontrol),
-            filename: "Betriebspruefung.pdf",
-            type: "application/pdf",
-            disposition: "inline"
+          pdf = Export::Pdf::Qcontrol::Checklist.new(@qcontrol).render
+
+          send_data pdf, type: "application/pdf",
+            disposition: "inline",
+            filename: "Betriebspruefung.pdf"
         end
 
         private
 
         def set_qcontrol
-          inspectable_beekeepers = current_person.member.inspectable_beekeepers
-          @qcontrol = Qcontrol.where(member_id: inspectable_beekeepers).find_by(id: params[:id])
+          @qcontrol = Qcontrol.where(person: current_person.inspectable_beekeepers)
+            .find_by(id: params[:id])
         end
       end
     end
