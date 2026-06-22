@@ -100,6 +100,29 @@ de:
     subject: "Neuzertifizierung eines Siegelimkers"
   beeaudit:
     empty_name_placeholder: "Unbekannt (%{id})"
+  certificate_letter:
+    title: Gratulation zur bestandenen Betriebsprüfung
+    date: "Appenzell, im %{date}"
+    signature_title: BienenSchweiz
+    signatures:
+      - name: Martin Schwegler
+        title: Zentralpräsident
+      - name: Markus Michel
+        title: Ressort Bienenprodukte
+    text: |
+      Lieber Imkerkollege / liebe Imkerkollegin
+
+      Wir haben die ausgefüllte Checkliste der Betriebskontrolle von Deiner Betriebsprüferin / Deinem Betriebsprüfer erhalten und freuen uns, dass wir Dir das Zertifikat für die bestandene Prüfung gemäss Reglement für das Honig-Qualitätssiegel apisuisse zusenden dürfen – herzliche Gratulation zu diesem Erfolg! Unser Ziel ist erreicht, wenn die Prüfung für Dich hauptsächlich ein interessanter und konstruktiver Austausch zwischen Imkerfachleuten war und Du damit quasi einen Auffrischungskurs in moderner Imkerei erlebt hast. Dabei hast Du gleichzeitig auch noch eine unabhängige Beurteilung erhalten, dass alles in Ordnung ist.
+
+      Mit diesem Zertifikat wird eben diese, Deine gute imkerliche Praxis, bestätigt. Es soll Deinen Kundinnen und Kunden zeigen, dass sie es hier mit einer Imkerin / einem Imker zu tun haben, welche/r Wert auf einen qualitativ einwandfreien imkerlichen Produktionsprozess legt und damit nicht nur einen guten Schweizer Qualitätshonig erzeugt, sondern auch für die Bienen ein gutes Umfeld bietet.
+
+      Falls Du planen würdest, Deine Betriebsweise so zu ändern, dass diese nicht mehr den Anforderungen des Goldsiegels genügt, bist Du verpflichtet, Dich vorgängig bei Deiner Betriebsprüferin / Deinem Betriebsprüfer vom Qualitätsprogramm abzumelden. Die Qualitätssiegel sind beim Betriebsprüfer / bei der Betriebsprüferin zu beziehen.
+
+      Als Empfänger des Zertifikates wirst Du automatisch als Siegelimker auf www.bienen.ch und www.swisshoney.ch aufgeführt. So können die Konsumentinnen und Konsumenten Dich als Siegelimker/-in finden. Solltest Du damit nicht einverstanden sein, melde Dich bitte direkt bei der Geschäftsstelle BienenSchweiz.
+
+      Wir wünschen Dir für die Zukunft mit dem Goldsiegel alles Gute und viele volle Honigtöpfe!
+
+      Freundliche Grüsse
   checklist:
     point: 'Prüfpunkt'
     criterium: 'Prüfkriterium'
@@ -145,5 +168,9 @@ de:
     footer:
       left: 'Checkliste für die Betriebskontrolle'
       right: 'Honigkommission apisuisse %{year}'
+  inspection_mailer:
+    print_certificate_and_letter:
+      subject: Ausdruck Zertifikat und Begleitbrief für %{name}
+      attachment_name: Zertifikat_Begleitbrief_%{name}
   navigation:
     qcontrols: Betriebsprüfungen

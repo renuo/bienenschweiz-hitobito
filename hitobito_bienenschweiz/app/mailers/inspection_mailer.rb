@@ -106,34 +106,23 @@ class InspectionMailer < ApplicationMailer
   end
 
   def print_certificate_and_letter(qcontrol_id)
-    tries ||= 3
     @qcontrol = Qcontrol.find(qcontrol_id)
-    @member = @qcontrol.member
+    @member = @qcontrol.person
     name = "#{I18n.t("inspection_mailer.print_certificate_and_letter.attachment_name",
       name: @member.full_name)}.pdf"
     attachments[name] = render_certificate_and_letter(@qcontrol)
     mail to: PRINTER_EMAIL,
       subject: I18n.t("inspection_mailer.print_certificate_and_letter.subject",
         name: @member.full_name)
-  rescue ImkerCertificateService::ImkerCertificateServiceError => e
-    retry unless (tries -= 1).zero?
-    Sentry.capture_exception(e) if defined?(Sentry)
-    raise
   end
 
   private
 
   def render_certificate_and_letter(qcontrol)
-    combined_pdf = Tempfile.new(["certificate_letter_#{qcontrol.id}", ".pdf"])
-    certificate = render_certificate(qcontrol).path
-    letter = render_letter(qcontrol).path
-    sub = Subexec.run("pdftk #{certificate} #{letter} cat output #{combined_pdf.path}")
-    if sub.exitstatus != 0
-      raise ImkerCertificateService::ImkerCertificateServiceError,
-        "Certificate and letter concatenation failed with Exit Code #{sub.exitstatus},\
- Output was: #{sub.output}"
-    end
-    combined_pdf.read
+    pdf = Export::Pdf::Qcontrol::CertificateLetter.new(qcontrol)
+    pdf.draw_all
+    combined_pdf = Export::Pdf::Qcontrol::Certificate.new(qcontrol, document: pdf.document)
+    combined_pdf.render
   end
 
   def render_certificate(qcontrol)

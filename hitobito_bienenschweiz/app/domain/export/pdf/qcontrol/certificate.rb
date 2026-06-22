@@ -27,8 +27,8 @@ module Export::Pdf::Qcontrol
     ADDRESS_SIZE = 18
     DATE_SIZE = 14
 
-    def initialize(qcontrol)
-      @document = Export::Pdf::Document.new(margin: [0, 0, 0, 0])
+    def initialize(qcontrol, document: nil)
+      @document = document || Export::Pdf::Document.new(margin: [0, 0, 0, 0])
       @pdf = @document.pdf
       @qcontrol = qcontrol
     end
