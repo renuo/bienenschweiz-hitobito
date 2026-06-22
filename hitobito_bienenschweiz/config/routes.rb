@@ -21,6 +21,12 @@ Rails.application.routes.draw do
         resources :supervisions
       end
     end
+
+    resources :orphan_qcontrols, only: [:index, :destroy] do
+      collection do
+        patch :bulk_update
+      end
+    end
   end
 
   namespace :api, defaults: {formats: :json} do
