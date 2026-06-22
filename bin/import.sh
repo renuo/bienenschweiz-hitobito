@@ -20,7 +20,8 @@ pushd hitobito_bienenschweiz
   direnv exec bin/rails mv:import:members
   direnv exec bin/rails mv:import:roles
   export RAILS_STORAGE_SERVICE=cloudscale
-  direnv exec bin/rails mv:import:qcontrols
+  direnv exec bin/rails mv:import:quality_controls
+  direnv exec bin/rails mv:import:supervisions
   direnv exec bin/rails mv:import:reset_id_sequences
 popd
 
