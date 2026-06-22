@@ -14,7 +14,7 @@ describe InspectionMailer do
   let(:inspector) { Fabricate(:person, first_name: "Max", last_name: "Prüfer") }
   let(:qcontrol) do
     Fabricate(:qcontrol, person: person, group: group, control_date: Date.new(2026, 5, 1),
-              control_state: "passed", inspector: inspector)
+      control_state: "passed", inspector: inspector)
   end
 
   describe "#print_certificate_and_letter" do
@@ -24,7 +24,7 @@ describe InspectionMailer do
       stub_const("InspectionMailer::PRINTER_EMAIL", "printer@example.com")
       allow_any_instance_of(described_class)
         .to receive(:render_certificate_and_letter)
-              .and_return("fake-pdf-content")
+        .and_return("fake-pdf-content")
     end
 
     it "sends to the printer email" do
@@ -56,6 +56,7 @@ describe InspectionMailer do
 
   describe "#inspection_failed_mailer" do
     subject(:mail) { InspectionMailer.inspection_failed_mailer(qcontrol.id) }
+
     before do
       stub_const("InspectionMailer::APP_NOTIFICATIONS_EMAIL", "secretary@example.com")
     end
