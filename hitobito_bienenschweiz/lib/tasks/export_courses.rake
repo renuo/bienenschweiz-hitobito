@@ -34,11 +34,13 @@ namespace :courses do
   end
 
   desc "Load YAML from stdin and replace course kinds, categories and qualifications"
-  task import: :environment do
+  task :import, [:path] => :environment do |_, args|
     require "yaml"
 
+    input = args[:path] ? File.read(args[:path]) : $stdin.read
+
     data = YAML.safe_load(
-      $stdin.read,
+      input,
       permitted_classes: [Date, Time, ActiveSupport::TimeWithZone, ActiveSupport::TimeZone,
         BigDecimal, Symbol],
       aliases: true

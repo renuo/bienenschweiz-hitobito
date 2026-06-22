@@ -1,0 +1,740 @@
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+
+---
+event_kind_categories:
+- id: 1
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-12 08:51:56.597344000 Z
+    zone: &1 !ruby/object:ActiveSupport::TimeZone
+      name: Europe/Zurich
+    time: 2026-05-12 10:51:56.597344000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:47:48.353040000 Z
+    zone: *1
+    time: 2026-06-01 22:47:48.353040000 Z
+  deleted_at:
+  order: 2
+  translations:
+  - id: 1
+    event_kind_category_id: 1
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-12 08:51:56.604613000 Z
+      zone: *1
+      time: 2026-05-12 10:51:56.604613000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:05:50.172762000 Z
+      zone: *1
+      time: 2026-05-16 16:05:50.172762000 Z
+    label: Kaderkurse
+- id: 2
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:21:59.500926000 Z
+    zone: *1
+    time: 2026-05-16 16:21:59.500926000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:47:39.476780000 Z
+    zone: *1
+    time: 2026-06-01 22:47:39.476780000 Z
+  deleted_at:
+  order: 1
+  translations:
+  - id: 2
+    event_kind_category_id: 2
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:21:59.506339000 Z
+      zone: *1
+      time: 2026-05-16 16:21:59.506339000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:21:59.506339000 Z
+      zone: *1
+      time: 2026-05-16 16:21:59.506339000 Z
+    label: Imker Ausbildung
+- id: 3
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:41:58.720463000 Z
+    zone: *1
+    time: 2026-05-16 16:41:58.720463000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:47:27.696920000 Z
+    zone: *1
+    time: 2026-06-01 22:47:27.696920000 Z
+  deleted_at:
+  order: 0
+  translations:
+  - id: 3
+    event_kind_category_id: 3
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:41:58.727722000 Z
+      zone: *1
+      time: 2026-05-16 16:41:58.727722000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:41:58.727722000 Z
+      zone: *1
+      time: 2026-05-16 16:41:58.727722000 Z
+    label: Allgemeiner Kurs
+- id: 4
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:44:55.173775000 Z
+    zone: *1
+    time: 2026-05-16 16:44:55.173775000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:48:04.155321000 Z
+    zone: *1
+    time: 2026-06-01 22:48:04.155321000 Z
+  deleted_at:
+  order: 3
+  translations:
+  - id: 4
+    event_kind_category_id: 4
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:44:55.180068000 Z
+      zone: *1
+      time: 2026-05-16 16:44:55.180068000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:44:55.180068000 Z
+      zone: *1
+      time: 2026-05-16 16:44:55.180068000 Z
+    label: Kaderweiterbildung
+event_kinds:
+- id: 1
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-12 08:53:36.334431000 Z
+    zone: *1
+    time: 2026-05-12 10:53:36.334431000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:34:03.884322000 Z
+    zone: *1
+    time: 2026-06-01 22:34:03.884322000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 1
+  translations:
+  - id: 1
+    event_kind_id: 1
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-12 08:53:36.343581000 Z
+      zone: *1
+      time: 2026-05-12 10:53:36.343581000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:34:03.887295000 Z
+      zone: *1
+      time: 2026-06-01 22:34:03.887295000 Z
+    label: Fachperson Bildung
+    short_name: Fachperson Bildung
+    general_information: ''
+    application_conditions: ''
+- id: 2
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:14:47.628173000 Z
+    zone: *1
+    time: 2026-05-16 16:14:47.628173000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:34:15.999520000 Z
+    zone: *1
+    time: 2026-06-01 22:34:15.999520000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 1
+  translations:
+  - id: 2
+    event_kind_id: 2
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:14:47.632006000 Z
+      zone: *1
+      time: 2026-05-16 16:14:47.632006000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:34:16.002905000 Z
+      zone: *1
+      time: 2026-06-01 22:34:16.002905000 Z
+    label: Fachperson Produkte
+    short_name: Fachperson Produkte
+    general_information: ''
+    application_conditions: ''
+- id: 3
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:16:41.095840000 Z
+    zone: *1
+    time: 2026-05-16 16:16:41.095840000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:34:28.280754000 Z
+    zone: *1
+    time: 2026-06-01 22:34:28.280754000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 1
+  translations:
+  - id: 3
+    event_kind_id: 3
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:16:41.099497000 Z
+      zone: *1
+      time: 2026-05-16 16:16:41.099497000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:34:28.284067000 Z
+      zone: *1
+      time: 2026-06-01 22:34:28.284067000 Z
+    label: Fachperson Zucht
+    short_name: Fachperson Zucht
+    general_information: ''
+    application_conditions: ''
+- id: 4
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:23:50.104790000 Z
+    zone: *1
+    time: 2026-05-16 16:23:50.104790000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:33:48.238675000 Z
+    zone: *1
+    time: 2026-06-01 22:33:48.238675000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 2
+  translations:
+  - id: 4
+    event_kind_id: 4
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:23:50.108415000 Z
+      zone: *1
+      time: 2026-05-16 16:23:50.108415000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:33:48.241143000 Z
+      zone: *1
+      time: 2026-06-01 22:33:48.241143000 Z
+    label: Basiskurs Imkern
+    short_name: Basiskurs Imkern
+    general_information: ''
+    application_conditions: ''
+- id: 5
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:25:39.442283000 Z
+    zone: *1
+    time: 2026-05-16 16:25:39.442283000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-26 06:39:28.229710000 Z
+    zone: *1
+    time: 2026-05-26 08:39:28.229710000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 2
+  translations:
+  - id: 5
+    event_kind_id: 5
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:25:39.446235000 Z
+      zone: *1
+      time: 2026-05-16 16:25:39.446235000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-26 06:39:28.235066000 Z
+      zone: *1
+      time: 2026-05-26 08:39:28.235066000 Z
+    label: Aufbaukurs Imkern
+    short_name: Aufbaukurs Imkern
+    general_information: ''
+    application_conditions: ''
+- id: 6
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:39:54.267961000 Z
+    zone: *1
+    time: 2026-05-16 16:39:54.267961000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:35:11.541663000 Z
+    zone: *1
+    time: 2026-06-01 22:35:11.541663000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 2
+  translations:
+  - id: 6
+    event_kind_id: 6
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:39:54.271878000 Z
+      zone: *1
+      time: 2026-05-16 16:39:54.271878000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:35:11.546202000 Z
+      zone: *1
+      time: 2026-06-01 22:35:11.546202000 Z
+    label: Imkern mit Zertifikat
+    short_name: Imkern mit Zertifikat
+    general_information: ''
+    application_conditions: ''
+- id: 7
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:41:15.180859000 Z
+    zone: *1
+    time: 2026-05-16 16:41:15.180859000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:36:33.797950000 Z
+    zone: *1
+    time: 2026-06-01 22:36:33.797950000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 1
+  translations:
+  - id: 7
+    event_kind_id: 7
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:41:15.185338000 Z
+      zone: *1
+      time: 2026-05-16 16:41:15.185338000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:36:33.801959000 Z
+      zone: *1
+      time: 2026-06-01 22:36:33.801959000 Z
+    label: Vereinsführung
+    short_name: Vereinsführung
+    general_information: ''
+    application_conditions: ''
+- id: 8
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:42:42.811188000 Z
+    zone: *1
+    time: 2026-05-16 16:42:42.811188000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:34:55.983563000 Z
+    zone: *1
+    time: 2026-06-01 22:34:55.983563000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 3
+  translations:
+  - id: 8
+    event_kind_id: 8
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:42:42.817490000 Z
+      zone: *1
+      time: 2026-05-16 16:42:42.817490000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:34:55.988503000 Z
+      zone: *1
+      time: 2026-06-01 22:34:55.988503000 Z
+    label: Honigsensorik
+    short_name: Honigsensorik
+    general_information: ''
+    application_conditions: ''
+- id: 9
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:43:30.928735000 Z
+    zone: *1
+    time: 2026-05-16 16:43:30.928735000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:34:42.258006000 Z
+    zone: *1
+    time: 2026-06-01 22:34:42.258006000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 3
+  translations:
+  - id: 9
+    event_kind_id: 9
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:43:30.936211000 Z
+      zone: *1
+      time: 2026-05-16 16:43:30.936211000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:34:42.266184000 Z
+      zone: *1
+      time: 2026-06-01 22:34:42.266184000 Z
+    label: Honigqualität
+    short_name: Honigqualität
+    general_information: ''
+    application_conditions: ''
+- id: 10
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:43:49.321647000 Z
+    zone: *1
+    time: 2026-05-16 16:43:49.321647000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:37:36.244697000 Z
+    zone: *1
+    time: 2026-06-01 22:37:36.244697000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 3
+  translations:
+  - id: 10
+    event_kind_id: 10
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:43:49.325966000 Z
+      zone: *1
+      time: 2026-05-16 16:43:49.325966000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:37:36.248273000 Z
+      zone: *1
+      time: 2026-06-01 22:37:36.248273000 Z
+    label: Wildbienen
+    short_name: Wildbienen
+    general_information: ''
+    application_conditions: ''
+- id: 11
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:48:39.624774000 Z
+    zone: *1
+    time: 2026-05-16 16:48:39.624774000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:38:16.310417000 Z
+    zone: *1
+    time: 2026-06-01 22:38:16.310417000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 4
+  translations:
+  - id: 11
+    event_kind_id: 11
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:48:39.628447000 Z
+      zone: *1
+      time: 2026-05-16 16:48:39.628447000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:38:16.314057000 Z
+      zone: *1
+      time: 2026-06-01 22:38:16.314057000 Z
+    label: Kaderweiterbildung Bildung
+    short_name: Kaderweiterbildung Bildung
+    general_information: ''
+    application_conditions: ''
+- id: 12
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:51:00.434301000 Z
+    zone: *1
+    time: 2026-05-16 16:51:00.434301000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:36:20.620301000 Z
+    zone: *1
+    time: 2026-06-01 22:36:20.620301000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 4
+  translations:
+  - id: 12
+    event_kind_id: 12
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:51:00.437563000 Z
+      zone: *1
+      time: 2026-05-16 16:51:00.437563000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:36:20.622700000 Z
+      zone: *1
+      time: 2026-06-01 22:36:20.622700000 Z
+    label: Kaderweiterbildung Zucht
+    short_name: Kaderweiterbildung Zucht
+    general_information: ''
+    application_conditions: ''
+- id: 13
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:52:10.806946000 Z
+    zone: *1
+    time: 2026-05-16 16:52:10.806946000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:35:57.260443000 Z
+    zone: *1
+    time: 2026-06-01 22:35:57.260443000 Z
+  deleted_at:
+  minimum_age:
+  kind_category_id: 4
+  translations:
+  - id: 13
+    event_kind_id: 13
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:52:10.810689000 Z
+      zone: *1
+      time: 2026-05-16 16:52:10.810689000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-06-01 20:35:57.263160000 Z
+      zone: *1
+      time: 2026-06-01 22:35:57.263160000 Z
+    label: Kaderweiterbildung Produkte
+    short_name: Kaderweiterbildung Produkte
+    general_information: ''
+    application_conditions: ''
+qualification_kinds:
+- id: 1
+  validity:
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-12 11:20:18.756796000 Z
+    zone: *1
+    time: 2026-05-12 13:20:18.756796000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:28:21.245832000 Z
+    zone: *1
+    time: 2026-05-16 16:28:21.245832000 Z
+  deleted_at:
+  reactivateable:
+  required_training_days:
+  translations:
+  - id: 1
+    qualification_kind_id: 1
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-12 11:20:18.765067000 Z
+      zone: *1
+      time: 2026-05-12 13:20:18.765067000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:28:21.252037000 Z
+      zone: *1
+      time: 2026-05-16 16:28:21.252037000 Z
+    label: Qualifikation Basiskurs (Grundkurs)
+    description: Hat den Basiskurs in einer Sektion von BienenSchweiz erfolgreich
+      absolviert
+- id: 2
+  validity: 4
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-12 13:47:17.547537000 Z
+    zone: *1
+    time: 2026-05-12 15:47:17.547537000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-06-01 20:51:39.481163000 Z
+    zone: *1
+    time: 2026-06-01 22:51:39.481163000 Z
+  deleted_at:
+  reactivateable: 1
+  required_training_days:
+  translations:
+  - id: 2
+    qualification_kind_id: 2
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-12 13:47:17.554090000 Z
+      zone: *1
+      time: 2026-05-12 15:47:17.554090000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-26 06:37:03.080572000 Z
+      zone: *1
+      time: 2026-05-26 08:37:03.080572000 Z
+    label: Qualifikation Siegelimker/in
+    description: Hat die Überprüfung zum Siegelimker/in bestanden
+- id: 3
+  validity:
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-13 12:01:25.207027000 Z
+    zone: *1
+    time: 2026-05-13 14:01:25.207027000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:30:36.545939000 Z
+    zone: *1
+    time: 2026-05-16 16:30:36.545939000 Z
+  deleted_at:
+  reactivateable:
+  required_training_days:
+  translations:
+  - id: 3
+    qualification_kind_id: 3
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-13 12:01:25.215903000 Z
+      zone: *1
+      time: 2026-05-13 14:01:25.215903000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:30:36.552058000 Z
+      zone: *1
+      time: 2026-05-16 16:30:36.552058000 Z
+    label: Qualifikation Imkern mit Zertifikatsnachweis
+    description: Hat das Zertifikat erreicht im Aufbaukurs Bienenhaltung
+- id: 4
+  validity:
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-13 12:01:41.510884000 Z
+    zone: *1
+    time: 2026-05-13 14:01:41.510884000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:27:49.959444000 Z
+    zone: *1
+    time: 2026-05-16 16:27:49.959444000 Z
+  deleted_at:
+  reactivateable:
+  required_training_days:
+  translations:
+  - id: 4
+    qualification_kind_id: 4
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-13 12:01:41.520506000 Z
+      zone: *1
+      time: 2026-05-13 14:01:41.520506000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:27:49.963740000 Z
+      zone: *1
+      time: 2026-05-16 16:27:49.963740000 Z
+    label: Qualifikation Fachperson Bildung
+    description: Hat den Kaderkurs Bildung erfolgreich abgeschlossen
+- id: 5
+  validity:
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-13 12:01:47.498237000 Z
+    zone: *1
+    time: 2026-05-13 14:01:47.498237000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:28:47.464158000 Z
+    zone: *1
+    time: 2026-05-16 16:28:47.464158000 Z
+  deleted_at:
+  reactivateable:
+  required_training_days:
+  translations:
+  - id: 5
+    qualification_kind_id: 5
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-13 12:01:47.506470000 Z
+      zone: *1
+      time: 2026-05-13 14:01:47.506470000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:28:47.468878000 Z
+      zone: *1
+      time: 2026-05-16 16:28:47.468878000 Z
+    label: Qualifikation Fachperson Produkte
+    description: Hat den Kaderkurs Bildung erfolgreich abgeschlossen
+- id: 6
+  validity:
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-13 12:01:54.877441000 Z
+    zone: *1
+    time: 2026-05-13 14:01:54.877441000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-16 14:29:02.638256000 Z
+    zone: *1
+    time: 2026-05-16 16:29:02.638256000 Z
+  deleted_at:
+  reactivateable:
+  required_training_days:
+  translations:
+  - id: 6
+    qualification_kind_id: 6
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-13 12:01:54.893757000 Z
+      zone: *1
+      time: 2026-05-13 14:01:54.893757000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-16 14:29:02.643146000 Z
+      zone: *1
+      time: 2026-05-16 16:29:02.643146000 Z
+    label: Qualifikation Fachperson Zucht
+    description: Hat den Kaderkurs Zucht erfolgreich abgeschlossen
+- id: 7
+  validity:
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-13 12:02:01.447265000 Z
+    zone: *1
+    time: 2026-05-13 14:02:01.447265000 Z
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: 2026-05-13 12:02:01.447265000 Z
+    zone: *1
+    time: 2026-05-13 14:02:01.447265000 Z
+  deleted_at:
+  reactivateable:
+  required_training_days:
+  translations:
+  - id: 7
+    qualification_kind_id: 7
+    locale: de
+    created_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-13 12:02:01.453676000 Z
+      zone: *1
+      time: 2026-05-13 14:02:01.453676000 Z
+    updated_at: !ruby/object:ActiveSupport::TimeWithZone
+      utc: 2026-05-13 12:02:01.453676000 Z
+      zone: *1
+      time: 2026-05-13 14:02:01.453676000 Z
+    label: Imker mit Fachausweis
+    description: ''
+event_kind_qualification_kinds:
+- id: 26
+  event_kind_id: 5
+  qualification_kind_id: 1
+  category: precondition
+  role: participant
+  grouping: 1
+  validity: valid
+- id: 27
+  event_kind_id: 4
+  qualification_kind_id: 1
+  category: qualification
+  role: participant
+  grouping:
+  validity: valid_or_expired
+- id: 28
+  event_kind_id: 1
+  qualification_kind_id: 4
+  category: qualification
+  role: participant
+  grouping:
+  validity: valid_or_expired
+- id: 29
+  event_kind_id: 2
+  qualification_kind_id: 5
+  category: qualification
+  role: participant
+  grouping:
+  validity: valid_or_expired
+- id: 30
+  event_kind_id: 2
+  qualification_kind_id: 2
+  category: precondition
+  role: participant
+  grouping: 1
+  validity: valid
+- id: 31
+  event_kind_id: 3
+  qualification_kind_id: 6
+  category: qualification
+  role: participant
+  grouping:
+  validity: valid_or_expired
+- id: 32
+  event_kind_id: 6
+  qualification_kind_id: 3
+  category: qualification
+  role: participant
+  grouping:
+  validity: valid_or_expired
+- id: 33
+  event_kind_id: 13
+  qualification_kind_id: 5
+  category: precondition
+  role: participant
+  grouping: 1
+  validity: valid
+- id: 34
+  event_kind_id: 12
+  qualification_kind_id: 6
+  category: precondition
+  role: participant
+  grouping: 1
+  validity: valid
+- id: 37
+  event_kind_id: 11
+  qualification_kind_id: 4
+  category: precondition
+  role: participant
+  grouping: 1
+  validity: valid
+- id: 38
+  event_kind_id: 11
+  qualification_kind_id: 6
+  category: precondition
+  role: participant
+  grouping: 2
+  validity: valid
