@@ -43,6 +43,12 @@ class QcontrolsController < CrudController
     send_data pdf, type: :pdf, disposition: "inline", filename: filename
   end
 
+  def certificate
+    pdf = Export::Pdf::Qcontrol::Certificate.new(entry).render
+    filename = Export::Pdf::Qcontrol::Certificate.filename(entry)
+    send_data pdf, type: :pdf, disposition: "inline", filename: filename
+  end
+
   private
 
   def build_entry
