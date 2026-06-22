@@ -5,7 +5,6 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-
 namespace :mv do
   namespace :import do
     GROUP_ID_OFFSET = 10_000
@@ -13,6 +12,7 @@ namespace :mv do
     ROLE_ID_OFFSET = 10_000
     QCONTROL_ID_OFFSET = 10_000
     QUALITY_CONTROL_ANSWER_ID_OFFSET = 10_000
+    SUPERVISION_ID_OFFSET = 10_000
 
     task members: :environment do
       failure_csv = "invalid_members.csv"
@@ -50,7 +50,7 @@ namespace :mv do
       failed_members = {}
 
       scope = Member.all.includes(:login)
-      scope = scope.limit(1000)
+      # scope = scope.limit(1000)
       scope.find_each do |member|
         total_count += 1
         new_id = member.id + ::MEMBER_ID_OFFSET # offset to not conflict with admin or test data
@@ -356,22 +356,24 @@ namespace :mv do
     end
 
     task :quality_controls, [:redo_docs] => :environment do |t, args|
-      require 'carrierwave'
+      require "carrierwave"
 
       class AssetUploader < CarrierWave::Uploader::Base
         def store_dir
-          "uploads/#{model.class.to_s.pluralize.underscore.gsub('mv_','')}/#{model.member_id}/#{model.id}"
+          "uploads/#{model.class.to_s.pluralize.underscore.gsub("mv_",
+            "")}/#{model.member_id}/#{model.id}"
         end
 
         def remove!
           nil
         end
       end
+
       class MvRecord < ApplicationRecord
         self.abstract_class = true
         connects_to database: {reading: :mv, writing: :mv}
       end
-      require 'carrierwave/orm/activerecord'
+      require "carrierwave/orm/activerecord"
 
       class KasRecord < ApplicationRecord
         self.abstract_class = true
@@ -430,7 +432,7 @@ namespace :mv do
             qcontrol.document.attach(
               io: f,
               filename: mv_qcontrol.document.file.filename,
-              content_type: mv_qcontrol.content_type,
+              content_type: mv_qcontrol.content_type
             )
             qcontrol.save(validate: false)
             f.close
@@ -455,6 +457,85 @@ namespace :mv do
         kas_inspectors: MvQcontrol.where.not(inspector_id: nil).where.not(inspector_id: inspector_member_ids.keys).count
       }
       puts "Qcontrols with dangling references: #{missing.map { |k, v| "#{k}: #{v}" }.join(", ")}"
+    end
+
+    def map_course_type(mv_course_type)
+      label = case mv_course_type
+      when "base_course"
+        "Basiskurs Imkern"
+      when "lecture"
+        "Fachperson Bildung"
+      when "zuchtkurs"
+        "Fachperson Zucht"
+      when "test"
+        "Imkern mit Zertifikat"
+      end
+      Event::Kind.find_by(label:)
+    end
+
+    task :supervisions, [:redo_docs] => :environment do |_t, args|
+      require "carrierwave"
+
+      class AssetUploader < CarrierWave::Uploader::Base
+        def store_dir
+          "uploads/#{model.class.to_s.pluralize.underscore.gsub("mv_",
+            "")}/#{model.member_id}/#{model.id}"
+        end
+
+        def remove!
+          nil
+        end
+      end
+
+      class MvRecord < ApplicationRecord
+        self.abstract_class = true
+        connects_to database: {reading: :mv, writing: :mv}
+      end
+      require "carrierwave/orm/activerecord"
+
+      class MvSupervision < MvRecord
+        self.table_name = "supervisions"
+        mount_uploader :document, AssetUploader
+        enum :course_type, { base_course: 'base_course', lecture: 'lecture', zuchtkurs: 'zuchtkurs', test: 'test' }
+      end
+
+      count = 0
+      MvSupervision.find_each do |mv_supervision|
+        supervision = Supervision.where(id: mv_supervision.id + SUPERVISION_ID_OFFSET).first_or_initialize
+        supervision.assign_attributes(
+          mv_supervision.attributes.except("id", "member_id", "document", "content_type", "file_size").merge(
+            "person_id" => mv_supervision.member_id && mv_supervision.member_id + MEMBER_ID_OFFSET,
+            "author_id" => mv_supervision.author_id && mv_supervision.author_id + MEMBER_ID_OFFSET,
+            "supervisor_id" => mv_supervision.supervisor_id && mv_supervision.supervisor_id + MEMBER_ID_OFFSET,
+            "course_type" => map_course_type(mv_supervision.course_type)
+          )
+        )
+        supervision.save(validate: false)
+        if (args[:redo_docs] == "true" || !supervision.document.attached?) && mv_supervision.document.present?
+          Tempfile.open("supervision-#{mv_supervision.id}") do |f|
+            f.binmode
+            f.write(mv_supervision.document.file.read)
+            f.rewind
+            supervision.document.attach(
+              io: f,
+              filename: mv_supervision.document.file.filename
+            )
+            supervision.save(validate: false)
+          end
+        end
+        count += 1
+      end
+      puts "Imported #{count} supervisions"
+
+      missing = {
+        people: Supervision.where.not(person_id: Person.select(:id)).count,
+        authors: Supervision.where.not(author_id: nil).where.not(author_id: Person.select(:id)).count,
+        supervisors: Supervision.where.not(supervisor_id: nil).where.not(supervisor_id: Person.select(:id)).count,
+        course_types: Supervision.where.not(course_type_id: Event::Kind.select(:id)).count
+      }
+      puts "Supervisions with dangling references: #{missing.map { |k, v|
+        "#{k}: #{v}"
+      }.join(", ")}"
     end
 
     task reset_id_sequences: :environment do
