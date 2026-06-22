@@ -1,15 +1,15 @@
 <p>Liebes BienenSchweiz-Sekretariat</p>
 
 <p>
-  Betriebsprüfer/-in <%= @qcontrol.inspector.member.try(:full_name) %> hat über die mobile App eine Betriebsprüfung für
-  den Siegelimker <%= @qcontrol.member.try(:full_name) %> erfasst und der/die Siegelimker/-in hat die Anforderungen nicht erfüllt!
+  Betriebsprüfer/-in <%= @qcontrol.inspector.try(:full_name) %> hat über die mobile App eine Betriebsprüfung für
+  den Siegelimker <%= @qcontrol.person.try(:full_name) %> erfasst und der/die Siegelimker/-in hat die Anforderungen nicht erfüllt!
   Der Siegelimker-Rolle wurde automatisch ein Ende-Datum gesetzt. Ggf. möchten Sie noch weitere Massnahmen ergreifen.
 </p>
 
 <p>
-  Betriebsprüfer auf MV: <%= link_to @qcontrol.inspector.member.try(:full_name), person_url(@qcontrol.inspector.member) %>
-  <% if @qcontrol.member.present? %>
-      Siegelimker auf MV: <%= link_to @qcontrol.member.full_name, person_url(@qcontrol.member) %>
+  Betriebsprüfer auf MV: <%= link_to @qcontrol.inspector.try(:full_name), person_url(@qcontrol.inspector) %>
+  <% if @qcontrol.person.present? %>
+      Siegelimker auf MV: <%= link_to @qcontrol.person.full_name, person_url(@qcontrol.person) %>
   <% end %>
 </p>
 

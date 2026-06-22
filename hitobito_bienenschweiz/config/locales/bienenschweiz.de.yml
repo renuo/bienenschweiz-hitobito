@@ -98,6 +98,8 @@ de:
   checklist_attachment_name: "Betriebspruefung.pdf"
   blank_inspection_info:
     subject: "Neuzertifizierung eines Siegelimkers"
+  inspection_failed:
+    subject: "Siegelimker %{name} hat eine Betriebsprüfung nicht bestanden"
   beeaudit:
     empty_name_placeholder: "Unbekannt (%{id})"
   certificate_letter:
