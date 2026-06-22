@@ -19,6 +19,7 @@ module Bienenschweiz::Person
 
   included do # rubocop:disable Metrics/BlockLength
     has_many :qcontrols, dependent: :destroy
+    has_many :supervisions, dependent: :destroy
 
     def beeaudit_authentication_token
       signed_id(expires_in: 2.months, purpose: :beeaudit)
@@ -36,6 +37,12 @@ module Bienenschweiz::Person
       siegelimker_groups = Group.where(type: Group::Siegelimker.sti_name, parent_id: sektionen)
       active_roles = Role.active.where(group: siegelimker_groups, type: BEEKEEPER_ROLES)
       where(id: active_roles.select(:person_id))
+    }
+
+    scope :supervisors, lambda {
+      supervisor_roles = Role.active
+        .where(type: Group::ThemenbezogeneKontakte::Supervisor.sti_name)
+      where(id: supervisor_roles.select(:person_id))
     }
 
     def inspectable_groups

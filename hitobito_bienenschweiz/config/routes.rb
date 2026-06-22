@@ -18,6 +18,7 @@ Rails.application.routes.draw do
             get :checklist, as: :checklist
           end
         end
+        resources :supervisions
       end
     end
   end
