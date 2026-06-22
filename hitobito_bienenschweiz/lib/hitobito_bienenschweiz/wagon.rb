@@ -26,7 +26,7 @@ module HitobitoBienenschweiz
 
       NavigationHelper::MAIN << {label: :qcontrols,
        url: :orphan_qcontrols_path,
-       icon_name: "money-bill-alt",
+       icon_name: "list-check",
        if: ->(_) { can?(:manage_orphans, Qcontrol) },
        active_for: %w[orphan_qcontrols]}
 
