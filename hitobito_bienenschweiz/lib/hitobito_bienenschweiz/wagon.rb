@@ -32,6 +32,9 @@ module HitobitoBienenschweiz
        if: ->(_) { can?(:manage_orphans, Qcontrol) },
        active_for: %w[orphan_qcontrols]}
 
+      admin_item = NavigationHelper::MAIN.find { |item| item[:label] == :admin }
+      admin_item[:active_for] += %w[supervision_type]
+
       GroupResource.include Bienenschweiz::GroupResource
 
       PeopleController.permitted_attrs += [
