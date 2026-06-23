@@ -5,11 +5,6 @@
 # or later. See the COPYING file at the top-level directory or at
 # https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
 
-Fabricator(:supervision) do
-  person
-  author { Fabricate(:person) }
-  check_date { Date.current }
-  kind { "supervision" }
-  result { "fulfilled" }
-  supervision_type { Fabricate(:supervision_type) }
+Fabricator(:supervision_type) do
+  name { sequence(:supervision_type_name) { |i| "Supervisionsart #{i}" } }
 end

@@ -13,7 +13,7 @@ RSpec.describe SupervisionsController, type: :request do
 
   let(:person) { Fabricate(:person) }
   let(:supervisor) { Fabricate(:person) }
-  let(:course_type) { event_kinds(:dummy) }
+  let(:supervision_type) { supervision_types(:base_course) }
 
   before do
     roles(:admin)
@@ -27,10 +27,10 @@ RSpec.describe SupervisionsController, type: :request do
       [
         Fabricate(:supervision, person: person, supervisor: supervisor,
           check_date: Date.new(2023, 1, 1), kind: "supervision", result: "fulfilled",
-          course_type: course_type),
+          supervision_type: supervision_type),
         Fabricate(:supervision, person: person, supervisor: supervisor,
           check_date: Date.new(2023, 2, 1), kind: "feedback", result: "good",
-          course_type: course_type)
+          supervision_type: supervision_type)
       ]
     }
 
@@ -43,7 +43,7 @@ RSpec.describe SupervisionsController, type: :request do
       expect(response.body).to include("Kursfeedback")
       expect(response.body).to include("vollständig erfüllt")
       expect(response.body).to include("gut bis sehr gut")
-      expect(response.body).to include(course_type.label)
+      expect(response.body).to include(supervision_type.name)
     end
 
     it "links the attached document" do
@@ -63,7 +63,7 @@ RSpec.describe SupervisionsController, type: :request do
       expect(response.body).to include("Art der Supervision")
       expect(response.body).to include("Kurs / Tätigkeit")
       expect(response.body).to include(supervisor.full_name)
-      expect(response.body).to include(course_type.to_s)
+      expect(response.body).to include(supervision_type.name)
       expect(response.body).to include('data-controller="supervision-form"')
       expect(response.body).to include('data-supervision-form-target="kind"')
       expect(response.body).to include('data-supervision-form-target="result"')
@@ -80,7 +80,7 @@ RSpec.describe SupervisionsController, type: :request do
         check_date: Date.new(2023, 5, 1),
         supervisor_id: supervisor.id,
         kind: "supervision",
-        course_type_id: course_type.id,
+        supervision_type_id: supervision_type.id,
         result: "partially_fulfilled"
       }
     end
@@ -97,7 +97,7 @@ RSpec.describe SupervisionsController, type: :request do
       expect(supervision.supervisor).to eq(supervisor)
       expect(supervision.check_date).to eq(Date.new(2023, 5, 1))
       expect(supervision.kind).to eq("supervision")
-      expect(supervision.course_type).to eq(course_type)
+      expect(supervision.supervision_type).to eq(supervision_type)
       expect(supervision.result).to eq("partially_fulfilled")
     end
 
@@ -123,7 +123,7 @@ RSpec.describe SupervisionsController, type: :request do
           check_date: Date.new(2023, 5, 1),
           supervisor_id: Fabricate(:person).id,
           kind: "supervision",
-          course_type_id: course_type.id,
+          supervision_type_id: supervision_type.id,
           result: "fulfilled"
         }
       end
@@ -144,7 +144,7 @@ RSpec.describe SupervisionsController, type: :request do
         {
           check_date: nil, # invalid check date
           kind: "supervision",
-          course_type_id: course_type.id,
+          supervision_type_id: supervision_type.id,
           result: "fulfilled"
         }
       end

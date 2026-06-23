@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+base_course:
+  name: Grundkurs
+
+zuchtkurs:
+  name: Zuchtkurs
+
+test:
+  name: Betriebsprüfung
+
+lecture:
+  name: Gruppenberatungen und Vorträge

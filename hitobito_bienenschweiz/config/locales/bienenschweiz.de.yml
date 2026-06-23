@@ -31,6 +31,10 @@ de:
       supervision:
         one: Supervision
         other: Supervisionen
+
+      supervision_type:
+        one: Supervision Kurs / Tätigkeit
+        other: Supervision Kurs / Tätigkeiten
     attributes:
       qcontrol:
         title: Beschreibung
@@ -55,8 +59,8 @@ de:
       supervision:
         check_date: Kontrolldatum
         kind: 'Art der Supervision'
-        course_type: 'Kurs / Tätigkeit'
-        course_type_id: 'Kurs / Tätigkeit'
+        supervision_type: 'Kurs / Tätigkeit'
+        supervision_type_id: 'Kurs / Tätigkeit'
         result: Resultat
         supervisor: Supervisor
         supervisor_id: Supervisor

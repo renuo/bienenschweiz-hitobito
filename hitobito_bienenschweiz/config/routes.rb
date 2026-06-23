@@ -10,6 +10,8 @@ Rails.application.routes.draw do
 
   language_scope do
     # Define wagon routes here
+    resources :supervision_types
+
     resources :groups, only: [] do
       resources :people, only: [] do
         resources :qcontrols do

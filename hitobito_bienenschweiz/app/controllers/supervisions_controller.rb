@@ -8,7 +8,7 @@
 class SupervisionsController < CrudController
   self.nesting = Group, Person
 
-  self.permitted_attrs = [:check_date, :supervisor_id, :kind, :course_type_id, :result,
+  self.permitted_attrs = [:check_date, :supervisor_id, :kind, :supervision_type_id, :result,
     :document]
 
   decorates :group, :person
@@ -16,7 +16,6 @@ class SupervisionsController < CrudController
   # load parents before authorization
   prepend_before_action :parent
   before_render_form :load_supervisors
-  before_render_form :load_course_types
 
   def create
     entry.author = current_user
@@ -32,9 +31,5 @@ class SupervisionsController < CrudController
 
   def load_supervisors
     @supervisors = Person.supervisors.order(:last_name, :first_name)
-  end
-
-  def load_course_types
-    @course_types = Event::Kind.list.without_deleted
   end
 end
