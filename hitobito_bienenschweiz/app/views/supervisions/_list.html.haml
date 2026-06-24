@@ -8,4 +8,8 @@
   - t.col(Supervision.human_attribute_name(:document)) do |supervision|
     - if upload_exists?(supervision, :document)
       = link_to(upload_name(supervision, :document), upload_url(supervision, :document), target: :_blank, rel: :noopener)
+  - t.col(Supervision.human_attribute_name(:comment))  do |supervision|
+    - if supervision.comment.present?
+      %span{title:supervision.comment}
+        = supervision.comment.truncate(60)
   - add_table_actions(t)

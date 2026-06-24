@@ -9,7 +9,7 @@ class SupervisionsController < CrudController
   self.nesting = Group, Person
 
   self.permitted_attrs = [:check_date, :supervisor_id, :kind, :supervision_type_id, :result,
-    :document]
+    :document, :comment]
 
   decorates :group, :person
 
