@@ -14,3 +14,4 @@
     = f.select :result, supervision_result_options(f.object), {}, class: 'form-select form-select-sm', data: {supervision_form_target: 'result'}
   = f.labeled :document do
     = f.file_field :document, class: 'mw-100 mw-md-60ch form-control form-control-sm'
+  = f.labeled_input_fields :comment

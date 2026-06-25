@@ -69,6 +69,7 @@ de:
         person: Mitglied
         person_id: Mitglied
         document: Dokument
+        comment: Bemerkungen
         kinds:
           supervision: Supervision
           feedback: Kursfeedback
