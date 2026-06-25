@@ -13,5 +13,16 @@ module Bienenschweiz::Event::Course
       Event::Role::Helper,
       Event::Role::Speaker,
       Event::Course::Role::Participant]
+    self.used_attributes -= [:state]
+  end
+
+  def state
+    if application_closing_at && application_closing_at < Date.current
+      "Anmeldeschluss vorbei - Bitte telefonisch anmelden"
+    elsif maximum_participants && maximum_participants <= participations.count
+      "Warteliste"
+    else
+      "Freie plätze, Anmeldung möglich"
+    end
   end
 end
