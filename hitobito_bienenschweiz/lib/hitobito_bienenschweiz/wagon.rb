@@ -51,6 +51,8 @@ module HitobitoBienenschweiz
 
       TableDisplay.register_column(Person, TableDisplays::PublicColumn, :canton_short)
       Person::FILTER_ATTRS << [:canton_short, :string]
+
+      Event::Course.prepend Bienenschweiz::Event::Course
     end
 
     initializer "bienenschweiz.add_settings" do |_app|
