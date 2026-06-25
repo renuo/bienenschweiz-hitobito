@@ -32,6 +32,9 @@ module HitobitoBienenschweiz
        if: ->(_) { can?(:manage_orphans, Qcontrol) },
        active_for: %w[orphan_qcontrols]}
 
+      admin_item = NavigationHelper::MAIN.find { |item| item[:label] == :admin }
+      admin_item[:active_for] += %w[supervision_type]
+
       GroupResource.include Bienenschweiz::GroupResource
 
       PeopleController.permitted_attrs += [
@@ -48,6 +51,7 @@ module HitobitoBienenschweiz
       Sheet::Person.prepend Bienenschweiz::Sheet::Person
       Ability.store.register QcontrolAbility
       Ability.store.register SupervisionAbility
+      Ability.store.register SupervisionTypeAbility
 
       TableDisplay.register_column(Person, TableDisplays::PublicColumn, :canton_short)
       Person::FILTER_ATTRS << [:canton_short, :string]

@@ -4,7 +4,7 @@
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 
-= crud_table(:kind, :supervisor, :course_type, :result, :check_date, :author) do |t|
+= crud_table(:kind, :supervisor, :supervision_type, :result, :check_date, :author) do |t|
   - t.col(Supervision.human_attribute_name(:document)) do |supervision|
     - if upload_exists?(supervision, :document)
       = link_to(upload_name(supervision, :document), upload_url(supervision, :document), target: :_blank, rel: :noopener)
