@@ -31,8 +31,8 @@ RSpec.describe PeopleController, type: :request do
       get group_person_path(group, person)
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(person.last_name)
-      expect(response.body).to include("around 8")
-      expect(response.body).to include("a bunch")
+      expect(response.body).not_to include("around 8")
+      expect(response.body).not_to include("a bunch")
       expect(response.body).to include("66")
       expect(response.body).to include("the very magnificent")
     end
