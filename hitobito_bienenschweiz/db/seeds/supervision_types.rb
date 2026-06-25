@@ -8,5 +8,5 @@
 seeds_path = HitobitoBienenschweiz::Wagon.root.join("spec", "fixtures")
 
 types = YAML.load_file(seeds_path.join("supervision_types.yml"))
-SupervisionType.seed(:id, *types.values.map(&:symbolize_keys))
+SupervisionType.seed(:name, *types.values.map(&:symbolize_keys))
 
