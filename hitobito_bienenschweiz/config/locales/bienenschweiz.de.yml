@@ -186,6 +186,16 @@ de:
     print_certificate_and_letter:
       subject: Ausdruck Zertifikat und Begleitbrief für %{name}
       attachment_name: Zertifikat_Begleitbrief_%{name}
+  event:
+    diploma:
+      body: >
+        hat den von der Sektion %{sections} durchgeführten %{course} besucht.
+      congratulations: >
+        Herzliche Gratulation zum erfolgreichen Abschluss und viel Freude an der
+        künftigen Arbeit mit den Bienen!
+      leader_title: Kursleiter
+      fixed_official_name: Markus Michel
+      fixed_official_title: Leiter Ressort Bildung
   navigation:
     qcontrols: Betriebsprüfungen
   events:

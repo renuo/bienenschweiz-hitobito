@@ -13,6 +13,14 @@ Rails.application.routes.draw do
     resources :supervision_types
 
     resources :groups, only: [] do
+      resources :events, only: [] do
+        scope module: "event" do
+          resource :diploma, only: :show
+        end
+      end
+    end
+
+    resources :groups, only: [] do
       resources :people, only: [] do
         resources :qcontrols do
           member do

@@ -3,6 +3,10 @@
 -#  or later. See the COPYING file at the top-level directory or at
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
+- entry.used?(:diploma_location) do
+  = f.labeled_input_field(:diploma_location)
+- entry.used?(:diploma_issued_at) do
+  = f.labeled_date_field(:diploma_issued_at)
 
 = f.labeled_input_field :canceled
 = f.labeled_input_field :export_to_website
