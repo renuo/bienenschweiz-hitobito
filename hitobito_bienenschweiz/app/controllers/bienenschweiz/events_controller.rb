@@ -14,6 +14,8 @@ module Bienenschweiz::EventsController
       master = @event.groups.first
       @groups = master.self_and_sister_groups.reorder(:name)
     end
+    # union to include assigned deleted events
+    @groups = (@groups | @event.groups)
   end
 
   prepended do
@@ -22,7 +24,5 @@ module Bienenschweiz::EventsController
       @event = Event.find(params[:event_id])
       authorize! :update, @event
     end
-    # union to include assigned deleted events
-    @groups = (@groups | @event.groups)
   end
 end
