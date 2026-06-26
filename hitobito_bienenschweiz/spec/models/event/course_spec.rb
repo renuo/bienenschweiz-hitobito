@@ -14,6 +14,26 @@ describe Event::Course do
       maximum_participants: nil)
   }
 
+  describe "used_attributes" do
+    it "includes delivery_address and billing_address" do
+      expect(Event::Course.used_attributes).to include(:delivery_address, :billing_address)
+    end
+
+    it "excludes state" do
+      expect(Event::Course.used_attributes).not_to include(:state)
+    end
+  end
+
+  describe "#delivery_address and #billing_address" do
+    it "persists both fields" do
+      course.update!(delivery_address: "Musterstrasse 1\n3000 Bern",
+        billing_address: "Buchhaltung AG\n8000 Zürich")
+      course.reload
+      expect(course.delivery_address).to eq("Musterstrasse 1\n3000 Bern")
+      expect(course.billing_address).to eq("Buchhaltung AG\n8000 Zürich")
+    end
+  end
+
   describe "#state_label" do
     context "when canceled" do
       before { course.canceled = true }
