@@ -14,7 +14,7 @@ module Bienenschweiz::Event::Course
       Event::Role::Speaker,
       Event::Course::Role::Participant]
     self.used_attributes -= [:state]
-    self.used_attributes += [:canceled]
+    self.used_attributes += [:canceled, :delivery_address, :billing_address]
   end
 
   def state

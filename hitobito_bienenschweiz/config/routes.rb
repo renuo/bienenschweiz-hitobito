@@ -22,6 +22,9 @@ Rails.application.routes.draw do
         end
         resources :supervisions
       end
+      resources :events, only: [] do
+        get :course_materials, as: :course_materials
+      end
     end
 
     resources :orphan_qcontrols, only: [:index, :destroy] do

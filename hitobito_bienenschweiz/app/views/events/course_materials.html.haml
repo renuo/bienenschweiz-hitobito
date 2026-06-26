@@ -1,0 +1,8 @@
+.well
+  %dl.dl-horizontal
+    = labeled(entry.class.human_attribute_name(:delivery_address)) do
+      %p.multiline=entry.delivery_address
+
+  %dl.dl-horizontal
+    = labeled(entry.class.human_attribute_name(:billing_address)) do
+      %p.multiline=entry.billing_address

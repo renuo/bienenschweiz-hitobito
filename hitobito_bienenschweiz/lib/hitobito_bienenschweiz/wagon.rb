@@ -60,6 +60,7 @@ module HitobitoBienenschweiz
 
       Event::Course.prepend Bienenschweiz::Event::Course
       EventsController.prepend Bienenschweiz::EventsController
+      Sheet::Event.prepend Bienenschweiz::Sheet::Event
     end
 
     initializer "bienenschweiz.add_settings" do |_app|
