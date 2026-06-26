@@ -6,7 +6,7 @@
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 module Sheet
-  module Event
+  module Events
     class CourseMaterials < Sheet::Base
       self.parent_sheet = Sheet::Event
     end
