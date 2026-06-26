@@ -36,6 +36,8 @@ de:
         one: Supervision Kurs / Tätigkeit
         other: Supervision Kurs / Tätigkeiten
     attributes:
+      event:
+        canceled: Abgesagt
       qcontrol:
         title: Beschreibung
         document: Dokument
@@ -181,3 +183,8 @@ de:
       attachment_name: Zertifikat_Begleitbrief_%{name}
   navigation:
     qcontrols: Betriebsprüfungen
+  event_states:
+    canceled: Abgesagt
+    expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden
+    full: Warteliste
+    open: Freie plätze, Anmeldung möglich

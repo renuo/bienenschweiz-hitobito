@@ -14,15 +14,22 @@ module Bienenschweiz::Event::Course
       Event::Role::Speaker,
       Event::Course::Role::Participant]
     self.used_attributes -= [:state]
+    self.used_attributes += [:canceled]
   end
 
   def state
-    if application_closing_at && application_closing_at < Date.current
-      "Anmeldeschluss vorbei - Bitte telefonisch anmelden"
+    I18n.t(state_label, scope: "event_states")
+  end
+
+  def state_label
+    if canceled?
+      :canceled
+    elsif application_closing_at && application_closing_at < Date.current
+      :expired
     elsif maximum_participants && maximum_participants <= participations.count
-      "Warteliste"
+      :full
     else
-      "Freie plätze, Anmeldung möglich"
+      :open
     end
   end
 end
