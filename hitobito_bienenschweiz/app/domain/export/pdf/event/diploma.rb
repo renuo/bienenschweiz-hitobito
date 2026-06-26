@@ -127,7 +127,9 @@ module Export::Pdf::Event
     end
 
     def leader_role_types
-      [Event::Role::Leader.sti_name, Event::Role::AssistantLeader.sti_name]
+      types = [Event::Role::Leader.sti_name]
+      types << Event::Role::AssistantLeader.sti_name unless event.diploma_only_leader?
+      types
     end
 
     def formatted_diploma_date

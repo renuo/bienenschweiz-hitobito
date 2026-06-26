@@ -10,3 +10,4 @@ de:
       event:
         diploma_location: Diplomort
         diploma_issued_at: Diplomfeier Datum
+        diploma_only_leader: Nur Hauptleitung im Diplom

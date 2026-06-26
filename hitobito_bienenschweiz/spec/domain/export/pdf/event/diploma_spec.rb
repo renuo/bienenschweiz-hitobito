@@ -92,6 +92,37 @@ describe Export::Pdf::Event::Diploma do
     end
   end
 
+  context "with an AssistantLeader participant" do
+    let(:assistant) { Fabricate(:person, first_name: "Maria", last_name: "Hilfsleiter") }
+
+    before do
+      p = Fabricate(:event_participation, event: course, participant: assistant, active: true)
+      Fabricate(:"Event::Role::AssistantLeader", participation: p)
+    end
+
+    context "when diploma_only_leader is false (default)" do
+      it "includes the assistant leader" do
+        expect(text.join(" ")).to include("Maria Hilfsleiter")
+      end
+    end
+
+    context "when diploma_only_leader is true" do
+      let(:course) do
+        Fabricate(:course, groups: [group], name: "Grundkurs 2026", kind: kind,
+          diploma_location: "Bern", diploma_issued_at: Date.new(2026, 6, 20),
+          diploma_only_leader: true)
+      end
+
+      it "excludes the assistant leader" do
+        expect(text.join(" ")).not_to include("Maria Hilfsleiter")
+      end
+
+      it "still includes the Leader" do
+        expect(text.join(" ")).to include("Kurt Kursleiter")
+      end
+    end
+  end
+
   context "with three or more leaders" do
     let(:leader2) { Fabricate(:person, first_name: "Maria", last_name: "Zweit") }
     let(:leader3) { Fabricate(:person, first_name: "Peter", last_name: "Dritt") }

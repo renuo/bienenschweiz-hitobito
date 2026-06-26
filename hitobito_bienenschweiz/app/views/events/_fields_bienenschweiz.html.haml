@@ -7,6 +7,8 @@
   = f.labeled_input_field(:diploma_location)
 - entry.used?(:diploma_issued_at) do
   = f.labeled_date_field(:diploma_issued_at)
+- entry.used?(:diploma_only_leader) do
+  = f.labeled_boolean_field(:diploma_only_leader)
 
 = f.labeled_input_field :canceled
 = f.labeled_input_field :export_to_website
