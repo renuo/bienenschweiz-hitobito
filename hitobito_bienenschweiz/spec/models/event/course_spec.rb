@@ -109,4 +109,42 @@ describe Event::Course do
       expect(course.state).to eq(I18n.t(:full, scope: "event_states"))
     end
   end
+
+  describe "#recalc_number" do
+    let(:group) { Fabricate(:kantonalverband, code: 42) }
+    let(:kind) { Fabricate(:event_kind) }
+
+    def make_course(groups: [group], date: Time.zone.local(2024, 6, 15))
+      course = Fabricate.build(:course, groups: groups, kind: kind)
+      course.dates.build(start_at: date)
+      course.save!
+      course
+    end
+
+    it "uses BK prefix, group code, and year" do
+      expect(make_course.number).to eq("BK-42-2024")
+    end
+
+    it "joins multiple group codes with /" do
+      group2 = Fabricate(:kantonalverband, code: 99)
+      expect(make_course(groups: [group, group2]).number).to eq("BK-42/99-2024")
+    end
+
+    it "derives the year from start_at" do
+      expect(make_course(date: Time.zone.local(2023, 1, 1)).number).to eq("BK-42-2023")
+    end
+
+    it "uses empty string for a group without a code" do
+      no_code_group = Fabricate(:kantonalverband, code: nil)
+      expect(make_course(groups: [no_code_group]).number).to eq("BK--2024")
+    end
+
+    it "recalculates on every save" do
+      course = make_course(date: Time.zone.local(2024, 6, 15))
+      group2 = Fabricate(:kantonalverband, code: 77)
+      course.groups = [group2]
+      course.save!
+      expect(course.number).to eq("BK-77-2024")
+    end
+  end
 end
