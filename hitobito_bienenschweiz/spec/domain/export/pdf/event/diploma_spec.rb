@@ -23,7 +23,7 @@ describe Export::Pdf::Event::Diploma do
 
   before do
     participant = Fabricate(:event_participation, event: course, participant: participant_person,
-      active: true)
+      active: true, qualified: true)
     Fabricate(:"Event::Course::Role::Participant", participation: participant)
 
     leader = Fabricate(:event_participation, event: course, participant: leader_person,
@@ -69,7 +69,7 @@ describe Export::Pdf::Event::Diploma do
     expect(text).to include("Leiter Ressort Bildung")
   end
 
-  context "with multiple participants" do
+  context "with multiple qualified participants" do
     let(:second_person) do
       Fabricate(:person, first_name: "Hans", last_name: "Müller",
         zip_code: "8000", town: "Zürich")
@@ -77,11 +77,11 @@ describe Export::Pdf::Event::Diploma do
 
     before do
       participation = Fabricate(:event_participation, event: course, participant: second_person,
-        active: true)
+        active: true, qualified: true)
       Fabricate(:"Event::Course::Role::Participant", participation: participation)
     end
 
-    it "generates one page per participant" do
+    it "generates one page per qualified participant" do
       pages = PDF::Reader.new(StringIO.new(described_class.new(course).render)).pages
       expect(pages.length).to eq(2)
     end
@@ -89,6 +89,22 @@ describe Export::Pdf::Event::Diploma do
     it "includes both participant names" do
       expect(text.join(" ")).to include("Anna Imkerin")
       expect(text.join(" ")).to include("Hans Müller")
+    end
+  end
+
+  context "with a non-qualified participant" do
+    let(:unqualified_person) { Fabricate(:person, first_name: "Franz", last_name: "Nope") }
+
+    before do
+      participation = Fabricate(:event_participation, event: course,
+        participant: unqualified_person, active: true, qualified: false)
+      Fabricate(:"Event::Course::Role::Participant", participation: participation)
+    end
+
+    it "does not print a page for the non-qualified participant" do
+      pages = PDF::Reader.new(StringIO.new(described_class.new(course).render)).pages
+      expect(pages.length).to eq(1)
+      expect(text.join(" ")).not_to include("Franz Nope")
     end
   end
 

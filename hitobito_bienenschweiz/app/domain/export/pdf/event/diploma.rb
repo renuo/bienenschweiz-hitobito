@@ -111,6 +111,7 @@ module Export::Pdf::Event
     def participant_participations
       event.participations
         .active
+        .where(qualified: true)
         .joins(:roles)
         .where(event_roles: {type: Event::Course::Role::Participant.sti_name})
         .includes(:participant)
