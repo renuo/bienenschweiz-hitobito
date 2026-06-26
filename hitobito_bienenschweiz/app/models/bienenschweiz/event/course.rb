@@ -13,5 +13,23 @@ module Bienenschweiz::Event::Course
       Event::Role::Helper,
       Event::Role::Speaker,
       Event::Course::Role::Participant]
+    self.used_attributes -= [:state]
+    self.used_attributes += [:canceled]
+  end
+
+  def state
+    I18n.t(state_label, scope: "event_states")
+  end
+
+  def state_label
+    if canceled?
+      :canceled
+    elsif application_closing_at && application_closing_at < Date.current
+      :expired
+    elsif maximum_participants && maximum_participants <= participations.count
+      :full
+    else
+      :open
+    end
   end
 end
