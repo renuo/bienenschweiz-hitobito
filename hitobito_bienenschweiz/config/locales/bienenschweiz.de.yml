@@ -188,6 +188,7 @@ de:
       attachment_name: Zertifikat_Begleitbrief_%{name}
   event:
     diploma:
+      print_button_label: Diplome drucken
       body: >
         hat den von der Sektion %{sections} durchgeführten %{course} besucht.
       congratulations: >

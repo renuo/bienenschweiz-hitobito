@@ -1,0 +1,19 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+- title event.to_s
+
+= form_tag(group_event_qualifications_path(@group, @event), method: :put) do
+
+  = render 'people'
+
+  .btn-group
+    = button_tag(t('event.qualifications.index.save'),
+                 class: 'btn btn-sm btn-primary',
+                 data: { turbo_submits_with: t('event.qualifications.index.save') })
+    = link_to(t('event.diploma.print_button_label'),
+                group_event_diploma_path(@group, @event),
+                class: 'btn btn-sm btn-outline-primary',
+                target: '_blank')
