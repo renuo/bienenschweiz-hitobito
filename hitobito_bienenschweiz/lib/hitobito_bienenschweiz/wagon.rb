@@ -57,6 +57,7 @@ module HitobitoBienenschweiz
       Person::FILTER_ATTRS << [:canton_short, :string]
 
       Event::Course.prepend Bienenschweiz::Event::Course
+      EventsController.prepend Bienenschweiz::EventsController
     end
 
     initializer "bienenschweiz.add_settings" do |_app|
