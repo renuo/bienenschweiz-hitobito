@@ -38,6 +38,7 @@ de:
     attributes:
       event:
         canceled: Abgesagt
+        export_to_website: auf der Webseite von BienenSchweiz sichtbar
       qcontrol:
         title: Beschreibung
         document: Dokument
