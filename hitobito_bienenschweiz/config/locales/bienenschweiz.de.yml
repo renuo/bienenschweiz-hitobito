@@ -197,12 +197,6 @@ de:
       leader_title: Kursleiter
       fixed_official_name: Markus Michel
       fixed_official_title: Leiter Ressort Bildung
-  navigation:
-    qcontrols: Betriebsprüfungen
-  events:
-    form_tabs:
-      course_materials: Kursunterlagen
-  event:
     bulk_answers:
       edit:
         title: "Antworten bearbeiten: %{event}"
@@ -212,6 +206,12 @@ de:
         answer: Antwort
       update:
         success: Die Antworten wurden erfolgreich gespeichert.
+  navigation:
+    qcontrols: Betriebsprüfungen
+  events:
+    form_tabs:
+      course_materials: Kursunterlagen
+      diploma: Diplom
   event_states:
     canceled: Abgesagt
     expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden
