@@ -37,6 +37,8 @@ de:
         other: Supervision Kurs / Tätigkeiten
     attributes:
       event:
+        delivery_address: Lieferadresse
+        billing_address: Rechnungsadresse
         canceled: Abgesagt
         export_to_website: auf der Webseite von BienenSchweiz sichtbar
       qcontrol:
@@ -184,6 +186,9 @@ de:
       attachment_name: Zertifikat_Begleitbrief_%{name}
   navigation:
     qcontrols: Betriebsprüfungen
+  events:
+    form_tabs:
+      course_materials: Kursunterlagen
   event_states:
     canceled: Abgesagt
     expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden
