@@ -47,6 +47,8 @@ module HitobitoBienenschweiz
 
       GroupsController.permitted_attrs += [:code]
       Role.used_attributes += [:export_to_website]
+      EventsController.permitted_attrs += [:export_to_website]
+      Event.used_attributes += [:export_to_website]
 
       Sheet::Person.prepend Bienenschweiz::Sheet::Person
       Ability.store.register QcontrolAbility
