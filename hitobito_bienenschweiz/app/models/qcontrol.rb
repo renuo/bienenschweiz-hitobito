@@ -181,6 +181,7 @@ class Qcontrol < ApplicationRecord
 
   def update_beekeeper_role
     return if person.nil?
+    return unless beekeeper_role
 
     beekeeper_role.update(end_on: (Time.zone.today + 20.days)) if not_passed?
     beekeeper_role.update(end_on: Time.zone.today) if no_control_necessary?
@@ -188,9 +189,11 @@ class Qcontrol < ApplicationRecord
 
   def beekeeper_role
     return nil if person.nil?
+    beekeeper_group = group.children.find_by(type: Group::Siegelimker.sti_name)
+    return nil unless beekeeper_group
 
     person.roles.find_by(
-      group_id: group.children.find_by(type: Group::Siegelimker.sti_name).id,
+      group_id: beekeeper_group.id,
       type: Group::Siegelimker::Siegelimker.sti_name
     )
   end
