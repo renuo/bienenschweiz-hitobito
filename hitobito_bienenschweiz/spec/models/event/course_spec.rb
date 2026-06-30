@@ -112,17 +112,22 @@ describe Event::Course do
 
   describe "#recalc_number" do
     let(:group) { Fabricate(:kantonalverband, code: 42) }
-    let(:kind) { Fabricate(:event_kind) }
+    let(:kind) { Fabricate(:event_kind, abbreviation: "BK") }
 
-    def make_course(groups: [group], date: Time.zone.local(2024, 6, 15))
-      course = Fabricate.build(:course, groups: groups, kind: kind)
+    def make_course(groups: [group], date: Time.zone.local(2024, 6, 15), course_kind: kind)
+      course = Fabricate.build(:course, groups: groups, kind: course_kind)
       course.dates.build(start_at: date)
       course.save!
       course
     end
 
-    it "uses BK prefix, group code, and year" do
+    it "uses the kind abbreviation as prefix" do
       expect(make_course.number).to eq("BK-42-2024")
+    end
+
+    it "uses a different abbreviation when the kind has one" do
+      gk = Fabricate(:event_kind, abbreviation: "GK")
+      expect(make_course(course_kind: gk).number).to eq("GK-42-2024")
     end
 
     it "joins multiple group codes with /" do

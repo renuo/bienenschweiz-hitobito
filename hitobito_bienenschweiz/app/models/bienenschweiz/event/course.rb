@@ -33,10 +33,9 @@ module Bienenschweiz::Event::Course
     else
       :open
     end
-
   end
 
   def recalc_number
-    self.number = "BK-#{groups.map(&:code).join("/")}-#{start_at.strftime("%Y")}"
+    self.number = "#{kind.abbreviation}-#{groups.map(&:code).join("/")}-#{start_at.strftime("%Y")}"
   end
 end
