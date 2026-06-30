@@ -436,6 +436,8 @@ namespace :mv do
             )
             qcontrol.save(validate: false)
             f.close
+          rescue StandardError => e
+            puts "Error attaching document for qcontrol #{qcontrol.id}: #{e.message}"
           end
         end
       end
@@ -459,18 +461,20 @@ namespace :mv do
       puts "Qcontrols with dangling references: #{missing.map { |k, v| "#{k}: #{v}" }.join(", ")}"
     end
 
-    def map_course_type(mv_course_type)
-      label = case mv_course_type
+    def find_or_create_supervision_type(mv_course_type)
+      name = case mv_course_type
       when "base_course"
-        "Basiskurs Imkern"
+        "Grundkurs"
       when "lecture"
-        "Fachperson Bildung"
+        "Gruppenberatungen und Vorträge"
       when "zuchtkurs"
-        "Fachperson Zucht"
+        "Zuchtkurs"
       when "test"
-        "Imkern mit Zertifikat"
+        "Betriebsprüfung"
       end
-      Event::Kind.find_by(label:)
+      return nil unless name
+
+      SupervisionType.find_or_create_by!(name:)
     end
 
     task :supervisions, [:redo_docs] => :environment do |_t, args|
@@ -503,11 +507,11 @@ namespace :mv do
       MvSupervision.find_each do |mv_supervision|
         supervision = Supervision.where(id: mv_supervision.id + SUPERVISION_ID_OFFSET).first_or_initialize
         supervision.assign_attributes(
-          mv_supervision.attributes.except("id", "member_id", "document", "content_type", "file_size").merge(
+          mv_supervision.attributes.except("id", "member_id", "document", "content_type", "file_size", "course_type").merge(
             "person_id" => mv_supervision.member_id && mv_supervision.member_id + MEMBER_ID_OFFSET,
             "author_id" => mv_supervision.author_id && mv_supervision.author_id + MEMBER_ID_OFFSET,
             "supervisor_id" => mv_supervision.supervisor_id && mv_supervision.supervisor_id + MEMBER_ID_OFFSET,
-            "course_type" => map_course_type(mv_supervision.course_type)
+            "supervision_type" => find_or_create_supervision_type(mv_supervision.course_type)
           )
         )
         supervision.save(validate: false)
@@ -521,6 +525,8 @@ namespace :mv do
               filename: mv_supervision.document.file.filename
             )
             supervision.save(validate: false)
+          rescue StandardError => e
+            puts "Error attaching document for supervision #{supervision.id}: #{e.message}"
           end
         end
         count += 1
@@ -531,7 +537,7 @@ namespace :mv do
         people: Supervision.where.not(person_id: Person.select(:id)).count,
         authors: Supervision.where.not(author_id: nil).where.not(author_id: Person.select(:id)).count,
         supervisors: Supervision.where.not(supervisor_id: nil).where.not(supervisor_id: Person.select(:id)).count,
-        course_types: Supervision.where.not(course_type_id: Event::Kind.select(:id)).count
+        supervision_types: Supervision.where.not(supervision_type_id: nil).where.not(supervision_type_id: SupervisionType.select(:id)).count
       }
       puts "Supervisions with dangling references: #{missing.map { |k, v|
         "#{k}: #{v}"
