@@ -20,9 +20,13 @@ class Group::SektionMitglieder < ::Group
     self.permissions = []
   end
 
-  class Mitglied < ::Role
+  class Aktivmitglied < ::Role
     self.permissions = []
   end
 
-  roles Ehrenmitglied, Freimitglied, Veteranen, Mitglied
+  class Passivmitglied < ::Role
+    self.permissions = []
+  end
+
+  roles Ehrenmitglied, Freimitglied, Veteranen, Aktivmitglied, Passivmitglied
 end

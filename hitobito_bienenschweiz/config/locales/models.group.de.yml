@@ -185,9 +185,12 @@ de:
       group/sektion_mitglieder/veteranen:
         one: Veteranen
         other: Veteranen
-      group/sektion_mitglieder/mitglied:
-        one: Mitglied
-        other: Mitglieder
+      group/sektion_mitglieder/aktivmitglied:
+        one: Aktivmitglied
+        other: Aktivmitglieder
+      group/sektion_mitglieder/passivmitglied:
+        one: Passivmitglied
+        other: Passivmitglieder
 
       group/kader:
         one: Kader
