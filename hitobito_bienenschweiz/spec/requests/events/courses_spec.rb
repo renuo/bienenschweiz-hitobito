@@ -22,6 +22,23 @@ RSpec.describe EventsController, type: :request do
       expect(response.body).to include('name="event[canceled]"')
       expect(response.body).to include('type="checkbox"')
     end
+
+    it "only checks name as visible_contact_attribute by default" do
+      get new_group_event_path(groups(:root), event: {type: "Event::Course"})
+      expect(response).to have_http_status(:ok)
+
+      name_input = response.body[
+        /<input[^>]*name="event\[visible_contact_attributes\]\[name\]\]"[^>]*/
+      ]
+      expect(name_input).to include("checked")
+
+      %w[picture address phone_number email social_account].each do |attr|
+        input = response.body[
+          /<input[^>]*name="event\[visible_contact_attributes\]\[#{attr}\]\]"[^>]*/
+        ]
+        expect(input).not_to include("checked")
+      end
+    end
   end
 
   describe "GET /groups/:group_id/events/:id" do
