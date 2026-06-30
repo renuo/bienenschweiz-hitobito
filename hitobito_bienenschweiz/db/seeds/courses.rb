@@ -5,7 +5,8 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
-seeds_path = HitobitoBienenschweiz::Wagon.root.join("db", "seeds")
+unless Rails.env.test?
+  seeds_path = HitobitoBienenschweiz::Wagon.root.join("db", "seeds")
 
-Rake::Task['courses:import'].invoke seeds_path.join("courses.yml")
-
+  Rake::Task['courses:import'].invoke seeds_path.join("courses.yml")
+end
