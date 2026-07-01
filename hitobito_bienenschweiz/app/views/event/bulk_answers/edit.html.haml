@@ -1,0 +1,43 @@
+-# Copyright (c) 2026. BienenSchweiz. This file is part of
+-# hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-# or later. See the COPYING file at the top-level directory or at
+-# https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
+
+- title t('.title', event: @event.name)
+
+= form_tag group_event_bulk_answers_path(@group, @event), method: :patch do
+  - if @questions.none?
+    .alert.alert-info= t('.no_questions')
+  - else
+    - @questions.each do |question|
+      .card.mb-3
+        .card-header
+          %strong= question.question
+          - if question.required?
+            %span.text-danger.ms-1 *
+        .card-body.p-0
+          - @participations.each do |participation|
+            - answer = participation.answers.find { |a| a.question_id == question.id }
+            - next unless answer
+            .row.mb-2
+              - base_name = "answers[#{answer.id}][answer]"
+              = label_tag base_name, participation.to_s, class: "col-md-3 col-xl-2 col-form-label text-md-end pb-1"
+              .mb-2.pt-2.labeled.col-md-9.col-lg-8.col-xl-8.mw-63ch.mw-md-47ch.mw-lg-63ch
+                - if question.choices?
+                  - question.deserialized_choices.each_with_index do |choice, idx|
+                    - checked = choice.checked?(answer.escaped_answer)
+                    - if question.with_checkboxes?
+                      - if idx.zero?
+                        = hidden_field_tag "#{base_name}[]", 0
+                      .form-check.form-check-inline
+                        = check_box_tag "#{base_name}[]", idx + 1, checked, class: "form-check-input", id: "answer_#{answer.id}_choice_#{idx}"
+                        = label_tag "answer_#{answer.id}_choice_#{idx}", choice.choice, class: "form-check-label"
+                    - else
+                      .form-check.form-check-inline
+                        = radio_button_tag base_name, choice.choice, checked, class: "form-check-input", id: "answer_#{answer.id}_choice_#{idx}"
+                        = label_tag "answer_#{answer.id}_choice_#{idx}", choice.choice, class: "form-check-label"
+                - else
+                  = text_field_tag base_name, answer.answer, class: "form-control form-control-sm"
+    .mt-3
+      = submit_tag t('global.button.save'), class: "btn btn-primary"
+      = link_to t('global.button.cancel'), group_event_path(@group, @event), class: "btn btn-light ms-2"

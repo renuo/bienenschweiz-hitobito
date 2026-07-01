@@ -24,6 +24,11 @@ Rails.application.routes.draw do
       end
       resources :events, only: [] do
         get :course_materials, as: :course_materials
+        resources :participations, only: [] do
+          collection do
+            resource :bulk_answers, only: [:edit, :update], controller: "event/bulk_answers"
+          end
+        end
       end
     end
 
