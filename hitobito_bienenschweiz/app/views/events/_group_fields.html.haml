@@ -1,0 +1,16 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+- entry.used?(:group_ids) do
+  - if @groups.present?
+    = field_set_tag t('event.run_by') do
+      = f.labeled(:group_ids, '&nbsp;'.html_safe) do
+        = f.select(:group_ids,
+                options_from_collection_for_select(@groups, :id, :to_s, entry.group_ids),
+                {},
+                { class: "form-select form-select-sm w-100",
+                  multiple: true,
+                  data: { controller: "tom-select",
+                          tom_select_no_results_value: t("global.chosen_no_results") } })
