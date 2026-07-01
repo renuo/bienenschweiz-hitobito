@@ -9,7 +9,7 @@
       = f.labeled(:group_ids, '&nbsp;'.html_safe) do
         = f.select(:group_ids,
                 options_from_collection_for_select(@groups, :id, :to_s, entry.group_ids),
-                {},
+                { include_hidden: false },
                 { class: "form-select form-select-sm w-100",
                   multiple: true,
                   data: { controller: "tom-select",
