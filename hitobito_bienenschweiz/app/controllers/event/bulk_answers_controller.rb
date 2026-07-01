@@ -13,7 +13,7 @@ class Event::BulkAnswersController < ApplicationController
 
   decorates :event
   def edit
-    @questions = @event.questions.list.includes(:translations)
+    @questions = @event.questions.where(admin: true).list.includes(:translations)
     @participations = load_participations
   end
 

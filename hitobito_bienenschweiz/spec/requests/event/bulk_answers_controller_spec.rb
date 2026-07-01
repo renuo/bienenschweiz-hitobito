@@ -11,7 +11,7 @@ RSpec.describe Event::BulkAnswersController, type: :request do
   let(:group) { groups(:root) }
   let(:admin) { people(:admin) }
   let(:event) { Fabricate(:event, groups: [group]) }
-  let(:question) { Fabricate(:event_question, event: event, question: "Allergien?") }
+  let(:question) { Fabricate(:event_question, event: event, question: "Allergien?", admin: true) }
   let(:participant) { Fabricate(:person) }
   let!(:participation) do
     Fabricate(:event_participation, event: event, participant: participant, active: true)
@@ -39,6 +39,22 @@ RSpec.describe Event::BulkAnswersController, type: :request do
     it "shows the participant name" do
       get edit_group_event_bulk_answers_path(group, event)
       expect(response.body).to include(participant.full_name)
+    end
+
+    context "question visibility" do
+      let!(:non_admin_question) do
+        Fabricate(:event_question, event: event, question: "Diätvorschriften?", admin: false)
+      end
+
+      it "shows admin questions" do
+        get edit_group_event_bulk_answers_path(group, event)
+        expect(response.body).to include("Allergien?")
+      end
+
+      it "does not show non-admin questions" do
+        get edit_group_event_bulk_answers_path(group, event)
+        expect(response.body).not_to include("Diätvorschriften?")
+      end
     end
 
     context "as unauthorized person" do
