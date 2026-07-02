@@ -8,6 +8,20 @@
 module Bienenschweiz::EventsController
   extend ActiveSupport::Concern
 
+  def load_kinds # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize
+    return unless entry.kind_class
+
+    layer_group_type = group&.layer_group&.class&.sti_name
+    @kinds = entry.kind_class.list.without_deleted
+      .includes(:kind_category)
+      .to_a
+      .select { |kind|
+      cat = kind.kind_category
+      cat.nil? || cat.layer_group_type.nil? || cat.layer_group_type == layer_group_type
+    }
+    @kinds |= [entry.kind] if entry.kind
+  end
+
   def load_sister_groups
     if group.is_a?(Group::Sektion)
       @groups = Group::Sektion.all.reorder(:code)

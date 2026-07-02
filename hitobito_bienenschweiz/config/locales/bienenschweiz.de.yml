@@ -46,6 +46,8 @@ de:
     attributes:
       event/kind:
         abbreviation: Kürzel
+      event/kind_category:
+        layer_group_type: Einschränkung auf Gruppentyp
       event:
         delivery_address: Lieferadresse
         billing_address: Rechnungsadresse

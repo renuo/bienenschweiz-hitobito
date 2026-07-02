@@ -19,6 +19,7 @@ event_kind_categories:
     time: 2026-06-01 22:47:48.353040000 Z
   deleted_at:
   order: 2
+  layer_group_type: Group::Dachverband
   translations:
   - id: 1
     event_kind_category_id: 1
@@ -91,6 +92,7 @@ event_kind_categories:
     time: 2026-06-01 22:48:04.155321000 Z
   deleted_at:
   order: 3
+  layer_group_type: Group::Dachverband
   translations:
   - id: 4
     event_kind_category_id: 4
