@@ -36,6 +36,9 @@ module HitobitoBienenschweiz
       admin_item[:active_for] += %w[supervision_type]
 
       GroupResource.include Bienenschweiz::GroupResource
+      PersonResource.include Bienenschweiz::PersonResource
+      RoleResource.include Bienenschweiz::RoleResource
+      EventResource.include Bienenschweiz::EventResource
 
       PeopleController.permitted_attrs += [
         :salutation,
