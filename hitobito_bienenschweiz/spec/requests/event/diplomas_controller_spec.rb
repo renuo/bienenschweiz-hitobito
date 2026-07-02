@@ -19,7 +19,7 @@ RSpec.describe "Event::DiplomasController", type: :request do
   end
 
   describe "GET #show" do
-    context "as admin with edit permission" do
+    context "as AdministratorBienenSchweiz" do
       before do
         roles(:admin)
         sign_in(admin)

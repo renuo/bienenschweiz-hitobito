@@ -9,7 +9,7 @@ class Event::DiplomasController < ApplicationController
   before_action :load_group_and_event
 
   def show
-    authorize! :edit, @event
+    authorize! :print, @event
     pdf = Export::Pdf::Event::Diploma.new(@event).render
     send_data pdf,
       type: :pdf,

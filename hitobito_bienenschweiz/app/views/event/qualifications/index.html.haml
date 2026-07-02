@@ -13,7 +13,8 @@
     = button_tag(t('event.qualifications.index.save'),
                  class: 'btn btn-sm btn-primary',
                  data: { turbo_submits_with: t('event.qualifications.index.save') })
-    = link_to(t('event.diploma.print_button_label'),
-                group_event_diploma_path(@group, @event),
-                class: 'btn btn-sm btn-outline-primary',
-                target: '_blank')
+    - if can?(:print, @event)
+      = link_to(t('event.diploma.print_button_label'),
+                  group_event_diploma_path(@group, @event),
+                  class: 'btn btn-sm btn-outline-primary',
+                  target: '_blank')
