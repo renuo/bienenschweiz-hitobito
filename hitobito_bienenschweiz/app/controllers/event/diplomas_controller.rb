@@ -17,6 +17,14 @@ class Event::DiplomasController < ApplicationController
       filename: Export::Pdf::Event::Diploma.filename(@event)
   end
 
+  def order
+    authorize! :edit, @event
+    @event.update_column(:diplomas_ordered_at, Time.current)
+    DiplomaMailer.order(@event).deliver_later
+    redirect_to group_event_qualifications_path(@group, @event),
+      notice: t("event.diploma.order_success")
+  end
+
   private
 
   def load_group_and_event

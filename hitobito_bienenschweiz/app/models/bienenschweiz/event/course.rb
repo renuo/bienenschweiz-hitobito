@@ -15,7 +15,7 @@ module Bienenschweiz::Event::Course
       Event::Course::Role::Participant]
     self.used_attributes -= [:state]
     self.used_attributes += [:canceled, :delivery_address, :billing_address,
-                             :diploma_location, :diploma_issued_at, :diploma_only_leader]
+                             :diploma_location, :diploma_issued_at, :diploma_only_leader, :diplomas_ordered_at]
 
     before_save :recalc_number
   end

@@ -186,9 +186,15 @@ de:
     print_certificate_and_letter:
       subject: Ausdruck Zertifikat und Begleitbrief für %{name}
       attachment_name: Zertifikat_Begleitbrief_%{name}
+  diploma_mailer:
+    order:
+      subject: "Diplom drucken für %{name} am %{date}"
   event:
     diploma:
       print_button_label: Diplome drucken
+      order_button_label: Diplome bestellen
+      order_success: "E-Mail für Diplom-Druck wurde versendet."
+      last_ordered: "Letzte Bestellung %{timestamp}"
       body: >
         hat den von der Sektion %{sections} durchgeführten %{course} besucht.
       congratulations: >

@@ -18,3 +18,10 @@
                   group_event_diploma_path(@group, @event),
                   class: 'btn btn-sm btn-outline-primary',
                   target: '_blank')
+    - if can?(:edit, @event)
+      = link_to(t('event.diploma.order_button_label'),
+                  order_group_event_diploma_path(@group, @event),
+                  data: { turbo_method: :post },
+                  class: 'btn btn-sm btn-outline-primary')
+      - if @event.diplomas_ordered_at.present?
+        %span.ms-2.text-muted= t('event.diploma.last_ordered', timestamp: l(@event.diplomas_ordered_at, format: '%d.%m.%Y %H:%M'))

@@ -48,4 +48,37 @@ RSpec.describe "Event::DiplomasController", type: :request do
       end
     end
   end
+
+  describe "POST #order" do
+    context "as AdministratorBienenSchweiz" do
+      before do
+        roles(:admin)
+        sign_in(admin)
+      end
+
+      it "enqueues diploma email and redirects to qualifications" do
+        expect {
+          post order_group_event_diploma_path(group, course)
+        }.to have_enqueued_mail(DiplomaMailer, :order).with(course)
+        expect(response).to redirect_to(group_event_qualifications_path(group, course))
+      end
+
+      it "records diplomas_ordered_at timestamp" do
+        freeze_time do
+          post order_group_event_diploma_path(group, course)
+          expect(course.reload.diplomas_ordered_at).to eq(Time.current)
+        end
+      end
+    end
+
+    context "as person without edit permission" do
+      before { sign_in(other_person) }
+
+      it "raises CanCan::AccessDenied" do
+        expect do
+          post order_group_event_diploma_path(group, course)
+        end.to raise_error(CanCan::AccessDenied)
+      end
+    end
+  end
 end

@@ -15,7 +15,9 @@ Rails.application.routes.draw do
     resources :groups, only: [] do
       resources :events, only: [] do
         scope module: "event" do
-          resource :diploma, only: :show
+          resource :diploma, only: :show do
+            post :order
+          end
         end
       end
     end
