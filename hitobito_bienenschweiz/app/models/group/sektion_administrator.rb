@@ -13,7 +13,7 @@ class Group::SektionAdministrator < ::Group
   end
 
   class Kontakte < ::Role
-    self.permissions = []
+    self.permissions = [:layer_contacts, :layer_read]
   end
 
   roles ErfassungVeranstaltungen, Kontakte

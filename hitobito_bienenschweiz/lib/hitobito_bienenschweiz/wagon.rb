@@ -26,6 +26,12 @@ module HitobitoBienenschweiz
       Group.include Bienenschweiz::Group
       Person.include Bienenschweiz::Person
 
+      Role::Types::Permissions << :layer_contacts
+      AbilityDsl::UserContext::GROUP_PERMISSIONS << :layer_contacts
+      AbilityDsl::UserContext::LAYER_PERMISSIONS << :layer_contacts
+      GroupBasedReadables.same_layer_permissions << :layer_contacts
+      PersonLayerWritables.same_layer_permissions << :layer_contacts
+
       NavigationHelper::MAIN << {label: :qcontrols,
        url: :orphan_qcontrols_path,
        icon_name: "list-check",
@@ -55,7 +61,11 @@ module HitobitoBienenschweiz
       Event::KindsController.permitted_attrs += [:kas_fee_code, :kas_fixed_fee]
       Event::ParticipationsController.prepend Bienenschweiz::Event::ParticipationsController
 
+      PersonReadables.prepend Bienenschweiz::PersonReadables
       Sheet::Person.prepend Bienenschweiz::Sheet::Person
+      Ability.store.register Bienenschweiz::PersonAbility
+      Ability.store.register Bienenschweiz::GroupAbility
+      Ability.store.register Bienenschweiz::RoleAbility
       Ability.store.register DiplomaAbility
       Ability.store.register QcontrolAbility
       Ability.store.register SupervisionAbility
