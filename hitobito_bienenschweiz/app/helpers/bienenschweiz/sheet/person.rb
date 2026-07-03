@@ -10,7 +10,8 @@ module Bienenschweiz::Sheet::Person
   prepended do
     tabs << Sheet::Tab.new(
       "people.tabs.bienenschweiz_qcontrols",
-      :group_person_qcontrols_path
+      :group_person_qcontrols_path,
+      if: ->(view, _group, _person) { view.can?(:index, Qcontrol) }
     )
     tabs << Sheet::Tab.new(
       "people.tabs.bienenschweiz_supervisions",
