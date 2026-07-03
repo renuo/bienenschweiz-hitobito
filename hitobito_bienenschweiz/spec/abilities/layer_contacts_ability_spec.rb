@@ -23,7 +23,8 @@ describe "layer_contacts permission" do
 
     # All non-layer subgroups of aarau_und_umgebung share layer_group_id = sektion.id
     let(:groups_in_layer) do
-      [groups(:aarau_und_umgebung), groups(:vorstand_379), groups(:kader_380), groups(:sektion_admin_381)]
+      [groups(:aarau_und_umgebung), groups(:vorstand_379), groups(:kader_380),
+        groups(:sektion_admin_381)]
     end
 
     before do

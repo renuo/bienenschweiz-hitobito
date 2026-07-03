@@ -32,6 +32,10 @@ module HitobitoBienenschweiz
       GroupBasedReadables.same_layer_permissions << :layer_contacts
       PersonLayerWritables.same_layer_permissions << :layer_contacts
 
+      Role::Types::Permissions << :layer_events
+      AbilityDsl::UserContext::GROUP_PERMISSIONS << :layer_events
+      AbilityDsl::UserContext::LAYER_PERMISSIONS << :layer_events
+
       NavigationHelper::MAIN << {label: :qcontrols,
        url: :orphan_qcontrols_path,
        icon_name: "list-check",
@@ -66,6 +70,11 @@ module HitobitoBienenschweiz
       Ability.store.register Bienenschweiz::PersonAbility
       Ability.store.register Bienenschweiz::GroupAbility
       Ability.store.register Bienenschweiz::RoleAbility
+      Ability.store.register Bienenschweiz::EventAbility
+      Ability.store.register Bienenschweiz::EventParticipationAbility
+      Ability.store.register Bienenschweiz::EventRoleAbility
+      Ability.store.register Bienenschweiz::EventInvitationAbility
+      Ability.store.register Bienenschweiz::EventApplicationAbility
       Ability.store.register DiplomaAbility
       Ability.store.register QcontrolAbility
       Ability.store.register SupervisionAbility
