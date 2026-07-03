@@ -19,7 +19,7 @@ class Group::Dachverband < ::Group
   ### ROLES
 
   class AdministratorBienenSchweiz < ::Role
-    self.permissions = [:admin, :layer_and_below_full]
+    self.permissions = [:admin, :layer_and_below_full, :impersonation]
   end
 
   roles AdministratorBienenSchweiz
