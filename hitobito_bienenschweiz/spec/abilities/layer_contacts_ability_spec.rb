@@ -20,6 +20,7 @@ describe "layer_contacts permission" do
     let(:sektion) { groups(:aarau_und_umgebung) }
     let(:sektion_admin_group) { groups(:sektion_admin_381) }
     let(:other_sektion) { groups(:aargauisches_seetal) }
+    let(:other_sektion_admin_group) { groups(:sektion_admin_384) }
 
     # All non-layer subgroups of aarau_und_umgebung share layer_group_id = sektion.id
     let(:groups_in_layer) do
@@ -34,7 +35,8 @@ describe "layer_contacts permission" do
 
     context "on people in the same sektion layer" do
       let(:same_layer_role) do
-        Fabricate(Group::Sektion::AdminSektion.sti_name.to_sym, group: sektion)
+        Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+          group: sektion_admin_group)
       end
       let(:target) { same_layer_role.person.reload }
 
@@ -63,7 +65,8 @@ describe "layer_contacts permission" do
 
     context "on roles in the same sektion layer" do
       let(:role_in_layer) do
-        Fabricate(Group::Sektion::AdminSektion.sti_name.to_sym, group: sektion)
+        Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+          group: sektion_admin_group)
       end
 
       it "may create, update, and destroy" do
@@ -75,7 +78,8 @@ describe "layer_contacts permission" do
 
     context "on people in a different sektion layer" do
       let(:other_layer_role) do
-        Fabricate(Group::Sektion::AdminSektion.sti_name.to_sym, group: other_sektion)
+        Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+          group: other_sektion_admin_group)
       end
       let(:target) { other_layer_role.person.reload }
 
@@ -88,7 +92,8 @@ describe "layer_contacts permission" do
 
     context "on roles in a different sektion layer" do
       let(:role_in_other_layer) do
-        Fabricate(Group::Sektion::AdminSektion.sti_name.to_sym, group: other_sektion)
+        Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+          group: other_sektion_admin_group)
       end
 
       it "may not create, update, or destroy" do
@@ -117,8 +122,9 @@ describe "layer_contacts permission" do
       end
 
       it "lists people when fetching the people index for a group in the layer" do
-        member = Fabricate(Group::Sektion::AdminSektion.sti_name.to_sym, group: sektion)
-        readable = PersonReadables.new(user, sektion)
+        member = Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+          group: sektion_admin_group)
+        readable = PersonReadables.new(user, sektion_admin_group)
         expect(Person.accessible_by(readable)).to include(member.person.reload)
       end
     end
@@ -226,7 +232,8 @@ describe "layer_contacts permission" do
 
     context "on people in a sektion layer below the kantonalverband" do
       let(:sektion_role) do
-        Fabricate(Group::Sektion::AdminSektion.sti_name.to_sym, group: sektion_in_kv)
+        Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+          group: groups(:sektion_admin_381))
       end
       let(:target) { sektion_role.person.reload }
 

@@ -81,12 +81,14 @@ describe "layer_events permission" do
 
     context "people and roles are not granted" do
       it "may not update people in the same layer" do
-        other = Fabricate(Group::Sektion::AdminSektion.sti_name.to_sym, group: sektion)
+        other = Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+          group: sektion_admin_group)
         expect(ability).not_to be_able_to(:update, other.person.reload)
       end
 
       it "may not manage roles in the same layer" do
-        other = Fabricate(Group::Sektion::AdminSektion.sti_name.to_sym, group: sektion)
+        other = Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+          group: sektion_admin_group)
         expect(ability).not_to be_able_to(:destroy, other)
       end
     end

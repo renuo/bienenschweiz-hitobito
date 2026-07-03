@@ -79,13 +79,13 @@ de:
       group/kantonalverband:
         one: Kantonalverband
         other: Kantonalverbände
-      group/kantonalverband/admin_kanton:
-        one: AdminKanton
-        other: AdminKantone
 
       group/kantonalverband_administrator:
         one: Administrator
         other: Administratoren
+      group/kantonalverband_administrator/admin_kanton:
+        one: Admin Kanton
+        other: Admins Kanton
       group/kantonalverband_administrator/kontakte:
         one: Kontakte
         other: Kontakte
@@ -152,9 +152,6 @@ de:
       group/sektion:
         one: Sektion
         other: Sektionen
-      group/sektion/admin_sektion:
-        one: Admin Sektion
-        other: Admins Sektion
 
       group/siegelimker:
         one: Siegelimker/in
@@ -166,6 +163,9 @@ de:
       group/sektion_administrator:
         one: Administrator
         other: Administratoren
+      group/sektion_administrator/admin_sektion:
+        one: Admin Sektion
+        other: Admins Sektion
       group/sektion_administrator/erfassung_veranstaltungen:
         one: Veranstaltungen/Kurse
         other: Veranstaltungen/Kurse
