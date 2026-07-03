@@ -8,6 +8,14 @@ de:
   activerecord:
     models:
 
+      ### PERMISSIONS
+
+      role:
+        class:
+          permission:
+            description:
+              layer_contacts: Personen und Rollen auf dieser Ebene lesen und verwalten.
+
       ### GROUPS
 
       group/root:

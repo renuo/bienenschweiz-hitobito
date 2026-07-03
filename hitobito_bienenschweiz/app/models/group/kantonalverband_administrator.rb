@@ -9,7 +9,7 @@ class Group::KantonalverbandAdministrator < ::Group
   ### ROLES
 
   class Kontakte < ::Role
-    self.permissions = [:layer_full]
+    self.permissions = [:layer_contacts, :layer_read]
   end
 
   class VeranstaltungenKurse < ::Role
