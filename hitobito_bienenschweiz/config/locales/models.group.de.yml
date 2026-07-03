@@ -167,8 +167,8 @@ de:
         one: Administrator
         other: Administratoren
       group/sektion_administrator/erfassung_veranstaltungen:
-        one: Erfassung Veranstaltungen
-        other: Erfassung Veranstaltungen
+        one: Veranstaltungen/Kurse
+        other: Veranstaltungen/Kurse
       group/sektion_administrator/kontakte:
         one: Kontakte
         other: Kontakte
