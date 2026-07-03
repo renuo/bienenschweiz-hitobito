@@ -9,7 +9,7 @@ class Group::SektionAdministrator < ::Group
   ### ROLES
 
   class ErfassungVeranstaltungen < ::Role
-    self.permissions = [:layer_events]
+    self.permissions = [:layer_events, :layer_read]
   end
 
   class Kontakte < ::Role
