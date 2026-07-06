@@ -11,7 +11,7 @@ RSpec.describe Event::ParticipationsController, type: :request do
   let(:kas_base_url) { "https://kas.example.com" }
   let(:admin) { people(:admin) }
   let(:other_person) { Fabricate(:person) }
-  let(:kind) { Fabricate(:event_kind) }
+  let(:kind) { Fabricate(:event_kind, kas_fixed_fee: true, kas_fee_code: "COURSE_FEE") }
   let(:course) { Fabricate(:course, kind: kind) }
   let(:group) { course.groups.first }
 
@@ -83,9 +83,29 @@ RSpec.describe Event::ParticipationsController, type: :request do
         end
 
         context "when kas_fees_created is already true" do
-          before do
-            course.update_column(:kas_fees_created, true)
+          before { course.update_column(:kas_fees_created, true) }
+
+          it "redirects with an alert and does not call the KAS API" do
+            post_create_kas_fees
+            expect(response).to redirect_to(group_event_participations_path(group, course))
+            expect(flash[:alert]).to be_present
+            expect(WebMock).not_to have_requested(:post, "#{kas_base_url}/api/v1/fees")
           end
+        end
+
+        context "when kas_fixed_fee is false on the kind" do
+          before { kind.update_column(:kas_fixed_fee, false) }
+
+          it "redirects with an alert and does not call the KAS API" do
+            post_create_kas_fees
+            expect(response).to redirect_to(group_event_participations_path(group, course))
+            expect(flash[:alert]).to be_present
+            expect(WebMock).not_to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+          end
+        end
+
+        context "when kas_fee_code is blank on the kind" do
+          before { kind.update_column(:kas_fee_code, nil) }
 
           it "redirects with an alert and does not call the KAS API" do
             post_create_kas_fees

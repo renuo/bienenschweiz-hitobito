@@ -11,7 +11,7 @@
 
 = dropdown_people_export(can?(:index_full_participations, @event))
 
-- if can?(:update, @event) && !@event.kas_fees_created?
+- if can?(:update, @event) && @event.kas_fees_creatable?
   = action_button(t('event/participations.actions_index.create_kas_fees'),
                   create_kas_fees_group_event_participations_path(@group, @event),
                   :coins,

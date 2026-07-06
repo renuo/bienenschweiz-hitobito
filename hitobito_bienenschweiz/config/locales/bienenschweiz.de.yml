@@ -229,7 +229,7 @@ de:
       success: "%{count} KAS-Spesen wurden erfolgreich erstellt."
       partial_failure: "%{success} von %{total} KAS-Spesen wurden erstellt. Bei einigen Teilnehmenden ist ein Fehler aufgetreten."
       failed_names: "KAS-Spesen konnten für folgende Teilnehmende nicht erstellt werden: %{names}"
-      already_created: "KAS-Spesen wurden für diesen Kurs bereits erstellt."
+      not_creatable: "KAS-Spesen können für diesen Kurs nicht erstellt werden."
   event_states:
     canceled: Abgesagt
     expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden

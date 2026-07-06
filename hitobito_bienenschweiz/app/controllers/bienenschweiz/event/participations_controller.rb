@@ -16,9 +16,9 @@ module Bienenschweiz::Event::ParticipationsController
   def create_kas_fees
     authorize!(:update, @event)
 
-    if @event.kas_fees_created?
+    unless @event.kas_fees_creatable?
       return redirect_to group_event_participations_path(@group, @event),
-        alert: t("event/participations.create_kas_fees.already_created")
+        alert: t("event/participations.create_kas_fees.not_creatable")
     end
 
     failed_names = []
