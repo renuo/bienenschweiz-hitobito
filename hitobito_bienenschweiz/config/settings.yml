@@ -43,3 +43,8 @@ additional_email:
 additional_address:
   custom_label:
     enabled: false
+
+personal_documents:
+  enabled: true
+
+
