@@ -221,6 +221,14 @@ de:
     form_tabs:
       course_materials: Kursunterlagen
       diploma: Diplom
+  event/participations:
+    actions_index:
+      create_kas_fees: KAS Spesen erstellen
+      create_kas_fees_confirm: Sollen für alle Teilnehmenden dieses Kurses KAS-Spesen erstellt werden?
+    create_kas_fees:
+      success: "%{count} KAS-Spesen wurden erfolgreich erstellt."
+      partial_failure: "%{success} von %{total} KAS-Spesen wurden erstellt. Bei einigen Teilnehmenden ist ein Fehler aufgetreten."
+      failed_names: "KAS-Spesen konnten für folgende Teilnehmende nicht erstellt werden: %{names}"
   event_states:
     canceled: Abgesagt
     expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden

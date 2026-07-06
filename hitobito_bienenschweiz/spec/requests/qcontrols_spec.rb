@@ -118,7 +118,7 @@ RSpec.describe QcontrolsController, type: :request do
           post group_person_qcontrols_path(sektion, beekeeper), params: {qcontrol: qcontrol_params}
         end.not_to change { Qcontrol.count }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Betriebsprüfung")
         expect(response.body).to include("Kontrolldatum muss ausgefüllt werden")
       end

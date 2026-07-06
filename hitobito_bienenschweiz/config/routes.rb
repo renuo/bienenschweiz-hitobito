@@ -23,6 +23,15 @@ Rails.application.routes.draw do
     end
 
     resources :groups, only: [] do
+      resources :events, only: [] do
+        scope module: "event" do
+          resources :participations, only: [] do
+            collection do
+              post :create_kas_fees
+            end
+          end
+        end
+      end
       resources :people, only: [] do
         resources :qcontrols do
           member do
