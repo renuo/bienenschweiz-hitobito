@@ -16,6 +16,11 @@ module Bienenschweiz::Event::ParticipationsController
   def create_kas_fees
     authorize!(:update, @event)
 
+    if @event.kas_fees_created?
+      return redirect_to group_event_participations_path(@group, @event),
+        alert: t("event/participations.create_kas_fees.already_created")
+    end
+
     failed_names = []
     client = KasClient.new
     eligible_participants.each do |participation|
@@ -23,6 +28,8 @@ module Bienenschweiz::Event::ParticipationsController
     rescue KasClient::Error
       failed_names << participation.person.to_s
     end
+
+    @event.update_column(:kas_fees_created, true) if failed_names.size < eligible_participants.size
 
     flash_key = failed_names.empty? ? :notice : :alert
     if failed_names.any?

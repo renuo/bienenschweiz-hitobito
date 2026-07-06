@@ -76,6 +76,23 @@ RSpec.describe Event::ParticipationsController, type: :request do
                 body["person_id"] == participant1.id && body["group_id"] == group.id
               }
           end
+
+          it "marks kas_fees_created on the event" do
+            expect { post_create_kas_fees }.to change { course.reload.kas_fees_created }.to(true)
+          end
+        end
+
+        context "when kas_fees_created is already true" do
+          before do
+            course.update_column(:kas_fees_created, true)
+          end
+
+          it "redirects with an alert and does not call the KAS API" do
+            post_create_kas_fees
+            expect(response).to redirect_to(group_event_participations_path(group, course))
+            expect(flash[:alert]).to be_present
+            expect(WebMock).not_to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+          end
         end
 
         context "when KAS API fails for one participant" do
@@ -102,6 +119,10 @@ RSpec.describe Event::ParticipationsController, type: :request do
           it "sets a warning flash with the failed participant's name" do
             post_create_kas_fees
             expect(flash[:warning]).to include(participant2.full_name)
+          end
+
+          it "still marks kas_fees_created because at least one succeeded" do
+            expect { post_create_kas_fees }.to change { course.reload.kas_fees_created }.to(true)
           end
         end
       end
