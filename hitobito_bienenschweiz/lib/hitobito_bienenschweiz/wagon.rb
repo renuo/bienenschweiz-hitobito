@@ -21,7 +21,7 @@ module HitobitoBienenschweiz
 
     config.action_mailer.preview_paths << "#{config.root}/spec/mailers/previews"
 
-    config.to_prepare do
+    config.to_prepare do # rubocop:disable Metrics/BlockLength
       # extend application classes here
       Group.include Bienenschweiz::Group
       Person.include Bienenschweiz::Person
@@ -49,6 +49,7 @@ module HitobitoBienenschweiz
       Role.used_attributes += [:export_to_website]
       EventsController.permitted_attrs += [:export_to_website]
       Event.used_attributes += [:export_to_website]
+      Event.default_visible_contact_attributes = %w[name]
 
       Sheet::Person.prepend Bienenschweiz::Sheet::Person
       Ability.store.register QcontrolAbility
