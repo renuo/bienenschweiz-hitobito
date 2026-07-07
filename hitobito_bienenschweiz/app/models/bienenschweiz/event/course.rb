@@ -28,6 +28,15 @@ module Bienenschweiz::Event::Course
     kind&.kas_fixed_fee? && kind&.kas_fee_code.present? && !kas_fees_created?
   end
 
+  def kas_instructor_fees_creatable?
+    kind&.kas_instructor_fees? && kind&.kas_fee_code.present? &&
+      !kas_instructor_fees_created_for_current_year?
+  end
+
+  def kas_instructor_fees_created_for_current_year?
+    kas_instructor_fees_created_years.include?(Time.zone.today.year)
+  end
+
   def state_label
     if canceled?
       :canceled

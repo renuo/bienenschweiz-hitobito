@@ -7,7 +7,7 @@
 
 require "spec_helper"
 
-RSpec.describe Event::ParticipationsController, type: :request do
+RSpec.describe "Event::ParticipationsController", type: :request do
   let(:kas_base_url) { "https://kas.example.com" }
   let(:admin) { people(:admin) }
   let(:other_person) { Fabricate(:person) }
@@ -211,6 +211,357 @@ RSpec.describe Event::ParticipationsController, type: :request do
 
       it "raises CanCan::AccessDenied" do
         expect { post_create_kas_fees }.to raise_error(CanCan::AccessDenied)
+      end
+    end
+  end
+
+  describe "GET #new_kas_instructor_fees" do
+    let(:instructor_kind) {
+      Fabricate(:event_kind, kas_instructor_fees: true, kas_fee_code: "INST_FEE")
+    }
+    let(:instructor_course) { Fabricate(:course, kind: instructor_kind) }
+    let(:instructor_group) { instructor_course.groups.first }
+
+    def add_leader(person)
+      participation = Fabricate(:event_participation, event: instructor_course, participant: person)
+      Fabricate(:"Event::Role::Leader", participation: participation)
+      participation
+    end
+
+    subject(:get_new_kas_instructor_fees) do
+      get new_kas_instructor_fees_group_event_participations_path(instructor_group,
+        instructor_course)
+    end
+
+    context "as admin" do
+      before { sign_in(admin) }
+
+      context "with a leader" do
+        let!(:leader) { Fabricate(:person) }
+
+        before { add_leader(leader) }
+
+        it "returns 200" do
+          get_new_kas_instructor_fees
+          expect(response).to have_http_status(:ok)
+        end
+
+        it "shows the leader's name in the response body" do
+          get_new_kas_instructor_fees
+          expect(response.body).to include(leader.full_name)
+        end
+
+        it "shows the current year as a column" do
+          get_new_kas_instructor_fees
+          expect(response.body).to include(Time.zone.today.year.to_s)
+        end
+
+        it "shows the leader role label next to the name" do
+          get_new_kas_instructor_fees
+          expect(response.body).to include(leader.full_name)
+          expect(response.body).to include(Event::Role::Leader.label)
+        end
+
+        context "with an assistant leader" do
+          let!(:assistant_leader) { Fabricate(:person) }
+
+          before do
+            participation = Fabricate(:event_participation, event: instructor_course,
+              participant: assistant_leader)
+            Fabricate(:"Event::Role::AssistantLeader", participation: participation)
+          end
+
+          it "shows the assistant leader role label" do
+            get_new_kas_instructor_fees
+            expect(response.body).to include(assistant_leader.full_name)
+            expect(response.body).to include(Event::Role::AssistantLeader.label)
+          end
+        end
+
+        it "shows the participant count" do
+          get_new_kas_instructor_fees
+          expect(response.body).to include("0 Teilnehmende")
+        end
+
+        it "shows CHF 0.– budget when fewer than 6 participants" do
+          get_new_kas_instructor_fees
+          expect(response.body).to include("CHF 0.–")
+        end
+
+        context "with 8 participants" do
+          before do
+            8.times do
+              p = Fabricate(:person)
+              participation = Fabricate(:event_participation, event: instructor_course,
+                participant: p)
+              Fabricate(:"Event::Course::Role::Participant", participation: participation)
+            end
+          end
+
+          it "shows CHF 275.– budget (6–12 tier)" do
+            get_new_kas_instructor_fees
+            expect(response.body).to include("CHF 275.–")
+          end
+        end
+      end
+
+      context "with dates spanning two years (start before July)" do
+        before do
+          Fabricate(:event_date, event: instructor_course,
+            start_at: "2025-01-10", finish_at: "2026-12-15")
+        end
+
+        it "shows both years as columns" do
+          get_new_kas_instructor_fees
+          expect(response.body).to include("2025").and include("2026")
+        end
+      end
+
+      context "with a start date on June 30th (boundary — included)" do
+        before do
+          Fabricate(:event_date, event: instructor_course,
+            start_at: "2025-06-30", finish_at: "2026-04-30")
+        end
+
+        it "includes the start year" do
+          get_new_kas_instructor_fees
+          expect(response.body).to include("2025").and include("2026")
+        end
+      end
+
+      context "with a start date after June 30th (excluded)" do
+        before do
+          Fabricate(:event_date, event: instructor_course,
+            start_at: "2025-08-15", finish_at: "2026-04-30")
+        end
+
+        it "excludes the start year" do
+          get_new_kas_instructor_fees
+          expect(response.body).not_to include(">2025<")
+          expect(response.body).to include("2026")
+        end
+      end
+
+      context "with a start date after June 30th and no finish_at" do
+        before do
+          Fabricate(:event_date, event: instructor_course, start_at: "2025-09-01")
+        end
+
+        it "renders no year columns" do
+          get_new_kas_instructor_fees
+          expect(response).to have_http_status(:ok)
+          expect(response.body).not_to include(">2025<")
+        end
+      end
+
+      context "when kas_instructor_fees is false" do
+        before { instructor_kind.update_column(:kas_instructor_fees, false) }
+
+        it "redirects with an alert" do
+          get_new_kas_instructor_fees
+          expect(response).to redirect_to(
+            group_event_participations_path(instructor_group, instructor_course)
+          )
+          expect(flash[:alert]).to be_present
+        end
+      end
+
+      context "when kas_fee_code is blank" do
+        before { instructor_kind.update_column(:kas_fee_code, nil) }
+
+        it "redirects with an alert" do
+          get_new_kas_instructor_fees
+          expect(response).to redirect_to(
+            group_event_participations_path(instructor_group, instructor_course)
+          )
+          expect(flash[:alert]).to be_present
+        end
+      end
+    end
+
+    context "as person without update permission" do
+      before { sign_in(other_person) }
+
+      it "raises CanCan::AccessDenied" do
+        expect { get_new_kas_instructor_fees }.to raise_error(CanCan::AccessDenied)
+      end
+    end
+  end
+
+  describe "POST #create_kas_instructor_fees" do
+    let(:instructor_kind) {
+      Fabricate(:event_kind, kas_instructor_fees: true, kas_fee_code: "INST_FEE")
+    }
+    let(:instructor_course) { Fabricate(:course, kind: instructor_kind) }
+    let(:instructor_group) { instructor_course.groups.first }
+
+    def add_leader(person)
+      participation = Fabricate(:event_participation, event: instructor_course, participant: person)
+      Fabricate(:"Event::Role::Leader", participation: participation)
+      participation
+    end
+
+    def post_instructor_fees(fees_params)
+      post create_kas_instructor_fees_group_event_participations_path(
+        instructor_group, instructor_course
+      ),
+        params: {fees: fees_params}
+    end
+
+    context "as admin" do
+      before do
+        sign_in(admin)
+        stub_kas_success
+      end
+
+      context "with fees selected for a leader across two years" do
+        let!(:leader) { Fabricate(:person) }
+
+        before { add_leader(leader) }
+
+        it "calls the KAS API once per non-zero person/year combination" do
+          post_instructor_fees(leader.id.to_s => {"2025" => "150.00", "2026" => "125.00"})
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees").twice
+        end
+
+        it "sends the correct fee_type_code, group_id and total_amount" do
+          post_instructor_fees(leader.id.to_s => {"2025" => "150.00"})
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+            .with { |req|
+              body = JSON.parse(req.body)["fee"]
+              body["fee_type_code"] == "INST_FEE" &&
+                body["group_id"] == instructor_group.id &&
+                body["total_amount"] == "150.00"
+            }
+        end
+
+        it "skips years where the amount is zero" do
+          post_instructor_fees(leader.id.to_s => {"2025" => "150.00", "2026" => "0"})
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees").once
+        end
+
+        it "skips years where the amount is blank" do
+          post_instructor_fees(leader.id.to_s => {"2025" => "150.00", "2026" => ""})
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees").once
+        end
+
+        it "redirects to the participations index with a notice" do
+          post_instructor_fees(leader.id.to_s => {"2025" => "150.00"})
+          expect(response).to redirect_to(
+            group_event_participations_path(instructor_group, instructor_course)
+          )
+          expect(flash[:notice]).to be_present
+        end
+      end
+
+      context "with no fees param submitted" do
+        it "does not call the KAS API" do
+          post create_kas_instructor_fees_group_event_participations_path(instructor_group,
+            instructor_course)
+          expect(WebMock).not_to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+        end
+
+        it "redirects with a notice" do
+          post create_kas_instructor_fees_group_event_participations_path(instructor_group,
+            instructor_course)
+          expect(flash[:notice]).to be_present
+        end
+      end
+
+      context "when the KAS API fails for one person/year" do
+        let!(:leader) { Fabricate(:person) }
+
+        before do
+          add_leader(leader)
+          stub_request(:post, "#{kas_base_url}/api/v1/fees")
+            .to_return(
+              {status: 422, body: {error: "invalid"}.to_json,
+               headers: {"Content-Type" => "application/json"}}
+            )
+        end
+
+        it "sets a warning flash containing the person name" do
+          post_instructor_fees(leader.id.to_s => {"2025" => "150.00"})
+          expect(flash[:warning]).to include(leader.full_name)
+        end
+
+        it "still redirects with a notice" do
+          post_instructor_fees(leader.id.to_s => {"2025" => "150.00"})
+          expect(flash[:notice]).to be_present
+        end
+      end
+
+      context "when kas_instructor_fees is false" do
+        before { instructor_kind.update_column(:kas_instructor_fees, false) }
+
+        it "redirects with an alert and does not call the KAS API" do
+          post create_kas_instructor_fees_group_event_participations_path(instructor_group,
+            instructor_course)
+          expect(response).to redirect_to(
+            group_event_participations_path(instructor_group, instructor_course)
+          )
+          expect(flash[:alert]).to be_present
+          expect(WebMock).not_to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+        end
+      end
+
+      context "when current year is already marked as created" do
+        before do
+          instructor_course.update_column(:kas_instructor_fees_created_years,
+            [Time.zone.today.year])
+        end
+
+        it "redirects with an alert and does not call the KAS API" do
+          post create_kas_instructor_fees_group_event_participations_path(instructor_group,
+            instructor_course)
+          expect(response).to redirect_to(
+            group_event_participations_path(instructor_group, instructor_course)
+          )
+          expect(flash[:alert]).to be_present
+          expect(WebMock).not_to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+        end
+      end
+
+      context "when fees are successfully created" do
+        let!(:leader) { Fabricate(:person) }
+
+        before { add_leader(leader) }
+
+        it "marks the current year as created" do
+          expect {
+            post_instructor_fees(leader.id.to_s => {Time.zone.today.year.to_s => "150.00"})
+          }.to change {
+            instructor_course.reload.kas_instructor_fees_created_years
+          }.to include(Time.zone.today.year)
+        end
+      end
+
+      context "when all API calls fail" do
+        let!(:leader) { Fabricate(:person) }
+
+        before do
+          add_leader(leader)
+          stub_request(:post, "#{kas_base_url}/api/v1/fees")
+            .to_return(status: 422, body: {error: "invalid"}.to_json,
+              headers: {"Content-Type" => "application/json"})
+        end
+
+        it "does not mark the year as created" do
+          post_instructor_fees(leader.id.to_s => {Time.zone.today.year.to_s => "150.00"})
+          expect(instructor_course.reload.kas_instructor_fees_created_years)
+            .not_to include(Time.zone.today.year)
+        end
+      end
+    end
+
+    context "as person without update permission" do
+      before { sign_in(other_person) }
+
+      it "raises CanCan::AccessDenied" do
+        expect {
+          post create_kas_instructor_fees_group_event_participations_path(instructor_group,
+            instructor_course)
+        }.to raise_error(CanCan::AccessDenied)
       end
     end
   end

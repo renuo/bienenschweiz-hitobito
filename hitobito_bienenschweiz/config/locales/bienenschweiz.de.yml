@@ -233,11 +233,25 @@ de:
     actions_index:
       create_kas_fees: KAS Spesen erstellen
       create_kas_fees_confirm: Sollen für alle Teilnehmenden dieses Kurses KAS-Spesen erstellt werden?
+      create_kas_instructor_fees: KAS Kursleitungsspesen erfassen
+      kas_instructor_fees_already_created: KAS Kursleitungsspesen für das laufende Jahr wurden bereits erfasst.
     create_kas_fees:
       success: "%{count} KAS-Spesen wurden erfolgreich erstellt."
       partial_failure: "%{success} von %{total} KAS-Spesen wurden erstellt. Bei einigen Teilnehmenden ist ein Fehler aufgetreten."
       failed_names: "KAS-Spesen konnten für folgende Teilnehmende nicht erstellt werden: %{names}"
       not_creatable: "KAS-Spesen können für diesen Kurs nicht erstellt werden."
+    kas_instructor_fees:
+      not_creatable: KAS Kursleitungsspesen können für diesen Kurs nicht erstellt werden.
+      success: KAS Kursleitungsspesen wurden erfolgreich erstellt.
+      failed_names: "KAS Kursleitungsspesen konnten für folgende Personen nicht erstellt werden: %{names}"
+    new_kas_instructor_fees:
+      title: KAS Kursleitungsspesen erfassen
+      person: Person
+      submit: Spesen erstellen
+      total: Total
+      current_year_header: laufendes Jahr - erfassbar
+      participant_count: "%{count} Teilnehmende"
+      not_yet_available: "Erfassung ab %{year} möglich"
   event_states:
     canceled: Abgesagt
     expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden

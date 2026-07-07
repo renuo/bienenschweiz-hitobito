@@ -18,6 +18,13 @@
                   method: :post,
                   data: { confirm: t('event/participations.actions_index.create_kas_fees_confirm') })
 
+- if can?(:update, @event) && @event.kas_instructor_fees_creatable?
+  = action_button(t('event/participations.actions_index.create_kas_instructor_fees'),
+                  new_kas_instructor_fees_group_event_participations_path(@group, @event),
+                  :"person-chalkboard")
+- elsif can?(:update, @event) && @event.kas_instructor_fees_created_for_current_year?
+  %span.text-muted= t('event/participations.actions_index.kas_instructor_fees_already_created')
+
 = action_button(t('global.button.print'), 'javascript:window.print();', :print)
 
 - if can?(:update, @event)

@@ -9,7 +9,8 @@ module Bienenschweiz::Event::ParticipationsController
   extend ActiveSupport::Concern
 
   prepended do
-    skip_authorize_resource only: [:create_kas_fees]
+    instructor_fee_actions = %i[new_kas_instructor_fees create_kas_instructor_fees]
+    skip_authorize_resource only: %i[create_kas_fees] + instructor_fee_actions
   end
 
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
@@ -41,7 +42,115 @@ module Bienenschweiz::Event::ParticipationsController
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
 
+  def new_kas_instructor_fees
+    authorize!(:update, @event)
+    unless @event.kas_instructor_fees_creatable?
+      return redirect_to group_event_participations_path(@group, @event),
+        alert: t("event/participations.kas_instructor_fees.not_creatable")
+    end
+    @instructor_participations = instructor_participations
+    @years = event_years
+    @participant_count = participant_count
+    @per_year_budget = per_year_budget(@participant_count)
+  end
+
+  def create_kas_instructor_fees
+    authorize!(:update, @event)
+    unless @event.kas_instructor_fees_creatable?
+      return redirect_to group_event_participations_path(@group, @event),
+        alert: t("event/participations.kas_instructor_fees.not_creatable")
+    end
+    failed, attempted = build_instructor_fees
+    mark_instructor_fees_created if attempted > failed.size
+    if failed.any?
+      flash[:warning] = t("event/participations.kas_instructor_fees.failed_names",
+        names: failed.join(", "))
+    end
+    redirect_to group_event_participations_path(@group, @event),
+      notice: t("event/participations.kas_instructor_fees.success")
+  end
+
   private
+
+  def build_instructor_fees
+    client = KasClient.new
+    failed = []
+    attempted = 0
+    (params[:fees] || {}).each do |person_id, years|
+      years.each do |year, amount|
+        next if amount.blank? || amount.to_f.zero?
+        attempted += 1
+        create_instructor_fee(client, person_id, year, amount, failed)
+      end
+    end
+    [failed, attempted]
+  end
+
+  def mark_instructor_fees_created
+    year = Time.zone.today.year
+    updated = (@event.kas_instructor_fees_created_years + [year]).uniq
+    @event.update_column(:kas_instructor_fees_created_years, updated)
+  end
+
+  def create_instructor_fee(client, person_id, year, amount, failed)
+    client.create_fee(kas_instructor_fee_params(person_id.to_i, year.to_i, amount.to_f))
+  rescue KasClient::Error
+    failed << "#{Person.find_by(id: person_id)} (#{year})"
+  end
+
+  def participant_count
+    @event.participations.joins(:roles)
+      .where(event_roles: {type: @event.participant_types.map(&:sti_name)})
+      .distinct.count
+  end
+
+  def per_year_budget(count)
+    case count
+    when 6..12 then 275
+    when 13..23 then 475
+    when 24.. then 750
+    else 0
+    end
+  end
+
+  def instructor_participations
+    @event.participations.joins(:roles)
+      .where(event_roles: {type: instructor_role_types})
+      .includes(:participant)
+      .preload(:roles)
+      .distinct
+  end
+
+  def instructor_role_types
+    [Event::Role::Leader, Event::Role::AssistantLeader].map(&:sti_name)
+  end
+
+  def event_years
+    start_at = @event.dates.minimum(:start_at)
+    return [Time.zone.today.year] unless start_at
+
+    min = start_at.year
+    min += 1 if start_at.month > 6
+    max = max_event_year(start_at)
+    return [] if min > max
+
+    (min..max).to_a
+  end
+
+  def max_event_year(start_at)
+    @event.dates.map { |d| (d.finish_at || d.start_at).year }.max || start_at.year
+  end
+
+  def kas_instructor_fee_params(person_id, year, amount)
+    {
+      person_id: person_id,
+      fee_type_code: @event.kind&.kas_fee_code,
+      occurred_on: Date.new(year, 1, 1).iso8601,
+      quantity: 1,
+      total_amount: format("%.2f", amount),
+      group_id: @group.id
+    }
+  end
 
   def eligible_participants
     @eligible_participants ||= kas_participants.select { |p| precondition_met?(p) }

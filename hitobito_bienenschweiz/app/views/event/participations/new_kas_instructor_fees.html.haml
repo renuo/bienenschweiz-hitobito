@@ -1,0 +1,56 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+- scope = "event/participations.new_kas_instructor_fees"
+- title t("#{scope}.title")
+
+%p.text-muted= t("#{scope}.participant_count", count: @participant_count)
+
+- current_year = Time.zone.today.year
+
+= form_tag create_kas_instructor_fees_group_event_participations_path(@group, @event),
+    data: {controller: "kas-instructor-fees", kas_instructor_fees_budget_value: @per_year_budget} do
+  .table-responsive
+    %table.table.table-sm.align-middle
+      %thead
+        %tr
+          %th= t("#{scope}.person")
+          - @years.each do |year|
+            %th.text-center
+              = year
+              %br
+              - if year == current_year
+                %small.fw-normal.text-muted= t("#{scope}.current_year_header")
+              - else
+                %small.fw-normal.text-warning= t("#{scope}.not_yet_available", year: year)
+      %tbody
+        - @instructor_participations.each do |participation|
+          %tr
+            %td
+              = participation.person.to_s
+              %small.text-muted= participation.roles.first&.class&.label
+            - @years.each do |year|
+              %td
+                - if year == current_year
+                  = number_field_tag "fees[#{participation.participant_id}][#{year}]", nil,
+                      min: 0, step: "0.01", placeholder: "0.00",
+                      class: "form-control form-control-sm text-end",
+                      style: "width:8rem",
+                      data: {kas_instructor_fees_target: "amount", year: year,
+                             action: "input->kas-instructor-fees#recalculate"}
+                - else
+                  .text-center.text-muted –
+      %tfoot
+        %tr.table-light.fw-semibold
+          %td= t("#{scope}.total")
+          - @years.each do |year|
+            %td.text-center
+              - if year == current_year
+                %span{data: {kas_instructor_fees_target: "yearTotal", year: year}} CHF 0.00
+                %span.text-muted / CHF #{@per_year_budget}.–
+              - else
+                –
+  = submit_tag t("#{scope}.submit"), class: "btn btn-primary mt-3",
+      data: {kas_instructor_fees_target: "submitButton"}
