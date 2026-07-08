@@ -6,7 +6,7 @@
 # https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
 
 class DiplomaMailer < ApplicationMailer
-  PRINTER_EMAIL = ENV.fetch("PRINTER_EMAIL", nil)
+  PRINTER_EMAIL = ENV.fetch("PRINTER_EMAIL", nil) # rubocop:disable Rails/EnvironmentVariableAccess
 
   def order(event)
     @event = event
