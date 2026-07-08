@@ -191,6 +191,16 @@ de:
   events:
     form_tabs:
       course_materials: Kursunterlagen
+  event:
+    bulk_answers:
+      edit:
+        title: "Antworten bearbeiten: %{event}"
+        button: Administrationsangaben bearbeiten
+        no_questions: Dieses Event hat keine Fragen.
+        participant: Teilnehmer/-in
+        answer: Antwort
+      update:
+        success: Die Antworten wurden erfolgreich gespeichert.
   event_states:
     canceled: Abgesagt
     expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden
