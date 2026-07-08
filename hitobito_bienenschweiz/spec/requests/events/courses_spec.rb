@@ -23,6 +23,17 @@ RSpec.describe EventsController, type: :request do
       expect(response.body).to include('type="checkbox"')
     end
 
+    it "renders a tom-select for group selection without a hidden sentinel field" do
+      get new_group_event_path(groups(:root), event: {type: "Event::Course"})
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('name="event[group_ids][]"')
+      expect(response.body).to include('data-controller="tom-select"')
+      # No hidden field means an empty selection submits no group_ids param,
+      # preserving the old checkbox behaviour where deselecting all was a no-op.
+      expect(response.body)
+        .not_to match(/<input[^>]*type="hidden"[^>]*name="event\[group_ids\]\[\]"/)
+    end
+
     it "only checks name as visible_contact_attribute by default" do
       get new_group_event_path(groups(:root), event: {type: "Event::Course"})
       expect(response).to have_http_status(:ok)
@@ -38,6 +49,16 @@ RSpec.describe EventsController, type: :request do
         ]
         expect(input).not_to include("checked")
       end
+    end
+  end
+
+  describe "GET /groups/:group_id/events/:id/edit" do
+    it "renders a tom-select for group selection with the current group pre-selected" do
+      get edit_group_event_path(group, course)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('name="event[group_ids][]"')
+      expect(response.body).to include('data-controller="tom-select"')
+      expect(response.body).to match(/<option[^>]*selected[^>]*>/)
     end
   end
 
