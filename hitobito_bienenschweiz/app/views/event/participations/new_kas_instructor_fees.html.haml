@@ -34,14 +34,17 @@
             - @years.each do |year|
               %td
                 - if year == current_year
-                  = number_field_tag "fees[#{participation.participant_id}][#{year}]", nil,
-                      min: 0, step: "0.01", placeholder: "0.00",
-                      class: "form-control form-control-sm text-end",
-                      style: "width:8rem;margin:auto",
-                      data: {kas_instructor_fees_target: "amount", year: year,
-                             action: "input->kas-instructor-fees#recalculate"}
+                  .input-group.input-group-sm{style: "width:10rem;margin:auto"}
+                    %span.input-group-text CHF
+                    = number_field_tag "fees[#{participation.participant_id}][#{year}]", nil,
+                        min: 0, step: "0.01", placeholder: "0.00",
+                        class: "form-control form-control-sm text-end",
+                        data: {kas_instructor_fees_target: "amount", year: year,
+                               action: "input->kas-instructor-fees#recalculate"}
                 - else
-                  .text-center.text-muted –
+                  = text_field_tag :nothing, nil, placeholder: "CHF", disabled: true,
+                    style: "width:10rem;margin:auto",
+                    class: "form-control form-control-sm"
       %tfoot
         %tr.table-light.fw-semibold
           %td= t("#{scope}.total")
