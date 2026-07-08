@@ -34,6 +34,9 @@ Rails.application.routes.draw do
       end
       resources :events, only: [] do
         get :course_materials, as: :course_materials
+        collection do
+          get "new_from_kind/:event_kind_id", action: :new_from_kind, as: :new_from_kind
+        end
         resources :participations, only: [] do
           collection do
             resource :bulk_answers, only: [:edit, :update], controller: "event/bulk_answers"
