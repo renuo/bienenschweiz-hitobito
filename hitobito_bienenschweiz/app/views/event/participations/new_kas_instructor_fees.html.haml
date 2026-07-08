@@ -37,7 +37,7 @@
                   = number_field_tag "fees[#{participation.participant_id}][#{year}]", nil,
                       min: 0, step: "0.01", placeholder: "0.00",
                       class: "form-control form-control-sm text-end",
-                      style: "width:8rem",
+                      style: "width:8rem;margin:auto",
                       data: {kas_instructor_fees_target: "amount", year: year,
                              action: "input->kas-instructor-fees#recalculate"}
                 - else
