@@ -10,11 +10,11 @@ class Event::DiplomasController < ApplicationController
 
   def show
     authorize! :print, @event
-    pdf = Export::Pdf::Event::Diploma.new(@event).render
-    send_data pdf,
+    pdf = Export::Pdf::Event::Diploma.new(@event)
+    send_data pdf.render,
       type: :pdf,
       disposition: "attachment",
-      filename: Export::Pdf::Event::Diploma.filename(@event)
+      filename: pdf.filename
   end
 
   def order

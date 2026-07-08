@@ -10,9 +10,9 @@ class DiplomaMailer < ApplicationMailer
 
   def order(event)
     @event = event
-    pdf = Export::Pdf::Event::Diploma.new(event).render
-    attachments[Export::Pdf::Event::Diploma.filename(event)] =
-      {mime_type: "application/pdf", content: pdf}
+    pdf = Export::Pdf::Event::Diploma.new(event)
+    attachments[pdf.filename] =
+      {mime_type: "application/pdf", content: pdf.render}
     mail(
       to: PRINTER_EMAIL,
       subject: I18n.t("diploma_mailer.order.subject",

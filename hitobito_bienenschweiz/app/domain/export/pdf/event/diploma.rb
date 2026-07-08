@@ -36,6 +36,10 @@ module Export::Pdf::Event
       @pdf.render
     end
 
+    def filename
+      self.class.filename(event)
+    end
+
     def self.filename(event)
       "diplome_#{event.name.parameterize(separator: "_")}.pdf"
     end
