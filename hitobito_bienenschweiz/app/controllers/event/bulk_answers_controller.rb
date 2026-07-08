@@ -50,7 +50,7 @@ class Event::BulkAnswersController < ApplicationController
       Event::Answer
         .joins(:participation)
         .where(event_participations: {event_id: @event.id})
-        .pluck(:id)
+        .ids
     )
   end
 end
