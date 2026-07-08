@@ -15,6 +15,8 @@ module Bienenschweiz::Event::Course
       Event::Course::Role::Participant]
     self.used_attributes -= [:state]
     self.used_attributes += [:canceled, :delivery_address, :billing_address]
+
+    before_save :recalc_number
   end
 
   def state
@@ -31,5 +33,9 @@ module Bienenschweiz::Event::Course
     else
       :open
     end
+  end
+
+  def recalc_number
+    self.number = "#{kind.abbreviation}-#{groups.map(&:code).join("/")}-#{start_at.year}"
   end
 end

@@ -36,6 +36,8 @@ de:
         one: Supervision Kurs / Tätigkeit
         other: Supervision Kurs / Tätigkeiten
     attributes:
+      event/kind:
+        abbreviation: Kürzel
       event:
         delivery_address: Lieferadresse
         billing_address: Rechnungsadresse

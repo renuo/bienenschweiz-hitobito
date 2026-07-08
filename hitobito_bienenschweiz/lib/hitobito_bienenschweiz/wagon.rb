@@ -21,7 +21,7 @@ module HitobitoBienenschweiz
 
     config.action_mailer.preview_paths << "#{config.root}/spec/mailers/previews"
 
-    config.to_prepare do
+    config.to_prepare do # rubocop:disable Metrics/BlockLength
       # extend application classes here
       Group.include Bienenschweiz::Group
       Person.include Bienenschweiz::Person
@@ -58,6 +58,8 @@ module HitobitoBienenschweiz
       TableDisplay.register_column(Person, TableDisplays::PublicColumn, :canton_short)
       Person::FILTER_ATTRS << [:canton_short, :string]
 
+      Event::Kind.include Bienenschweiz::Event::Kind
+      Event::KindsController.permitted_attrs += [:abbreviation]
       Event::Course.prepend Bienenschweiz::Event::Course
       EventsController.prepend Bienenschweiz::EventsController
       Sheet::Event.prepend Bienenschweiz::Sheet::Event
