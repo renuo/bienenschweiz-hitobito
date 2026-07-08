@@ -219,7 +219,10 @@ RSpec.describe "Event::ParticipationsController", type: :request do
     let(:instructor_kind) {
       Fabricate(:event_kind, kas_instructor_fees: true, kas_fee_code: "INST_FEE")
     }
-    let(:instructor_course) { Fabricate(:course, kind: instructor_kind) }
+    let(:instructor_course) do
+      Fabricate(:course, kind: instructor_kind,
+        dates: [Event::Date.new(start_at: Time.zone.today.beginning_of_year, label: "Hauptanlass")])
+    end
     let(:instructor_group) { instructor_course.groups.first }
 
     def add_leader(person)
@@ -343,8 +346,9 @@ RSpec.describe "Event::ParticipationsController", type: :request do
       end
 
       context "with a start date after June 30th and no finish_at" do
-        before do
-          Fabricate(:event_date, event: instructor_course, start_at: "2025-09-01")
+        let(:instructor_course) do
+          Fabricate(:course, kind: instructor_kind,
+            dates: [Event::Date.new(start_at: Date.new(2025, 9, 1), label: "Hauptanlass")])
         end
 
         it "renders no year columns" do
