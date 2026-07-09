@@ -51,6 +51,7 @@ module HitobitoBienenschweiz
       Event.used_attributes += [:export_to_website]
 
       Sheet::Person.prepend Bienenschweiz::Sheet::Person
+      Ability.store.register DiplomaAbility
       Ability.store.register QcontrolAbility
       Ability.store.register SupervisionAbility
       Ability.store.register SupervisionTypeAbility

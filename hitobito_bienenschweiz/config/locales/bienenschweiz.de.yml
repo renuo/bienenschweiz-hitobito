@@ -186,12 +186,23 @@ de:
     print_certificate_and_letter:
       subject: Ausdruck Zertifikat und Begleitbrief für %{name}
       attachment_name: Zertifikat_Begleitbrief_%{name}
-  navigation:
-    qcontrols: Betriebsprüfungen
-  events:
-    form_tabs:
-      course_materials: Kursunterlagen
+  diploma_mailer:
+    order:
+      subject: "Diplom drucken für %{name} am %{date}"
   event:
+    diploma:
+      print_button_label: Diplome drucken
+      order_button_label: Diplome bestellen
+      order_success: "E-Mail für Diplom-Druck wurde versendet."
+      last_ordered: "Letzte Bestellung %{timestamp}"
+      body: >
+        hat den von der Sektion %{sections} durchgeführten %{course} besucht.
+      congratulations: >
+        Herzliche Gratulation zum erfolgreichen Abschluss und viel Freude an der
+        künftigen Arbeit mit den Bienen!
+      leader_title: Kursleiter
+      fixed_official_name: Markus Michel
+      fixed_official_title: Leiter Ressort Bildung
     bulk_answers:
       edit:
         title: "Antworten bearbeiten: %{event}"
@@ -201,6 +212,12 @@ de:
         answer: Antwort
       update:
         success: Die Antworten wurden erfolgreich gespeichert.
+  navigation:
+    qcontrols: Betriebsprüfungen
+  events:
+    form_tabs:
+      course_materials: Kursunterlagen
+      diploma: Diplom
   event_states:
     canceled: Abgesagt
     expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden
