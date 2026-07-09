@@ -18,6 +18,39 @@ RSpec.describe EventsController, type: :request do
       billing_address: "Buchhaltung AG\n8000 Zürich")
   end
 
+  describe "GET #index (courses)" do
+    context "as admin with create permission" do
+      before do
+        roles(:admin)
+        sign_in(admin)
+      end
+
+      context "when a kind has a template file" do
+        around do |example|
+          template_dir = HitobitoBienenschweiz::Wagon.root.join("config", "event_kind_templates")
+          template_file = template_dir.join("#{kind.id}.yml")
+          template_file.write({"description" => "Test"}.to_yaml)
+          example.run
+        ensure
+          template_file.delete if template_file.exist?
+        end
+
+        it "shows the new_from_kind dropdown" do
+          get group_events_path(group, type: "Event::Course")
+          expect(response.body).to include(new_from_kind_group_events_path(group,
+            event_kind_id: kind.id))
+        end
+      end
+
+      context "when no kind has a template file" do
+        it "does not show the new_from_kind dropdown" do
+          get group_events_path(group, type: "Event::Course")
+          expect(response.body).not_to include("new_from_kind")
+        end
+      end
+    end
+  end
+
   describe "GET #new_from_kind" do
     let(:kind) { Fabricate(:event_kind) }
 

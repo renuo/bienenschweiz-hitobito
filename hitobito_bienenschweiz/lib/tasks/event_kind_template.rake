@@ -5,19 +5,18 @@
 # or later. See the COPYING file at the top-level directory or at
 # https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
 
+TEMPLATE_FIELDS = %w[
+  description location cost maximum_participants minimum_participants
+  requires_approval external_applications applications_cancelable
+  display_booking_info participations_visible export_to_website
+  delivery_address billing_address application_conditions
+  required_contact_attrs hidden_contact_attrs visible_contact_attributes
+  motto
+].freeze
+
+QUESTION_FIELDS = %w[question type required multiple_choices choices].freeze
 namespace :bienenschweiz do
   namespace :event_kind_template do
-    TEMPLATE_FIELDS = %w[
-      description location cost maximum_participants minimum_participants
-      requires_approval external_applications applications_cancelable
-      display_booking_info participations_visible export_to_website
-      delivery_address billing_address application_conditions
-      required_contact_attrs hidden_contact_attrs visible_contact_attributes
-      motto
-    ].freeze
-
-    QUESTION_FIELDS = %w[question type required multiple_choices choices].freeze
-
     def dump_questions(questions)
       questions.map do |q|
         QUESTION_FIELDS.each_with_object({}) do |field, hash|

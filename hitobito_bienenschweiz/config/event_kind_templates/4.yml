@@ -1,0 +1,79 @@
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+---
+name: Basiskurs Imkern
+description: "Der Imker Basiskurs für Neuimker/-innen in der Schweiz ist ein Ausbildungskonzept,
+  das von BienenSchweiz im Auftrag des Bundesamtes für Landwirtschaft erarbeitet wurde.
+  \nDer Basiskurs dauert 18 Halbtage, verteilt auf zwei Jahre, und vermittelt sowohl
+  praktische als auch theoretische Kenntnisse.\nZiel ist es, dass die Neuimker/-innen
+  eine gute imkerliche Praxis erwerben, wo sowohl Bienen als auch Imker/-innen voneinander
+  profitieren."
+location: ''
+cost: 950.- bis 1'250.- CHF (Empfehlung)
+maximum_participants: 20
+minimum_participants: 10
+requires_approval: false
+external_applications: true
+applications_cancelable: true
+display_booking_info: true
+participations_visible: true
+export_to_website: true
+delivery_address: Lieferadresse, wohin die Kursunterlagen zugestellt werden sollen.
+billing_address: Rechnungsadresse, wo die Rechnung hin versandt wird
+application_conditions: Die durchführende Sektion kann Aufnahmebedingungen definieren.
+required_contact_attrs:
+  - street
+  - housenumber
+  - postbox
+  - zip_code
+  - town
+  - country
+  - phone_numbers
+hidden_contact_attrs:
+  - nickname
+  - company_name
+visible_contact_attributes:
+  - name
+  - email
+motto: Gute imkerliche Praxis erlernen
+application_questions:
+  - question: 'Hiermit bestätige, dass die Durchführende Stelle jede Haftung ablehnt.
+    Versicherungen sind Sache des Teilnehmenden!
+
+    '
+    type: Event::Question::Default
+    required: true
+    multiple_choices: false
+    choices: Ja,Nein
+  - question: "Hiermit bestätige ich, dass meine Daten für interne Zwecke von BienenSchweiz
+    und deren Sektionen verwendet werden dürfen. \nEs werden keine Daten zu Externen
+    weitergegeben."
+    type: Event::Question::Default
+    required: true
+    multiple_choices: false
+    choices: Ja,Nein
+admin_questions:
+  - question: Teilnehmende erhält das gedruckte Schweizer Bienenbuch sowie den Kursordner.
+    type: Event::Question::Default
+    required: false
+    multiple_choices: false
+    choices: Ja,Nein
+  - question: Teilnehmende erhält das online Schweizer Bienenbuch sowie den Kursordner.
+    type: Event::Question::Default
+    required: false
+    multiple_choices: false
+    choices: Ja,Nein
+  - question: Teilnehmende erhält ausschliesslich den Kursordner. (Paarteilnehmer)
+    type: Event::Question::Default
+    required: false
+    multiple_choices: false
+    choices: ja,nein
+  - question: Teilnehmende erhält das Probeabo der Bienen Zeitung
+    type: Event::Question::Default
+    required: false
+    multiple_choices: false
+    choices: ja,nein
