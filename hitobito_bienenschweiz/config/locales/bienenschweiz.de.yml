@@ -186,14 +186,6 @@ de:
     print_certificate_and_letter:
       subject: Ausdruck Zertifikat und Begleitbrief für %{name}
       attachment_name: Zertifikat_Begleitbrief_%{name}
-  navigation:
-    qcontrols: Betriebsprüfungen
-  events:
-    global:
-      link:
-        new_from_kind: Kurs nach Vorlage erstellen
-    form_tabs:
-      course_materials: Kursunterlagen
   diploma_mailer:
     order:
       subject: "Diplom drucken für %{name} am %{date}"
@@ -223,6 +215,9 @@ de:
   navigation:
     qcontrols: Betriebsprüfungen
   events:
+    global:
+      link:
+        new_from_kind: Kurs nach Vorlage erstellen
     form_tabs:
       course_materials: Kursunterlagen
       diploma: Diplom
