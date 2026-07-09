@@ -10,7 +10,8 @@ require "spec_helper"
 RSpec.describe Event::BulkAnswersController, type: :request do
   let(:group) { groups(:root) }
   let(:admin) { people(:admin) }
-  let(:event) { Fabricate(:event, groups: [group]) }
+  let(:event_kind) { Event::Kind.first }
+  let(:event) { Fabricate(:course, groups: [group], kind: event_kind) }
   let(:question) { Fabricate(:event_question, event: event, question: "Allergien?", admin: true) }
   let(:participant) { Fabricate(:person) }
   let!(:participation) do

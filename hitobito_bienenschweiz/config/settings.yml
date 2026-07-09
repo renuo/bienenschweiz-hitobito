@@ -47,4 +47,6 @@ additional_address:
 personal_documents:
   enabled: true
 
-
+kas:
+  base_url: <%= ENV['KAS_BASE_URL'] %>
+  api_token: <%= ENV['KAS_API_TOKEN'] %>

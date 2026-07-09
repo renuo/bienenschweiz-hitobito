@@ -24,6 +24,10 @@ module Bienenschweiz::Event::Course
     I18n.t(state_label, scope: "event_states")
   end
 
+  def kas_fees_creatable?
+    kind&.kas_fixed_fee? && kind&.kas_fee_code.present? && !kas_fees_created?
+  end
+
   def state_label
     if canceled?
       :canceled

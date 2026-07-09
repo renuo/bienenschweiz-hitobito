@@ -134,7 +134,7 @@ RSpec.describe SupervisionsController, type: :request do
             params: {supervision: supervision_params}
         end.not_to change { Supervision.count }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("muss eine Person mit aktiver Supervisor-Rolle sein")
       end
     end
@@ -155,7 +155,7 @@ RSpec.describe SupervisionsController, type: :request do
             params: {supervision: supervision_params}
         end.not_to change { Supervision.count }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Kontrolldatum muss ausgefüllt werden")
       end
     end
