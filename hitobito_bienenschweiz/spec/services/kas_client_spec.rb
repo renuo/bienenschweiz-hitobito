@@ -24,7 +24,7 @@ describe KasClient do
         fee_type_code: "ANNUAL",
         occurred_on: "2026-01-15",
         total_amount: "100.00",
-        intern_structure_id: 7
+        group_id: 7
       }
     end
 
