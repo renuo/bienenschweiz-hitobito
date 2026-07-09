@@ -215,6 +215,9 @@ de:
   navigation:
     qcontrols: Betriebsprüfungen
   events:
+    global:
+      link:
+        new_from_kind: Kurs nach Vorlage erstellen
     form_tabs:
       course_materials: Kursunterlagen
       diploma: Diplom
