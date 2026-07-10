@@ -8,7 +8,7 @@ de:
   activerecord:
     attributes:
       event/kind:
-        kas_fee_code: KAS Spesentyp ID
+        kas_fee_code: KAS Spesentyp Code
         kas_fixed_fee: KAS Pauschalspese
         kas_instructor_fees: KAS Kursleitungsspesen
     errors:
