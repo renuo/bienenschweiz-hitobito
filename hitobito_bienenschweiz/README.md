@@ -10,7 +10,7 @@ of Bienenschweiz.
 (Output of rake app:hitobito:roles)
 * Dachverband
   * Dachverband
-    * Administrator BienenSchweiz: [:admin, :layer_and_below_full]
+    * Administrator BienenSchweiz: [:admin, :layer_and_below_full, :impersonation]
   * Mitglieder
     * Ehrenmitglied: [:contact_data]
     * Ehrenpräsident: [:contact_data]
@@ -31,10 +31,10 @@ of Bienenschweiz.
     * Supervisor: [:layer_and_below_read]
 * Kantonalverband < Dachverband
   * Kantonalverband
-    * AdminKanton: [:layer_full]
   * Administrator
-    * Kontakte: [:layer_full]
-    * Veranstaltungen/Kurse: [:layer_full]
+    * Admin Kanton: [:layer_full]
+    * Kontakte: [:layer_contacts, :layer_read]
+    * Veranstaltungen/Kurse: [:layer_events, :layer_read]
   * Vorstand
     * Bildung: [:contact_data, :layer_and_below_read]
     * Produkte: [:contact_data, :layer_and_below_read]
@@ -46,17 +46,18 @@ of Bienenschweiz.
     * Beisitzer/in: [:contact_data, :layer_and_below_read]
 * Sektion < Kantonalverband
   * Sektion
-    * Admin Sektion: [:layer_and_below_full]
   * Siegelimker/in
     * Siegelimker/in: [:layer_read]
   * Administrator
-    * Erfassung Veranstaltungen: []
-    * Kontakte: []
+    * Admin Sektion: [:layer_and_below_full]
+    * Veranstaltungen/Kurse: [:layer_events, :layer_read]
+    * Kontakte: [:layer_contacts, :layer_read]
   * Mitglieder
     * Ehrenmitglied: []
     * Freimitglied: []
     * Veteranen: []
-    * Mitglied: []
+    * Aktivmitglied: []
+    * Passivmitglied: []
   * Vorstand
     * Bildung: [:contact_data, :layer_and_below_read]
     * Produkte: [:contact_data, :layer_and_below_read]

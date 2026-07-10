@@ -14,9 +14,5 @@ class Group::Kantonalverband < ::Group
 
   ### ROLES
 
-  class AdminKanton < ::Role
-    self.permissions = [:layer_full]
-  end
-
-  roles AdminKanton
+  roles
 end
