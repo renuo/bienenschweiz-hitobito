@@ -76,7 +76,7 @@ module Bienenschweiz::Event::ParticipationsController
     client = KasClient.new
     failed = []
     attempted = 0
-    (params[:fees] || {}).each do |person_id, years|
+    params[:fees]&.each do |person_id, years|
       years.each do |year, amount|
         next if amount.blank? || amount.to_f.zero?
         attempted += 1
