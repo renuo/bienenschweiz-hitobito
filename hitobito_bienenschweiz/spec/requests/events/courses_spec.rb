@@ -98,9 +98,13 @@ RSpec.describe EventsController, type: :request do
       end
 
       context "for a Kantonalverband group" do
+        let(:kv_admin_group) do
+          Fabricate(:group, type: Group::KantonalverbandAdministrator.sti_name,
+            parent: groups(:aargauer_kantonalverband))
+        end
         let(:kanton_admin) do
-          Fabricate(Group::Kantonalverband::AdminKanton.name.to_sym,
-            group: groups(:aargauer_kantonalverband)).person
+          Fabricate(Group::KantonalverbandAdministrator::AdminKanton.name.to_sym,
+            group: kv_admin_group).person
         end
 
         before do
@@ -118,8 +122,8 @@ RSpec.describe EventsController, type: :request do
 
       context "for a Sektion group" do
         let(:sektion_admin) do
-          Fabricate(Group::Sektion::AdminSektion.name.to_sym,
-            group: groups(:aarau_und_umgebung)).person
+          Fabricate(Group::SektionAdministrator::AdminSektion.name.to_sym,
+            group: groups(:sektion_admin_381)).person
         end
 
         before do
