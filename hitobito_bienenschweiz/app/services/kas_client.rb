@@ -33,6 +33,7 @@ class KasClient
 
   def handle_response(response)
     return JSON.parse(response.body) if response.success?
+    raise Error, JSON.parse(response.body)["error"] if response.status == 422
 
     raise Error, "KAS API error #{response.status}: #{response.body}"
   end
