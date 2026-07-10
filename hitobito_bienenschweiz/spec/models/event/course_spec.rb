@@ -14,6 +14,39 @@ describe Event::Course do
       maximum_participants: nil)
   }
 
+  describe "#kas_instructor_fees_created_for_current_year?" do
+    it "returns false when the array is empty" do
+      expect(course.kas_instructor_fees_created_for_current_year?).to be false
+    end
+
+    it "returns true when the current year is in the array" do
+      course.update_column(:kas_instructor_fees_created_years, [Time.zone.today.year])
+      expect(course.kas_instructor_fees_created_for_current_year?).to be true
+    end
+
+    it "returns false when only other years are in the array" do
+      course.update_column(:kas_instructor_fees_created_years, [Time.zone.today.year - 1])
+      expect(course.kas_instructor_fees_created_for_current_year?).to be false
+    end
+  end
+
+  describe "#kas_instructor_fees_creatable?" do
+    let(:instructor_kind) { Fabricate(:event_kind, kas_instructor_fees: true, kas_fee_code: "X") }
+    let(:instructor_course) {
+      Fabricate(:course, kind: instructor_kind, canceled: false,
+        application_closing_at: nil, maximum_participants: nil)
+    }
+
+    it "returns true when configured and current year not yet created" do
+      expect(instructor_course.kas_instructor_fees_creatable?).to be true
+    end
+
+    it "returns false when current year already created" do
+      instructor_course.update_column(:kas_instructor_fees_created_years, [Time.zone.today.year])
+      expect(instructor_course.kas_instructor_fees_creatable?).to be false
+    end
+  end
+
   describe "used_attributes" do
     it "includes delivery_address and billing_address" do
       expect(Event::Course.used_attributes).to include(:delivery_address, :billing_address)

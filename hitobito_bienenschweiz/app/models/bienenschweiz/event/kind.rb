@@ -9,6 +9,15 @@ module Bienenschweiz::Event::Kind
   extend ActiveSupport::Concern
 
   included do
+    validate :kas_fee_types_mutually_exclusive
     validates :abbreviation, length: {allow_nil: true, maximum: 5}
+  end
+
+  private
+
+  def kas_fee_types_mutually_exclusive
+    return unless kas_fixed_fee? && kas_instructor_fees?
+
+    errors.add(:kas_instructor_fees, :mutually_exclusive_with_fixed_fee)
   end
 end

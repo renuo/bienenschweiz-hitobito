@@ -28,6 +28,8 @@ Rails.application.routes.draw do
           resources :participations, only: [] do
             collection do
               post :create_kas_fees
+              get :new_kas_instructor_fees
+              post :create_kas_instructor_fees
             end
           end
         end

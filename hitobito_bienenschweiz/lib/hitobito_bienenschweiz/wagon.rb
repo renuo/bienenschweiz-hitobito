@@ -62,7 +62,11 @@ module HitobitoBienenschweiz
       Role.used_attributes += [:export_to_website]
       EventsController.permitted_attrs += [:export_to_website]
       Event.used_attributes += [:export_to_website]
-      Event::KindsController.permitted_attrs += [:kas_fee_code, :kas_fixed_fee]
+      Event.prepend Bienenschweiz::ClearsArrayColumnValidators
+      Event::Course.prepend Bienenschweiz::ClearsArrayColumnValidators
+      Event::Kind.include Bienenschweiz::Event::Kind
+      Event::KindsController.permitted_attrs += [:kas_fee_code, :kas_fixed_fee,
+        :kas_instructor_fees]
       Event::ParticipationsController.prepend Bienenschweiz::Event::ParticipationsController
 
       PersonReadables.prepend Bienenschweiz::PersonReadables
