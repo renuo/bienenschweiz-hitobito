@@ -20,18 +20,18 @@ class KasInstructorFeesController extends Controller {
   }
 
   recalculate() {
-    var totals = {};
+    const totals = {};
     this.amountTargets.forEach(function (input) {
-      var year = input.dataset.year;
-      var amount = parseFloat(input.value) || 0;
+      const year = input.dataset.year;
+      const amount = parseFloat(input.value) || 0;
       totals[year] = (totals[year] || 0) + amount;
     });
 
-    var budget = this.budgetValue;
-    var overBudget = false;
+    const budget = this.budgetValue;
+    let overBudget = false;
     this.yearTotalTargets.forEach(function (el) {
-      var year = el.dataset.year;
-      var total = totals[year] || 0;
+      const year = el.dataset.year;
+      const total = totals[year] || 0;
       el.textContent = "CHF " + total.toFixed(2);
       el.classList.remove("text-danger", "text-success", "text-muted", "fw-bold");
       if (total > budget) {
