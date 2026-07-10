@@ -13,6 +13,7 @@ namespace :mv do
     QCONTROL_ID_OFFSET = 10_000
     QUALITY_CONTROL_ANSWER_ID_OFFSET = 10_000
     SUPERVISION_ID_OFFSET = 10_000
+    DOCUMENT_ID_OFFSET = 10_000
 
     task members: :environment do
       failure_csv = "invalid_members.csv"
@@ -542,6 +543,70 @@ namespace :mv do
       puts "Supervisions with dangling references: #{missing.map { |k, v|
         "#{k}: #{v}"
       }.join(", ")}"
+    end
+
+    task :documents, [:redo_docs] => :environment do |_t, args|
+      require "carrierwave"
+
+      class AssetUploader < CarrierWave::Uploader::Base
+        def store_dir
+          "uploads/#{model.class.to_s.pluralize.underscore.gsub("mv_",
+            "")}/#{model.member_id}/#{model.id}"
+        end
+
+        def remove!
+          nil
+        end
+      end
+
+      class MvRecord < ApplicationRecord
+        self.abstract_class = true
+        connects_to database: {reading: :mv, writing: :mv}
+      end
+      require "carrierwave/orm/activerecord"
+
+      class MvDocument < MvRecord
+        self.table_name = "documents"
+        mount_uploader :document, AssetUploader
+      end
+
+      count = 0
+      MvDocument.find_each do |mv_document|
+        doc = PersonalDocument.where(id: mv_document.id + DOCUMENT_ID_OFFSET).first_or_initialize
+        doc.assign_attributes(
+          "person_id" => mv_document.member_id + MEMBER_ID_OFFSET,
+          "author_id" => mv_document.author_id + MEMBER_ID_OFFSET,
+          "description" => mv_document.title,
+          "created_at" => mv_document.created_at,
+          "updated_at" => mv_document.updated_at
+        )
+        doc.save(validate: false)
+        if (args[:redo_docs] == "true" || !doc.file.attached?) && mv_document.document.present?
+          Tempfile.open("document-#{mv_document.id}") do |f|
+            f.binmode
+            f.write(mv_document.document.file.read)
+            f.rewind
+            doc.file.attach(
+              io: f,
+              filename: mv_document.document.file.filename,
+              content_type: mv_document.content_type
+            )
+            doc.save(validate: false)
+          rescue StandardError => e
+            puts "Error attaching file for document #{doc.id}: #{e.message}"
+          end
+        end
+        count += 1
+      rescue StandardError => e
+        puts "Error importing document #{mv_document.id}: #{e.message}"
+      end
+      puts "Imported #{count} documents"
+
+      missing = {
+        people: PersonalDocument.where.not(person_id: Person.select(:id)).count,
+        authors: PersonalDocument.where.not(author_id: Person.select(:id)).count
+      }
+      puts "Documents with dangling references: #{missing.map { |k, v| "#{k}: #{v}" }.join(", ")}"
     end
 
     task reset_id_sequences: :environment do
