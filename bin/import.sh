@@ -22,6 +22,7 @@ pushd hitobito_bienenschweiz
   export RAILS_STORAGE_SERVICE=cloudscale
   direnv exec bin/rails mv:import:quality_controls
   direnv exec bin/rails mv:import:supervisions
+  direnv exec bin/rails mv:import:documents
   direnv exec bin/rails mv:import:reset_id_sequences
 popd
 
