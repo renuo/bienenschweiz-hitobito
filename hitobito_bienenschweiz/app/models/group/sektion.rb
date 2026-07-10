@@ -20,9 +20,5 @@ class Group::Sektion < ::Group
 
   ### ROLES
 
-  class AdminSektion < ::Role
-    self.permissions = [:layer_and_below_full]
-  end
-
-  roles AdminSektion
+  roles
 end

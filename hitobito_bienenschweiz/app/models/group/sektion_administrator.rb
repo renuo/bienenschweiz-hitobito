@@ -8,13 +8,17 @@
 class Group::SektionAdministrator < ::Group
   ### ROLES
 
+  class AdminSektion < ::Role
+    self.permissions = [:layer_and_below_full]
+  end
+
   class ErfassungVeranstaltungen < ::Role
-    self.permissions = []
+    self.permissions = [:layer_events, :layer_read]
   end
 
   class Kontakte < ::Role
-    self.permissions = []
+    self.permissions = [:layer_contacts, :layer_read]
   end
 
-  roles ErfassungVeranstaltungen, Kontakte
+  roles AdminSektion, ErfassungVeranstaltungen, Kontakte
 end
