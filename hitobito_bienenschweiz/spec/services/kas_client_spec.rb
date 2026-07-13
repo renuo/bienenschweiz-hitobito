@@ -50,14 +50,26 @@ describe KasClient do
       end
     end
 
-    context "when the API returns an error" do
+    context "when the API returns a 422 error" do
       before do
         stub_request(:post, "#{base_url}/api/v1/fees")
           .to_return(status: 422, body: {error: "invalid params"}.to_json)
       end
 
-      it "raises KasClient::Error" do
+      it "raises KasClient::Error with the error message" do
         expect { client.create_fee(fee_params) }.to raise_error(KasClient::Error, /invalid params/)
+      end
+    end
+
+    context "when the API returns a non-422 server error" do
+      before do
+        stub_request(:post, "#{base_url}/api/v1/fees")
+          .to_return(status: 500, body: "Internal Server Error")
+      end
+
+      it "raises KasClient::Error with the status and body" do
+        expect { client.create_fee(fee_params) }
+          .to raise_error(KasClient::Error, /KAS API error 500/)
       end
     end
   end
