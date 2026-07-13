@@ -57,7 +57,7 @@ describe KasClient do
       end
 
       it "raises KasClient::Error" do
-        expect { client.create_fee(fee_params) }.to raise_error(KasClient::Error, /422/)
+        expect { client.create_fee(fee_params) }.to raise_error(KasClient::Error, /invalid params/)
       end
     end
   end

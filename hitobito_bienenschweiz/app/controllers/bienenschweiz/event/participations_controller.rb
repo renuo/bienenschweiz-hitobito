@@ -63,11 +63,13 @@ module Bienenschweiz::Event::ParticipationsController
     failed, attempted = build_instructor_fees
     mark_instructor_fees_created if attempted > failed.size
     if failed.any?
-      flash[:warning] = t("event/participations.kas_instructor_fees.failed_names",
-        names: failed.join(", "))
+      redirect_to group_event_participations_path(@group, @event),
+        alert: t("event/participations.kas_instructor_fees.failed_names",
+          names: failed.join(", "))
+    else
+      redirect_to group_event_participations_path(@group, @event),
+        notice: t("event/participations.kas_instructor_fees.success")
     end
-    redirect_to group_event_participations_path(@group, @event),
-      notice: t("event/participations.kas_instructor_fees.success")
   end
 
   private
@@ -94,8 +96,8 @@ module Bienenschweiz::Event::ParticipationsController
 
   def create_instructor_fee(client, person_id, year, amount, failed)
     client.create_fee(kas_instructor_fee_params(person_id.to_i, year.to_i, amount.to_f))
-  rescue KasClient::Error
-    failed << "#{Person.find_by(id: person_id)} (#{year})"
+  rescue KasClient::Error => e
+    failed << "#{Person.find_by(id: person_id)} (#{year}): #{e.message}"
   end
 
   def participant_count

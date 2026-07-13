@@ -484,14 +484,15 @@ RSpec.describe "Event::ParticipationsController", type: :request do
             )
         end
 
-        it "sets a warning flash containing the person name" do
+        it "sets an alert flash containing the person name and API error" do
           post_instructor_fees(leader.id.to_s => {"2025" => "150.00"})
-          expect(flash[:warning]).to include(leader.full_name)
+          expect(flash[:alert]).to include(leader.full_name)
+          expect(flash[:alert]).to include("invalid")
         end
 
-        it "still redirects with a notice" do
+        it "does not set a success notice" do
           post_instructor_fees(leader.id.to_s => {"2025" => "150.00"})
-          expect(flash[:notice]).to be_present
+          expect(flash[:notice]).not_to be_present
         end
       end
 
