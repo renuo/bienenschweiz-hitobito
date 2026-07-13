@@ -9,13 +9,7 @@ class QcontrolAbility < AbilityDsl::Base
   include AbilityDsl::Constraints::Person
 
   on(Qcontrol) do
-    permission(:layer_and_below_full).may(:read, :checklist, :certificate)
-    permission(:layer_and_below_full).may(:read, :checklist,
-      :certificate, :create,
-      :manage_orphans, :destroy).if_admin
-  end
-
-  def if_admin
-    role_type?(Group::Dachverband::AdministratorBienenSchweiz)
+    permission(:layer_and_below_full).may(:read, :checklist, :certificate).all
+    permission(:admin).may(:create, :manage_orphans, :destroy).all
   end
 end

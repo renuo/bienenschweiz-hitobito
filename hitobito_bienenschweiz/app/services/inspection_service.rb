@@ -51,10 +51,12 @@ class InspectionService
 #{formatted_group(reminder_mail.reminder)}"
       )
       begin
+        # :nocov:
         unless Rails.env.test? || no_sleep
           Rails.logger.info "Waiting 5 minutes to not be blocked by bluewin"
           sleep(5.minutes)
         end
+        # :nocov:
         reminder_mail.mail.deliver_now
       rescue StandardError => e
         Rails.logger.error "Failed to send email to #{formatted_group(reminder_mail.reminder)}"

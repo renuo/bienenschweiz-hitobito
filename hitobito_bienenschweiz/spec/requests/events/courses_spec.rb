@@ -60,6 +60,17 @@ RSpec.describe EventsController, type: :request do
       expect(response.body).to include('data-controller="tom-select"')
       expect(response.body).to match(/<option[^>]*selected[^>]*>/)
     end
+
+    context "when the event belongs to a Sektion" do
+      let(:sektion) { groups(:aarau_und_umgebung) }
+      let(:sektion_course) { Fabricate(:course, kind: kind, groups: [sektion]) }
+
+      it "renders successfully and populates the group select with all Sektionen" do
+        get edit_group_event_path(sektion, sektion_course)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(sektion.name)
+      end
+    end
   end
 
   describe "kind restrictions by category layer_group_type" do
@@ -175,6 +186,25 @@ RSpec.describe EventsController, type: :request do
           expect(response.body).not_to include("Kantonalverband Kind")
         end
       end
+    end
+  end
+
+  describe "GET /groups/:group_id/events (index)" do
+    it "renders the events list" do
+      get group_events_path(group)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "renders the events list with Event::Course type filter" do
+      get group_events_path(group, type: "Event::Course")
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "GET /groups/:group_id/events/new with non-course event type" do
+    it "renders the new form for a non-course event" do
+      get new_group_event_path(groups(:root), event: {type: "Event"})
+      expect(response).to have_http_status(:ok)
     end
   end
 

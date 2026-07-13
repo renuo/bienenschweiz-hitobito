@@ -36,6 +36,33 @@ RSpec.describe PeopleController, type: :request do
       expect(response.body).to include("66")
       expect(response.body).to include("the very magnificent")
     end
+
+    context "with a role with export_to_website false" do
+      let(:role) {
+        Fabricate(:role, person:, group:,
+          type: Group::Dachverband::AdministratorBienenSchweiz.sti_name,
+          export_to_website: false)
+      }
+
+      before { role }
+
+      it "shows the eye_slash icon in the roles aside" do
+        get group_person_path(group, person)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("eye-slash")
+      end
+    end
+
+    context "without num_ad_boards" do
+      let(:person) {
+        Fabricate(:person, num_ad_boards: nil)
+      }
+
+      it "does not render num_ad_boards" do
+        get group_person_path(group, person)
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe "#update" do

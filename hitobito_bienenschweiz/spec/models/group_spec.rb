@@ -10,6 +10,20 @@ require "spec_helper"
 describe Group do
   include_examples "group types"
 
+  describe "#canton_short" do
+    let(:group) { Fabricate(:sektion) }
+
+    it "returns nil when canton is nil" do
+      allow(group).to receive(:canton).and_return(nil)
+      expect(group.canton_short).to be_nil
+    end
+
+    it "returns upcase canton when canton is set" do
+      allow(group).to receive(:canton).and_return("ag")
+      expect(group.canton_short).to eq("AG")
+    end
+  end
+
   describe "#sorting_name" do
     subject(:sorting_name) { group.sorting_name }
 

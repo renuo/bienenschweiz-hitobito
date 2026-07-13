@@ -191,6 +191,45 @@ RSpec.describe "Event::ParticipationsController", type: :request do
         end
       end
 
+      context "when event does not support applications" do
+        let!(:participant) { Fabricate(:person) }
+        let(:no_app_course) { Fabricate(:course, kind: kind, supports_applications: false) }
+        let(:no_app_group) { no_app_course.groups.first }
+
+        before do
+          p = Fabricate(:event_participation, event: no_app_course, participant: participant)
+          Fabricate(no_app_course.participant_types.first.name.to_sym, participation: p)
+          stub_kas_success
+        end
+
+        it "treats all participants as eligible (precondition check bypassed)" do
+          post create_kas_fees_group_event_participations_path(no_app_group, no_app_course)
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees").once
+        end
+      end
+
+      context "when the course has no dates" do
+        let(:no_date_course) { Fabricate(:course, kind: kind) }
+        let(:no_date_group) { no_date_course.groups.first }
+
+        before do
+          no_date_course.dates.clear
+          p = Fabricate(:event_participation, event: no_date_course,
+            participant: Fabricate(:person))
+          Fabricate(no_date_course.participant_types.first.name.to_sym, participation: p)
+          stub_kas_success
+        end
+
+        it "falls back to today's date for occurred_on" do
+          post create_kas_fees_group_event_participations_path(no_date_group, no_date_course)
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+            .with { |req|
+              body = JSON.parse(req.body)["fee"]
+              body["occurred_on"] == Time.zone.today.iso8601
+            }
+        end
+      end
+
       context "with a leader but no participants" do
         before do
           participation = Fabricate(:event_participation, event: course,
@@ -306,6 +345,38 @@ RSpec.describe "Event::ParticipationsController", type: :request do
             expect(response.body).to include("CHF 275.–")
           end
         end
+
+        context "with 15 participants" do
+          before do
+            15.times do
+              p = Fabricate(:person)
+              participation = Fabricate(:event_participation, event: instructor_course,
+                participant: p)
+              Fabricate(:"Event::Course::Role::Participant", participation: participation)
+            end
+          end
+
+          it "shows CHF 475.– budget (13–23 tier)" do
+            get_new_kas_instructor_fees
+            expect(response.body).to include("CHF 475.–")
+          end
+        end
+
+        context "with 25 participants" do
+          before do
+            25.times do
+              p = Fabricate(:person)
+              participation = Fabricate(:event_participation, event: instructor_course,
+                participant: p)
+              Fabricate(:"Event::Course::Role::Participant", participation: participation)
+            end
+          end
+
+          it "shows CHF 750.– budget (24+ tier)" do
+            get_new_kas_instructor_fees
+            expect(response.body).to include("CHF 750.–")
+          end
+        end
       end
 
       context "with dates spanning two years (start before July)" do
@@ -379,6 +450,22 @@ RSpec.describe "Event::ParticipationsController", type: :request do
             group_event_participations_path(instructor_group, instructor_course)
           )
           expect(flash[:alert]).to be_present
+        end
+      end
+
+      context "when the event has no dates" do
+        let(:no_dates_course) do
+          Fabricate(:course, kind: instructor_kind)
+        end
+        let(:no_dates_group) { no_dates_course.groups.first }
+
+        before { no_dates_course.dates.clear }
+
+        it "defaults @years to the current year" do
+          get new_kas_instructor_fees_group_event_participations_path(no_dates_group,
+            no_dates_course)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(Time.zone.today.year.to_s)
         end
       end
     end

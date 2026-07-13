@@ -182,4 +182,35 @@ describe "layer_events permission" do
       end
     end
   end
+
+  context "Bienenschweiz::EventRoleAbility" do
+    let(:sektion) { groups(:aarau_und_umgebung) }
+    let(:sektion_admin_group) { groups(:sektion_admin_381) }
+
+    before do
+      Fabricate(Group::SektionAdministrator::ErfassungVeranstaltungen.sti_name.to_sym,
+        group: sektion_admin_group, person: user)
+    end
+
+    context "on an Event::Role in the same sektion layer" do
+      let(:event) { Fabricate(:event, groups: [sektion]) }
+      let(:participation) { Fabricate(:event_participation, event: event) }
+      let(:event_role) { Fabricate(:"Event::Role::Leader", participation: participation) }
+
+      it "may manage the event role" do
+        expect(ability).to be_able_to(:manage, event_role)
+      end
+    end
+
+    context "on an Event::Role in a different sektion layer" do
+      let(:other_sektion) { groups(:aargauisches_seetal) }
+      let(:event) { Fabricate(:event, groups: [other_sektion]) }
+      let(:participation) { Fabricate(:event_participation, event: event) }
+      let(:event_role) { Fabricate(:"Event::Role::Leader", participation: participation) }
+
+      it "may not manage the event role" do
+        expect(ability).not_to be_able_to(:manage, event_role)
+      end
+    end
+  end
 end

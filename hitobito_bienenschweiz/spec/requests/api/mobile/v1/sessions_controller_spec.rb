@@ -54,5 +54,17 @@ RSpec.describe Api::Mobile::V1::SessionsController, type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
     end
+
+    context "user sends non-existent email" do
+      before do
+        post api_mobile_v1_sessions_path,
+          params: {user: {email: "does.not.exist@example.com", password: "anything"},
+                   format: :json}
+      end
+
+      it "returns unauthorized" do
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
   end
 end

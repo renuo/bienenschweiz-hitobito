@@ -46,6 +46,21 @@ RSpec.describe SupervisionsController, type: :request do
       expect(response.body).to include(supervision_type.name)
     end
 
+    context "with a comment" do
+      let!(:supervision_with_comment) {
+        Fabricate(:supervision, person: person, supervisor: supervisor,
+          check_date: Date.new(2023, 3, 1), kind: "supervision", result: "fulfilled",
+          supervision_type: supervision_type,
+          comment: "Sehr gute Leistung, weiter so!")
+      }
+
+      it "shows the truncated comment" do
+        get group_person_supervisions_path(sektion, person)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Sehr gute Leistung")
+      end
+    end
+
     it "links the attached document" do
       supervisions.first.document.attach(
         io: Rails.root.join("spec", "fixtures", "files", "logo-icon.png").open,

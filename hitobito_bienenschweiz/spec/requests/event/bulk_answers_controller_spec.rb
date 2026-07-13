@@ -42,6 +42,41 @@ RSpec.describe Event::BulkAnswersController, type: :request do
       expect(response.body).to include(participant.full_name)
     end
 
+    context "when there are no admin questions" do
+      let!(:question) { nil }
+
+      it "shows no-questions message" do
+        get edit_group_event_bulk_answers_path(group, event)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(I18n.t("event.bulk_answers.edit.no_questions"))
+      end
+    end
+
+    context "with a required question" do
+      let!(:required_question) do
+        Fabricate(:event_question, event: event, question: "Pflichtfrage?", admin: true,
+          required: true)
+      end
+
+      it "shows the required marker" do
+        get edit_group_event_bulk_answers_path(group, event)
+        expect(response.body).to include("*")
+      end
+    end
+
+    context "with a choice question" do
+      let!(:choice_question) do
+        Fabricate(:event_question, event: event, question: "Lieblingsfarbe?", admin: true,
+          choices: "Rot, Grün, Blau")
+      end
+
+      it "shows radio buttons for each choice" do
+        get edit_group_event_bulk_answers_path(group, event)
+        expect(response.body).to include("Rot")
+        expect(response.body).to include("Grün")
+      end
+    end
+
     context "question visibility" do
       let!(:non_admin_question) do
         Fabricate(:event_question, event: event, question: "Diätvorschriften?", admin: false)
@@ -85,6 +120,11 @@ RSpec.describe Event::BulkAnswersController, type: :request do
       patch group_event_bulk_answers_path(group, event),
         params: {answers: {answer.id.to_s => {answer: "Keine"}}}
       expect(answer.reload.answer).to eq("Keine")
+      expect(response).to redirect_to(edit_group_event_bulk_answers_path(group, event))
+    end
+
+    it "handles missing answers param gracefully" do
+      patch group_event_bulk_answers_path(group, event)
       expect(response).to redirect_to(edit_group_event_bulk_answers_path(group, event))
     end
 

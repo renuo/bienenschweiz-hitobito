@@ -49,6 +49,38 @@ RSpec.describe QcontrolsController, type: :request do
       end
     end
 
+    context "with a qcontrol that has an uploaded document" do
+      let!(:qcontrol_with_doc) {
+        q = Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
+          control_date: Date.new(2023, 6, 1))
+        q.document.attach(
+          io: Rails.root.join("spec", "fixtures", "files", "logo-icon.png").open,
+          filename: "pruefung.png", content_type: "image/png"
+        )
+        q
+      }
+
+      it "shows a download link for the document" do
+        get group_person_qcontrols_path(sektion, beekeeper)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("pruefung.png")
+      end
+    end
+
+    context "with a qcontrol that has an author" do
+      let(:author) { Fabricate(:person) }
+      let!(:qcontrol_with_author) {
+        Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
+          control_date: Date.new(2023, 7, 1), author: author)
+      }
+
+      it "shows a link to the author" do
+        get group_person_qcontrols_path(sektion, beekeeper)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(person_path(author))
+      end
+    end
+
     context "with passed qcontrols" do
       let!(:passed_qcontrol) {
         Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
@@ -179,6 +211,29 @@ RSpec.describe QcontrolsController, type: :request do
       expect do
         delete group_person_qcontrol_path(sektion, beekeeper, qcontrol)
       end.to change { Qcontrol.count }.by(-1)
+    end
+  end
+
+  describe "left nav visibility" do
+    let(:sektion_admin_group) { groups(:sektion_admin_381) }
+    let(:sektion_admin_person) do
+      Fabricate(Group::SektionAdministrator::AdminSektion.name.to_sym,
+        group: sektion_admin_group).person
+    end
+    let!(:qcontrol) {
+      Fabricate(:qcontrol, person: beekeeper, inspector: fachperson_produkte, group: sektion,
+        control_date: Date.new(2023, 1, 1))
+    }
+
+    before do
+      sign_out :person
+      sign_in(sektion_admin_person)
+    end
+
+    it "does not show the manage orphans nav link for non-admin users" do
+      get group_person_qcontrols_path(sektion, beekeeper)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include(orphan_qcontrols_path)
     end
   end
 end

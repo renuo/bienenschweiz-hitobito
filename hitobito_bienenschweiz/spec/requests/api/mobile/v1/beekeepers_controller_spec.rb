@@ -128,5 +128,19 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
         expect(response).to have_http_status :not_found
       end
     end
+
+    context "when only beekeeper info (hive_count/honey_yield) changes" do
+      let(:beekeeper) { beekeepers.first }
+
+      it "responds with no content and does not send email" do
+        add_beekeeper_memberships
+        expect do
+          post api_mobile_v1_beekeeper_update_path(beekeeper),
+            params: {member: {hive_count: "5", honey_yield: "20kg"}},
+            headers: auth_headers
+        end.not_to(change { ActionMailer::Base.deliveries.count })
+        expect(response).to have_http_status(:no_content)
+      end
+    end
   end
 end

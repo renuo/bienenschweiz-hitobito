@@ -32,5 +32,21 @@ RSpec.describe DiplomaMailer, type: :mailer do
       expect(mail.attachments.first.filename).to eq(Export::Pdf::Event::Diploma.filename(event))
       expect(mail.attachments.first.content_type).to include("application/pdf")
     end
+
+    context "when diploma_issued_at is nil" do
+      let(:event) do
+        Fabricate(:course, kind: kind, groups: [groups(:root)],
+          diploma_location: "Bern",
+          diploma_issued_at: nil)
+      end
+
+      it "uses hyphen in subject instead of date" do
+        expect(mail.subject).to include("-")
+      end
+
+      it "does not raise" do
+        expect { mail }.not_to raise_error
+      end
+    end
   end
 end

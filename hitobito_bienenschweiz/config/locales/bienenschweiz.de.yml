@@ -120,6 +120,12 @@ de:
   checklist_attachment_name: "Betriebspruefung.pdf"
   blank_inspection_info:
     subject: "Neuzertifizierung eines Siegelimkers"
+  inspection_not_necessary:
+    subject: "Betriebsprüfung nicht notwendig"
+  beekeeper_and_inspector_checklist:
+    subject: "Checkliste Betriebsprüfung"
+  only_inspector_checklist:
+    subject: "Checkliste Betriebsprüfung (kein Imker-E-Mail)"
   inspection_failed:
     subject: "Siegelimker %{name} hat eine Betriebsprüfung nicht bestanden"
   beeaudit:

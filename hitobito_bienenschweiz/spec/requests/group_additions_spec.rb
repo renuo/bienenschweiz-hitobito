@@ -26,6 +26,20 @@ RSpec.describe GroupsController, type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(group.code.to_s)
     end
+
+    context "with a non-layer group (Siegelimker)" do
+      let(:kantonalverband) { groups(:aargauer_kantonalverband) }
+      let(:sektion) { Fabricate(:sektion, parent: kantonalverband) }
+      let(:siegelimker) {
+        Fabricate(:group, parent: sektion, type: Group::Siegelimker.sti_name)
+      }
+
+      it "shows the roles list in the aside" do
+        get group_path(siegelimker)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(Role.model_name.human(count: 2))
+      end
+    end
   end
 
   describe "#update" do

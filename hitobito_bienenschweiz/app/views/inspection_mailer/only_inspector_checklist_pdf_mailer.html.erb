@@ -1,7 +1,7 @@
-<p>Grüezi <%= @qcontrol.inspector_name %></p>
+<p>Grüezi <%= @qcontrol.inspector&.full_name %></p>
 
 <p>
-  Im Anhang erhalten Sie die soeben eingereichte Betriebsprüfung von Siegelimker/-in <%= @qcontrol.member.full_name %>.
+  Im Anhang erhalten Sie die soeben eingereichte Betriebsprüfung von Siegelimker/-in <%= @qcontrol.person.full_name %>.
   Das aktuelle Honigreglement können Sie <%= link_to 'hier', 'https://bienen.ch/imkerei/honigqualitaet/' %> aufrufen.
 </p>
 

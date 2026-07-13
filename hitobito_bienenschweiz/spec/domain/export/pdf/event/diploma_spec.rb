@@ -166,4 +166,43 @@ describe Export::Pdf::Event::Diploma do
       expect(described_class.filename(course)).to eq("diplome_grundkurs_2026.pdf")
     end
   end
+
+  context "when event has no kind" do
+    before { allow(course).to receive(:kind).and_return(nil) }
+
+    it "falls back to event name in body text" do
+      expect(text.join(" ")).to include("Grundkurs 2026")
+    end
+  end
+
+  context "when diploma_issued_at is nil" do
+    let(:course) do
+      Fabricate(:course, groups: [group], name: "Grundkurs 2026", kind: kind,
+        diploma_location: "Bern", diploma_issued_at: nil)
+    end
+
+    it "renders without raising" do
+      expect { described_class.new(course).render }.not_to raise_error
+    end
+  end
+
+  context "with four or more leaders" do
+    let(:leader3) { Fabricate(:person, first_name: "Hans", last_name: "Dritt") }
+    let(:leader4) { Fabricate(:person, first_name: "Eva", last_name: "Viert") }
+
+    before do
+      [leader3, leader4].each do |person|
+        p = Fabricate(:event_participation, event: course, participant: person, active: true)
+        Fabricate(:"Event::Role::AssistantLeader", participation: p)
+      end
+    end
+
+    it "renders the fourth leader name in the second signature row" do
+      expect(text.join(" ")).to include("Eva Viert")
+    end
+
+    it "renders without raising" do
+      expect { described_class.new(course).render }.not_to raise_error
+    end
+  end
 end
