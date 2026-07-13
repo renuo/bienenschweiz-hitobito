@@ -17,9 +17,9 @@ describe Export::Pdf::Qcontrol::CertificateLetter do
   end
   let(:inspector) {
     Fabricate(:fachperson_produkte,
-              group_id: groups(:kader_380).id,
-              first_name: "Ida",
-              last_name: "Inspektorin")
+      group_id: groups(:kader_380).id,
+      first_name: "Ida",
+      last_name: "Inspektorin")
   }
   let(:qcontrol) do
     Fabricate(:qcontrol, person: person, group: group, inspector: inspector,
@@ -48,6 +48,14 @@ describe Export::Pdf::Qcontrol::CertificateLetter do
     it "includes the control date" do
       text = PDF::Inspector::Text.analyze(letter.render).strings
       expect(text.join(" ")).to include("2026")
+    end
+
+    context "when control_date is nil" do
+      before { qcontrol.update_columns(control_date: nil) }
+
+      it "renders an empty date string without raising" do
+        expect(letter.render).to start_with("%PDF")
+      end
     end
   end
 

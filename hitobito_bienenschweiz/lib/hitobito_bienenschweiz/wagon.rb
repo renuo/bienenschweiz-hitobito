@@ -111,8 +111,8 @@ module HitobitoBienenschweiz
     private
 
     def seed_fixtures
-      fixtures = root.join("db", "seeds")
       # :nocov:
+      fixtures = root.join("db", "seeds")
       ENV["NO_ENV"] ? [fixtures] : [fixtures, File.join(fixtures, Rails.env)] # rubocop:disable Rails/EnvironmentVariableAccess -- This is initialization
       # :nocov:
     end

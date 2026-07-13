@@ -189,9 +189,10 @@ describe Export::Pdf::Event::Diploma do
   context "with four or more leaders" do
     let(:leader3) { Fabricate(:person, first_name: "Hans", last_name: "Dritt") }
     let(:leader4) { Fabricate(:person, first_name: "Eva", last_name: "Viert") }
+    let(:leader5) { Fabricate(:person, first_name: "Max", last_name: "Fünft") }
 
     before do
-      [leader3, leader4].each do |person|
+      [leader3, leader4, leader5].each do |person|
         p = Fabricate(:event_participation, event: course, participant: person, active: true)
         Fabricate(:"Event::Role::AssistantLeader", participation: p)
       end

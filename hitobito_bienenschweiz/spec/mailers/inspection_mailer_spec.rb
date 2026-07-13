@@ -156,7 +156,9 @@ describe InspectionMailer do
           control_date: Date.new(2026, 5, 1), control_state: "passed", inspector: nil)
       end
 
-      subject(:mail_no_inspector) { InspectionMailer.inspection_not_necessary_mailer(qcontrol_no_inspector.id) }
+      subject(:mail_no_inspector) {
+        InspectionMailer.inspection_not_necessary_mailer(qcontrol_no_inspector.id)
+      }
 
       it "renders without raising" do
         expect { mail_no_inspector.body.encoded }.not_to raise_error
@@ -208,7 +210,9 @@ describe InspectionMailer do
       end
 
       it "renders without raising" do
-        mail = InspectionMailer.beekeeper_and_inspector_checklist_pdf_mailer(qcontrol_no_inspector.id, false)
+        mail = InspectionMailer.beekeeper_and_inspector_checklist_pdf_mailer(
+          qcontrol_no_inspector.id, false
+        )
         expect { mail.body.encoded }.not_to raise_error
       end
     end

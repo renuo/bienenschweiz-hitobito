@@ -149,6 +149,13 @@ describe Qcontrol do
         qcontrol.notify_on_update
       end.to have_enqueued_mail.at_least(:once)
     end
+
+    it "calls notify_beekeeper_and_inspector_and_secretary when notify_beekeeper_and_inspector?" do
+      allow(qcontrol).to receive(:notify_beekeeper_and_inspector?).and_return(true)
+      allow(qcontrol).to receive(:print_certificate_and_letter?).and_return(false)
+      expect(qcontrol).to receive(:notify_beekeeper_and_inspector_and_secretary)
+      qcontrol.notify_on_update
+    end
   end
 
   describe "#update_beekeeper_role" do

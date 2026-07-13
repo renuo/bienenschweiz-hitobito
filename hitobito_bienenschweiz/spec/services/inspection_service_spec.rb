@@ -94,7 +94,9 @@ describe InspectionService do
       it "re-raises delivery errors when Sentry is not defined" do
         allow(mail_double).to receive(:deliver_now).and_raise(StandardError, "network error")
         hide_const("Sentry") if defined?(Sentry)
-        expect { service.deliver_inspection_reminders }.to raise_error(StandardError, "network error")
+        expect {
+          service.deliver_inspection_reminders
+        }.to raise_error(StandardError, "network error")
       end
 
       it "reports delivery errors to Sentry when Sentry is defined" do

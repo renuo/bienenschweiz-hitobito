@@ -123,6 +123,5 @@ module Export::Pdf::Qcontrol
         pdf.text(sig[:title])
       end
     end
-
   end
 end

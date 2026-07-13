@@ -142,11 +142,11 @@ module Export::Pdf::Event
     end
 
     def person_name(person)
-      [person&.first_name, person&.last_name].compact_blank.join(" ")
+      [person.first_name, person.last_name].compact_blank.join(" ")
     end
 
     def person_city(person)
-      [person&.zip_code, person&.town].compact_blank.join(" ")
+      [person.zip_code, person.town].compact_blank.join(" ")
     end
 
     def t(key, **opts)

@@ -114,12 +114,24 @@ describe Person do
       person = Fabricate(:person)
       expect(person.telephone).to be_nil
     end
+
+    it "returns the number when a private phone number exists" do
+      person = Fabricate(:person)
+      Fabricate(:phone_number, contactable: person, label: "private", number: "+41 31 123 45 67")
+      expect(person.telephone).to eq("+41 31 123 45 67")
+    end
   end
 
   describe "#mobile" do
     it "returns nil when no mobile phone number exists" do
       person = Fabricate(:person)
       expect(person.mobile).to be_nil
+    end
+
+    it "returns the number when a mobile phone number exists" do
+      person = Fabricate(:person)
+      Fabricate(:phone_number, contactable: person, label: "mobile", number: "+41 79 123 45 67")
+      expect(person.mobile).to eq("+41 79 123 45 67")
     end
   end
 

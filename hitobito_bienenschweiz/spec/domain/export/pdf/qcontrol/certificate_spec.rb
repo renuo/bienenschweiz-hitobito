@@ -16,9 +16,9 @@ describe Export::Pdf::Qcontrol::Certificate do
   end
   let(:inspector) {
     Fabricate(:fachperson_produkte,
-              group_id: groups(:kader_380).id,
-              first_name: "Ida",
-              last_name: "Inspektorin")
+      group_id: groups(:kader_380).id,
+      first_name: "Ida",
+      last_name: "Inspektorin")
   }
   let(:qcontrol) do
     Fabricate(:qcontrol, person: person, group: group, inspector: inspector,
@@ -32,6 +32,14 @@ describe Export::Pdf::Qcontrol::Certificate do
       result = certificate.render
       expect(result).to be_a(String)
       expect(result).to start_with("%PDF")
+    end
+
+    context "when control_date is nil" do
+      before { qcontrol.update_columns(control_date: nil) }
+
+      it "renders an empty date string without raising" do
+        expect(certificate.render).to start_with("%PDF")
+      end
     end
   end
 
