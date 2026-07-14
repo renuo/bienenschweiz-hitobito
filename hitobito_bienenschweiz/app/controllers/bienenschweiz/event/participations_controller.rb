@@ -26,8 +26,8 @@ module Bienenschweiz::Event::ParticipationsController
     client = KasClient.new
     eligible_participants.each do |participation|
       client.create_fee(kas_fee_params(participation))
-    rescue KasClient::Error
-      failed_names << participation.person.to_s
+    rescue KasClient::Error => e
+      failed_names << "#{participation.person}: #{e.message}"
     end
 
     @event.update_column(:kas_fees_created, true) if failed_names.size < eligible_participants.size
