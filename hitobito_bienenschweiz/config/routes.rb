@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   language_scope do
     # Define wagon routes here
     resources :supervision_types
+    resources :signatures, only: [:index, :edit, :update]
 
     resources :groups, only: [] do
       resources :events, only: [] do

@@ -47,6 +47,10 @@ de:
       supervision_type:
         one: Supervision Kurs / Tätigkeit
         other: Supervision Kurs / Tätigkeiten
+
+      signature:
+        one: Unterschrift
+        other: Unterschriften
     attributes:
       event/kind:
         abbreviation: Kürzel
@@ -86,6 +90,12 @@ de:
         author_id: Erstellt von
         author_name: Erstellt von
         created_at: Erstellt am
+      signature:
+        key: Dokument
+        name: Name
+        title: Funktion
+        image: Signatur-Bild
+        remove_image: Signatur-Bild entfernen
       supervision:
         check_date: Kontrolldatum
         kind: 'Art der Supervision'
@@ -144,15 +154,15 @@ de:
     subject: "Siegelimker %{name} hat eine Betriebsprüfung nicht bestanden"
   beeaudit:
     empty_name_placeholder: "Unbekannt (%{id})"
+  signatures:
+    keys:
+      certificate_letter_1: "Zertifikatsbrief – Erstunterzeichner"
+      certificate_letter_2: "Zertifikatsbrief – Zweitunterzeichner"
+      diploma_official: "Diplom – BienenSchweiz-Vertreter"
   certificate_letter:
     title: Gratulation zur bestandenen Betriebsprüfung
     date: "Appenzell, im %{date}"
     signature_title: BienenSchweiz
-    signatures:
-      - name: Martin Schwegler
-        title: Zentralpräsident
-      - name: Markus Michel
-        title: Ressort Bienenprodukte
     text: |
       Lieber Imkerkollege / liebe Imkerkollegin
 
@@ -231,8 +241,6 @@ de:
         Herzliche Gratulation zum erfolgreichen Abschluss und viel Freude an der
         künftigen Arbeit mit den Bienen!
       leader_title: Kursleiter
-      fixed_official_name: Markus Michel
-      fixed_official_title: Leiter Ressort Bildung
     bulk_answers:
       edit:
         title: "Antworten bearbeiten: %{event}"
@@ -244,6 +252,7 @@ de:
         success: Die Antworten wurden erfolgreich gespeichert.
   navigation:
     qcontrols: Betriebsprüfungen
+    signatures: Unterschriften
   events:
     global:
       link:

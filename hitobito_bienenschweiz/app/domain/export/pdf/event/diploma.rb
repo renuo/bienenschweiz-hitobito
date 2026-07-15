@@ -105,11 +105,24 @@ module Export::Pdf::Event
     end
 
     def render_fixed_official_sig(x, top, width)
+      sig = Signature.find_by(key: "diploma_official")
       pdf.bounding_box([x, top], width: width) do
-        pdf.move_down(SIG_NAME_SPACING)
-        pdf.text(t("fixed_official_name"), style: :bold)
-        pdf.text(t("fixed_official_title"))
+        render_official_sig_image(sig, width)
+        pdf.text(sig&.name.to_s, style: :bold)
+        pdf.text(sig&.title.to_s)
       end
+    end
+
+    def render_official_sig_image(sig, width)
+      if sig&.image&.attached? && prawn_compatible?(sig.image)
+        pdf.image(StringIO.new(sig.image.download), fit: [width - 10, SIG_NAME_SPACING - 4])
+      else
+        pdf.move_down(SIG_NAME_SPACING)
+      end
+    end
+
+    def prawn_compatible?(attachment)
+      %w[image/png image/jpeg].include?(attachment.blob.content_type)
     end
 
     def participant_participations

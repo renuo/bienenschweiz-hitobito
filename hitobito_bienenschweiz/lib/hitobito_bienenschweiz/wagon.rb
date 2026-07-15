@@ -43,7 +43,7 @@ module HitobitoBienenschweiz
        active_for: %w[orphan_qcontrols]}
 
       admin_item = NavigationHelper::MAIN.find { |item| item[:label] == :admin }
-      admin_item[:active_for] += %w[supervision_type]
+      admin_item[:active_for] += %w[supervision_type signatures]
 
       GroupResource.include Bienenschweiz::GroupResource
       PersonResource.include Bienenschweiz::PersonResource
@@ -79,6 +79,7 @@ module HitobitoBienenschweiz
       Ability.store.register Bienenschweiz::EventRoleAbility
       Ability.store.register Bienenschweiz::EventInvitationAbility
       Ability.store.register Bienenschweiz::EventApplicationAbility
+      Ability.store.register SignatureAbility
       Ability.store.register DiplomaAbility
       Ability.store.register QcontrolAbility
       Ability.store.register MemoAbility
