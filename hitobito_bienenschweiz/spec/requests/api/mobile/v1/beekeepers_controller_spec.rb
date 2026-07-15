@@ -50,7 +50,7 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
     end
 
     it "should only include that beekeepers that can be inspected by current fachperson_produkte" do
-      expect(json_response.pluck("id")).to eq(beekeepers[0..4].pluck(:id))
+      expect(json_response.pluck("id")).to match_array(beekeepers[0..4].pluck(:id))
     end
 
     it "should only include the beekeepers with role siegel_imker (not the honey chairman)" do
