@@ -64,6 +64,11 @@ RSpec.describe MemosController, type: :request do
       expect(response.body).to include("Titel")
       expect(response.body).to include("Text")
     end
+
+    it "shows the Memos tab as active" do
+      get new_group_person_memo_path(sektion, person)
+      expect(response.body).to match(/<li class="active"[^>]*>.*Memos.*<\/li>/m)
+    end
   end
 
   describe "#create" do
@@ -106,6 +111,11 @@ RSpec.describe MemosController, type: :request do
       get edit_group_person_memo_path(sektion, person, memo)
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(memo.title)
+    end
+
+    it "shows the Memos tab as active" do
+      get edit_group_person_memo_path(sektion, person, memo)
+      expect(response.body).to match(/<li class="active"[^>]*>.*Memos.*<\/li>/m)
     end
   end
 
