@@ -36,9 +36,8 @@ RSpec.describe HealthzController, type: :request do
         allow(Delayed::Heartbeat.configuration).to receive(:enabled?).and_return(true)
         allow(Delayed::Heartbeat.configuration)
           .to receive(:heartbeat_timeout_seconds).and_return(180)
-        allow(Delayed::Heartbeat::Worker).to receive(:where).and_call_original
         allow(Delayed::Heartbeat::Worker).to receive(:where)
-          .with("last_heartbeat_at >= ?", anything)
+          .with(last_heartbeat_at: anything)
           .and_return(double(exists?: true))
       end
 
@@ -55,9 +54,8 @@ RSpec.describe HealthzController, type: :request do
         allow(Delayed::Heartbeat.configuration).to receive(:enabled?).and_return(true)
         allow(Delayed::Heartbeat.configuration)
           .to receive(:heartbeat_timeout_seconds).and_return(180)
-        allow(Delayed::Heartbeat::Worker).to receive(:where).and_call_original
         allow(Delayed::Heartbeat::Worker).to receive(:where)
-          .with("last_heartbeat_at >= ?", anything)
+          .with(last_heartbeat_at: anything)
           .and_return(double(exists?: false))
       end
 
