@@ -18,5 +18,10 @@ module Bienenschweiz::Sheet::Person
       :group_person_supervisions_path,
       if: ->(view, _group, _person) { view.can?(:index, Supervision) }
     )
+    tabs << Sheet::Tab.new(
+      "people.tabs.bienenschweiz_memos",
+      :group_person_memos_path,
+      if: ->(view, _group, _person) { view.can?(:index, Memo) }
+    )
   end
 end
