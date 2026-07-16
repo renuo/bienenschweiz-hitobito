@@ -26,3 +26,8 @@ if [ ! -f .git/hooks/pre-push ]; then
     echo -e "\n== Creating pre-push hook link =="
     ln -s ../../bin/fastcheck .git/hooks/pre-push
 fi
+
+if [ ! -f .git/hooks/commit-msg ]; then
+    echo -e "\n== Creating commit-msg hook link =="
+    ln -s ../../bin/capitalize-commit-msg .git/hooks/commit-msg
+fi
