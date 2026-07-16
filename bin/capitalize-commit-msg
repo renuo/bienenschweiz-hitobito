@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+COMMIT_MSG_FILE="$1"
+
+awk 'NR==1 { print toupper(substr($0,1,1)) substr($0,2) } NR>1 { print }' \
+  "$COMMIT_MSG_FILE" > "${COMMIT_MSG_FILE}.tmp"
+
+mv "${COMMIT_MSG_FILE}.tmp" "$COMMIT_MSG_FILE"
