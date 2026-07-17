@@ -98,6 +98,8 @@ jobs:
         working-directory: hitobito
 
       - name: "Run feature specs"
+        env:
+          NO_COVERAGE: true
         run: bundle exec rake app:ci:setup:rspec app:spec:features:lenient
         working-directory: hitobito_bienenschweiz
 

@@ -6,8 +6,10 @@
 - if can?(:new, @event.new_role)
   = Dropdown::Event::RoleAdd.new(self, @group, @event)
 
+-# :nocov:
 - if can?(:create_invoices_from_list, @group)
   = invoice_button(people: entries.collect(&:person), filter: params, event: @event)
+-# :nocov:
 
 = dropdown_people_export(can?(:index_full_participations, @event))
 

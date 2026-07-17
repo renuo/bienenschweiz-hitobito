@@ -42,7 +42,7 @@ class Event::BulkAnswersController < ApplicationController
   def load_participations
     @event.participations
       .includes(answers: {question: :translations}, participant: [])
-      .sort_by { |p| p.person&.full_name.to_s }
+      .sort_by { |p| p.person.full_name.to_s }
   end
 
   def event_answer_ids

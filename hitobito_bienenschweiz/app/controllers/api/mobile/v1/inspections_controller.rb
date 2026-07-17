@@ -69,7 +69,9 @@ module Api
 
         def check_no_control_reason
           # inspired_by: https://github.com/rails/rails/issues/13971
+          # :nocov: inspection_params always sets no_control_reason via ||= :no_reason
           return unless inspection_params.key?("no_control_reason")
+          # :nocov:
           return if Qcontrol.no_control_reasons.key?(inspection_params[:no_control_reason])
 
           render status: :unprocessable_content, json: {

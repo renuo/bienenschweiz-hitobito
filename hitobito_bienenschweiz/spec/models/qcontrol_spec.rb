@@ -65,6 +65,99 @@ describe Qcontrol do
     end
   end
 
+  describe "#set_control_state" do
+    let(:section) do
+      Fabricate(:quality_control_section, number: 1, title: "Standort",
+        version: QualityControlSection.version)
+    end
+    let(:question) do
+      Fabricate(:quality_control_question, quality_control_section: section, number: 1,
+        title: "Frage")
+    end
+    let(:qcontrol_without_state) do
+      Fabricate(:qcontrol, person: person, group: group, control_date: Date.new(2026, 5, 1),
+        control_state: nil)
+    end
+
+    context "when an answer is partially_passed (and none is not_passed)" do
+      before do
+        Fabricate(:quality_control_answer, qcontrol: qcontrol_without_state,
+          quality_control_question: question, fulfilled: "partially_passed")
+        qcontrol_without_state.save!
+      end
+
+      it "sets control_state to partially_passed" do
+        expect(qcontrol_without_state.control_state).to eq("partially_passed")
+      end
+    end
+  end
+
+  describe "notify_beekeeper_and_inspector" do
+    let(:person_without_email) { Fabricate(:person, email: nil) }
+    let(:qcontrol) do
+      Fabricate(:qcontrol, person: person_without_email, group: group,
+        control_date: Date.new(2026, 5, 1), control_state: "passed")
+    end
+
+    it "calls only_inspector_checklist_pdf_mailer when person has no email" do
+      mail_double = instance_double(ActionMailer::MessageDelivery, deliver_later: nil)
+      expect(InspectionMailer).to receive(:only_inspector_checklist_pdf_mailer)
+        .with(qcontrol.id, false)
+        .and_return(mail_double)
+      qcontrol.notify_beekeeper_and_inspector(false)
+    end
+  end
+
+  describe "#as_full_mobile_json" do
+    it "includes author when present" do
+      author = Fabricate(:person)
+      qcontrol = Fabricate(:qcontrol, person: person, group: group, author: author,
+        control_date: Date.new(2026, 5, 1))
+      json = qcontrol.as_full_mobile_json
+      expect(json["author"]).to eq({
+        "id" => author.id,
+        "firstname" => author.first_name,
+        "lastname" => author.last_name
+      })
+    end
+
+    it "omits author key when author is nil" do
+      qcontrol = Fabricate(:qcontrol, person: person, group: group, author: nil,
+        control_date: Date.new(2026, 5, 1))
+      json = qcontrol.as_full_mobile_json
+      expect(json).not_to have_key("author")
+    end
+  end
+
+  describe "#beekeeper_role" do
+    it "returns nil when person is nil" do
+      orphan = Fabricate(:qcontrol, person: nil, group: group,
+        control_date: Date.new(2026, 5, 1))
+      expect(orphan.send(:beekeeper_role)).to be_nil
+    end
+  end
+
+  describe "notify_on_update" do
+    let(:person) { Fabricate(:person) }
+    let(:qcontrol) do
+      Fabricate(:qcontrol, person: person, group: group, from_app: true, member_notified: false,
+        control_date: Date.new(2026, 5, 1), control_state: "passed")
+    end
+
+    it "sends notification when all conditions met on update" do
+      expect do
+        qcontrol.notify_on_update
+      end.to have_enqueued_mail.at_least(:once)
+    end
+
+    it "calls notify_beekeeper_and_inspector_and_secretary when notify_beekeeper_and_inspector?" do
+      allow(qcontrol).to receive(:notify_beekeeper_and_inspector?).and_return(true)
+      allow(qcontrol).to receive(:print_certificate_and_letter?).and_return(false)
+      expect(qcontrol).to receive(:notify_beekeeper_and_inspector_and_secretary)
+      qcontrol.notify_on_update
+    end
+  end
+
   describe "#update_beekeeper_role" do
     let(:person) { Fabricate(:beekeeper, group_id: group.id) }
     subject(:role) { person.roles.first }

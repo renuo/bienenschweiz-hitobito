@@ -90,6 +90,24 @@ describe InspectionService do
         expect(mail_double).to receive(:deliver_now).at_least(:once)
         service.deliver_inspection_reminders
       end
+
+      it "re-raises delivery errors when Sentry is not defined" do
+        allow(mail_double).to receive(:deliver_now).and_raise(StandardError, "network error")
+        hide_const("Sentry") if defined?(Sentry)
+        expect {
+          service.deliver_inspection_reminders
+        }.to raise_error(StandardError, "network error")
+      end
+
+      it "reports delivery errors to Sentry when Sentry is defined" do
+        error = StandardError.new("network error")
+        allow(mail_double).to receive(:deliver_now).and_raise(error)
+        sentry = double("Sentry")
+        stub_const("Sentry", sentry)
+        allow(sentry).to receive(:capture_exception)
+        service.deliver_inspection_reminders
+        expect(sentry).to have_received(:capture_exception).with(error, extra: {failed_index: 0})
+      end
     end
 
     context "when no groups have active Siegelimkers" do
@@ -97,6 +115,14 @@ describe InspectionService do
         expect(mail_double).not_to receive(:deliver_now)
         service.deliver_inspection_reminders
       end
+    end
+  end
+
+  describe "#build_structure_mails with unsupported group type" do
+    it "returns no mails for a Dachverband group (else branch in inspectors_for)" do
+      dachverband = Group::Dachverband.first
+      result = service.build_structure_mails([dachverband], :sectional_inspection_reminder_mail)
+      expect(result).to be_empty
     end
   end
 

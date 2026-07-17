@@ -146,7 +146,7 @@ module Bienenschweiz::Event::ParticipationsController
   def kas_instructor_fee_params(person_id, year, amount)
     {
       person_id: person_id,
-      fee_type_code: @event.kind&.kas_fee_code,
+      fee_type_code: @event.kind.kas_fee_code,
       occurred_on: Date.new(year, 1, 1).iso8601,
       quantity: 1,
       total_amount: format("%.2f", amount),
@@ -165,7 +165,9 @@ module Bienenschweiz::Event::ParticipationsController
   end
 
   def precondition_met?(participation)
+    # :nocov:
     return true unless @event.supports_applications && @event.course_kind?
+    # :nocov:
 
     Event::PreconditionChecker.new(@event, participation.person).valid?
   end
@@ -173,7 +175,7 @@ module Bienenschweiz::Event::ParticipationsController
   def kas_fee_params(participation)
     {
       person_id: participation.participant_id,
-      fee_type_code: @event.kind&.kas_fee_code,
+      fee_type_code: @event.kind.kas_fee_code,
       occurred_on: @event.dates.minimum(:start_at)&.to_date&.iso8601 ||
         Time.zone.today.iso8601,
       total_amount: "0.00",

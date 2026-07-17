@@ -123,9 +123,5 @@ module Export::Pdf::Qcontrol
         pdf.text(sig[:title])
       end
     end
-
-    def signature_image_path(image_url)
-      HitobitoBienenschweiz::Wagon.root.join("app/assets/images/pdf/#{image_url}").to_s
-    end
   end
 end

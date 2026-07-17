@@ -46,6 +46,25 @@ RSpec.describe SupervisionsController, type: :request do
       expect(response.body).to include(supervision_type.name)
     end
 
+    context "with a comment" do
+      let(:truncate_length) { 60 }
+      let(:untruncated_part) { "a" * truncate_length }
+      let(:truncated_part) { "something truncated" }
+      let!(:supervision_with_comment) {
+        Fabricate(:supervision, person: person, supervisor: supervisor,
+          check_date: Date.new(2023, 3, 1), kind: "supervision", result: "fulfilled",
+          supervision_type: supervision_type,
+          comment: untruncated_part + truncated_part)
+      }
+
+      it "shows the truncated comment" do
+        get group_person_supervisions_path(sektion, person)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("#{"a" * (truncate_length - 3)}...")
+        expect(response.body).not_to include(/#{truncated_part}[^'"]/)
+      end
+    end
+
     it "links the attached document" do
       supervisions.first.document.attach(
         io: Rails.root.join("spec", "fixtures", "files", "logo-icon.png").open,

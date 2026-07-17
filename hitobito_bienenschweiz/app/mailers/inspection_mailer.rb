@@ -24,36 +24,26 @@ class InspectionMailer < ApplicationMailer
     xlsx = render_to_string handlers: [:axlsx], formats: [:xlsx],
       template: "structure_exports/attachment_export",
       locals: {members: reminder.related_member_data}
-    attachments["Siegelimker Sektion #{reminder.intern_structure.name}.xlsx"] =
+    attachments["Siegelimker Sektion #{reminder.group.name}.xlsx"] =
       {mime_type: Mime[:xlsx], content: xlsx}
-
-    honey_image_path = Rails.root.join("app", "assets", "images", "honey.png", "assets",
-      "images", "honey.png")
-    attachments.inline["honey.png"] = File.read(honey_image_path)
 
     mail to: reminder.inspector_emails,
       cc: reminder.president_emails,
       bcc: INSPECTION_BCC_EMAIL,
-      subject: "Automatischer Mail-Versand der Listen Siegelimker - Sektion: \
-#{reminder.intern_structure.name}"
+      subject: "Automatischer Mail-Versand der Listen Siegelimker - Sektion: #{reminder.group.name}"
   end
 
   def cantonal_inspection_reminder_mail(reminder)
     xlsx = render_to_string handlers: [:axlsx], formats: [:xlsx],
       template: "structure_exports/attachment_export",
       locals: {members: reminder.related_member_data}
-    attachment_name = "Siegelimker Kanton #{reminder.intern_structure.kanton}.xlsx"
-    attachments[attachment_name] = {mime_type: Mime[:xlsx], content: xlsx}
-
-    honey_image_path = Rails.root.join("app", "assets", "images", "honey.png", "assets",
-      "images", "honey.png")
-    attachments.inline["honey.png"] = File.read(honey_image_path)
+    attachments["Siegelimker Kanton #{reminder.group.name}.xlsx"] =
+      {mime_type: Mime[:xlsx], content: xlsx}
 
     mail to: reminder.inspector_emails,
       cc: CANTONAL_INSPECTOR_CC_EMAIL,
       bcc: "#{INSPECTION_BCC_EMAIL}, #{CANTONAL_INSPECTOR_BCC_EMAIL}",
-      subject: "Automatischer Mail-Versand der Listen Siegelimker - Kanton: \
-#{reminder.intern_structure.kanton}"
+      subject: "Automatischer Mail-Versand der Listen Siegelimker - Kanton: #{reminder.group.name}"
   end
 
   def address_update_request_mail(inspector, member, changes)
@@ -123,20 +113,6 @@ class InspectionMailer < ApplicationMailer
     pdf.draw_all
     combined_pdf = Export::Pdf::Qcontrol::Certificate.new(qcontrol, document: pdf.document)
     combined_pdf.render
-  end
-
-  def render_certificate(qcontrol)
-    certificate = Tempfile.new(["certificate_#{qcontrol.id}", ".pdf"])
-    ImkerCertificateService.new(qcontrol).render_certificate(certificate.path)
-    certificate
-  end
-
-  def render_letter(qcontrol)
-    letter = Tempfile.new(["letter_#{qcontrol.id}", ".pdf"])
-    letter.binmode
-    letter.write PdfService.render(:certificate_letter, qcontrol)
-    letter.close
-    letter
   end
 
   def load_qcontrol_and_attach(qcontrol_id)

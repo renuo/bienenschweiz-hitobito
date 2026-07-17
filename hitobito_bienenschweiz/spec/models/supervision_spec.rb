@@ -8,6 +8,20 @@
 require "spec_helper"
 
 describe Supervision do
+  describe "#assert_result_allowed_for_kind" do
+    it "skips validation when kind is blank" do
+      supervision = Supervision.new(kind: nil, result: "fulfilled")
+      supervision.send(:assert_result_allowed_for_kind)
+      expect(supervision.errors).to be_empty
+    end
+
+    it "skips validation when result is blank" do
+      supervision = Supervision.new(kind: "supervision", result: nil)
+      supervision.send(:assert_result_allowed_for_kind)
+      expect(supervision.errors).to be_empty
+    end
+  end
+
   describe "result/kind validation" do
     it "accepts a result belonging to the kind" do
       expect(Fabricate.build(:supervision, kind: "supervision", result: "fulfilled")).to be_valid

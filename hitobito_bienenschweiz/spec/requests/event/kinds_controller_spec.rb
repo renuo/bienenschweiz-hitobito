@@ -34,7 +34,7 @@ RSpec.describe "Event::KindsController", type: :request do
 
     it "rejects abbreviation longer than 5 characters" do
       patch event_kind_path(kind), params: {event_kind: {abbreviation: "TOOLONG"}}
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(kind.reload.abbreviation).to be_nil
     end
   end

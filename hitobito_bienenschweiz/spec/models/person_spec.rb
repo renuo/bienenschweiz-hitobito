@@ -97,6 +97,58 @@ describe Person do
     end
   end
 
+  describe "#address_affixes" do
+    it "returns empty array when address_care_of is nil" do
+      person = Fabricate(:person, address_care_of: nil)
+      expect(person.address_affixes).to eq([])
+    end
+
+    it "returns split parts when address_care_of is set" do
+      person = Fabricate(:person, address_care_of: "c/o Müller, Appartement 3")
+      expect(person.address_affixes).to eq(["c/o Müller", "Appartement 3"])
+    end
+  end
+
+  describe "#telephone" do
+    it "returns nil when no private phone number exists" do
+      person = Fabricate(:person)
+      expect(person.telephone).to be_nil
+    end
+
+    it "returns the number when a private phone number exists" do
+      person = Fabricate(:person)
+      Fabricate(:phone_number, contactable: person, label: "private", number: "+41 31 123 45 67")
+      expect(person.telephone).to eq("+41 31 123 45 67")
+    end
+  end
+
+  describe "#mobile" do
+    it "returns nil when no mobile phone number exists" do
+      person = Fabricate(:person)
+      expect(person.mobile).to be_nil
+    end
+
+    it "returns the number when a mobile phone number exists" do
+      person = Fabricate(:person)
+      Fabricate(:phone_number, contactable: person, label: "mobile", number: "+41 79 123 45 67")
+      expect(person.mobile).to eq("+41 79 123 45 67")
+    end
+  end
+
+  describe "#canton_short" do
+    let(:person) { Fabricate(:person) }
+
+    it "returns nil when canton is nil" do
+      allow(person).to receive(:canton).and_return(nil)
+      expect(person.canton_short).to be_nil
+    end
+
+    it "returns upcase canton code when canton is set" do
+      allow(person).to receive(:canton).and_return("be")
+      expect(person.canton_short).to eq("BE")
+    end
+  end
+
   describe "#inspectable_beekeepers" do
     let(:beekeepers) { Fabricate.times(6, :person) }
     let(:aargau_canton) { groups(:aargauer_kantonalverband) }

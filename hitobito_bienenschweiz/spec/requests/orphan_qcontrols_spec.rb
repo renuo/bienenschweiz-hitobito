@@ -39,6 +39,29 @@ RSpec.describe OrphanQcontrolsController, type: :request do
       expect(response.body).to include(beekeeper.list_name)
     end
 
+    context "when orphan has an author Person" do
+      let(:author) { Fabricate(:person, first_name: "Beeaudit", last_name: "App") }
+      let!(:orphan_with_author) do
+        Fabricate(:qcontrol, person: nil, group: sektion,
+          control_date: Date.new(2024, 3, 1), author: author)
+      end
+
+      it "shows the author name" do
+        get orphan_qcontrols_path
+        expect(response.body).to include(author.to_s)
+      end
+    end
+
+    context "when there are no orphan qcontrols" do
+      before { orphan.destroy! }
+
+      it "does not show the submit button" do
+        get orphan_qcontrols_path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include(I18n.t("orphan_qcontrols.index.update"))
+      end
+    end
+
     context "as non-admin" do
       let(:non_admin) { Fabricate(:person) }
 
@@ -58,6 +81,17 @@ RSpec.describe OrphanQcontrolsController, type: :request do
 
       expect(response).to redirect_to(orphan_qcontrols_path)
     end
+
+    it "sets a success flash on destroy" do
+      delete orphan_qcontrol_path(orphan)
+      expect(flash[:notice]).to be_present
+    end
+
+    it "sets an error flash when destroy fails" do
+      allow_any_instance_of(Qcontrol).to receive(:destroy).and_return(false)
+      delete orphan_qcontrol_path(orphan)
+      expect(flash[:alert]).to be_present
+    end
   end
 
   describe "#bulk_update" do
@@ -74,6 +108,11 @@ RSpec.describe OrphanQcontrolsController, type: :request do
         params: {qcontrols: {orphan.id.to_s => {person_id: ""}}}
 
       expect(orphan.reload.person).to be_nil
+    end
+
+    it "handles missing qcontrols param gracefully" do
+      patch bulk_update_orphan_qcontrols_path
+      expect(response).to redirect_to(orphan_qcontrols_path)
     end
   end
 end

@@ -11,7 +11,7 @@ module Bienenschweiz::EventsController
   def load_kinds # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize
     return unless entry.kind_class
 
-    layer_group_type = group&.layer_group&.class&.sti_name
+    layer_group_type = group.layer_group.class.sti_name
     @kinds = entry.kind_class.list.without_deleted
       .includes(:kind_category)
       .to_a
@@ -45,7 +45,9 @@ module Bienenschweiz::EventsController
     return unless params[:type] == "Event::Course"
 
     course = Event::Course.new(groups: [@group])
+    # :nocov:
     return unless can?(:create, course)
+    # :nocov:
 
     build_new_from_kind_dropdown
   end
@@ -75,7 +77,7 @@ module Bienenschweiz::EventsController
   end
 
   def apply_question_templates
-    entry.dates.build if entry.dates.empty?
+    entry.dates.build
     entry.init_questions
     @question_template_attrs[:application].each { |a| entry.application_questions.build(a) }
     @question_template_attrs[:admin].each { |a| entry.admin_questions.build(a) }

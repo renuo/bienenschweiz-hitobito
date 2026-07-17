@@ -188,6 +188,20 @@ describe Export::Pdf::Qcontrol::Checklist do
     end
   end
 
+  describe "VerticalTextCell" do
+    let(:cell_class) { described_class::QuestionsTable::VerticalTextCell }
+    let(:doc) { Export::Pdf::Document.new }
+    let(:cell) { cell_class.new(doc.pdf, [0, 0], content: "Erfüllt") }
+
+    it "returns a fixed natural_content_width (FONT_SIZE + 4)" do
+      expect(cell.natural_content_width).to eq(12)
+    end
+
+    it "computes natural_content_height based on the text width" do
+      expect(cell.natural_content_height).to be > 0
+    end
+  end
+
   describe ".filename" do
     it "includes person name and control date" do
       expect(described_class.filename(qcontrol))

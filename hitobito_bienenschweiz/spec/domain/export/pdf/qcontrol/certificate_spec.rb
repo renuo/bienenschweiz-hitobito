@@ -1,0 +1,75 @@
+# frozen_string_literal: true
+
+# Copyright (c) 2026. BienenSchweiz. This file is part of
+# hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+# or later. See the COPYING file at the top-level directory or at
+# https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
+
+require "spec_helper"
+
+describe Export::Pdf::Qcontrol::Certificate do
+  let(:group) { groups(:aarau_und_umgebung) }
+  let(:person) do
+    Fabricate(:person, first_name: "Maja", last_name: "Biene",
+      street: "Blumenweg", housenumber: "5",
+      zip_code: "8000", town: "Zürich")
+  end
+  let(:inspector) {
+    Fabricate(:fachperson_produkte,
+      group_id: groups(:kader_380).id,
+      first_name: "Ida",
+      last_name: "Inspektorin")
+  }
+  let(:qcontrol) do
+    Fabricate(:qcontrol, person: person, group: group, inspector: inspector,
+      control_date: Date.new(2026, 5, 1), control_state: "passed")
+  end
+
+  subject(:certificate) { described_class.new(qcontrol) }
+
+  describe "#render" do
+    it "returns a non-empty PDF byte string" do
+      result = certificate.render
+      expect(result).to be_a(String)
+      expect(result).to start_with("%PDF")
+    end
+
+    context "when control_date is nil" do
+      before { qcontrol.update_columns(control_date: nil) }
+
+      it "renders an empty date string without raising" do
+        expect(certificate.render).to start_with("%PDF")
+      end
+    end
+  end
+
+  describe ".filename" do
+    it "includes the person name and date" do
+      expect(described_class.filename(qcontrol))
+        .to eq("zertifikat-maja_biene-2026-05-01.pdf")
+    end
+
+    it "is nil-safe for orphan qcontrols" do
+      qcontrol.person = nil
+      qcontrol.control_date = nil
+      expect(described_class.filename(qcontrol)).to eq("zertifikat.pdf")
+    end
+  end
+
+  describe "with nil person (orphan qcontrol)" do
+    let(:orphan_qcontrol) do
+      Fabricate(:qcontrol, person: nil, group: group, inspector: inspector,
+        control_date:  Date.new(2026, 3, 1), control_state: "passed")
+    end
+
+    subject(:orphan_certificate) { described_class.new(orphan_qcontrol) }
+
+    it "renders without raising" do
+      expect { orphan_certificate.render }.not_to raise_error
+    end
+
+    it "returns a valid PDF" do
+      expect(orphan_certificate.render).to start_with("%PDF")
+    end
+  end
+end

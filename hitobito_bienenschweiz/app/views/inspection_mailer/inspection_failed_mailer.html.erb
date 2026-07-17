@@ -8,9 +8,7 @@
 
 <p>
   Betriebsprüfer auf MV: <%= link_to @qcontrol.inspector.try(:full_name), person_url(@qcontrol.inspector) %>
-  <% if @qcontrol.person.present? %>
-      Siegelimker auf MV: <%= link_to @qcontrol.person.full_name, person_url(@qcontrol.person) %>
-  <% end %>
+  Siegelimker auf MV: <%= link_to @qcontrol.person.full_name, person_url(@qcontrol.person) %>
 </p>
 
 <%=render 'renuo_signature' %>

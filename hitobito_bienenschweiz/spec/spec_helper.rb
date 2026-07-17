@@ -5,6 +5,17 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_bienenschweiz.
 
+unless ENV["NO_COVERAGE"]
+  require "simplecov"
+  SimpleCov.start "rails" do
+    enable_coverage :branch
+    minimum_coverage line: 100, branch: 100
+  end
+
+  # to prevent core spec_helper.rb from starting coverage again
+  ENV["NO_COVERAGE"] = "true"
+end
+
 load File.expand_path("../../app_root.rb", __FILE__)
 ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile", __FILE__)
 

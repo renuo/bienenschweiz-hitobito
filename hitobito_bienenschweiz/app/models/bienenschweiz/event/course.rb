@@ -25,11 +25,15 @@ module Bienenschweiz::Event::Course
   end
 
   def kas_fees_creatable?
-    kind&.kas_fixed_fee? && kind&.kas_fee_code.present? && !kas_fees_created?
+    return false unless kind
+
+    kind.kas_fixed_fee? && kind.kas_fee_code.present? && !kas_fees_created?
   end
 
   def kas_instructor_fees_creatable?
-    kind&.kas_instructor_fees? && kind&.kas_fee_code.present? &&
+    return false unless kind
+
+    kind.kas_instructor_fees? && kind.kas_fee_code.present? &&
       !kas_instructor_fees_created_for_current_year?
   end
 

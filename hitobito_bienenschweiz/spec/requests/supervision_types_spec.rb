@@ -91,5 +91,22 @@ RSpec.describe SupervisionTypesController, type: :request do
         end.to raise_error(CanCan::AccessDenied)
       end
     end
+
+    context "as a user with layer_and_below_full but without admin permission" do
+      let(:sektion) { groups(:aarau_und_umgebung) }
+      let(:sektion_admin_group) { groups(:sektion_admin_381) }
+      let(:sektion_admin_person) do
+        Fabricate(Group::SektionAdministrator::AdminSektion.name.to_sym,
+          group: sektion_admin_group).person
+      end
+
+      before { sign_in(sektion_admin_person) }
+
+      it "does not show the supervision_types nav link when accessing event_feed" do
+        get event_feed_path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include(supervision_types_path)
+      end
+    end
   end
 end

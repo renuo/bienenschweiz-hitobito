@@ -30,7 +30,7 @@
           %tr
             %td
               = participation.person.to_s
-              %small.text-muted= participation.roles.first&.class&.label
+              %small.text-muted= participation.roles.first.class.label
             - @years.each do |year|
               %td
                 - if year == current_year

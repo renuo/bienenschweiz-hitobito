@@ -19,30 +19,33 @@ RSpec.describe Api::Mobile::V1::QualityControlQuestionsController, type: :reques
     get api_mobile_v1_quality_control_questions_path(format: :json), headers: auth_headers
   end
 
+  let(:section_json) { json_response.find { |s| s["id"] == qc_section.id } }
+
   it "it includes all the sections" do
     expect(response).to have_http_status(:ok)
-    expect(json_response.length).to eq(QualityControlSection.count)
+    expect(json_response.length).to eq(QualityControlSection.for_current_version.count)
   end
 
   it "includes all the questions" do
-    expect(json_response.first["quality_control_questions"]
-               .count).to eq(qc_section.quality_control_questions.count)
-    expect(json_response.first["quality_control_questions"]
-             .pluck("number")).to eq(qc_questions.map(&:number))
+    expect(section_json["quality_control_questions"].count)
+      .to eq(qc_section.quality_control_questions.count)
+    expect(section_json["quality_control_questions"].pluck("number").sort)
+      .to eq(qc_questions.map(&:number).sort)
   end
 
   it "sets the right data for the section" do
-    expect(json_response.first["id"]).to eq(qc_section.id)
-    expect(json_response.first["title"]).to eq(qc_section.title)
-    expect(json_response.first["number"]).to eq(qc_section.number)
+    expect(section_json["id"]).to eq(qc_section.id)
+    expect(section_json["title"]).to eq(qc_section.title)
+    expect(section_json["number"]).to eq(qc_section.number)
   end
 
   it "sets the right data for the question" do
-    question = json_response.first["quality_control_questions"].first
-    expect(question["id"]).to eq(qc_questions.first.id)
-    expect(question["title"]).to eq(qc_questions.first.title)
-    expect(question["description"]).to eq(qc_questions.first.description)
-    expect(question["inspection_notes"]).to eq(qc_questions.first.inspection_notes)
-    expect(question["number"]).to eq(qc_questions.first.number)
+    question_json = section_json["quality_control_questions"]
+      .find { |q| q["id"] == qc_questions.first.id }
+    expect(question_json["id"]).to eq(qc_questions.first.id)
+    expect(question_json["title"]).to eq(qc_questions.first.title)
+    expect(question_json["description"]).to eq(qc_questions.first.description)
+    expect(question_json["inspection_notes"]).to eq(qc_questions.first.inspection_notes)
+    expect(question_json["number"]).to eq(qc_questions.first.number)
   end
 end

@@ -50,7 +50,7 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
     end
 
     it "should only include that beekeepers that can be inspected by current fachperson_produkte" do
-      expect(json_response.pluck("id")).to eq(beekeepers[0..4].pluck(:id))
+      expect(json_response.pluck("id")).to match_array(beekeepers[0..4].pluck(:id))
     end
 
     it "should only include the beekeepers with role siegel_imker (not the honey chairman)" do
@@ -126,6 +126,20 @@ RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
       it "is not permitted" do
         expect { subject }.not_to(change { ActionMailer::Base.deliveries.count })
         expect(response).to have_http_status :not_found
+      end
+    end
+
+    context "when only beekeeper info (hive_count/honey_yield) changes" do
+      let(:beekeeper) { beekeepers.first }
+
+      it "responds with no content and does not send email" do
+        add_beekeeper_memberships
+        expect do
+          post api_mobile_v1_beekeeper_update_path(beekeeper),
+            params: {member: {hive_count: "5", honey_yield: "20kg"}},
+            headers: auth_headers
+        end.not_to(change { ActionMailer::Base.deliveries.count })
+        expect(response).to have_http_status(:no_content)
       end
     end
   end

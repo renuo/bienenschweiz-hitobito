@@ -30,6 +30,15 @@ describe Event::Course do
     end
   end
 
+  describe "#kas_fees_creatable?" do
+    context "when kind is nil" do
+      it "returns falsy" do
+        course.kind = nil
+        expect(course.kas_fees_creatable?).to be_falsy
+      end
+    end
+  end
+
   describe "#kas_instructor_fees_creatable?" do
     let(:instructor_kind) { Fabricate(:event_kind, kas_instructor_fees: true, kas_fee_code: "X") }
     let(:instructor_course) {
@@ -44,6 +53,13 @@ describe Event::Course do
     it "returns false when current year already created" do
       instructor_course.update_column(:kas_instructor_fees_created_years, [Time.zone.today.year])
       expect(instructor_course.kas_instructor_fees_creatable?).to be false
+    end
+
+    context "when kind is nil" do
+      it "returns falsy" do
+        course.kind = nil
+        expect(course.kas_instructor_fees_creatable?).to be_falsy
+      end
     end
   end
 

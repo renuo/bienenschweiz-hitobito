@@ -33,3 +33,9 @@ nctl exec app hitobito-main -p renuo-bienenschweiz bin/rails r 'InspectionServic
 
 The index and command can be found in the logs or also Sentry (as extra argument `failed_index`).
 
+## Running wagon tests
+
+```sh
+cd hitobito_bienenschweiz
+bin/rspec
+```
