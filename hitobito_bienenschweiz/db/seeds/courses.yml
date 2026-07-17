@@ -4,7 +4,6 @@
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 
-
 ---
 event_kind_categories:
 - id: 1
@@ -14,9 +13,9 @@ event_kind_categories:
       name: Europe/Zurich
     time: 2026-05-12 10:51:56.597344000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:47:48.353040000 Z
+    utc: 2026-07-13 13:54:04.477728000 Z
     zone: *1
-    time: 2026-06-01 22:47:48.353040000 Z
+    time: 2026-07-13 15:54:04.477728000 Z
   deleted_at:
   order: 2
   layer_group_type: Group::Dachverband
@@ -44,6 +43,7 @@ event_kind_categories:
     time: 2026-06-01 22:47:39.476780000 Z
   deleted_at:
   order: 1
+  layer_group_type:
   translations:
   - id: 2
     event_kind_category_id: 2
@@ -68,6 +68,7 @@ event_kind_categories:
     time: 2026-06-01 22:47:27.696920000 Z
   deleted_at:
   order: 0
+  layer_group_type:
   translations:
   - id: 3
     event_kind_category_id: 3
@@ -87,9 +88,9 @@ event_kind_categories:
     zone: *1
     time: 2026-05-16 16:44:55.173775000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:48:04.155321000 Z
+    utc: 2026-07-13 13:54:15.923439000 Z
     zone: *1
-    time: 2026-06-01 22:48:04.155321000 Z
+    time: 2026-07-13 15:54:15.923439000 Z
   deleted_at:
   order: 3
   layer_group_type: Group::Dachverband
@@ -113,12 +114,16 @@ event_kinds:
     zone: *1
     time: 2026-05-12 10:53:36.334431000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:34:03.884322000 Z
+    utc: 2026-07-13 13:10:24.874390000 Z
     zone: *1
-    time: 2026-06-01 22:34:03.884322000 Z
+    time: 2026-07-13 15:10:24.874390000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 1
+  abbreviation: FB
+  kas_fee_code: ''
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 1
     event_kind_id: 1
@@ -141,12 +146,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:14:47.628173000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:34:15.999520000 Z
+    utc: 2026-07-13 13:55:09.081137000 Z
     zone: *1
-    time: 2026-06-01 22:34:15.999520000 Z
+    time: 2026-07-13 15:55:09.081137000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 1
+  abbreviation: FP
+  kas_fee_code: ''
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 2
     event_kind_id: 2
@@ -169,12 +178,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:16:41.095840000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:34:28.280754000 Z
+    utc: 2026-07-13 13:55:21.046418000 Z
     zone: *1
-    time: 2026-06-01 22:34:28.280754000 Z
+    time: 2026-07-13 15:55:21.046418000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 1
+  abbreviation: FZ
+  kas_fee_code: ''
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 3
     event_kind_id: 3
@@ -197,12 +210,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:23:50.104790000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:33:48.238675000 Z
+    utc: 2026-07-13 13:29:05.936172000 Z
     zone: *1
-    time: 2026-06-01 22:33:48.238675000 Z
+    time: 2026-07-13 15:29:05.936172000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 2
+  abbreviation: BI
+  kas_fee_code: '100'
+  kas_fixed_fee: false
+  kas_instructor_fees: true
   translations:
   - id: 4
     event_kind_id: 4
@@ -225,12 +242,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:25:39.442283000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-05-26 06:39:28.229710000 Z
+    utc: 2026-07-09 13:51:53.719540000 Z
     zone: *1
-    time: 2026-05-26 08:39:28.229710000 Z
+    time: 2026-07-09 15:51:53.719540000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 2
+  abbreviation: AI
+  kas_fee_code:
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 5
     event_kind_id: 5
@@ -253,12 +274,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:39:54.267961000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:35:11.541663000 Z
+    utc: 2026-07-13 13:55:56.797848000 Z
     zone: *1
-    time: 2026-06-01 22:35:11.541663000 Z
+    time: 2026-07-13 15:55:56.797848000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 2
+  abbreviation: IZ
+  kas_fee_code: ''
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 6
     event_kind_id: 6
@@ -281,12 +306,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:41:15.180859000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:36:33.797950000 Z
+    utc: 2026-07-13 13:57:02.574796000 Z
     zone: *1
-    time: 2026-06-01 22:36:33.797950000 Z
+    time: 2026-07-13 15:57:02.574796000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 1
+  abbreviation: VF
+  kas_fee_code: ''
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 7
     event_kind_id: 7
@@ -309,12 +338,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:42:42.811188000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:34:55.983563000 Z
+    utc: 2026-07-13 13:55:46.035661000 Z
     zone: *1
-    time: 2026-06-01 22:34:55.983563000 Z
+    time: 2026-07-13 15:55:46.035661000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 3
+  abbreviation: HS
+  kas_fee_code: ''
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 8
     event_kind_id: 8
@@ -337,12 +370,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:43:30.928735000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:34:42.258006000 Z
+    utc: 2026-07-13 13:55:34.713726000 Z
     zone: *1
-    time: 2026-06-01 22:34:42.258006000 Z
+    time: 2026-07-13 15:55:34.713726000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 3
+  abbreviation: HQ
+  kas_fee_code: ''
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 9
     event_kind_id: 9
@@ -365,12 +402,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:43:49.321647000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:37:36.244697000 Z
+    utc: 2026-07-13 13:57:17.555619000 Z
     zone: *1
-    time: 2026-06-01 22:37:36.244697000 Z
+    time: 2026-07-13 15:57:17.555619000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 3
+  abbreviation: WB
+  kas_fee_code: ''
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 10
     event_kind_id: 10
@@ -393,12 +434,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:48:39.624774000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:38:16.310417000 Z
+    utc: 2026-07-13 13:56:08.602075000 Z
     zone: *1
-    time: 2026-06-01 22:38:16.310417000 Z
+    time: 2026-07-13 15:56:08.602075000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 4
+  abbreviation: KB
+  kas_fee_code: '110'
+  kas_fixed_fee: true
+  kas_instructor_fees: false
   translations:
   - id: 11
     event_kind_id: 11
@@ -421,12 +466,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:51:00.434301000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:36:20.620301000 Z
+    utc: 2026-07-13 13:56:37.246550000 Z
     zone: *1
-    time: 2026-06-01 22:36:20.620301000 Z
+    time: 2026-07-13 15:56:37.246550000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 4
+  abbreviation: KZ
+  kas_fee_code: ''
+  kas_fixed_fee: false
+  kas_instructor_fees: false
   translations:
   - id: 12
     event_kind_id: 12
@@ -449,12 +498,16 @@ event_kinds:
     zone: *1
     time: 2026-05-16 16:52:10.806946000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-06-01 20:35:57.260443000 Z
+    utc: 2026-07-14 12:56:26.068762000 Z
     zone: *1
-    time: 2026-06-01 22:35:57.260443000 Z
+    time: 2026-07-14 14:56:26.068762000 Z
   deleted_at:
   minimum_age:
   kind_category_id: 4
+  abbreviation: KP
+  kas_fee_code: '110'
+  kas_fixed_fee: true
+  kas_instructor_fees: false
   translations:
   - id: 13
     event_kind_id: 13
@@ -642,9 +695,9 @@ qualification_kinds:
     zone: *1
     time: 2026-05-13 14:02:01.447265000 Z
   updated_at: !ruby/object:ActiveSupport::TimeWithZone
-    utc: 2026-05-13 12:02:01.447265000 Z
+    utc: 2026-07-12 19:24:25.009130000 Z
     zone: *1
-    time: 2026-05-13 14:02:01.447265000 Z
+    time: 2026-07-12 21:24:25.009130000 Z
   deleted_at:
   reactivateable:
   required_training_days:
@@ -657,86 +710,86 @@ qualification_kinds:
       zone: *1
       time: 2026-05-13 14:02:01.453676000 Z
     updated_at: !ruby/object:ActiveSupport::TimeWithZone
-      utc: 2026-05-13 12:02:01.453676000 Z
+      utc: 2026-07-12 19:24:25.015131000 Z
       zone: *1
-      time: 2026-05-13 14:02:01.453676000 Z
+      time: 2026-07-12 21:24:25.015131000 Z
     label: Imker mit Fachausweis
-    description: ''
+    description: Hat die Imkerbildung absolviert.
 event_kind_qualification_kinds:
-- id: 26
+- id: 39
   event_kind_id: 5
   qualification_kind_id: 1
   category: precondition
   role: participant
   grouping: 1
   validity: valid
-- id: 27
-  event_kind_id: 4
-  qualification_kind_id: 1
-  category: qualification
-  role: participant
-  grouping:
-  validity: valid_or_expired
-- id: 28
+- id: 45
   event_kind_id: 1
   qualification_kind_id: 4
   category: qualification
   role: participant
   grouping:
   validity: valid_or_expired
-- id: 29
+- id: 46
+  event_kind_id: 4
+  qualification_kind_id: 1
+  category: qualification
+  role: participant
+  grouping:
+  validity: valid_or_expired
+- id: 49
   event_kind_id: 2
   qualification_kind_id: 5
   category: qualification
   role: participant
   grouping:
   validity: valid_or_expired
-- id: 30
+- id: 50
   event_kind_id: 2
   qualification_kind_id: 2
   category: precondition
   role: participant
   grouping: 1
   validity: valid
-- id: 31
+- id: 51
   event_kind_id: 3
   qualification_kind_id: 6
   category: qualification
   role: participant
   grouping:
   validity: valid_or_expired
-- id: 32
+- id: 52
   event_kind_id: 6
   qualification_kind_id: 3
   category: qualification
   role: participant
   grouping:
   validity: valid_or_expired
-- id: 33
-  event_kind_id: 13
-  qualification_kind_id: 5
-  category: precondition
-  role: participant
-  grouping: 1
-  validity: valid
-- id: 34
-  event_kind_id: 12
-  qualification_kind_id: 6
-  category: precondition
-  role: participant
-  grouping: 1
-  validity: valid
-- id: 37
+- id: 53
   event_kind_id: 11
   qualification_kind_id: 4
   category: precondition
   role: participant
   grouping: 1
   validity: valid
-- id: 38
+- id: 54
   event_kind_id: 11
   qualification_kind_id: 6
   category: precondition
   role: participant
   grouping: 2
+  validity: valid
+- id: 56
+  event_kind_id: 12
+  qualification_kind_id: 6
+  category: precondition
+  role: participant
+  grouping: 1
+  validity: valid
+- id: 57
+  event_kind_id: 13
+  qualification_kind_id: 5
+  category: precondition
+  role: participant
+  grouping: 1
   validity: valid
