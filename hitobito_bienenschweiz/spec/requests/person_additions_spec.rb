@@ -38,13 +38,11 @@ RSpec.describe PeopleController, type: :request do
     end
 
     context "with a role with export_to_website false" do
-      let(:role) {
+      before {
         Fabricate(:role, person:, group:,
           type: Group::Dachverband::AdministratorBienenSchweiz.sti_name,
           export_to_website: false)
       }
-
-      before { role }
 
       it "shows the eye_slash icon in the roles aside" do
         get group_person_path(group, person)
