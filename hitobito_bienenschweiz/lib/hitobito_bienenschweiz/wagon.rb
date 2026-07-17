@@ -92,6 +92,7 @@ module HitobitoBienenschweiz
       Event::Course.prepend Bienenschweiz::Event::Course
       Event::KindCategory.include Bienenschweiz::Event::KindCategory
       EventsController.prepend Bienenschweiz::EventsController
+      HealthzController.prepend Bienenschweiz::HealthzController
       Event::KindCategoriesController.permitted_attrs += [:layer_group_type]
       Sheet::Event.prepend Bienenschweiz::Sheet::Event
     end
