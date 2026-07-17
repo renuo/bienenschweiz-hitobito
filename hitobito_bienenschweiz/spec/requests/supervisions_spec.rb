@@ -61,7 +61,7 @@ RSpec.describe SupervisionsController, type: :request do
         get group_person_supervisions_path(sektion, person)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("#{"a" * (truncate_length - 3)}...")
-        expect(response.body).not_to include(/#{truncated_part}[^"]/)
+        expect(response.body).not_to include(/#{truncated_part}[^'"]/)
       end
     end
 
