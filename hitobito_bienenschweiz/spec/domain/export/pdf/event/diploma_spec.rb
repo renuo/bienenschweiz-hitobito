@@ -167,6 +167,41 @@ describe Export::Pdf::Event::Diploma do
     end
   end
 
+  context "when the fixed official signature has an attached compatible image" do
+    before do
+      signatures(:diploma_official).image.attach(
+        io: Rails.root.join("spec", "fixtures", "files", "logo-icon.png").open,
+        filename: "signature.png", content_type: "image/png"
+      )
+    end
+
+    it "embeds the signature image in the PDF" do
+      xobjects = PDF::Inspector::XObject.analyze(described_class.new(course).render).xobject_streams
+      expect(xobjects).not_to be_empty
+    end
+
+    it "renders without raising" do
+      expect { described_class.new(course).render }.not_to raise_error
+    end
+  end
+
+  context "when the fixed official signature is missing" do
+    before { signatures(:diploma_official).destroy }
+
+    it "renders without raising" do
+      expect { described_class.new(course).render }.not_to raise_error
+    end
+
+    it "does not render the fixed official name" do
+      expect(text.join(" ")).not_to include("Markus Michel")
+    end
+
+    it "does not embed a signature image" do
+      xobjects = PDF::Inspector::XObject.analyze(described_class.new(course).render).xobject_streams
+      expect(xobjects).to be_empty
+    end
+  end
+
   context "when event has no kind" do
     before { allow(course).to receive(:kind).and_return(nil) }
 

@@ -82,6 +82,35 @@ describe Export::Pdf::Qcontrol::CertificateLetter do
     end
   end
 
+  describe "#draw_signatures" do
+    it "embeds an additional image when a signature has an attached compatible image" do
+      baseline = PDF::Inspector::XObject.analyze(described_class.new(qcontrol).render)
+        .xobject_streams.length
+
+      signatures(:certificate_letter_1).image.attach(
+        io: Rails.root.join("spec", "fixtures", "files", "logo-icon.png").open,
+        filename: "signature.png", content_type: "image/png"
+      )
+
+      with_image = PDF::Inspector::XObject.analyze(described_class.new(qcontrol).render)
+        .xobject_streams.length
+      expect(with_image).to eq(baseline + 1)
+    end
+
+    context "when a signature is missing" do
+      before { signatures(:certificate_letter_2).destroy }
+
+      it "renders without raising" do
+        expect { letter.render }.not_to raise_error
+      end
+
+      it "does not render the missing signature's name" do
+        text = PDF::Inspector::Text.analyze(letter.render).strings
+        expect(text.join(" ")).not_to include("Markus Michel")
+      end
+    end
+  end
+
   describe ".filename" do
     it "includes the person name and date" do
       expect(described_class.filename(qcontrol))
