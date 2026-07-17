@@ -20,6 +20,6 @@ class AppStatus::Worker < AppStatus
     return true unless Delayed::Heartbeat.configuration.enabled?
 
     timeout = Delayed::Heartbeat.configuration.heartbeat_timeout_seconds
-    Delayed::Heartbeat::Worker.where(last_heartbeat_at: (Time.now.utc - timeout)..).exists?
+    Delayed::Heartbeat::Worker.where(last_heartbeat_at: timeout.seconds.ago..).exists?
   end
 end
