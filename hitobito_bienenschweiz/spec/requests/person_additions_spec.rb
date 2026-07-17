@@ -61,6 +61,7 @@ RSpec.describe PeopleController, type: :request do
       it "does not render num_ad_boards" do
         get group_person_path(group, person)
         expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include(Person.human_attribute_name(:num_ad_boards))
       end
     end
   end
