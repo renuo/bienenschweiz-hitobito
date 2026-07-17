@@ -13,15 +13,15 @@
 
 = dropdown_people_export(can?(:index_full_participations, @event))
 
-- if @event.course?
-  - if can?(:update, @event) && @event.kas_fees_creatable?
+- if @event.course? && can?(:update, @event)
+  - if @event.kas_fees_creatable?
     = action_button(t('event/participations.actions_index.create_kas_fees'),
                     create_kas_fees_group_event_participations_path(@group, @event),
                     :coins,
                     method: :post,
                     data: { confirm: t('event/participations.actions_index.create_kas_fees_confirm') })
 
-  - if can?(:update, @event) && @event.kas_instructor_fees_creatable?
+  - if @event.kas_instructor_fees_creatable?
     = action_button(t('event/participations.actions_index.create_kas_instructor_fees'),
                     new_kas_instructor_fees_group_event_participations_path(@group, @event),
                     :"person-chalkboard")
