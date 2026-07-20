@@ -81,6 +81,7 @@ module HitobitoBienenschweiz
       Ability.store.register Bienenschweiz::EventApplicationAbility
       Ability.store.register DiplomaAbility
       Ability.store.register QcontrolAbility
+      Ability.store.register MemoAbility
       Ability.store.register SupervisionAbility
       Ability.store.register SupervisionTypeAbility
 

@@ -1,0 +1,14 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+- title entry.to_s
+
+- content_for(:toolbar, render('actions_show'))
+
+= render_attrs(entry, :title, :author_name, :created_at)
+= render_attrs_group do
+  = labeled(Memo.human_attribute_name(:body)) do
+    = simple_format(entry.body.to_s)

@@ -36,6 +36,10 @@ de:
         one: Betriebsprüfung
         other: Betriebsprüfungen
 
+      memo:
+        one: Memo
+        other: Memos
+
       supervision:
         one: Supervision
         other: Supervisionen
@@ -73,6 +77,15 @@ de:
           not_passed: nicht erfüllt
           partially_passed: erfüllt unter Vorbehalt
           not_necessary: 'nicht nötig'
+      memo:
+        title: Titel
+        body: Text
+        person: Person
+        person_id: Person
+        author: Erstellt von
+        author_id: Erstellt von
+        author_name: Erstellt von
+        created_at: Erstellt am
       supervision:
         check_date: Kontrolldatum
         kind: 'Art der Supervision'
@@ -116,6 +129,7 @@ de:
     tabs:
       bienenschweiz_qcontrols: Betriebsprüfungen
       bienenschweiz_supervisions: Supervisionen
+      bienenschweiz_memos: Memos
   qcontrol_default_title: 'Betriebsprüfung'
   checklist_attachment_name: "Betriebspruefung.pdf"
   blank_inspection_info:

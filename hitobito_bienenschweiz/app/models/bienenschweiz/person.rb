@@ -20,6 +20,7 @@ module Bienenschweiz::Person
   included do # rubocop:disable Metrics/BlockLength
     has_many :qcontrols, dependent: :destroy
     has_many :supervisions, dependent: :destroy
+    has_many :memos, dependent: :destroy
 
     def beeaudit_authentication_token
       signed_id(expires_in: 2.months, purpose: :beeaudit)
