@@ -9,6 +9,7 @@ class Memo < ApplicationRecord
   belongs_to :person
   belongs_to :author, class_name: "Person", optional: true
 
+  validates_by_schema
   validates :title, :body, presence: true
 
   before_create :set_author_name
