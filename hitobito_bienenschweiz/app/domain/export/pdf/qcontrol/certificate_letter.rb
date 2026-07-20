@@ -10,7 +10,6 @@ module Export::Pdf::Qcontrol
     LOGO_WIDTH = 80
     # original logo is 138x112 px
     LOGO_HEIGHT = LOGO_WIDTH * 112.0 / 138
-    SIGNATURE_WIDTH = 80
     # conservative height budget for cursor advancement after side-by-side signatures
     SIGNATURE_ADVANCE = 60
     FONT_SIZE = 10
@@ -108,19 +107,33 @@ module Export::Pdf::Qcontrol
       pdf.text(t("signature_title"), style: :bold)
       pdf.move_down(12)
 
+      sigs = [
+        Signature.find_by(key: "certificate_letter_1"),
+        Signature.find_by(key: "certificate_letter_2")
+      ]
       sig_width = pdf.bounds.width / 2.0
       top = pdf.cursor
-      I18n.t("certificate_letter.signatures").each_with_index do |sig, i|
+      sigs.each_with_index do |sig, i|
         draw_signature(sig, i, sig_width, top)
       end
       pdf.move_down(SIGNATURE_ADVANCE)
     end
 
     def draw_signature(sig, index, sig_width, top)
+      return unless sig
+
       pdf.bounding_box([index * sig_width, top], width: sig_width) do
+        draw_signature_image(sig, sig_width)
+        pdf.text(sig.name, style: :bold)
+        pdf.text(sig.title.to_s)
+      end
+    end
+
+    def draw_signature_image(sig, sig_width)
+      if sig.image.attached? && sig.prawn_compatible?
+        pdf.image(StringIO.new(sig.image.download), fit: [sig_width - 10, 40])
+      else
         pdf.move_down(44)
-        pdf.text(sig[:name], style: :bold)
-        pdf.text(sig[:title])
       end
     end
   end

@@ -5,9 +5,12 @@
 # or later. See the COPYING file at the top-level directory or at
 # https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
 
-class InspectionMailerPreview < ActionMailer::Preview
-  def print_certificate_and_letter
-    qcontrol = Qcontrol.where.not(person: nil).last
-    InspectionMailer.print_certificate_and_letter(qcontrol.id)
+class DiplomaMailerPreview < ActionMailer::Preview
+  def order
+    event = Event::Course
+      .joins(:participations)
+      .where(event_participations: {qualified: true})
+      .last
+    DiplomaMailer.order(event)
   end
 end
