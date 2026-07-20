@@ -10,7 +10,8 @@ class Signature < ApplicationRecord
 
   validates :key, presence: true, uniqueness: true
   validates :name, presence: true
-  validates :image, content_type: %w[image/png image/jpeg]
+  ALLOWED_IMAGE_TYPES = %w[image/png image/jpeg].freeze
+  validates :image, content_type: ALLOWED_IMAGE_TYPES
 
   def remove_image
     false
@@ -22,5 +23,9 @@ class Signature < ApplicationRecord
 
   def to_s
     name
+  end
+
+  def prawn_compatible?
+    ALLOWED_IMAGE_TYPES.include?(image.blob.content_type)
   end
 end

@@ -130,15 +130,11 @@ module Export::Pdf::Qcontrol
     end
 
     def draw_signature_image(sig, sig_width)
-      if sig.image.attached? && prawn_compatible?(sig.image)
+      if sig.image.attached? && sig.prawn_compatible?
         pdf.image(StringIO.new(sig.image.download), fit: [sig_width - 10, 40])
       else
         pdf.move_down(44)
       end
-    end
-
-    def prawn_compatible?(attachment)
-      %w[image/png image/jpeg].include?(attachment.blob.content_type)
     end
   end
 end

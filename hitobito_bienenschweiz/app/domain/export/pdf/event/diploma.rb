@@ -114,15 +114,11 @@ module Export::Pdf::Event
     end
 
     def render_official_sig_image(sig, width)
-      if sig&.image&.attached? && prawn_compatible?(sig.image)
+      if sig&.image&.attached? && sig.prawn_compatible?
         pdf.image(StringIO.new(sig.image.download), fit: [width - 10, SIG_NAME_SPACING - 4])
       else
         pdf.move_down(SIG_NAME_SPACING)
       end
-    end
-
-    def prawn_compatible?(attachment)
-      %w[image/png image/jpeg].include?(attachment.blob.content_type)
     end
 
     def participant_participations
