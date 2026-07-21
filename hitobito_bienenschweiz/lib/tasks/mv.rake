@@ -14,6 +14,7 @@ namespace :mv do
     QUALITY_CONTROL_ANSWER_ID_OFFSET = 10_000
     SUPERVISION_ID_OFFSET = 10_000
     DOCUMENT_ID_OFFSET = 10_000
+    MEMO_ID_OFFSET = 10_000
 
     task members: :environment do
       failure_csv = "invalid_members.csv"
@@ -607,6 +608,40 @@ namespace :mv do
         authors: PersonalDocument.where.not(author_id: Person.select(:id)).count
       }
       puts "Documents with dangling references: #{missing.map { |k, v| "#{k}: #{v}" }.join(", ")}"
+    end
+
+    task memos: :environment do
+      class MvRecord < ApplicationRecord
+        self.abstract_class = true
+        connects_to database: {reading: :mv, writing: :mv}
+      end
+
+      class MvMemo < MvRecord
+        self.table_name = "memos"
+      end
+
+      count = 0
+      MvMemo.find_each do |mv_memo|
+        memo = Memo.where(id: mv_memo.id + MEMO_ID_OFFSET).first_or_initialize
+        memo.assign_attributes(
+          mv_memo.attributes.except("id", "member_id", "text", "show_on_personnel_file").merge(
+            "body" => mv_memo.text,
+            "person_id" => mv_memo.member_id + MEMBER_ID_OFFSET,
+            "author_id" => mv_memo.author_id && mv_memo.author_id + MEMBER_ID_OFFSET
+          )
+        )
+        memo.save(validate: false)
+        count += 1
+      rescue StandardError => e
+        puts "Error importing memo #{mv_memo.id}: #{e.message}"
+      end
+      puts "Imported #{count} memos"
+
+      missing = {
+        people: Memo.where.not(person_id: Person.select(:id)).count,
+        authors: Memo.where.not(author_id: nil).where.not(author_id: Person.select(:id)).count
+      }
+      puts "Memos with dangling references: #{missing.map { |k, v| "#{k}: #{v}" }.join(", ")}"
     end
 
     task reset_id_sequences: :environment do
