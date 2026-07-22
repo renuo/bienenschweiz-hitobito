@@ -7,7 +7,7 @@
 
 class FeedbackRoundAbility < AbilityDsl::Base
   on(FeedbackRound) do
-    permission(:any).may(:create, :read, :destroy, :report).if_event_editable
+    permission(:any).may(:create, :read, :destroy, :report, :export).if_event_editable
     class_side(:index_report).if_admin
   end
 

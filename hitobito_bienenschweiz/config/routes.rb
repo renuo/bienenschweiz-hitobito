@@ -69,6 +69,7 @@ Rails.application.routes.draw do
         resources :feedback_rounds, only: [:index, :new, :create, :show, :destroy] do
           member do
             get :report
+            get :export
           end
         end
       end

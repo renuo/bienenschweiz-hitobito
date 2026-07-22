@@ -18,3 +18,8 @@
       %tr
         %td= invitation.person
         %td= invitation.submitted? ? l(invitation.submitted_at, format: :short) : t(".pending")
+
+- if can?(:export, entry)
+  = link_to export_group_event_feedback_round_path(@group, @event, entry), class: 'btn btn-primary btn-sm' do
+    = icon(:download)
+    = t(".export")
