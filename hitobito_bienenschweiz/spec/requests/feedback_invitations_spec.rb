@@ -60,5 +60,39 @@ RSpec.describe FeedbackInvitationsController, type: :request do
       expect(response).to redirect_to(edit_feedback_invitation_path(invitation.token))
       expect(invitation.reload).to be_submitted
     end
+
+    context "with missing answers to required questions" do
+      let(:params) { {feedback_answers: {}} }
+
+      it "does not mark the invitation submitted and re-renders the form" do
+        patch feedback_invitation_path(invitation.token), params: params
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(invitation.reload).not_to be_submitted
+      end
+    end
+
+    context "when already submitted" do
+      before { invitation.update!(submitted_at: Time.zone.now) }
+
+      it "redirects without changing the answers" do
+        expect {
+          patch feedback_invitation_path(invitation.token), params: params
+        }.not_to change { invitation.feedback_answers.count }
+
+        expect(response).to redirect_to(edit_feedback_invitation_path(invitation.token))
+      end
+    end
+
+    context "when the round is closed" do
+      before { round.update!(closes_at: 1.day.ago) }
+
+      it "redirects without changing the answers" do
+        expect {
+          patch feedback_invitation_path(invitation.token), params: params
+        }.not_to change { invitation.feedback_answers.count }
+
+        expect(response).to redirect_to(edit_feedback_invitation_path(invitation.token))
+      end
+    end
   end
 end

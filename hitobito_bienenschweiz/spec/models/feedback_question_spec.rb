@@ -11,6 +11,12 @@ describe FeedbackQuestion do
   subject(:question) { Fabricate.build(:feedback_question, kind:, required: true) }
 
   let(:answer) { Fabricate.build(:feedback_answer, feedback_question: question) }
+  let(:kind) { "rating" }
+
+  it "uses the question text as its string representation" do
+    question.text = "Wie hat Dir der Kurs gefallen?"
+    expect(question.to_s).to eq("Wie hat Dir der Kurs gefallen?")
+  end
 
   context "rating question" do
     let(:kind) { "rating" }
@@ -70,6 +76,15 @@ describe FeedbackQuestion do
       answer.text = "Sehr guter Kurs"
       question.validate_answer(answer)
       expect(answer.errors[:text]).to be_empty
+    end
+  end
+
+  context "question with a blank kind" do
+    let(:kind) { "" }
+
+    it "adds no errors, regardless of the answer's content" do
+      question.validate_answer(answer)
+      expect(answer.errors).to be_empty
     end
   end
 end

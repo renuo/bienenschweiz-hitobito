@@ -56,7 +56,7 @@ RSpec.describe SignaturesController, type: :request do
 
     it "re-renders edit on invalid params" do
       patch signature_path(signature), params: {signature: {name: ""}}
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

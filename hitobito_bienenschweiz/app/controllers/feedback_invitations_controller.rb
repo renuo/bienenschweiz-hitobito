@@ -35,7 +35,7 @@ class FeedbackInvitationsController < ApplicationController
       end
       redirect_to edit_feedback_invitation_path(@invitation.token)
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

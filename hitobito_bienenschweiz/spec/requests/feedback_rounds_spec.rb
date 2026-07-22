@@ -50,4 +50,51 @@ RSpec.describe FeedbackRoundsController, type: :request do
       expect(response.body).to match(/<li class="active"[^>]*>.*Feedback.*<\/li>/m)
     end
   end
+
+  describe "#create" do
+    it "creates a round and generates invitations" do
+      expect {
+        post group_event_feedback_rounds_path(sektion, event), params: {feedback_round: {kind: "intermediate"}}
+      }.to change(FeedbackRound, :count).by(1)
+
+      created = FeedbackRound.last
+      expect(created.author).to eq(admin)
+      expect(created.feedback_invitations.count).to eq(1)
+      expect(response).to redirect_to(group_event_feedback_rounds_path(sektion, event))
+    end
+
+    context "when a final round already exists" do
+      before { Fabricate(:feedback_round, event:, kind: "final") }
+
+      it "does not create another round" do
+        expect {
+          post group_event_feedback_rounds_path(sektion, event), params: {feedback_round: {kind: "intermediate"}}
+        }.not_to change(FeedbackRound, :count)
+
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context "as a person without edit permission on the course" do
+      let(:reader) { Fabricate(:person) }
+
+      before { sign_in(reader) }
+
+      it "raises access denied" do
+        expect {
+          post group_event_feedback_rounds_path(sektion, event), params: {feedback_round: {kind: "intermediate"}}
+        }.to raise_error(CanCan::AccessDenied)
+      end
+    end
+  end
+
+  describe "#destroy" do
+    it "destroys the round and its invitations" do
+      expect {
+        delete group_event_feedback_round_path(sektion, event, round)
+      }.to change(FeedbackRound, :count).by(-1)
+
+      expect(response).to redirect_to(group_event_feedback_rounds_path(sektion, event))
+    end
+  end
 end

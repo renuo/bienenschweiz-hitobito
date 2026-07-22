@@ -65,4 +65,11 @@ describe FeedbackRound do
 
     expect(round.feedback_invitations).to be_empty
   end
+
+  it "guards the final-round check against a missing event instead of raising" do
+    round = FeedbackRound.new(kind: "intermediate", event: nil)
+
+    expect { round.valid? }.not_to raise_error
+    expect(round.errors[:base]).to be_empty
+  end
 end

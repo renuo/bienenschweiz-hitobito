@@ -48,4 +48,25 @@ describe FeedbackInvitation do
     expect(duplicate).not_to be_valid
     expect(duplicate.errors[:participation_id]).to be_present
   end
+
+  it "retries token generation on a collision" do
+    taken_token = invitation.token
+    other_event = Fabricate(:course, kind: Fabricate(:event_kind))
+    other_round = Fabricate(:feedback_round, event: other_event)
+    other_participation = Fabricate(:event_participation, event: other_event, active: true)
+    other = FeedbackInvitation.new(feedback_round: other_round, participation: other_participation)
+
+    allow(SecureRandom).to receive(:urlsafe_base64).and_return(taken_token, "unique-token")
+    other.save!
+
+    expect(other.token).to eq("unique-token")
+    expect(SecureRandom).to have_received(:urlsafe_base64).twice
+  end
+
+  it "does not set an event without a feedback_round" do
+    without_round = FeedbackInvitation.new(participation: invitation.participation, feedback_round: nil)
+
+    expect(without_round.event).to be_nil
+    expect { without_round.save! }.to raise_error(ActiveRecord::NotNullViolation)
+  end
 end
