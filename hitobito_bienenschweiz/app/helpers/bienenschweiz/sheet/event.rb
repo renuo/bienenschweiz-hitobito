@@ -15,5 +15,13 @@ module Bienenschweiz::Sheet::Event
         view.can?(:update, event)
       end)
     )
+
+    tabs << Sheet::Tab.new(
+      "events.form_tabs.feedback_rounds",
+      :group_event_feedback_rounds_path,
+      if: (lambda do |view, _group, event|
+        view.can?(:read, FeedbackRound.new(event: event))
+      end)
+    )
   end
 end

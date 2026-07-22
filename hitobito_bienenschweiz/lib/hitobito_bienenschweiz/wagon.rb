@@ -85,6 +85,7 @@ module HitobitoBienenschweiz
       Ability.store.register MemoAbility
       Ability.store.register SupervisionAbility
       Ability.store.register SupervisionTypeAbility
+      Ability.store.register FeedbackRoundAbility
 
       TableDisplay.register_column(Person, TableDisplays::PublicColumn, :canton_short)
       Person::FILTER_ATTRS << [:canton_short, :string]

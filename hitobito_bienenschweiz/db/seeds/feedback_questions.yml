@@ -1,0 +1,76 @@
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+# Question catalog for the course feedback form, transcribed from the
+# "Feedback Kurse" Microsoft Forms survey (FeedbackKurse.pdf). Name and
+# email questions from the original form are omitted since the respondent
+# is now identified through their FeedbackInvitation/person instead.
+
+---
+- id: 1
+  kind: rating
+  text: Planung und Organisation
+  position: 1
+  required: true
+- id: 2
+  kind: rating
+  text: Kursablauf / Stundenplanung
+  position: 2
+  required: true
+- id: 3
+  kind: rating
+  text: Didaktisches Geschick der Kursleitung
+  position: 3
+  required: true
+- id: 4
+  kind: rating
+  text: Begeisterungsfähigkeit und Authentizität der Kursleitung
+  position: 4
+  required: true
+- id: 5
+  kind: rating
+  text: Kursunterlagen (Handouts, Präsentationen, Medien, Web)
+  position: 5
+  required: true
+- id: 6
+  kind: rating
+  text: Gesamtbeurteilung
+  position: 6
+  required: true
+- id: 7
+  kind: text
+  text: Was hat Ihnen speziell gut gefallen?
+  position: 7
+  required: false
+- id: 8
+  kind: text
+  text: Was sollte aus Ihrer Sicht verbessert werden?
+  position: 8
+  required: false
+- id: 9
+  kind: yes_no
+  text: Würden Sie den Kurs weiterempfehlen?
+  position: 9
+  required: true
+- id: 10
+  kind: yes_no
+  text: Fühlen Sie sich durch den Kurs in Ihrer imkerlichen Tätigkeit oder in Ihrer neuen Rolle unterstützt?
+  position: 10
+  required: true
+- id: 11
+  kind: yes_no
+  text: Wurden im Kurs aktuelle, interessante und praxisrelevante Themen behandelt?
+  position: 11
+  required: true
+- id: 12
+  kind: yes_no
+  text: Fühlen Sie sich durch den Kurs fachlich auf dem neuesten Stand?
+  position: 12
+  required: true
+- id: 13
+  kind: yes_no
+  text: Sind Sie der Meinung, dass der Kurs zur Verbesserung Ihrer imkerlichen Praxis, der Bienengesundheit oder der Honigqualität beigetragen hat?
+  position: 13
+  required: true

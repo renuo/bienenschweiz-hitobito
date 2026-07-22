@@ -18,6 +18,8 @@ module Bienenschweiz::Event::Course
       :diploma_location, :diploma_issued_at, :diploma_only_leader, :diplomas_ordered_at]
 
     before_save :recalc_number
+
+    has_many :feedback_rounds, foreign_key: :event_id, inverse_of: :event, dependent: :destroy
   end
 
   def state
