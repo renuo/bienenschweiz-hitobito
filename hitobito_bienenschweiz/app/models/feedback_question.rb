@@ -22,7 +22,7 @@ class FeedbackQuestion < ApplicationRecord
 
   # Validates the given FeedbackAnswer against this question's kind.
   # Called from FeedbackAnswer#validate.
-  def validate_answer(answer)
+  def validate_answer(answer) # rubocop:disable Metrics/CyclomaticComplexity
     case kind
     when "rating" then validate_rating(answer)
     when "yes_no" then answer.errors.add(:yes_no, :blank) if answer.yes_no.nil? && required?
