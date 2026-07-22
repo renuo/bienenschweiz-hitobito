@@ -131,4 +131,26 @@ RSpec.describe FeedbackRoundsController, type: :request do
       expect(response).to redirect_to(group_event_feedback_rounds_path(sektion, event))
     end
   end
+
+  describe "#export" do
+    it "sends an xlsx file" do
+      get export_group_event_feedback_round_path(sektion, event, round)
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("application/xlsx")
+      expect(response.headers["Content-Disposition"]).to include(".xlsx")
+      expect(response.body).to start_with("PK") # xlsx files are zip archives
+    end
+
+    context "as a person without edit permission on the course" do
+      let(:reader) { Fabricate(:person) }
+
+      before { sign_in(reader) }
+
+      it "raises access denied" do
+        expect {
+          get export_group_event_feedback_round_path(sektion, event, round)
+        }.to raise_error(CanCan::AccessDenied)
+      end
+    end
+  end
 end
