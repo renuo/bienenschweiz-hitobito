@@ -64,7 +64,8 @@ describe FeedbackInvitation do
   end
 
   it "does not set an event without a feedback_round" do
-    without_round = FeedbackInvitation.new(participation: invitation.participation, feedback_round: nil)
+    without_round = FeedbackInvitation.new(participation: invitation.participation,
+      feedback_round: nil)
 
     expect(without_round.event).to be_nil
     expect { without_round.save! }.to raise_error(ActiveRecord::NotNullViolation)
