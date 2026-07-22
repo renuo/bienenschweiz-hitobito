@@ -22,7 +22,7 @@ class FeedbackRoundsController < CrudController
     assign_attributes
     entry.author = current_user
     authorize!(:create, entry)
-    if FeedbackRound.transaction { save_entry }
+    if save_entry
       FeedbackInvitationMailer.invite_all(entry).each(&:deliver_later)
       redirect_to(group_event_feedback_rounds_path(@group, @event))
     else
