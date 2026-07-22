@@ -44,6 +44,8 @@ RSpec.describe FeedbackInvitationsController, type: :request do
   end
 
   describe "#update" do
+    let!(:required_question) { Fabricate(:feedback_question, kind: "rating", required: true) }
+
     let(:params) do
       answers = FeedbackQuestion.list.index_with do |question|
         case question.kind
