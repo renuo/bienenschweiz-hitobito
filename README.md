@@ -39,3 +39,10 @@ The index and command can be found in the logs or also Sentry (as extra argument
 cd hitobito_bienenschweiz
 bin/rspec
 ```
+
+to reset the wagon test database, run
+
+```sh
+cd hitobito
+rails db:drop db:create db:schema:load db:migrate wagon:migrate RAILS_ENV=test RAILS_TEST_DB_NAME=hit_bienenschweiz_test
+```
