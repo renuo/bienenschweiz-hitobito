@@ -20,9 +20,10 @@ describe FeedbackRoundAbility do
       Fabricate(Event::Role::Leader.sti_name.to_sym, participation:)
     end
 
-    it "may start and read feedback rounds" do
+    it "may start, read, and report on feedback rounds" do
       expect(ability).to be_able_to(:create, round)
       expect(ability).to be_able_to(:read, round)
+      expect(ability).to be_able_to(:report, round)
     end
   end
 
@@ -30,6 +31,7 @@ describe FeedbackRoundAbility do
     it "may not start feedback rounds" do
       expect(ability).not_to be_able_to(:create, round)
       expect(ability).not_to be_able_to(:read, round)
+      expect(ability).not_to be_able_to(:report, round)
     end
   end
 end

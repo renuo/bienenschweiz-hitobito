@@ -274,14 +274,29 @@ de:
     list:
       responses: Antworten
       show: Anzeigen
+      report: Bericht
     show:
       submitted: Ausgefüllt
       pending: Ausstehend
+    report:
+      title: "Feedback-Bericht: %{round}"
   feedback_invitations:
     edit:
       thank_you: Vielen Dank für Dein Feedback!
       closed: Diese Feedback-Runde ist abgeschlossen.
       submit: Feedback absenden
+  feedback_reports:
+    title: Feedback-Bericht
+    report:
+      no_data: Keine Kurse gefunden, die den gewählten Kriterien entsprechen.
+      courses_count:
+        one: "%{count} Kurs"
+        other: "%{count} Kurse"
+      response_rate: "%{submitted} von %{total} Feedbacks ausgefüllt"
+      "yes": Ja
+      "no": Nein
+      text_answers: Freitext-Antworten
+      no_text_answers: Keine Antworten vorhanden.
   event:
     diploma:
       print_button_label: Diplome drucken
