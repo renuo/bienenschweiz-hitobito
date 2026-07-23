@@ -53,20 +53,20 @@ de:
         other: Unterschriften
 
       feedback_round:
-        one: Feedbackrunde
-        other: Feedbackrunden
+        one: Feedback-Runde
+        other: Feedback-Runden
 
       feedback_question:
-        one: Feedbackfrage
-        other: Feedbackfragen
+        one: Feedback-Frage
+        other: Feedback-Fragen
 
       feedback_invitation:
         one: Feedback-Einladung
         other: Feedback-Einladungen
 
       feedback_answer:
-        one: Feedbackantwort
-        other: Feedbackantworten
+        one: Feedback-Antwort
+        other: Feedback-Antworten
     attributes:
       event/kind:
         abbreviation: Kürzel
@@ -280,7 +280,7 @@ de:
   feedback_invitations:
     edit:
       thank_you: Vielen Dank für Dein Feedback!
-      closed: Diese Feedbackrunde ist abgeschlossen.
+      closed: Diese Feedback-Runde ist abgeschlossen.
       submit: Feedback absenden
   event:
     diploma:
