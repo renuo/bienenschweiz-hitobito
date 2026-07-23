@@ -63,6 +63,14 @@ Rails.application.routes.draw do
         patch :bulk_update
       end
     end
+
+    resources :groups, only: [] do
+      resources :events, only: [] do
+        resources :feedback_rounds, only: [:index, :new, :create, :show, :destroy]
+      end
+    end
+
+    resources :feedback_invitations, only: [:edit, :update], param: :token
   end
 
   namespace :api, defaults: {formats: :json} do

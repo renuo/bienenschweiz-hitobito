@@ -1,0 +1,12 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+= crud_table do |t|
+  - t.sortable_attrs(:kind, :author, :created_at, :closes_at)
+  - t.col(t(".responses")) do |round|
+    = "#{round.response_count} / #{round.feedback_invitations.count}"
+  - t.col("") do |round|
+    = link_to t(".show"), group_event_feedback_round_path(@group, @event, round)

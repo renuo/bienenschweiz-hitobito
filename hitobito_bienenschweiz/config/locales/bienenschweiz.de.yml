@@ -51,6 +51,22 @@ de:
       signature:
         one: Unterschrift
         other: Unterschriften
+
+      feedback_round:
+        one: Feedback-Runde
+        other: Feedback-Runden
+
+      feedback_question:
+        one: Feedback-Frage
+        other: Feedback-Fragen
+
+      feedback_invitation:
+        one: Feedback-Einladung
+        other: Feedback-Einladungen
+
+      feedback_answer:
+        one: Feedback-Antwort
+        other: Feedback-Antworten
     attributes:
       event/kind:
         abbreviation: Kürzel
@@ -121,11 +137,33 @@ de:
           enough: 'genügend'
           not_enough: 'ungenügend'
           no_statement: 'keine Angabe'
+      feedback_round:
+        event: Kurs
+        event_id: Kurs
+        kind: Art
+        author: Gestartet von
+        author_id: Gestartet von
+        created_at: Gestartet am
+        closes_at: Schliesst am
+        kinds:
+          intermediate: Zwischenrunde
+          final: Schlussrunde
+      feedback_question:
+        text: Frage
+        kind: Typ
+        position: Position
+        required: Pflichtfrage
+        kinds:
+          rating: Bewertung (1-5 Sterne)
+          yes_no: Ja/Nein
+          text: Freitext
     errors:
       messages:
         not_blank_inspectable: 'ist nicht gültig für Blanko-Betriebsprüfungen'
         no_supervisor_role: 'muss eine Person mit aktiver Supervisor-Rolle sein'
         not_allowed_for_kind: 'ist für %{kind} nicht zulässig'
+        not_in_range: 'muss zwischen 1 und 5 liegen'
+        final_round_exists: 'für diesen Kurs wurde bereits eine Schlussrunde gestartet, es kann keine weitere Runde mehr gestartet werden'
   orphan_qcontrols:
     title: Blanko-Betriebsprüfungen
     index:
@@ -229,6 +267,21 @@ de:
   diploma_mailer:
     order:
       subject: "Diplom drucken für %{name} am %{date}"
+  feedback_invitation_mailer:
+    invite:
+      subject: "Feedback zum Kurs %{event}"
+  feedback_rounds:
+    list:
+      responses: Antworten
+      show: Anzeigen
+    show:
+      submitted: Ausgefüllt
+      pending: Ausstehend
+  feedback_invitations:
+    edit:
+      thank_you: Vielen Dank für Dein Feedback!
+      closed: Diese Feedback-Runde ist abgeschlossen.
+      submit: Feedback absenden
   event:
     diploma:
       print_button_label: Diplome drucken
@@ -260,6 +313,7 @@ de:
     form_tabs:
       course_materials: Kursunterlagen
       diploma: Diplom
+      feedback_rounds: Feedback
   event/participations:
     actions_index:
       create_kas_fees: KAS Spesen erstellen
