@@ -1,0 +1,67 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+- content_for(:head) do
+  %style
+    :plain
+      #feedback-report-filter .select { min-width: 220px; }
+
+= form_for(:filters, {method: :get, id: "feedback-report-filter"}) do |form|
+  .d-xl-inline-flex.gap-2
+    = form.fields_for("date_range") do |f|
+      .control-group.mt-1
+        = f.label :since, t(".time_period"), class: "control-label"
+        .input-group
+          %span.input-group-text= icon(:"calendar-alt")
+          = f.text_field(:since, value: @filter.chain.dig(:date_range, :since),
+                         class: "date col-2 form-control form-control-sm mb-0")
+      .control-group.mt-1
+        = f.label :until, t(".until"), class: "control-label"
+        .input-group
+          %span.input-group-text= icon(:"calendar-alt")
+          = f.text_field(:until, value: @filter.chain.dig(:date_range, :until),
+                         class: "date col-2 form-control form-control-sm mb-0")
+
+    .control-group.mt-1
+      = form.fields_for("groups") do |f|
+        = f.label :ids, t(".groups"), class: "control-label"
+        .controls
+          .select.shown
+            = f.select(:ids,
+                      options_from_collection_for_select(course_groups, :id, :name,
+                                                          @filter.chain.dig(:groups, :ids)),
+                      {},
+                      {id: "feedback-report-groups-select",
+                       class: "form-select form-select-sm w-100", multiple: true,
+                       data: {placeholder: t(".select_groups"), controller: "tom-select"}})
+
+    .control-group.mt-1
+      = form.fields_for("course_kind_category") do |f|
+        = f.label :id, t(".kind_category"), class: "control-label"
+        .controls
+          .select.shown
+            = f.select(:id,
+                      options_from_collection_for_select(Event::KindCategory.list, :id, :to_s,
+                                                          @filter.chain.dig(:course_kind_category, :id)),
+                      {},
+                      {id: "feedback-report-kind-category-select",
+                       class: "form-select form-select-sm w-100", multiple: true,
+                       data: {placeholder: t(".select_kind_categories"), controller: "tom-select"}})
+
+    .control-group.mt-1
+      = form.fields_for("course_kind") do |f|
+        = f.label :id, t(".kind"), class: "control-label"
+        .controls
+          .select.shown
+            = f.select(:id,
+                      options_from_collection_for_select(Event::Kind.list.without_deleted, :id, :to_s,
+                                                          @filter.chain.dig(:course_kind, :id)),
+                      {},
+                      {id: "feedback-report-kind-select",
+                       class: "form-select form-select-sm w-100", multiple: true,
+                       data: {placeholder: t(".select_kinds"), controller: "tom-select"}})
+
+  .control-group.mt-2
+    = submit_button(form, safe_join([icon(:search), " ", t("global.button.search")]), name: nil)

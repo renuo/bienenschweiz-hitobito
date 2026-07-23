@@ -287,6 +287,18 @@ de:
       submit: Feedback absenden
   feedback_reports:
     title: Feedback-Bericht
+    index:
+      title: Feedback-Bericht
+      explanation: Feedback über mehrere Kurse hinweg auswerten. Es werden nur abgeschlossene Schlussrunden berücksichtigt.
+    filter:
+      time_period: Zeitraum
+      until: bis
+      groups: Gruppen
+      select_groups: Alle Gruppen
+      kind_category: Kurskategorie
+      select_kind_categories: Alle Kurskategorien
+      kind: Kursart
+      select_kinds: Alle Kursarten
     report:
       no_data: Keine Kurse gefunden, die den gewählten Kriterien entsprechen.
       courses_count:

@@ -1,0 +1,48 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+-#
+-#  Overrides hitobito core's events/courses/_nav_left.html.haml so the same
+-#  "Kurse" left nav also renders on the feedback report page
+-#  (Sheet::FeedbackReport explicitly renders this same partial), with a link
+-#  to the report appended at the end. Unlike core's version, this does not
+-#  depend on any @categories/@kinds_without_category/@grouped_events ivars
+-#  set by Events::CoursesController, and always links back to the course
+-#  list itself (rather than the current page), so it renders identically
+-#  and correctly regardless of which controller is rendering it.
+
+%ul.nav-left-list
+  - selected_category_id = @filter&.chain&.dig(:course_kind_category, :id)
+  - if Event::Course.attr_used?(:kind_id)
+    - if Event::KindCategory.exists?
+      - Event::KindCategory.list.each do |category|
+        %li
+          - link_params = {filters: {course_kind_category: {id: category.id}}}
+          = link_to(category.to_s, list_courses_path(link_params), data: {turbo: false})
+
+          - if selected_category_id == category.id.to_s
+            %ul
+              - category.kinds.each do |kind|
+                %li= link_to(kind.label,
+                            list_courses_path(link_params.merge(anchor: kind.label.parameterize)),
+                            data: {turbo: false})
+      %li
+        - link_params = {filters: {course_kind_category: {id: 0}}}
+        = link_to(t("event.lists.courses.no_category"), list_courses_path(link_params),
+                 data: {turbo: false})
+
+        - if selected_category_id == "0"
+          %ul
+            - Event::Kind.where(kind_category_id: nil).each do |kind|
+              %li= link_to(kind.label,
+                          list_courses_path(link_params.merge(anchor: kind.label.parameterize)),
+                          data: {turbo: false})
+    - elsif @grouped_events
+      - @grouped_events.keys.each do |kind|
+        %li= link_to(kind, list_courses_path(anchor: kind.parameterize), data: {turbo: false})
+  - else
+    = render "event/lists/nav_left_events"
+
+  - if can?(:index_report, FeedbackRound)
+    %li= link_to(t("feedback_reports.title"), feedback_reports_path)

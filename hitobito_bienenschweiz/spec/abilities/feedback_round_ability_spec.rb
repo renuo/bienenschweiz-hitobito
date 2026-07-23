@@ -25,6 +25,10 @@ describe FeedbackRoundAbility do
       expect(ability).to be_able_to(:read, round)
       expect(ability).to be_able_to(:report, round)
     end
+
+    it "may not access the cross-course aggregate report" do
+      expect(ability).not_to be_able_to(:index_report, FeedbackRound)
+    end
   end
 
   context "as an unrelated person" do
@@ -32,6 +36,17 @@ describe FeedbackRoundAbility do
       expect(ability).not_to be_able_to(:create, round)
       expect(ability).not_to be_able_to(:read, round)
       expect(ability).not_to be_able_to(:report, round)
+    end
+  end
+
+  context "as the org-wide administrator" do
+    before do
+      Fabricate(Group::Dachverband::AdministratorBienenSchweiz.sti_name.to_sym,
+        group: Group.root, person: user)
+    end
+
+    it "may access the cross-course aggregate report" do
+      expect(ability).to be_able_to(:index_report, FeedbackRound)
     end
   end
 end

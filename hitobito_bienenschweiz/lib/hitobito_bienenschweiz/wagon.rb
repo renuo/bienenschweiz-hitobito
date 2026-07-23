@@ -45,6 +45,12 @@ module HitobitoBienenschweiz
       admin_item = NavigationHelper::MAIN.find { |item| item[:label] == :admin }
       admin_item[:active_for] += %w[supervision_type signatures]
 
+      # Keep the "Kurse" main nav section active/expanded while on the
+      # feedback report, whose link is added to its left nav via
+      # Sheet::FeedbackReport (see app/helpers/sheet/feedback_report.rb).
+      courses_item = NavigationHelper::MAIN.find { |item| item[:label] == :courses }
+      courses_item[:active_for] += %w[feedback_reports]
+
       GroupResource.include Bienenschweiz::GroupResource
       PersonResource.include Bienenschweiz::PersonResource
       RoleResource.include Bienenschweiz::RoleResource
