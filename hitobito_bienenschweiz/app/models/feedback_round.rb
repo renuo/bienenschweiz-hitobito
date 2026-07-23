@@ -9,15 +9,15 @@ class FeedbackRound < ApplicationRecord
   include I18nEnums
 
   belongs_to :event
-  belongs_to :author, class_name: "Person", optional: true
+  belongs_to :author, class_name: "Person"
   has_many :feedback_invitations, dependent: :destroy
 
   i18n_enum :kind, %w[intermediate final], queries: true
 
   validates :kind, presence: true
+  validates :author, presence: true
   validate :assert_no_round_after_final, on: :create
 
-  before_create :set_author_name
   after_create :generate_invitations
 
   def response_count
@@ -38,10 +38,6 @@ class FeedbackRound < ApplicationRecord
     if event.feedback_rounds.where(kind: "final").exists?
       errors.add(:base, :final_round_exists)
     end
-  end
-
-  def set_author_name
-    self.author_name = author.full_name if author.present?
   end
 
   def generate_invitations

@@ -10,8 +10,7 @@ class CreateFeedbackRounds < ActiveRecord::Migration[8.0]
     create_table :feedback_rounds do |t|
       t.references :event, null: false, foreign_key: true
       t.string :kind, null: false
-      t.integer :author_id
-      t.string :author_name
+      t.integer :author_id, null: false
       t.datetime :closes_at
 
       t.timestamps

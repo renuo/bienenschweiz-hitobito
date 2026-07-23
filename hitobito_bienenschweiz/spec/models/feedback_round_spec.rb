@@ -19,6 +19,12 @@ describe FeedbackRound do
     expect(round).to be_valid
   end
 
+  it "is invalid without an author" do
+    round = Fabricate.build(:feedback_round, event:, author: nil)
+    expect(round).not_to be_valid
+    expect(round.errors[:author]).to be_present
+  end
+
   it "renders to_s without a created_at (new, unsaved record)" do
     round = FeedbackRound.new(event:, kind: "intermediate")
     expect { round.to_s }.not_to raise_error

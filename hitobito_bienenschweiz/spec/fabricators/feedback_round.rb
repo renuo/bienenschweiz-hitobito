@@ -7,5 +7,6 @@
 
 Fabricator(:feedback_round) do
   event { Fabricate(:course, kind: Fabricate(:event_kind)) }
+  author { Fabricate(:person) }
   kind { "intermediate" }
 end
