@@ -12,5 +12,14 @@ class Bienenschweiz::RoleAbility < AbilityDsl::Base
     permission(:layer_contacts)
       .may(:show, :create, :create_in_subgroup, :update, :destroy, :terminate)
       .in_same_layer_if_active
+    general(:create, :update, :destroy).modify_beekeeper_permission_only_of_admin
+  end
+
+  def modify_beekeeper_permission_only_of_admin
+    beekeeper_role? ? if_admin : true
+  end
+
+  def beekeeper_role?
+    subject.type&.safe_constantize == Group::Siegelimker::Siegelimker
   end
 end
