@@ -1,0 +1,49 @@
+- external_applications = local_assigns.fetch(:external_applications, true)
+
+= section Event::Application.model_name.human do
+  %dl.dl-horizontal
+    - entry.used?(:minimum_participants) do
+      = present_labeled_attr(entry, :minimum_participants)
+    - entry.used?(:application_opening_at) do
+      = present_labeled_attr(entry, :application_opening_at)
+    - entry.used?(:application_closing_at) do
+      = present_labeled_attr(entry, :application_closing_at)
+    = labeled_attr(entry, :booking_info)
+
+    - if external_applications
+      - entry.used?(:external_applications) do
+        = labeled(Event.human_attribute_name(:external_applications), entry.external_application_link(@group))
+
+  - if entry.any_conditions_present?
+    %dl.dl-horizontal
+      - entry.used?(:application_conditions) do
+        - conditions_text = format_event_application_conditions(entry)
+        - if conditions_text.present?
+          = labeled(entry.class.human_attribute_name(:application_conditions)) do
+            %p.multiline= conditions_text
+
+      - if entry.course_kind?
+        = labeled(Event::Kind.human_attribute_name(:minimum_age),
+                  entry.minimum_age.present? ? t('events.minimum_age_with_years', minimum_age: entry.minimum_age) : '',
+                  no_value_hide_label: true)
+        = labeled(t('events.preconditions'),
+          grouped_qualification_kinds_string(entry.kind, 'precondition', 'participant'),
+          no_value_hide_label: true)
+
+  - if entry.course_kind?
+    %dl.dl-horizontal
+      = labeled(Event::Kind.human_attribute_name(:qualification_kinds),
+                entry.kind.qualification_kinds('qualification', 'participant').join(', '),
+          no_value_hide_label: true)
+      = labeled(Event::Kind.human_attribute_name(:prolongations),
+                entry.kind.qualification_kinds('prolongation', 'participant').join(', '),
+          no_value_hide_label: true)
+      - entry.used?(:training_days) do
+        = present_labeled_attr(entry, :training_days,
+          no_value_hide_label: true)
+
+  %dl.dl-horizontal
+    = labeled_attr(entry, :signature) if entry.signature
+    = labeled_attr(entry, :signature_confirmation) if entry.signature_confirmation
+
+  = render_extensions 'attrs_application', folder: 'events'
