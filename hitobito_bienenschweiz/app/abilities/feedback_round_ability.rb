@@ -7,14 +7,21 @@
 
 class FeedbackRoundAbility < AbilityDsl::Base
   on(FeedbackRound) do
-    permission(:any).may(:create, :read, :destroy).if_event_editable
     permission(:any).may(:create, :read, :destroy, :report).if_event_editable
+    class_side(:index_report).if_admin
   end
 
-  # Anyone allowed to edit the course itself may manage its feedback rounds.
-  # Delegating to the actual Event permission (rather than re-declaring the
-  # group/layer/leader tiers here) keeps this in sync with EventAbility.
+  # Anyone allowed to edit the course itself may manage its feedback rounds,
+  # including the single-course report. Delegating to the actual Event
+  # permission (rather than re-declaring the group/layer/leader tiers here)
+  # keeps this in sync with EventAbility.
   def if_event_editable
     Ability.new(user).can?(:update, subject.event)
+  end
+
+  # The cross-course aggregate report is not scoped to a single course's
+  # editors, so it is restricted to the org-wide administrator role instead.
+  def if_admin
+    role_type?(Group::Dachverband::AdministratorBienenSchweiz)
   end
 end

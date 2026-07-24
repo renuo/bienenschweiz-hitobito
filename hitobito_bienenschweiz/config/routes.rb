@@ -75,6 +75,8 @@ Rails.application.routes.draw do
     end
 
     resources :feedback_invitations, only: [:edit, :update], param: :token
+
+    resources :feedback_reports, only: [:index]
   end
 
   namespace :api, defaults: {formats: :json} do
