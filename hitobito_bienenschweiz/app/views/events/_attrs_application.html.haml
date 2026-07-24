@@ -1,3 +1,9 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
 - external_applications = local_assigns.fetch(:external_applications, true)
 
 = section Event::Application.model_name.human do
@@ -17,10 +23,8 @@
   - if entry.any_conditions_present?
     %dl.dl-horizontal
       - entry.used?(:application_conditions) do
-        - conditions_text = format_event_application_conditions(entry)
-        - if conditions_text.present?
-          = labeled(entry.class.human_attribute_name(:application_conditions)) do
-            %p.multiline= conditions_text
+        = labeled(entry.class.human_attribute_name(:application_conditions), no_value_hide_label: true) do
+          %p.multiline= format_event_application_conditions(entry)
 
       - if entry.course_kind?
         = labeled(Event::Kind.human_attribute_name(:minimum_age),
