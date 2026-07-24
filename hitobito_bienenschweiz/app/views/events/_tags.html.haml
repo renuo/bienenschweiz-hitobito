@@ -1,0 +1,15 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+- assignable = can?(:assign_tags, entry)
+- if @tags && (assignable || @tags.any?)
+  %dl.dl-horizontal
+    = labeled ActsAsTaggableOn::Tag.model_name.human(count: 2) do
+      - path = group_event_tags_path(@group, entry)
+
+      = render 'taggable/list', tags: @tags, path: path, deletable: assignable
+
+      - if assignable
+        = render 'taggable/form', path: path

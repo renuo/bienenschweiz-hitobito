@@ -15,5 +15,7 @@ Gem::Specification.new do |s|
   s.description = "Bienenschweiz specific Hitobito features"
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["Rakefile"]
+  # to match core Gemfile.lock which is otherwise not considered locally
+  s.dependencies << Gem::Dependency.new("haml", "~> 6.3.0")
   # rubocop:enable Style/SingleSpaceBeforeFirstArg
 end

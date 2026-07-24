@@ -234,4 +234,76 @@ RSpec.describe EventsController, type: :request do
       expect(response.body).to include(I18n.t(:full, scope: "event_states"))
     end
   end
+
+  describe "GET /groups/:group_id/events/:id tags section" do
+    let(:sektion) { groups(:aarau_und_umgebung) }
+    let(:sektion_course) { Fabricate(:course, kind: kind, groups: [sektion]) }
+
+    # Has layer_read/layer_contacts in the sektion's layer (so :show is granted via
+    # in_same_layer_or_public_or_participating), but no *_full tier, so :assign_tags is not.
+    let(:contact_person) do
+      Fabricate(Group::SektionAdministrator::Kontakte.sti_name.to_sym,
+        group: groups(:sektion_admin_381)).person
+    end
+
+    it "shows the Tags section for someone who may assign tags, even without any tags" do
+      get group_event_path(group, course)
+      expect(response.body).to include("<dt class='muted'>Tags</dt>")
+    end
+
+    context "as a person who may not assign tags" do
+      before { sign_in(contact_person) }
+
+      it "hides the Tags section when the course has no tags" do
+        get group_event_path(sektion, sektion_course)
+        expect(response.body).not_to include("<dt class='muted'>Tags</dt>")
+      end
+
+      it "shows the Tags section (read-only) when the course already has tags" do
+        sektion_course.tag_list.add("wichtig")
+        sektion_course.save!
+
+        get group_event_path(sektion, sektion_course)
+        expect(response.body).to include("<dt class='muted'>Tags</dt>")
+      end
+    end
+  end
+
+  describe "GET /groups/:group_id/events/:id application attributes" do
+    it "shows the application conditions when set" do
+      course.update!(application_conditions: "Mindestalter 18 Jahre")
+      get group_event_path(group, course)
+      expect(response.body).to include("Aufnahmebedingungen")
+      expect(response.body).to include("Mindestalter 18 Jahre")
+    end
+
+    it "hides the application conditions label when blank" do
+      course.update!(application_conditions: "")
+      get group_event_path(group, course)
+      expect(response.body).not_to include("Aufnahmebedingungen")
+    end
+
+    it "shows the signature label when signature is true, and hides signature_confirmation" do
+      # signature_confirmation implies signature (see Event#set_signature), so this also
+      # covers signature_confirmation's false branch.
+      course.update!(signature: true, signature_confirmation: false)
+      get group_event_path(group, course)
+      expect(response.body).to include("Unterschrift erforderlich")
+      expect(response.body).not_to include("Zweitunterschrift erforderlich")
+    end
+
+    it "shows both signature labels when signature_confirmation is true" do
+      course.update!(signature: true, signature_confirmation: true)
+      get group_event_path(group, course)
+      expect(response.body).to include("Unterschrift erforderlich")
+      expect(response.body).to include("Zweitunterschrift erforderlich")
+    end
+
+    it "hides both signature labels when both are false" do
+      course.update!(signature: false, signature_confirmation: false)
+      get group_event_path(group, course)
+      expect(response.body).not_to include("Unterschrift erforderlich")
+      expect(response.body).not_to include("Zweitunterschrift erforderlich")
+    end
+  end
 end
