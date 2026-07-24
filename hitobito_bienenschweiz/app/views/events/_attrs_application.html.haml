@@ -32,20 +32,20 @@
                   entry.minimum_age.present? ? t('events.minimum_age_with_years', minimum_age: entry.minimum_age) : '',
                   no_value_hide_label: true)
         = labeled(t('events.preconditions'),
-          grouped_qualification_kinds_string(entry.kind, 'precondition', 'participant'),
-          no_value_hide_label: true)
+                  grouped_qualification_kinds_string(entry.kind, 'precondition', 'participant'),
+                  no_value_hide_label: true)
 
   - if entry.course_kind?
     %dl.dl-horizontal
       = labeled(Event::Kind.human_attribute_name(:qualification_kinds),
                 entry.kind.qualification_kinds('qualification', 'participant').join(', '),
-          no_value_hide_label: true)
+                no_value_hide_label: true)
       = labeled(Event::Kind.human_attribute_name(:prolongations),
                 entry.kind.qualification_kinds('prolongation', 'participant').join(', '),
-          no_value_hide_label: true)
+                no_value_hide_label: true)
       - entry.used?(:training_days) do
         = present_labeled_attr(entry, :training_days,
-          no_value_hide_label: true)
+                               no_value_hide_label: true)
 
   %dl.dl-horizontal
     = labeled_attr(entry, :signature) if entry.signature
