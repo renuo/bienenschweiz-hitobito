@@ -78,6 +78,7 @@ namespace :mv do
           person.country = ISO3166::Country[member.country_key].translations["de"]
           person.email = (member.login || member.kas_user)&.email
           member.email_contacts.each do |email|
+            person.email ||= email unless email == 'honig@bienenschweiz.ch'
             unless email == person.email
               person.additional_emails.where(email:, label: "Private").first_or_initialize
             end
