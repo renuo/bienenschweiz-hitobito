@@ -248,7 +248,7 @@ RSpec.describe EventsController, type: :request do
 
     it "shows the Tags section for someone who may assign tags, even without any tags" do
       get group_event_path(group, course)
-      expect(response.body).to include('<dt class="muted">Tags</dt>')
+      expect(response.body).to include("<dt class='muted'>Tags</dt>")
     end
 
     context "as a person who may not assign tags" do
@@ -256,7 +256,7 @@ RSpec.describe EventsController, type: :request do
 
       it "hides the Tags section when the course has no tags" do
         get group_event_path(sektion, sektion_course)
-        expect(response.body).not_to include('<dt class="muted">Tags</dt>')
+        expect(response.body).not_to include("<dt class='muted'>Tags</dt>")
       end
 
       it "shows the Tags section (read-only) when the course already has tags" do
@@ -264,7 +264,7 @@ RSpec.describe EventsController, type: :request do
         sektion_course.save!
 
         get group_event_path(sektion, sektion_course)
-        expect(response.body).to include('<dt class="muted">Tags</dt>')
+        expect(response.body).to include("<dt class='muted'>Tags</dt>")
       end
     end
   end
