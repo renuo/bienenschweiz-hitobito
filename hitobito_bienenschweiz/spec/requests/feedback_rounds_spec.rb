@@ -91,6 +91,37 @@ RSpec.describe FeedbackRoundsController, type: :request do
     end
   end
 
+  describe "#report" do
+    let(:rating_question) { Fabricate(:feedback_question, kind: "rating") }
+
+    before do
+      invitation = round.feedback_invitations.first
+      invitation.update!(submitted_at: Time.zone.now)
+      Fabricate(:feedback_answer, feedback_question: rating_question,
+        feedback_invitation: invitation, rating: 5)
+    end
+
+    it "renders the report with the course's data" do
+      get report_group_event_feedback_round_path(sektion, event, round)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(event.name)
+      expect(response.body).to include(rating_question.text)
+    end
+
+    context "as a person without edit permission on the course" do
+      let(:reader) { Fabricate(:person) }
+
+      before { sign_in(reader) }
+
+      it "raises access denied" do
+        expect {
+          get report_group_event_feedback_round_path(sektion, event, round)
+        }.to raise_error(CanCan::AccessDenied)
+      end
+    end
+  end
+
   describe "#destroy" do
     it "destroys the round and its invitations" do
       expect {

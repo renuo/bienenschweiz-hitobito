@@ -8,6 +8,7 @@
 class FeedbackRoundAbility < AbilityDsl::Base
   on(FeedbackRound) do
     permission(:any).may(:create, :read, :destroy).if_event_editable
+    permission(:any).may(:create, :read, :destroy, :report).if_event_editable
   end
 
   # Anyone allowed to edit the course itself may manage its feedback rounds.

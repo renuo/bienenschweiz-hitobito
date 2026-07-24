@@ -10,3 +10,5 @@
     = "#{round.response_count} / #{round.feedback_invitations.count}"
   - t.col("") do |round|
     = link_to t(".show"), group_event_feedback_round_path(@group, @event, round)
+  - t.col("") do |round|
+    = link_to t(".report"), report_group_event_feedback_round_path(@group, @event, round)

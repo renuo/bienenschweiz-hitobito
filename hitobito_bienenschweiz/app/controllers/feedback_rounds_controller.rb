@@ -15,6 +15,11 @@ class FeedbackRoundsController < CrudController
   # load parents before authorization
   prepend_before_action :parent
 
+  # :report is not part of CrudController::ACTIONS, so load the entry here
+  # too, otherwise cancancan's authorize_resource before_action would not
+  # find @feedback_round yet and fall back to a permissive parent-only check.
+  prepend_before_action :entry, only: [:report]
+
   # skip authorization for create to assign_attributes before authorization
   skip_authorize_resource only: [:create]
 
@@ -32,6 +37,10 @@ class FeedbackRoundsController < CrudController
 
   def destroy
     super(location: group_event_feedback_rounds_path(@group, @event))
+  end
+
+  def report
+    @report = Feedback::Report.new(FeedbackRound.where(id: entry.id))
   end
 
   private
