@@ -43,9 +43,19 @@ class FeedbackRoundsController < CrudController
     @report = Feedback::Report.new(FeedbackRound.where(id: entry.id))
   end
 
+  def export
+    authorize!(:export, entry)
+    send_data Export::Tabular::FeedbackRounds::Result.xlsx(entry, current_ability),
+      type: :xlsx, disposition: "attachment", filename: export_filename
+  end
+
   private
 
   def build_entry
     @event.feedback_rounds.build
+  end
+
+  def export_filename
+    "#{@event.name}-feedback-#{entry.kind}".parameterize + ".xlsx"
   end
 end

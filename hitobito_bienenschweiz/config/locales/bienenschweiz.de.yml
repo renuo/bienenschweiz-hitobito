@@ -278,6 +278,7 @@ de:
     show:
       submitted: Ausgefüllt
       pending: Ausstehend
+      export: Als Excel exportieren
     report:
       title: "Feedback-Bericht: %{round}"
   feedback_invitations:
