@@ -3,10 +3,6 @@
 -#  or later. See the COPYING file at the top-level directory or at
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-- content_for(:head) do
-  %style
-    :plain
-      #feedback-report-filter .select { min-width: 220px; }
 
 = form_for(:filters, {method: :get, id: "feedback-report-filter"}) do |form|
   .d-xl-inline-flex.gap-2
