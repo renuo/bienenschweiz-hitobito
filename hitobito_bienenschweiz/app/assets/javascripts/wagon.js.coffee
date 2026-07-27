@@ -7,3 +7,4 @@
 # extend native ES classes like Stimulus::Controller)
 import "./supervision_form_controller"
 import "./kas_instructor_fees_controller"
+import "./tom_select_controller"

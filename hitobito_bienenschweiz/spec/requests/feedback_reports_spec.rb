@@ -41,6 +41,33 @@ RSpec.describe FeedbackReportsController, type: :request do
       expect(response.body).to include(%(<a href="#{feedback_reports_path}">Feedback-Bericht</a>))
     end
 
+    it "ties the export button to the filter form via formaction, not a static link" do
+      # A plain link with a fixed href would ignore filter changes made client-side
+      # until "Suchen" is clicked; submitting the live form on click always exports
+      # whatever is currently selected.
+      get feedback_reports_path
+
+      expect(response.body).to match(
+        /<button[^>]*form=["']feedback-report-filter["']/
+      )
+      expect(response.body).to match(
+        /<button[^>]*formaction=["']#{export_feedback_reports_path}["']/
+      )
+    end
+
+    it "disables Turbo on the export button so the xlsx response triggers a real download" do
+      # Turbo intercepts form submissions by default and tries to process the
+      # response as a page visit/Turbo Stream; a binary xlsx response breaks
+      # that (no download happens, and it can leave Stimulus controllers like
+      # tom-select in a broken "already initialized" state on re-render).
+      # data-turbo="false" on the submitter makes Turbo skip interception for
+      # this button specifically, so the browser handles it as a plain
+      # navigation and honors the attachment's Content-Disposition.
+      get feedback_reports_path
+
+      expect(response.body).to match(/<button[^>]*data-turbo=["']false["']/)
+    end
+
     it "shows the same left nav (including the report link) on the course list itself" do
       get list_courses_path
 
@@ -97,6 +124,58 @@ RSpec.describe FeedbackReportsController, type: :request do
       get feedback_reports_path, params: {filters: {date_range: wide_date_range}}
 
       expect(response.body).not_to include(course.name)
+    end
+  end
+
+  describe "#export" do
+    it "sends an xlsx file" do
+      Fabricate(:feedback_round, event: course, kind: "final")
+
+      get export_feedback_reports_path, params: {filters: {date_range: wide_date_range}}
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("application/xlsx")
+      expect(response.headers["Content-Disposition"]).to include(".xlsx")
+      expect(response.body).to start_with("PK") # xlsx files are zip archives
+    end
+
+    it "only includes rounds for courses matching the group filter" do
+      matching_round = Fabricate(:feedback_round, event: course, kind: "final")
+      Fabricate(:feedback_round, event: other_course, kind: "final")
+
+      allow(Export::Tabular::FeedbackReports::Result).to receive(:xlsx).and_return("")
+
+      get export_feedback_reports_path,
+        params: {filters: {groups: {ids: [sektion.id]}, date_range: wide_date_range}}
+
+      expect(Export::Tabular::FeedbackReports::Result).to have_received(:xlsx) do |rounds, _ability|
+        expect(rounds.pluck(:id)).to eq([matching_round.id])
+      end
+    end
+
+    it "does not include rounds whose feedback is only an intermediate round" do
+      Fabricate(:feedback_round, event: course, kind: "intermediate")
+
+      allow(Export::Tabular::FeedbackReports::Result).to receive(:xlsx).and_return("")
+
+      get export_feedback_reports_path, params: {filters: {date_range: wide_date_range}}
+
+      expect(Export::Tabular::FeedbackReports::Result).to have_received(:xlsx) do |rounds, _ability|
+        expect(rounds).to be_empty
+      end
+    end
+
+    context "as a person with layer_and_below_full but not the admin permission" do
+      let(:sektion_admin) do
+        Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+          group: groups(:sektion_admin_381)).person
+      end
+
+      before { sign_in(sektion_admin) }
+
+      it "raises access denied" do
+        expect { get export_feedback_reports_path }.to raise_error(CanCan::AccessDenied)
+      end
     end
   end
 end

@@ -9,4 +9,9 @@
 
 = render "filter"
 
+%button.btn.btn-primary.btn-sm{type: "submit", form: "feedback-report-filter",
+  formaction: export_feedback_reports_path, data: {turbo: "false"}}
+  = icon(:download)
+  = t(".export")
+
 = render "feedback_reports/report", report: @report

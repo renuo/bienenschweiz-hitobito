@@ -31,7 +31,7 @@
                       {},
                       {id: "feedback-report-groups-select",
                        class: "form-select form-select-sm w-100", multiple: true,
-                       data: {placeholder: t(".select_groups"), controller: "tom-select"}})
+                       data: {placeholder: t(".select_groups"), controller: "bienenschweiz-tom-select"}})
 
     .control-group.mt-1
       = form.fields_for("course_kind_category") do |f|
@@ -44,7 +44,7 @@
                       {},
                       {id: "feedback-report-kind-category-select",
                        class: "form-select form-select-sm w-100", multiple: true,
-                       data: {placeholder: t(".select_kind_categories"), controller: "tom-select"}})
+                       data: {placeholder: t(".select_kind_categories"), controller: "bienenschweiz-tom-select"}})
 
     .control-group.mt-1
       = form.fields_for("course_kind") do |f|
@@ -57,7 +57,7 @@
                       {},
                       {id: "feedback-report-kind-select",
                        class: "form-select form-select-sm w-100", multiple: true,
-                       data: {placeholder: t(".select_kinds"), controller: "tom-select"}})
+                       data: {placeholder: t(".select_kinds"), controller: "bienenschweiz-tom-select"}})
 
   .control-group.mt-2
     = submit_button(form, safe_join([icon(:search), " ", t("global.button.search")]), name: nil)
