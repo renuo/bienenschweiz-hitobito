@@ -15,7 +15,7 @@ description: "Der Imker Basiskurs für Neuimker/-innen in der Schweiz ist ein Au
 location: ''
 cost: 950.- bis 1'250.- CHF (Empfehlung)
 maximum_participants: 20
-minimum_participants: 10
+minimum_participants: 6
 requires_approval: false
 external_applications: true
 applications_cancelable: true
@@ -28,10 +28,10 @@ application_conditions: Die durchführende Sektion kann Aufnahmebedingungen defi
 required_contact_attrs:
   - street
   - housenumber
-  - postbox
   - zip_code
   - town
   - country
+  - gender
   - phone_numbers
 hidden_contact_attrs:
   - nickname
@@ -49,9 +49,7 @@ application_questions:
     required: true
     multiple_choices: false
     choices: Ja,Nein
-  - question: "Hiermit bestätige ich, dass meine Daten für interne Zwecke von BienenSchweiz
-    und deren Sektionen verwendet werden dürfen. \nEs werden keine Daten zu Externen
-    weitergegeben."
+  - question: "Hiermit bestätige ich, dass meine Daten für interne Zwecke von BienenSchweiz und deren Sektionen verwendet werden dürfen.\nz. B. für Teilnehmenden-Listen, usw.\nEs werden keine Daten zu Externen weitergegeben."
     type: Event::Question::Default
     required: true
     multiple_choices: false
