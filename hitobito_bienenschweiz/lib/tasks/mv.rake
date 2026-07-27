@@ -162,6 +162,7 @@ namespace :mv do
         end
         group.parent = Group::Kantonalverband.find(sektion.parent_id + GROUP_ID_OFFSET)
         group.code = sektion.code
+        group.member_count = sektion.member_count
         group.created_at = sektion.created_at
         group.updated_at = sektion.created_at
         begin
