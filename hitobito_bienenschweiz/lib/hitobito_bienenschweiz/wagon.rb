@@ -64,7 +64,7 @@ module HitobitoBienenschweiz
         :num_ad_boards
       ]
 
-      GroupsController.permitted_attrs += [:code]
+      GroupsController.permitted_attrs += [:code, :member_count]
       Role.used_attributes += [:export_to_website]
       EventsController.permitted_attrs += [:export_to_website]
       Event.used_attributes += [:export_to_website]

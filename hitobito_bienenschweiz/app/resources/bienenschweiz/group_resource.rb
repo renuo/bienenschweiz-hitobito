@@ -9,5 +9,6 @@ module Bienenschweiz::GroupResource
   extend ActiveSupport::Concern
   included do
     attribute :code, :integer
+    attribute :member_count, :integer
   end
 end

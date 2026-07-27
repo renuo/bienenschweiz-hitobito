@@ -23,6 +23,11 @@ module Bienenschweiz::Group
       uniqueness: true,
       allow_nil: true
 
+    validates :member_count,
+      numericality: {only_integer: true, greater_than_or_equal_to: 0},
+      allow_nil: true
+    validate :assert_member_count_only_on_sektion
+
     alias_method_chain :to_s, :code
     alias_method_chain :display_name, :code
 
@@ -46,5 +51,23 @@ module Bienenschweiz::Group
 
   def sorting_name
     code&.to_s&.rjust(MAX_CODE_DIGITS, "0") || display_name
+  end
+
+  # Sektion holds the manually entered count; other layers show the sum of their
+  # descendant Sektionen's counts; non-layer groups have no meaningful count at all.
+  def member_count
+    if is_a?(Group::Sektion)
+      self[:member_count]
+    elsif layer?
+      descendants.where(type: Group::Sektion.sti_name).sum(:member_count)
+    end
+  end
+
+  private
+
+  def assert_member_count_only_on_sektion
+    return if is_a?(Group::Sektion)
+
+    errors.add(:member_count, :only_for_sektion) if self[:member_count].present?
   end
 end
