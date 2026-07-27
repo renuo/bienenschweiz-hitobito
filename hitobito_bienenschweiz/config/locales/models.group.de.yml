@@ -59,6 +59,21 @@ de:
       group/bienen_zeitung/abo:
         one: Abo
         other: Abos
+      group/bienen_zeitung/abo_euro:
+        one: Abo-EUR
+        other: Abos-EUR
+      group/bienen_zeitung/gratis_abo:
+        one: Gratis-Abo
+        other: Gratis-Abos
+      group/bienen_zeitung/online_abo:
+        one: Online-Abo
+        other: Online-Abos
+      group/bienen_zeitung/geschenk_abo:
+        one: Geschenk-Abo
+        other: Geschenk-Abos
+      group/bienen_zeitung/buchhaendler_abo:
+        one: Buchhändler-Abo
+        other: Buchhändler-Abos
 
       group/themenbezogene_kontakte:
         one: ThemenbezogeneKontakte

@@ -24,6 +24,11 @@ of Bienenschweiz.
     * Kunde: []
   * BienenZeitung
     * Abo: []
+    * Abo-EUR: []
+    * Gratis-Abo: []
+    * Online-Abo: []
+    * Geschenk-Abo: []
+    * Buchhändler-Abo: []
   * ThemenbezogeneKontakte
     * Händler: []
     * Inserenten: []
