@@ -1693,6 +1693,12 @@
           "readable": true,
           "writable": true,
           "description": null
+        },
+        "member_count": {
+          "type": "integer",
+          "readable": true,
+          "writable": true,
+          "description": null
         }
       },
       "extra_attributes": {
@@ -1734,7 +1740,8 @@
         "created_at": {},
         "updated_at": {},
         "deleted_at": {},
-        "code": {}
+        "code": {},
+        "member_count": {}
       },
       "filters": {
         "id": {
@@ -2011,6 +2018,17 @@
           "single": true
         },
         "code": {
+          "type": "integer",
+          "operators": [
+            "eq",
+            "not_eq",
+            "gt",
+            "gte",
+            "lt",
+            "lte"
+          ]
+        },
+        "member_count": {
           "type": "integer",
           "operators": [
             "eq",

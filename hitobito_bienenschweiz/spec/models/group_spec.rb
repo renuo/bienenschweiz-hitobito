@@ -24,6 +24,69 @@ describe Group do
     end
   end
 
+  describe "#member_count" do
+    context "for a Sektion" do
+      it "returns the manually entered value" do
+        expect(Fabricate(:sektion, member_count: 42).member_count).to eq(42)
+      end
+
+      it "returns nil when not set" do
+        expect(Fabricate(:sektion).member_count).to be_nil
+      end
+    end
+
+    context "for a Kantonalverband" do
+      let(:kantonalverband) { groups(:aargauer_kantonalverband) }
+
+      it "sums member_count across its descendant Sektionen" do
+        groups(:aarau_und_umgebung).update!(member_count: 10)
+        groups(:aargauisches_seetal).update!(member_count: 5)
+
+        expect(kantonalverband.member_count).to eq(15)
+      end
+
+      it "treats Sektionen without a count as zero" do
+        groups(:aarau_und_umgebung).update!(member_count: 10)
+        groups(:aargauisches_seetal).update!(member_count: nil)
+
+        expect(kantonalverband.member_count).to eq(10)
+      end
+    end
+
+    context "for a Dachverband" do
+      it "sums member_count across all descendant Sektionen, regardless of depth" do
+        groups(:aarau_und_umgebung).update!(member_count: 10)
+        groups(:aarberg).update!(member_count: 7)
+
+        expect(groups(:root).member_count).to eq(17)
+      end
+    end
+
+    context "for a non-layer group" do
+      it "returns nil" do
+        expect(groups(:vorstand_379).member_count).to be_nil
+      end
+    end
+  end
+
+  describe "member_count validation" do
+    it "is valid when set on a Sektion" do
+      expect(Fabricate.build(:sektion, member_count: 5)).to be_valid
+    end
+
+    it "is invalid when set on a non-Sektion group" do
+      group = Fabricate.build(:group, type: Group::Kantonalverband.sti_name,
+        parent: groups(:root), member_count: 5)
+
+      expect(group).not_to be_valid
+      expect(group.errors[:member_count]).to include("kann nur für Sektionen gesetzt werden")
+    end
+
+    it "rejects negative values" do
+      expect(Fabricate.build(:sektion, member_count: -1)).not_to be_valid
+    end
+  end
+
   describe "#sorting_name" do
     subject(:sorting_name) { group.sorting_name }
 

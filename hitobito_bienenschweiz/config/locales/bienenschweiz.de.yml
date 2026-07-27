@@ -68,6 +68,8 @@ de:
         one: Feedback-Antwort
         other: Feedback-Antworten
     attributes:
+      group:
+        member_count: Mitgliederanzahl
       event/kind:
         abbreviation: Kürzel
       event/kind_category:
@@ -162,6 +164,7 @@ de:
         not_blank_inspectable: 'ist nicht gültig für Blanko-Betriebsprüfungen'
         no_supervisor_role: 'muss eine Person mit aktiver Supervisor-Rolle sein'
         not_allowed_for_kind: 'ist für %{kind} nicht zulässig'
+        only_for_sektion: 'kann nur für Sektionen gesetzt werden'
         not_in_range: 'muss zwischen 1 und 5 liegen'
         final_round_exists: 'für diesen Kurs wurde bereits eine Schlussrunde gestartet, es kann keine weitere Runde mehr gestartet werden'
   orphan_qcontrols:

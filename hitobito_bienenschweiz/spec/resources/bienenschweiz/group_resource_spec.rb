@@ -18,4 +18,20 @@ describe GroupResource, type: :resource do
     render
     expect(jsonapi_data[0].attributes["code"]).to eq 1234
   end
+
+  it "includes member_count as the manually entered value for a Sektion" do
+    sektion = Fabricate(:sektion, parent: groups(:aargauer_kantonalverband), member_count: 9)
+
+    params[:filter] = {id: {eq: sektion.id}}
+    render
+    expect(jsonapi_data[0].attributes["member_count"]).to eq 9
+  end
+
+  it "includes member_count as the sum of descendant Sektionen for a Kantonalverband" do
+    Fabricate(:sektion, parent: group, member_count: 12)
+
+    params[:filter] = {id: {eq: group.id}}
+    render
+    expect(jsonapi_data[0].attributes["member_count"]).to eq 12
+  end
 end
