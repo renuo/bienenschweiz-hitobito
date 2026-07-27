@@ -40,9 +40,33 @@ class Event::BulkAnswersController < ApplicationController
   end
 
   def load_participations
-    @event.participations
+    apply_participant_type_filter(@event.participations.left_joins(:roles))
+      .distinct
       .includes(answers: {question: :translations}, participant: [])
       .sort_by { |p| p.person.full_name.to_s }
+  end
+
+  # Mirrors Event::ParticipationFilter::List#apply_filter_scope so the bulk
+  # answers list matches whatever participant_type filter is active on the
+  # participations index page the edit button was clicked from.
+  def apply_participant_type_filter(scope)
+    participant_type = params.dig(:filters, :participant_type)
+    case participant_type
+    when nil, "all"
+      scope
+    when "teamers"
+      scope.where.not(event_roles: {type: @event.participant_types.collect(&:sti_name)})
+    when "participants"
+      scope.where(event_roles: {type: @event.participant_types.collect(&:sti_name)})
+    else
+      apply_role_label_filter(scope, participant_type)
+    end
+  end
+
+  def apply_role_label_filter(scope, label)
+    return scope unless @event.participation_role_labels.include?(label)
+
+    scope.where(event_roles: {label: label})
   end
 
   def event_answer_ids
