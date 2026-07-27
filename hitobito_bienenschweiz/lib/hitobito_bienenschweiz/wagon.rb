@@ -74,6 +74,7 @@ module HitobitoBienenschweiz
       Event::KindsController.permitted_attrs += [:kas_fee_code, :kas_fixed_fee,
         :kas_instructor_fees]
       Event::ParticipationsController.prepend Bienenschweiz::Event::ParticipationsController
+      EventParticipationsHelper.include Bienenschweiz::EventParticipationsHelper
 
       PersonReadables.prepend Bienenschweiz::PersonReadables
       Sheet::Person.prepend Bienenschweiz::Sheet::Person

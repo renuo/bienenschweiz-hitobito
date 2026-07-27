@@ -29,4 +29,7 @@
 = action_button(t('global.button.print'), 'javascript:window.print();', :print)
 
 - if can?(:update, @event)
-  = action_button(t('event.bulk_answers.edit.button'), edit_group_event_bulk_answers_path(@group, @event), :edit)
+  = action_button(t('event.bulk_answers.edit.button'),
+                  edit_group_event_bulk_answers_path(@group, @event,
+                                                      filters: bulk_answers_filter_params),
+                  :edit)

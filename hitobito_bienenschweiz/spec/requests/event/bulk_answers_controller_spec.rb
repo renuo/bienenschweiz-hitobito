@@ -113,6 +113,73 @@ RSpec.describe Event::BulkAnswersController, type: :request do
       expect(response.body).to include(edit_group_event_bulk_answers_path(group, event))
       expect(response.body).to include("Administrationsangaben bearbeiten")
     end
+
+    it "forwards the active participant_type filter to the bulk edit button" do
+      get group_event_participations_path(group, event, filters: {participant_type: "teamers"})
+
+      expect(response.body).to include(
+        edit_group_event_bulk_answers_path(group, event, filters: {participant_type: "teamers"})
+      )
+    end
+  end
+
+  describe "GET #edit with a participant_type filter" do
+    let!(:teamer_participation) do
+      Fabricate(:event_participation, event: event, active: true).tap do |p|
+        Fabricate(:"Event::Role::Leader", participation: p)
+      end
+    end
+
+    before do
+      Fabricate(:"Event::Course::Role::Participant", participation: participation)
+    end
+
+    it "only includes participants when filtered to participants" do
+      get edit_group_event_bulk_answers_path(group, event,
+        filters: {participant_type: "participants"})
+
+      expect(response.body).to include(participant.full_name)
+      expect(response.body).not_to include(teamer_participation.participant.full_name)
+    end
+
+    it "only includes teamers when filtered to teamers" do
+      get edit_group_event_bulk_answers_path(group, event, filters: {participant_type: "teamers"})
+
+      expect(response.body).to include(teamer_participation.participant.full_name)
+      expect(response.body).not_to include(participant.full_name)
+    end
+
+    it "includes everyone when no filter is given" do
+      get edit_group_event_bulk_answers_path(group, event)
+
+      expect(response.body).to include(participant.full_name)
+      expect(response.body).to include(teamer_participation.participant.full_name)
+    end
+
+    context "with a custom role label" do
+      let!(:labeled_participation) do
+        Fabricate(:event_participation, event: event, active: true).tap do |p|
+          Fabricate(:"Event::Role::Leader", participation: p, label: "Küche")
+        end
+      end
+
+      it "only includes participations with a matching role label" do
+        get edit_group_event_bulk_answers_path(group, event, filters: {participant_type: "Küche"})
+
+        expect(response.body).to include(labeled_participation.participant.full_name)
+        expect(response.body).not_to include(participant.full_name)
+        expect(response.body).not_to include(teamer_participation.participant.full_name)
+      end
+
+      it "includes everyone when the participant_type does not match any role label" do
+        get edit_group_event_bulk_answers_path(group, event,
+          filters: {participant_type: "unknown"})
+
+        expect(response.body).to include(participant.full_name)
+        expect(response.body).to include(teamer_participation.participant.full_name)
+        expect(response.body).to include(labeled_participation.participant.full_name)
+      end
+    end
   end
 
   describe "PATCH #update" do
