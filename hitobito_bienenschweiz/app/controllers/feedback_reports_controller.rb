@@ -13,17 +13,30 @@ class FeedbackReportsController < ApplicationController
   before_action :authorize_action
 
   def index
-    set_default_filters
-    @filter = Events::Filter::CourseList.new(current_person, params.merge(list_all_courses: true))
-    @report = Feedback::Report.new(
-      FeedbackRound.where(event_id: @filter.entries.ids, kind: "final")
-    )
+    @filter = build_filter
+    @report = Feedback::Report.new(filtered_final_rounds(@filter))
+  end
+
+  def export
+    filter = build_filter
+    send_data Export::Tabular::FeedbackReports::Result.xlsx(
+      filtered_final_rounds(filter), current_ability
+    ), type: :xlsx, disposition: "attachment", filename: "feedback-bericht.xlsx"
   end
 
   private
 
   def authorize_action
     authorize!(:index_report, FeedbackRound)
+  end
+
+  def build_filter
+    set_default_filters
+    Events::Filter::CourseList.new(current_person, params.merge(list_all_courses: true))
+  end
+
+  def filtered_final_rounds(filter)
+    FeedbackRound.where(event_id: filter.entries.ids, kind: "final")
   end
 
   # No default group restriction: an admin aggregate report should default to

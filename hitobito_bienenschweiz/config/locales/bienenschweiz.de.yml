@@ -294,6 +294,7 @@ de:
     index:
       title: Feedback-Bericht
       explanation: Feedback über mehrere Kurse hinweg auswerten. Es werden nur abgeschlossene Schlussrunden berücksichtigt.
+      export: Als Excel exportieren
     filter:
       time_period: Zeitraum
       until: bis
