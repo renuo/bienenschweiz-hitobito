@@ -13,7 +13,7 @@ class Event::BulkAnswersController < ApplicationController
 
   decorates :event
   def edit
-    @questions = @event.questions.where(admin: true).list.includes(:translations)
+    @questions = load_questions
     @participations = load_participations
   end
 
@@ -37,6 +37,11 @@ class Event::BulkAnswersController < ApplicationController
 
   def authorize_action
     authorize! :update, @event
+  end
+
+  def load_questions
+    @event.questions.where(admin: true).list.includes(:translations)
+      .relevant_for_filter(params.dig(:filters, :participant_type))
   end
 
   def load_participations
