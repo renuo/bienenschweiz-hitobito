@@ -17,5 +17,6 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*"] + ["Rakefile"]
   # to match core Gemfile.lock which is otherwise not considered locally
   s.dependencies << Gem::Dependency.new("haml", "~> 6.3.0")
+  s.dependencies << Gem::Dependency.new("image_processing", "~> 1.14.0")
   # rubocop:enable Style/SingleSpaceBeforeFirstArg
 end

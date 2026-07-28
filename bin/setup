@@ -21,6 +21,7 @@ pushd hitobito
     direnv exec bin/setup
 popd
 
+cp hitobito/Gemfile.local.lock hitobito_bienenschweiz/Gemfile.local.lock
 
 if [ ! -f .git/hooks/pre-push ]; then
     echo -e "\n== Creating pre-push hook link =="
