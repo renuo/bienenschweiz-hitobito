@@ -10,4 +10,14 @@ class InspectionMailerPreview < ActionMailer::Preview
     qcontrol = Qcontrol.where.not(person: nil).last
     InspectionMailer.print_certificate_and_letter(qcontrol.id)
   end
+
+  def beekeeper_and_inspector_checklist_pdf_mailer
+    qcontrol = Qcontrol.where.not(person: nil).last
+    InspectionMailer.beekeeper_and_inspector_checklist_pdf_mailer(qcontrol.id, false)
+  end
+
+  def only_inspector_checklist_pdf_mailer
+    qcontrol = Qcontrol.where.not(person: nil).last
+    InspectionMailer.only_inspector_checklist_pdf_mailer(qcontrol.id, false)
+  end
 end

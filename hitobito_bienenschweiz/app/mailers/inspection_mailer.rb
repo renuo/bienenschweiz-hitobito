@@ -117,11 +117,12 @@ class InspectionMailer < ApplicationMailer
 
   def load_qcontrol_and_attach(qcontrol_id)
     @qcontrol = Qcontrol.find(qcontrol_id)
-    attachments[I18n.t("checklist_attachment_name")] = PdfService.render(:checklist, @qcontrol)
+    attachments[I18n.t("checklist_attachment_name")] =
+      Export::Pdf::Qcontrol::Checklist.new(@qcontrol).render
   end
 
   def member_email
-    CHECKLIST_MEMBER_EMAIL || @qcontrol.member.email
+    CHECKLIST_MEMBER_EMAIL || @qcontrol.person.email
   end
 
   def inspector_email

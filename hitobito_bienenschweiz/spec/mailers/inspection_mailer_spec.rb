@@ -172,7 +172,6 @@ describe InspectionMailer do
 
   describe "#beekeeper_and_inspector_checklist_pdf_mailer" do
     before do
-      stub_const("PdfService", double(render: "fake-pdf"))
       stub_const("InspectionMailer::CHECKLIST_MEMBER_EMAIL", "member@example.com")
       stub_const("InspectionMailer::CHECKLIST_INSPECTOR_EMAIL", "inspector@example.com")
     end
@@ -180,6 +179,12 @@ describe InspectionMailer do
     it "sends to CHECKLIST_MEMBER_EMAIL" do
       mail = InspectionMailer.beekeeper_and_inspector_checklist_pdf_mailer(qcontrol.id, false)
       expect(mail.to).to eq(["member@example.com"])
+    end
+
+    it "falls back to the beekeeper's own email when CHECKLIST_MEMBER_EMAIL is unset" do
+      stub_const("InspectionMailer::CHECKLIST_MEMBER_EMAIL", nil)
+      mail = InspectionMailer.beekeeper_and_inspector_checklist_pdf_mailer(qcontrol.id, false)
+      expect(mail.to).to eq([person.email])
     end
 
     it "cc's the inspector" do
@@ -196,6 +201,7 @@ describe InspectionMailer do
     it "attaches the checklist PDF" do
       mail = InspectionMailer.beekeeper_and_inspector_checklist_pdf_mailer(qcontrol.id, false)
       expect(mail.attachments.size).to eq(1)
+      expect(mail.attachments.first.body.decoded).to start_with("%PDF")
     end
 
     it "includes the inspector name in the body" do
@@ -255,7 +261,6 @@ describe InspectionMailer do
 
   describe "#only_inspector_checklist_pdf_mailer" do
     before do
-      stub_const("PdfService", double(render: "fake-pdf"))
       stub_const("InspectionMailer::CHECKLIST_INSPECTOR_EMAIL", "inspector@example.com")
     end
 
@@ -278,6 +283,12 @@ describe InspectionMailer do
     it "includes the beekeeper name in the body" do
       mail = InspectionMailer.only_inspector_checklist_pdf_mailer(qcontrol.id, false)
       expect(mail.body.encoded).to include(person.full_name)
+    end
+
+    it "attaches the checklist PDF" do
+      mail = InspectionMailer.only_inspector_checklist_pdf_mailer(qcontrol.id, false)
+      expect(mail.attachments.size).to eq(1)
+      expect(mail.attachments.first.body.decoded).to start_with("%PDF")
     end
 
     context "when inspector is nil" do
