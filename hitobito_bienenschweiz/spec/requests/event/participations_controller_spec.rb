@@ -16,7 +16,8 @@ RSpec.describe "Event::ParticipationsController", type: :request do
   let(:group) { course.groups.first }
 
   def add_participant(person)
-    participation = Fabricate(:event_participation, event: course, participant: person)
+    participation = Fabricate(:event_participation, event: course, participant: person,
+      active: true)
     Fabricate(course.participant_types.first.name.to_sym, participation: participation)
     participation
   end
@@ -215,7 +216,7 @@ RSpec.describe "Event::ParticipationsController", type: :request do
         before do
           no_date_course.dates.clear
           p = Fabricate(:event_participation, event: no_date_course,
-            participant: Fabricate(:person))
+            participant: Fabricate(:person), active: true)
           Fabricate(no_date_course.participant_types.first.name.to_sym, participation: p)
           stub_kas_success
         end
@@ -226,6 +227,55 @@ RSpec.describe "Event::ParticipationsController", type: :request do
             .with { |req|
               body = JSON.parse(req.body)["fee"]
               body["occurred_on"] == Time.zone.today.iso8601
+            }
+        end
+      end
+
+      context "with a participant who has applied but was not yet accepted" do
+        let!(:pending_person) { Fabricate(:person) }
+
+        before do
+          p = Fabricate(:event_participation, event: course, participant: pending_person)
+          Fabricate(course.participant_types.first.name.to_sym, participation: p)
+          stub_kas_success
+        end
+
+        it "is not active, since the course supports applications" do
+          expect(course.participations.find_by(participant: pending_person).active).to be(false)
+        end
+
+        it "does not call the KAS API for the pending applicant" do
+          post_create_kas_fees
+          expect(WebMock).not_to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+        end
+
+        it "sets a success flash mentioning 0 fees" do
+          post_create_kas_fees
+          expect(flash[:notice]).to include("0")
+        end
+      end
+
+      context "with an accepted participant alongside a pending applicant" do
+        let!(:accepted_person) { Fabricate(:person) }
+        let!(:pending_person) { Fabricate(:person) }
+
+        before do
+          add_participant(accepted_person)
+          p = Fabricate(:event_participation, event: course, participant: pending_person)
+          Fabricate(course.participant_types.first.name.to_sym, participation: p)
+          stub_kas_success
+        end
+
+        it "only calls the KAS API for the accepted participant" do
+          post_create_kas_fees
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees").once
+        end
+
+        it "sends the accepted participant's person_id" do
+          post_create_kas_fees
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+            .with { |req|
+              JSON.parse(req.body)["fee"]["person_id"] == accepted_person.id
             }
         end
       end
@@ -330,12 +380,25 @@ RSpec.describe "Event::ParticipationsController", type: :request do
           expect(response.body).to include("CHF 0.–")
         end
 
+        context "with a participant who applied but was not yet accepted" do
+          before do
+            p = Fabricate(:event_participation, event: instructor_course,
+              participant: Fabricate(:person))
+            Fabricate(:"Event::Course::Role::Participant", participation: p)
+          end
+
+          it "does not count the pending applicant towards the participant count" do
+            get_new_kas_instructor_fees
+            expect(response.body).to include("0 Teilnehmende")
+          end
+        end
+
         context "with 8 participants" do
           before do
             8.times do
               p = Fabricate(:person)
               participation = Fabricate(:event_participation, event: instructor_course,
-                participant: p)
+                participant: p, active: true)
               Fabricate(:"Event::Course::Role::Participant", participation: participation)
             end
           end
@@ -351,7 +414,7 @@ RSpec.describe "Event::ParticipationsController", type: :request do
             15.times do
               p = Fabricate(:person)
               participation = Fabricate(:event_participation, event: instructor_course,
-                participant: p)
+                participant: p, active: true)
               Fabricate(:"Event::Course::Role::Participant", participation: participation)
             end
           end
@@ -367,7 +430,7 @@ RSpec.describe "Event::ParticipationsController", type: :request do
             25.times do
               p = Fabricate(:person)
               participation = Fabricate(:event_participation, event: instructor_course,
-                participant: p)
+                participant: p, active: true)
               Fabricate(:"Event::Course::Role::Participant", participation: participation)
             end
           end
