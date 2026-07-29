@@ -182,6 +182,30 @@ RSpec.describe Event::BulkAnswersController, type: :request do
     end
   end
 
+  describe "GET #edit with a pending (not yet accepted) participation" do
+    let!(:pending_participation) do
+      p = event.participations.new(participant: Fabricate(:person))
+      p.roles.build(type: Event::Course::Role::Participant.sti_name)
+      p.save!
+      p
+    end
+
+    before do
+      Fabricate(:"Event::Course::Role::Participant", participation: participation)
+    end
+
+    it "is not active, since the course supports applications" do
+      expect(pending_participation.reload.active).to be(false)
+    end
+
+    it "does not show a participant who applied but has not yet been accepted" do
+      get edit_group_event_bulk_answers_path(group, event)
+
+      expect(response.body).to include(participant.full_name)
+      expect(response.body).not_to include(pending_participation.participant.full_name)
+    end
+  end
+
   describe "GET #edit question relevance" do
     let!(:leaders_question) do
       Fabricate(:event_question, event: event, question: "Nur Leitung?", admin: true,
@@ -348,6 +372,23 @@ RSpec.describe Event::BulkAnswersController, type: :request do
         expect do
           patch group_event_bulk_answers_path(group, event), params: {answers: {}}
         end.to raise_error(CanCan::AccessDenied)
+      end
+    end
+
+    context "with a pending (not yet accepted) participation" do
+      let!(:pending_participation) do
+        p = event.participations.new(participant: Fabricate(:person))
+        p.roles.build(type: Event::Course::Role::Participant.sti_name)
+        p.save!
+        p
+      end
+      let(:pending_answer) { pending_participation.answers.find_by(question: question) }
+
+      it "does not update the answer of a participant who has not yet been accepted" do
+        patch group_event_bulk_answers_path(group, event),
+          params: {answers: {pending_answer.id.to_s => {answer: "Keine"}}}
+
+        expect(pending_answer.reload.answer).not_to eq("Keine")
       end
     end
   end
