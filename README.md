@@ -19,7 +19,7 @@ See [./hitobito/doc/developer/local_setup.md](https://github.com/hitobito/hitobi
 ### Inspection reminders
 
 ```
-nctl exec app hitobito-main -p renuo-bienenschweiz bin/rails r 'InspectionReminderJob.perform_later'
+nctl exec app hitobito-develop -p renuo-bienenschweiz bin/rails r 'InspectionReminderJob.new.enqueue!'
 ```
 
 The output will be sent to the logs. If some mails fail, it will log an error to Sentry and print out the indexes.
