@@ -11,7 +11,7 @@
 - current_year = Time.zone.today.year
 
 = form_tag create_kas_instructor_fees_group_event_participations_path(@group, @event),
-    data: {controller: "kas-instructor-fees", kas_instructor_fees_budget_value: @per_year_budget} do
+    data: {controller: "bienenschweiz--kas-instructor-fees", bienenschweiz__kas_instructor_fees_budget_value: @per_year_budget} do
   .table-responsive
     %table.table.table-sm.align-middle
       %thead
@@ -39,8 +39,8 @@
                     = number_field_tag "fees[#{participation.participant_id}][#{year}]", nil,
                         min: 0, step: "0.01", placeholder: "0.00",
                         class: "form-control form-control-sm text-end",
-                        data: {kas_instructor_fees_target: "amount", year: year,
-                               action: "input->kas-instructor-fees#recalculate"}
+                        data: {bienenschweiz__kas_instructor_fees_target: "amount", year: year,
+                               action: "input->bienenschweiz--kas-instructor-fees#recalculate"}
                 - else
                   = text_field_tag :nothing, nil, placeholder: "CHF", disabled: true,
                     style: "width:10rem;margin:auto",
@@ -51,9 +51,9 @@
           - @years.each do |year|
             %td.text-center
               - if year == current_year
-                %span{data: {kas_instructor_fees_target: "yearTotal", year: year}} CHF 0.00
+                %span{data: {bienenschweiz__kas_instructor_fees_target: "yearTotal", year: year}} CHF 0.00
                 %span.text-muted / CHF #{@per_year_budget}.–
               - else
                 –
   = submit_tag t("#{scope}.submit"), class: "btn btn-primary mt-3",
-      data: {kas_instructor_fees_target: "submitButton"}
+      data: {bienenschweiz__kas_instructor_fees_target: "submitButton"}
