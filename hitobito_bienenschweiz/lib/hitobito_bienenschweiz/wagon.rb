@@ -116,6 +116,9 @@ module HitobitoBienenschweiz
       HealthzController.prepend Bienenschweiz::HealthzController
       Event::KindCategoriesController.permitted_attrs += [:layer_group_type]
       Sheet::Event.prepend Bienenschweiz::Sheet::Event
+
+      ActionView::Template.register_template_handler :axlsx,
+        Bienenschweiz::AxlsxTemplateHandler.new
     end
 
     initializer "bienenschweiz.add_settings" do |_app|
