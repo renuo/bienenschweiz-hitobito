@@ -101,7 +101,7 @@ module Bienenschweiz::Event::ParticipationsController
   end
 
   def participant_count
-    @event.participations.joins(:roles)
+    @event.participations.active.joins(:roles)
       .where(event_roles: {type: @event.participant_types.map(&:sti_name)})
       .distinct.count
   end
@@ -116,7 +116,7 @@ module Bienenschweiz::Event::ParticipationsController
   end
 
   def instructor_participations
-    @event.participations.joins(:roles)
+    @event.participations.active.joins(:roles)
       .where(event_roles: {type: instructor_role_types})
       .includes(:participant)
       .preload(:roles)
@@ -159,7 +159,7 @@ module Bienenschweiz::Event::ParticipationsController
   end
 
   def kas_participants
-    @kas_participants ||= @event.participations.joins(:roles)
+    @kas_participants ||= @event.participations.active.joins(:roles)
       .where(event_roles: {type: @event.participant_types.map(&:sti_name)})
       .includes(:participant)
   end
