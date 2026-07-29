@@ -182,6 +182,136 @@ RSpec.describe Event::BulkAnswersController, type: :request do
     end
   end
 
+  describe "GET #edit question relevance" do
+    let!(:leaders_question) do
+      Fabricate(:event_question, event: event, question: "Nur Leitung?", admin: true,
+        relevance: "leaders")
+    end
+    let!(:participants_question) do
+      Fabricate(:event_question, event: event, question: "Nur Teilnehmende?", admin: true,
+        relevance: "participants")
+    end
+
+    it "shows every relevance when no participant_type filter is given" do
+      get edit_group_event_bulk_answers_path(group, event)
+
+      expect(response.body).to include("Nur Leitung?")
+      expect(response.body).to include("Nur Teilnehmende?")
+    end
+
+    it "hides leaders-only questions when filtered to participants" do
+      get edit_group_event_bulk_answers_path(group, event,
+        filters: {participant_type: "participants"})
+
+      expect(response.body).not_to include("Nur Leitung?")
+      expect(response.body).to include("Nur Teilnehmende?")
+    end
+
+    it "hides participants-only questions when filtered to teamers" do
+      get edit_group_event_bulk_answers_path(group, event, filters: {participant_type: "teamers"})
+
+      expect(response.body).to include("Nur Leitung?")
+      expect(response.body).not_to include("Nur Teilnehmende?")
+    end
+
+    context "row-level relevance, independent of the participant_type filter" do
+      let!(:leader_participation) do
+        p = event.participations.new(participant: Fabricate(:person), active: true)
+        p.roles.build(type: Event::Role::Leader.sti_name)
+        p.save!
+        p
+      end
+
+      before do
+        Fabricate(:"Event::Course::Role::Participant", participation: participation)
+        # simulates a stale answer created before the question was scoped
+        leader_participation.answers.create!(question: participants_question)
+      end
+
+      it "excludes a leader's row from a participants-only question even when the card is shown" do
+        get edit_group_event_bulk_answers_path(group, event)
+
+        rows = response.body[/Nur Teilnehmende\?.*?(?=Nur Leitung\?|\z)/m]
+        expect(rows).to include(participant.full_name)
+        expect(rows).not_to include(leader_participation.participant.full_name)
+      end
+
+      it "excludes a participant's row from a leaders-only question even when the card is shown" do
+        get edit_group_event_bulk_answers_path(group, event)
+
+        rows = response.body[/Nur Leitung\?.*?(?=Nur Teilnehmende\?|\z)/m]
+        expect(rows).to include(leader_participation.participant.full_name)
+        expect(rows).not_to include(participant.full_name)
+      end
+    end
+  end
+
+  describe "GET #edit participant label" do
+    # Person#to_s appends " / <nickname>" when the person has one (fabricated
+    # people always do), so allow for that between the name and the role.
+    def label_pattern(name, suffix)
+      Regexp.new("#{Regexp.escape(name)}(?: */ *\\S+)?\\s*\\(#{Regexp.escape(suffix)}\\)")
+    end
+
+    it "does not annotate a basic participant" do
+      Fabricate(:"Event::Course::Role::Participant", participation: participation)
+
+      get edit_group_event_bulk_answers_path(group, event)
+
+      expect(response.body).to include(participant.full_name)
+      expect(response.body).not_to match(
+        %r{#{Regexp.escape(participant.full_name)}(?: */ *\S+)?\s*\(}
+      )
+    end
+
+    context "on a leaders-only question" do
+      let!(:leaders_question) do
+        Fabricate(:event_question, event: event, question: "Nur Leitung?", admin: true,
+          relevance: "leaders")
+      end
+
+      it "annotates a leader with the translated role" do
+        Fabricate(:"Event::Role::Leader", participation: participation)
+
+        get edit_group_event_bulk_answers_path(group, event)
+
+        expect(response.body).to match(
+          label_pattern(participant.full_name, Event::Role::Leader.label)
+        )
+      end
+
+      it "annotates a role with a custom label using the role's own to_s" do
+        role = Fabricate(:"Event::Role::Leader", participation: participation, label: "Küche")
+
+        get edit_group_event_bulk_answers_path(group, event)
+
+        expect(response.body).to match(label_pattern(participant.full_name, role.to_s))
+      end
+    end
+
+    context "when someone has both a leader and a plain participant role" do
+      let!(:participants_question) do
+        Fabricate(:event_question, event: event, question: "Nur Teilnehmende?", admin: true,
+          relevance: "participants")
+      end
+
+      before do
+        Fabricate(:"Event::Course::Role::Participant", participation: participation)
+        Fabricate(:"Event::Role::Leader", participation: participation)
+      end
+
+      it "does not show the leader role on a participants-only question" do
+        get edit_group_event_bulk_answers_path(group, event)
+
+        rows = response.body[/Nur Teilnehmende\?.*?(?=Nur Leitung\?|\z)/m]
+        expect(rows).to include(participant.full_name)
+        expect(rows).not_to match(
+          %r{#{Regexp.escape(participant.full_name)}(?: */ *\S+)?\s*\(}
+        )
+      end
+    end
+  end
+
   describe "PATCH #update" do
     it "updates the text answer and redirects" do
       patch group_event_bulk_answers_path(group, event),

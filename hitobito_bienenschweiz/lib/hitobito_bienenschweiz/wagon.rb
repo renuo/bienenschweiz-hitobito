@@ -15,6 +15,7 @@ module HitobitoBienenschweiz
     # Add a load path for this specific wagon
     config.autoload_paths += %W[
       #{config.root}/app/abilities
+      #{config.root}/app/decorators
       #{config.root}/app/domain
       #{config.root}/app/jobs
     ]
@@ -75,6 +76,16 @@ module HitobitoBienenschweiz
         :kas_instructor_fees]
       Event::ParticipationsController.prepend Bienenschweiz::Event::ParticipationsController
       EventParticipationsHelper.include Bienenschweiz::EventParticipationsHelper
+
+      Event::Question.include Bienenschweiz::Event::Question
+      Event::Participation.prepend Bienenschweiz::Event::Participation
+      Event::Answer.prepend Bienenschweiz::Event::Answer
+      Event::ParticipationDecorator.prepend Bienenschweiz::Event::ParticipationDecorator
+
+      event_question_attrs = EventsController.permitted_attrs.find { |attr| attr.is_a?(Hash) }
+      [:application_questions_attributes, :admin_questions_attributes].each do |key|
+        event_question_attrs[key] += [:relevance]
+      end
 
       PersonReadables.prepend Bienenschweiz::PersonReadables
       Sheet::Person.prepend Bienenschweiz::Sheet::Person

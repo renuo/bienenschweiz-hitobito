@@ -17,11 +17,12 @@
             %span.text-danger.ms-1 *
         .card-body.p-0
           - @participations.each do |participation|
+            - next unless question.relevant_for?(participation)
             - answer = participation.answers.find { |a| a.question_id == question.id }
             - next unless answer
             .row.mb-2
               - base_name = "answers[#{answer.id}][answer]"
-              = label_tag base_name, participation.to_s, class: "col-md-3 col-xl-2 col-form-label text-md-end pb-1"
+              = label_tag base_name, participation_label(participation, question), class: "col-md-3 col-xl-2 col-form-label text-md-end pb-1"
               .mb-2.pt-2.labeled.col-md-9.col-lg-8.col-xl-8.mw-63ch.mw-md-47ch.mw-lg-63ch
                 - if question.choices?
                   - question.deserialized_choices.each_with_index do |choice, idx|

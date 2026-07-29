@@ -171,4 +171,53 @@ RSpec.describe EventsController, type: :request do
       end
     end
   end
+
+  describe "event question relevance" do
+    let!(:application_question) do
+      Fabricate(:event_question, event: course, question: "App-Frage?", admin: false)
+    end
+    let!(:admin_question) do
+      Fabricate(:event_question, event: course, question: "Admin-Frage?", admin: true)
+    end
+
+    before do
+      roles(:admin)
+      sign_in(admin)
+    end
+
+    it "renders a relevance dropdown for application and admin questions" do
+      get edit_group_event_path(group, course)
+
+      expect(response.body).to include(
+        %(name="event[application_questions_attributes][0][relevance]")
+      )
+      expect(response.body).to include(
+        %(name="event[admin_questions_attributes][0][relevance]")
+      )
+    end
+
+    it "persists the chosen relevance for an application question" do
+      patch group_event_path(group, course), params: {
+        event: {
+          application_questions_attributes: {
+            "0" => {id: application_question.id, relevance: "leaders"}
+          }
+        }
+      }
+
+      expect(application_question.reload.relevance).to eq("leaders")
+    end
+
+    it "persists the chosen relevance for an admin question" do
+      patch group_event_path(group, course), params: {
+        event: {
+          admin_questions_attributes: {
+            "0" => {id: admin_question.id, relevance: "participants"}
+          }
+        }
+      }
+
+      expect(admin_question.reload.relevance).to eq("participants")
+    end
+  end
 end
