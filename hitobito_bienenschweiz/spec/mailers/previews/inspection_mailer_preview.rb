@@ -20,4 +20,20 @@ class InspectionMailerPreview < ActionMailer::Preview
     qcontrol = Qcontrol.where.not(person: nil).last
     InspectionMailer.only_inspector_checklist_pdf_mailer(qcontrol.id, false)
   end
+
+  def sectional_inspection_reminder_mail
+    sektion = Group::Sektion.first
+    InspectionMailer.sectional_inspection_reminder_mail(reminder_for(sektion))
+  end
+
+  def cantonal_inspection_reminder_mail
+    kantonalverband = Group::Kantonalverband.first
+    InspectionMailer.cantonal_inspection_reminder_mail(reminder_for(kantonalverband))
+  end
+
+  private
+
+  def reminder_for(group)
+    InspectionService.new.send(:inspection_reminder, group)
+  end
 end

@@ -58,13 +58,9 @@ describe InspectionMailer do
     let(:kantonalverband) { Fabricate(:kantonalverband) }
     let(:sektion) { Fabricate(:sektion, parent: kantonalverband, name: "Sektion Testingen") }
     let(:inspector) { Fabricate(:person, email: "pruefer@example.com") }
+    let(:beekeeper) { Fabricate(:person, first_name: "Hans", last_name: "Imker") }
+    let!(:beekeeper_role) { Fabricate(:siegel_imker_role, person: beekeeper, sektion: sektion) }
     let(:reminder) { GroupInspectionReminder.new(sektion, [inspector]) }
-
-    before do
-      allow_any_instance_of(described_class)
-        .to receive(:render_to_string)
-        .and_return("fake-xlsx-bytes")
-    end
 
     subject(:mail) { described_class.sectional_inspection_reminder_mail(reminder) }
 
@@ -86,6 +82,18 @@ describe InspectionMailer do
       # president_emails queries DB; with no Vorstand roles set up this is empty
       expect(mail.cc).to eq([]) | be_nil
     end
+
+    it "renders a real xlsx attachment (valid zip archive)" do
+      bytes = mail.attachments.first.body.decoded
+      expect(zip_entries(bytes)).to include("xl/worksheets/sheet1.xml")
+    end
+
+    it "includes the member's data in the worksheet" do
+      bytes = mail.attachments.first.body.decoded
+      sheet_xml = extract_zip_entry(bytes, "xl/worksheets/sheet1.xml")
+      shared_strings = extract_zip_entry(bytes, "xl/sharedStrings.xml")
+      expect(sheet_xml + shared_strings).to include("Imker")
+    end
   end
 
   describe "#cantonal_inspection_reminder_mail" do
@@ -93,12 +101,7 @@ describe InspectionMailer do
     let(:inspector) { Fabricate(:person, email: "kantonal@example.com") }
     let(:reminder) { GroupInspectionReminder.new(kantonalverband, [inspector]) }
 
-    before do
-      allow_any_instance_of(described_class)
-        .to receive(:render_to_string)
-        .and_return("fake-xlsx-bytes")
-      stub_const("InspectionMailer::CANTONAL_INSPECTOR_CC_EMAIL", "cc@example.com")
-    end
+    before { stub_const("InspectionMailer::CANTONAL_INSPECTOR_CC_EMAIL", "cc@example.com") }
 
     subject(:mail) { described_class.cantonal_inspection_reminder_mail(reminder) }
 
@@ -118,6 +121,11 @@ describe InspectionMailer do
 
     it "cc's CANTONAL_INSPECTOR_CC_EMAIL" do
       expect(mail.cc).to include("cc@example.com")
+    end
+
+    it "renders a real xlsx attachment (valid zip archive)" do
+      bytes = mail.attachments.first.body.decoded
+      expect(zip_entries(bytes)).to include("xl/worksheets/sheet1.xml")
     end
   end
 
@@ -334,5 +342,24 @@ describe InspectionMailer do
     it "includes a link to the beekeeper" do
       expect(mail.body.encoded).to include(person_url(person))
     end
+  end
+
+  def zip_entries(data)
+    entries = []
+    Zip::InputStream.open(StringIO.new(data)) do |zip|
+      while (entry = zip.get_next_entry)
+        entries << entry.name
+      end
+    end
+    entries
+  end
+
+  def extract_zip_entry(data, name)
+    Zip::InputStream.open(StringIO.new(data)) do |zip|
+      while (entry = zip.get_next_entry)
+        return entry.get_input_stream.read if entry.name == name
+      end
+    end
+    raise "Entry #{name} not found in xlsx"
   end
 end

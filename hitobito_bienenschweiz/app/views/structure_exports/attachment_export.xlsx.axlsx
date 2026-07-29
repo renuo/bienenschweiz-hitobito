@@ -1,0 +1,35 @@
+xlsx_package.use_shared_strings = true
+wb = xlsx_package.workbook
+
+ws = wb.add_worksheet(name: "Siegelimker")
+
+ws.page_margins do |margins|
+  margins.right = 0.5
+  margins.left = 0.5
+end
+
+ws.page_setup do |page|
+  page.paper_size = 9
+  page.orientation = :landscape
+end
+
+bold = ws.styles.add_style(b: true, sz: 10, alignment: {vertical: :top, wrap_text: true})
+title = ws.styles.add_style(b: true, sz: 18)
+table = ws.styles.add_style(sz: 10, border: {style: :thin, color: "000000"},
+  alignment: {vertical: :top, wrap_text: true})
+
+ws.add_row ["Liste Siegelimker Stand #{Time.zone.today.strftime("%d.%m.%Y")}"], style: title,
+  height: 22
+ws.merge_cells "A1:E1"
+
+ws.add_row []
+
+ws.add_row ["Sektion", "Name", "Vorname", "Zusatz 1", "Strasse", "PLZ", "Ort", "Tel. Nr.",
+  "Natel", "E-Mail", "Betriebs-kontrolle"], style: bold, height: 28
+ws.add_row []
+
+members.each do |member|
+  ws.add_row member, style: table, height: 28
+end
+
+ws.column_widths 10, 12, 12, 8, 18, 5, 12, 12, 12, 12, 9
