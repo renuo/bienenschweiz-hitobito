@@ -95,7 +95,7 @@ module Bienenschweiz::Event::ParticipationsController
   end
 
   def create_instructor_fee(client, person_id, year, amount, failed)
-    client.create_fee(kas_instructor_fee_params(person_id.to_i, year.to_i, amount.to_f))
+    client.create_fee(kas_instructor_fee_params(person_id.to_i, amount.to_f))
   rescue KasClient::Error => e
     failed << "#{Person.find_by(id: person_id)} (#{year}): #{e.message}"
   end
@@ -143,11 +143,11 @@ module Bienenschweiz::Event::ParticipationsController
     @event.dates.map { |d| (d.finish_at || d.start_at).year }.max || start_at.year
   end
 
-  def kas_instructor_fee_params(person_id, year, amount)
+  def kas_instructor_fee_params(person_id, amount)
     {
       person_id: person_id,
       fee_type_code: @event.kind.kas_fee_code,
-      occurred_on: Date.new(year, 1, 1).iso8601,
+      occurred_on: Time.zone.today.iso8601,
       quantity: 1,
       total_amount: format("%.2f", amount),
       group_id: @group.id
