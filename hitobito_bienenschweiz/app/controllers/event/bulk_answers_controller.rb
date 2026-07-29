@@ -45,7 +45,7 @@ class Event::BulkAnswersController < ApplicationController
   end
 
   def load_participations
-    apply_participant_type_filter(@event.participations.left_joins(:roles))
+    apply_participant_type_filter(@event.participations.active.left_joins(:roles))
       .distinct
       .includes(answers: {question: :translations}, participant: [])
       .sort_by { |p| p.person.full_name.to_s }
@@ -78,7 +78,7 @@ class Event::BulkAnswersController < ApplicationController
     Set.new(
       Event::Answer
         .joins(:participation)
-        .where(event_participations: {event_id: @event.id})
+        .where(event_participations: {event_id: @event.id, active: true})
         .ids
     )
   end
