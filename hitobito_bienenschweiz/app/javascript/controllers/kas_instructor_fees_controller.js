@@ -1,12 +1,14 @@
-// Copyright (c) 2012-2026, BienenSchweiz. This file is part of
-// hitobito_bienenschweiz and licensed under the Affero General Public License version 3
-// or later. See the COPYING file at the top-level directory or at
-// https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+/*
+ * Copyright (c) 2012-2012-2026. BienenSchweiz. This file is part of
+ * hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+ * or later. See the COPYING file at the top-level directory or at
+ * https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
+ */
 
 // Note: no class fields or optional chaining — wagon JS is not transpiled by Babel.
-import { stimulus, Controller } from "controllers";
+import { Controller } from "@hotwired/stimulus";
 
-class KasInstructorFeesController extends Controller {
+export default class extends Controller {
   static get targets() {
     return ["amount", "yearTotal", "submitButton"];
   }
@@ -49,5 +51,3 @@ class KasInstructorFeesController extends Controller {
     }
   }
 }
-
-stimulus.register("kas-instructor-fees", KasInstructorFeesController);
