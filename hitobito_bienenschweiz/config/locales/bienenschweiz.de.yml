@@ -183,6 +183,7 @@ de:
       bienenschweiz_memos: Memos
   qcontrol_default_title: 'Betriebsprüfung'
   checklist_attachment_name: "Betriebspruefung.pdf"
+  fee_remarks: "Betriebsprüfung %{name}"
   blank_inspection_info:
     subject: "Neuzertifizierung eines Siegelimkers"
   inspection_not_necessary:

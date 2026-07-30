@@ -7,8 +7,7 @@
 
 class Qcontrol < ApplicationRecord
   include I18nEnums
-  # TODO: implmeent fee creation in kas
-  # include FeeCreation
+  include FeeCreation
   include QcontrolNotifications
 
   has_one_attached :document
@@ -26,7 +25,6 @@ class Qcontrol < ApplicationRecord
   accepts_nested_attributes_for :quality_control_answers, allow_destroy: true
 
   i18n_enum :control_state, %w[passed not_passed partially_passed], queries: true
-  enum :fee_creation_state, %w[fee_not_required fee_not_created fee_ok]
 
   enum :no_control_reason, {
     no_reason: "no_reason",
