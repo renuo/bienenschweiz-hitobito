@@ -78,6 +78,13 @@ RSpec.describe "Event::ParticipationsController", type: :request do
               }
           end
 
+          it "sends state pending" do
+            post_create_kas_fees
+            expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+              .with { |req| JSON.parse(req.body)["fee"]["state"] == "pending" }
+              .twice
+          end
+
           it "marks kas_fees_created on the event" do
             expect { post_create_kas_fees }.to change { course.reload.kas_fees_created }.to(true)
           end
@@ -614,6 +621,12 @@ RSpec.describe "Event::ParticipationsController", type: :request do
                 body["group_id"] == instructor_group.id &&
                 body["total_amount"] == "150.00"
             }
+        end
+
+        it "sends state pending" do
+          post_instructor_fees(leader.id.to_s => {"2025" => "150.00"})
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+            .with { |req| JSON.parse(req.body)["fee"]["state"] == "pending" }
         end
 
         it "sends today's date as occurred_on regardless of the selected fee year" do

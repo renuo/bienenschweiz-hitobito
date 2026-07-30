@@ -150,7 +150,8 @@ module Bienenschweiz::Event::ParticipationsController
       occurred_on: Time.zone.today.iso8601,
       quantity: 1,
       total_amount: format("%.2f", amount),
-      group_id: @group.id
+      group_id: @group.id,
+      state: "pending"
     }
   end
 
@@ -180,7 +181,8 @@ module Bienenschweiz::Event::ParticipationsController
         Time.zone.today.iso8601,
       total_amount: "0.00",
       quantity: 1,
-      group_id: kas_fee_group_id(participation)
+      group_id: kas_fee_group_id(participation),
+      state: "pending"
     }
   end
 

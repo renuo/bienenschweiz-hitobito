@@ -103,6 +103,12 @@ describe Kas::FeeCreationService do
           }
       end
 
+      it "does not send a state, leaving the KAS default of accepted" do
+        service.perform
+        expect(WebMock).to have_requested(:post, "#{base_url}/api/v1/fees")
+          .with { |req| !JSON.parse(req.body)["fee"].key?("state") }
+      end
+
       context "fee_type_code" do
         it "is 'first_qcontrol_without_qunav' for the beekeeper's first qcontrol" do
           service.perform
