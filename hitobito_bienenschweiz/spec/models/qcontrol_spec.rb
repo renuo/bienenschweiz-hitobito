@@ -129,6 +129,98 @@ describe Qcontrol do
     end
   end
 
+  describe "fee creation" do
+    let(:kader_group) { Fabricate(:group, parent: group, type: Group::Kader.sti_name) }
+    let(:inspector) { Fabricate(:fachperson_produkte, group_id: kader_group.id) }
+    let(:qcontrol) do
+      Fabricate(:qcontrol, person: person, group: group, inspector: inspector,
+        control_date: Date.new(2026, 5, 1), control_state: "passed")
+    end
+
+    describe "#should_create_fee?" do
+      it "is true when all conditions are met" do
+        expect(qcontrol.should_create_fee?).to be(true)
+      end
+
+      it "is false without a beekeeper" do
+        qcontrol.person = nil
+        expect(qcontrol.should_create_fee?).to be(false)
+      end
+
+      it "is false without an inspector" do
+        qcontrol.inspector = nil
+        expect(qcontrol.should_create_fee?).to be(false)
+      end
+
+      it "is false when a fee has already been created" do
+        qcontrol.fee_creation_state = "fee_ok"
+        expect(qcontrol.should_create_fee?).to be(false)
+      end
+
+      it "is false when no fee is required" do
+        qcontrol.fee_creation_state = "fee_not_required"
+        expect(qcontrol.should_create_fee?).to be(false)
+      end
+
+      it "is false when the group is not a Sektion" do
+        qcontrol.group = groups(:aargauer_kantonalverband)
+        expect(qcontrol.should_create_fee?).to be(false)
+      end
+
+      it "is false when no control was performed" do
+        qcontrol.no_control_reason = "beekeeper_deceased"
+        expect(qcontrol.should_create_fee?).to be(false)
+      end
+    end
+
+    describe "#create_fee" do
+      let(:service) do
+        instance_double(Kas::FeeCreationService, perform: nil, ok?: true,
+          generated_fee: {id: 42, total_amount: "20.00", code: "qcontrol"})
+      end
+
+      before do
+        allow(Kas::FeeCreationService).to receive(:new).with(qcontrol).and_return(service)
+      end
+
+      it "calls perform on the fee creation service" do
+        qcontrol.create_fee
+        expect(service).to have_received(:perform)
+      end
+
+      it "sets fee_creation_state to fee_ok" do
+        expect { qcontrol.create_fee }.to change { qcontrol.reload.fee_creation_state }
+          .from("fee_not_created").to("fee_ok")
+      end
+
+      it "stores the fee_id, fee_total_amount and fee_type_code" do
+        qcontrol.create_fee
+        qcontrol.reload
+        expect(qcontrol.fee_id).to eq(42)
+        expect(qcontrol.fee_total_amount).to eq(20)
+        expect(qcontrol.fee_type_code).to eq("qcontrol")
+      end
+
+      context "when the service does not succeed" do
+        let(:service) do
+          instance_double(Kas::FeeCreationService, perform: nil, ok?: false, generated_fee: {})
+        end
+
+        it "does not change fee_creation_state" do
+          expect { qcontrol.create_fee }.not_to change { qcontrol.reload.fee_creation_state }
+        end
+
+        it "does not set fee_id, fee_total_amount or fee_type_code" do
+          qcontrol.create_fee
+          qcontrol.reload
+          expect(qcontrol.fee_id).to be_nil
+          expect(qcontrol.fee_total_amount).to be_nil
+          expect(qcontrol.fee_type_code).to be_nil
+        end
+      end
+    end
+  end
+
   describe "#beekeeper_role" do
     it "returns nil when person is nil" do
       orphan = Fabricate(:qcontrol, person: nil, group: group,
