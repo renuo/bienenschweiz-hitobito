@@ -180,8 +180,17 @@ module Bienenschweiz::Event::ParticipationsController
         Time.zone.today.iso8601,
       total_amount: "0.00",
       quantity: 1,
-      group_id: @group.id
+      group_id: kas_fee_group_id(participation)
     }
+  end
+
+  # KAS requires group_id to reference a Sektion. The event's own group may be nested
+  # under a Kantonalverband or the Dachverband, so fall back to the participant's primary
+  # group in that case, letting them resolve the issue by fixing their primary group.
+  def kas_fee_group_id(participation)
+    return @group.id if @group.is_a?(Group::Sektion)
+
+    participation.person.primary_group_id
   end
 
   def kas_fees_flash(total, failure_count)

@@ -12,8 +12,8 @@ RSpec.describe "Event::ParticipationsController", type: :request do
   let(:admin) { people(:admin) }
   let(:other_person) { Fabricate(:person) }
   let(:kind) { Fabricate(:event_kind, kas_fixed_fee: true, kas_fee_code: "COURSE_FEE") }
-  let(:course) { Fabricate(:course, kind: kind) }
-  let(:group) { course.groups.first }
+  let(:group) { groups(:aarau_und_umgebung) }
+  let(:course) { Fabricate(:course, kind: kind, groups: [group]) }
 
   def add_participant(person)
     participation = Fabricate(:event_participation, event: course, participant: person,
@@ -291,6 +291,26 @@ RSpec.describe "Event::ParticipationsController", type: :request do
         it "does not call the KAS API for the leader" do
           post_create_kas_fees
           expect(WebMock).not_to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+        end
+      end
+
+      context "when the event's group is not a Sektion" do
+        let(:group) { groups(:aargauer_kantonalverband) }
+        let(:participant_primary_group) { Fabricate(:sektion) }
+        let!(:participant) { Fabricate(:person) }
+
+        before do
+          add_participant(participant)
+          participant.update_column(:primary_group_id, participant_primary_group.id)
+          stub_kas_success
+        end
+
+        it "sends the participant's primary_group_id instead of the event's group" do
+          post_create_kas_fees
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+            .with { |req|
+              JSON.parse(req.body)["fee"]["group_id"] == participant_primary_group.id
+            }
         end
       end
     end
