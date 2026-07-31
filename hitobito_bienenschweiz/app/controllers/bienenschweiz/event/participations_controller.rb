@@ -187,10 +187,12 @@ module Bienenschweiz::Event::ParticipationsController
   # KAS requires group_id to reference a Sektion. The event's own group may be nested
   # under a Kantonalverband or the Dachverband, so fall back to the participant's primary
   # group in that case, letting them resolve the issue by fixing their primary group.
+  # Only a layer group (e.g. a Sektion) can be used, so a primary group in a sub group
+  # like Kader is resolved up to its layer group.
   def kas_fee_group_id(participation)
     return @group.id if @group.is_a?(Group::Sektion)
 
-    participation.person.primary_group_id
+    participation.person.layer_group&.id
   end
 
   def kas_fees_flash(total, failure_count)

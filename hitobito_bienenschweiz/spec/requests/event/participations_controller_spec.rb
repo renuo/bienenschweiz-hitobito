@@ -313,6 +313,26 @@ RSpec.describe "Event::ParticipationsController", type: :request do
             }
         end
       end
+
+      context "when the event's group is not a Sektion and the participant's primary " \
+        "group is a sub group like Kader" do
+        let(:group) { groups(:aargauer_kantonalverband) }
+        let(:sektion) { Fabricate(:sektion) }
+        let(:kader_group) { Fabricate(:group, parent: sektion, type: Group::Kader.sti_name) }
+        let!(:participant) { Fabricate(:person) }
+
+        before do
+          add_participant(participant)
+          participant.update_column(:primary_group_id, kader_group.id)
+          stub_kas_success
+        end
+
+        it "sends the Sektion layer group instead of the Kader sub group" do
+          post_create_kas_fees
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+            .with { |req| JSON.parse(req.body)["fee"]["group_id"] == sektion.id }
+        end
+      end
     end
 
     context "as person without update permission" do
