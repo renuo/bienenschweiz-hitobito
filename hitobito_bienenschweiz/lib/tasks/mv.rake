@@ -646,6 +646,75 @@ namespace :mv do
       puts "Memos with dangling references: #{missing.map { |k, v| "#{k}: #{v}" }.join(", ")}"
     end
 
+    task fees: :environment do
+      class KasRecord < ApplicationRecord
+        self.abstract_class = true
+        connects_to database: {reading: :kas, writing: :kas}
+      end
+
+      class KasFeeType < KasRecord
+        self.table_name = "fee_types"
+      end
+
+      class KasFee < KasRecord
+        self.table_name = "fees"
+        belongs_to :fee_type, class_name: "KasFeeType"
+        belongs_to :user, class_name: "KasUser"
+        enum :state, %i[pending accepted rejected payed deleted].freeze
+      end
+
+      class KasUser < KasRecord
+        self.table_name = "users"
+      end
+
+      kas_fee_types = {
+        "Grundkurs 2 (Pauschale)" => "Basiskurs Imkern",
+        "Kaderkurs I (Betriebsberater) - Kursleiter" => "Fachperson Bildung",
+        "Kaderkurs I (Betriebsberater) - Teilnehmer" => "Fachperson Bildung",
+        "Kaderkurs II (Betriebsprüfer) - Kursleiter" => "Fachperson Produkte",
+        "Kaderkurs II (Betriebsprüfer) - Teilnehmer" => "Fachperson Produkte",
+        "Kaderkurs III (Zuchtberater) - Kursleiter" => "Fachperson Zucht",
+        "Kaderkurs III (Zuchtberater) - Teilnehmer" => "Fachperson Zucht",
+        "Kaderweiterbildung I (Betriebsberater) - Kursleiter" => "Kaderweiterbildung Bildung",
+        "Kaderweiterbildung I (Betriebsberater) - Teilnehmer" => "Kaderweiterbildung Bildung",
+        "Kaderweiterbildung II (Betriebsprüfer) - Kursleiter" => "Kaderweiterbildung Produkte",
+        "Kaderweiterbildung II (Betriebsprüfer/-in) - Teilnehmer/-in" => "Kaderweiterbildung Produkte",
+        "Kaderweiterbildung III (Zuchtberater) - Kursleiter" => "Kaderweiterbildung Zucht",
+        "Kaderweiterbildung III (Zuchtberater) - Teilnehmer" => "Kaderweiterbildung Zucht"
+      }
+      kas_fees = KasFee.joins(:fee_type).where(fee_type: { title: kas_fee_types.keys }).payed
+      event_kinds = Event::Kind.pluck(:label, :id).to_h
+      courses = {}
+      import_count = 0
+      merge_count = 0
+
+      kas_fees.includes(:fee_type).find_each do |kas_fee|
+        kind = kas_fee_types[kas_fee.fee_type.title]
+        kind_id = event_kinds[kind]
+        group_id = kas_fee.intern_structure_id + GROUP_ID_OFFSET
+        date = Event::Date.new(start_at: kas_fee.occurred_on)
+        key = [kind_id, group_id, kas_fee.occurred_on]
+        merge_count += 1 if courses.key?(key)
+
+        course = courses[key] ||= Event::Course.create!(
+          name: "#{kas_fee.fee_type.title} #{kas_fee.occurred_on.strftime("%d.%m.%Y")}",
+          location: kas_fee.place, cost: kas_fee.total_amount,
+          kind_id: kind_id, group_ids: [group_id], dates: [date]
+        )
+        participation = course.participations.create!(
+          participant_id: kas_fee.user.member_id + MEMBER_ID_OFFSET,
+          participant_type: Person.sti_name, active: true
+        )
+        role = kind == "Basiskurs Imkern" ? Event::Role::Leader : Event::Course::Role::Participant
+        participation.roles.create!(type: role.sti_name)
+        import_count += 1
+      rescue StandardError => e
+        puts "Error importing fee #{kas_fee.id}: #{e.message}"
+      end
+
+      puts "Imported #{import_count} and grouped #{merge_count} courses"
+    end
+
     task reset_id_sequences: :environment do
       ActiveRecord::Base.connection.tables.each do |t|
         puts "Resetting primary key sequence for #{t}"
