@@ -705,15 +705,8 @@ namespace :mv do
           participant_id: kas_fee.user.member_id + MEMBER_ID_OFFSET,
           participant_type: Person.sti_name, active: true
         )
-
-        if kind == "Basiskurs Imkern"
-          participation.roles.create!(type: Event::Role::Leader.sti_name)
-          course.update_column(:teamer_count, course.teamer_count.next)
-        else
-          participation.roles.create!(type: Event::Course::Role::Participant.sti_name)
-          course.update_column(:participant_count, course.participant_count.next)
-        end
-
+        role = kind == "Basiskurs Imkern" ? Event::Role::Leader : Event::Course::Role::Participant
+        participation.roles.create!(type: role.sti_name)
         import_count += 1
       rescue StandardError => e
         puts "Error importing fee #{kas_fee.id}: #{e.message}"
