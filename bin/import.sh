@@ -24,6 +24,7 @@ pushd hitobito_bienenschweiz
   direnv exec bin/rails mv:import:supervisions
   direnv exec bin/rails mv:import:documents
   direnv exec bin/rails mv:import:memos
+  direnv exec bin/rails mv:import:fees
   direnv exec bin/rails mv:import:reset_id_sequences
 popd
 
