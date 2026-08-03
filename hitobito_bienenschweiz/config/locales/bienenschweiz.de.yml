@@ -343,6 +343,8 @@ de:
     global:
       link:
         new_from_kind: Kurs nach Vorlage erstellen
+    tabs:
+      participants: Personen
     form_tabs:
       course_materials: Kursunterlagen
       diploma: Diplom
