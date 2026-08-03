@@ -76,7 +76,6 @@ module HitobitoBienenschweiz
         :kas_instructor_fees]
       Event::ParticipationsController.prepend Bienenschweiz::Event::ParticipationsController
       EventParticipationsHelper.include Bienenschweiz::EventParticipationsHelper
-      GroupsHelper.prepend Bienenschweiz::GroupsHelper
 
       Event::Question.include Bienenschweiz::Event::Question
       Event::Participation.prepend Bienenschweiz::Event::Participation

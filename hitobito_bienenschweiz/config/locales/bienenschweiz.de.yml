@@ -344,7 +344,7 @@ de:
       link:
         new_from_kind: Kurs nach Vorlage erstellen
     tabs:
-      participants_course: Personen
+      participants: Personen
     form_tabs:
       course_materials: Kursunterlagen
       diploma: Diplom

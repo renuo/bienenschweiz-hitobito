@@ -9,18 +9,18 @@ require "spec_helper"
 
 describe GroupsHelper, type: :helper do
   describe "#tab_event_participants_label" do
-    let(:group) { Fabricate(:kantonalverband) }
+    let(:group) { groups(:aarau_und_umgebung) }
 
     it "labels the participations tab 'Personen' for courses" do
-      course = Fabricate(:course, groups: [group])
+      course = Fabricate(:course, groups: [group], kind: Fabricate(:event_kind))
 
       expect(helper.tab_event_participants_label(course)).to eq("Personen")
     end
 
-    it "keeps the default 'Teilnehmende' label for other events" do
-      event = Fabricate(:event, groups: [group])
+    it "labels the participations tab 'Personen' for other events" do
+      event = Fabricate(:event, groups: [group], kind: Fabricate(:event_kind))
 
-      expect(helper.tab_event_participants_label(event)).to eq("Teilnehmende")
+      expect(helper.tab_event_participants_label(event)).to eq("Personen")
     end
   end
 end
