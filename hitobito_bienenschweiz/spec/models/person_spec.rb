@@ -185,4 +185,24 @@ describe Person do
       expect(bern_inspector.inspectable_beekeepers).to contain_exactly(beekeepers[2], beekeepers[3])
     end
   end
+
+  describe "gender" do
+    let(:person) { Fabricate(:person) }
+
+    it "allows divers as gender" do
+      person.gender = "d"
+      expect(person).to be_valid
+      expect(person.gender_label).to eq("divers")
+    end
+
+    it "offers divers as an option" do
+      expect(Person::GENDERS).to include("d")
+      expect(Person.gender_labels).to include(d: "divers")
+    end
+
+    it "converts the translated value to divers" do
+      person.gender = "divers"
+      expect(person.gender).to eq("d")
+    end
+  end
 end

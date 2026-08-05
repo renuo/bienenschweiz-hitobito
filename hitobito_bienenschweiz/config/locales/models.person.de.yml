@@ -8,6 +8,8 @@ de:
   activerecord:
     attributes:
       person:
+        genders:
+          d: divers
         canton_short: Kanton
         hive_count: Anzahl Völker
         honey_yield: Honigertrag
