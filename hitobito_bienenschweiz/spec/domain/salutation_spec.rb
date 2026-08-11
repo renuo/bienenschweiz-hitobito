@@ -28,6 +28,18 @@ describe Salutation do
         end
       end
     end
+
+    # "personal" resolves to the salutation stored on the person, a path
+    # Salutation.all does not enumerate.
+    it "greets a person with gender divers with their stored salutation" do
+      person.update!(salutation: "lieber_vorname")
+      expect(Salutation.new(person, "personal").value).to eq("Liebe*r Alex")
+    end
+
+    it "falls back to the default salutation when the person has none stored" do
+      person.update!(salutation: nil)
+      expect(Salutation.new(person, "personal").value).to eq("Hallo Alex")
+    end
   end
 
   describe "#value_for_household" do
@@ -36,6 +48,11 @@ describe Salutation do
     it "joins the salutations of a divers and a female person" do
       expect(Salutation.new(person, "lieber_vorname").value_for_household([person, housemate]))
         .to eq("Liebe*r Alex, liebe Maja")
+    end
+
+    it "downcases the divers salutation when it is not the first one" do
+      expect(Salutation.new(person, "lieber_vorname").value_for_household([housemate, person]))
+        .to eq("Liebe Maja, liebe*r Alex")
     end
   end
 end

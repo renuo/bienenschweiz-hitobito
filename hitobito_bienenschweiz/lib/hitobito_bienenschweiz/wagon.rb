@@ -27,11 +27,8 @@ module HitobitoBienenschweiz
       Group.include Bienenschweiz::Group
       Person.include Bienenschweiz::Person
 
-      # Additional gender option "divers" (the gender column holds a single character).
-      Person::GENDERS << "d" unless Person::GENDERS.include?("d")
-      # The setter captured the list of possible values at class definition time,
-      # redefine it so imports accept the translated value as well.
-      Person.i18n_setter :gender, (Person::GENDERS + [nil])
+      # Additional gender option "divers".
+      Bienenschweiz::Genders.register!
 
       Role::Types::Permissions << :layer_contacts
       AbilityDsl::UserContext::GROUP_PERMISSIONS << :layer_contacts

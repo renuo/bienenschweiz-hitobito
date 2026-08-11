@@ -1,0 +1,15 @@
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+# Event::Guest builds its gender enum and setter from Person::GENDERS, so the
+# additional gender "d" needs a translation in its own attribute scope as well.
+# The setter translates every possible value on each assignment, which means a
+# missing entry here breaks assigning m/w to a guest, not just d.
+de:
+  activerecord:
+    attributes:
+      event/guest:
+        genders:
+          d: divers
