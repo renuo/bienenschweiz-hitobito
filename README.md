@@ -16,6 +16,22 @@ See [./hitobito/doc/developer/local_setup.md](https://github.com/hitobito/hitobi
 
 `bin/setup` tries to automate this as much as possible.
 
+### KAS integration
+
+The development seeds create an OAuth application and an API key (service token)
+named `KAS`, both with randomly generated credentials. To instead reuse the
+credentials a local KAS checkout already has in its `config/application.yml`
+(`HITOBITO_OAUTH_ID`, `HITOBITO_OAUTH_SECRET` and `HITOBITO_API_KEY`), point
+`KAS_PROJECT_PATH` at it:
+
+```sh
+cd hitobito
+KAS_PROJECT_PATH=~/projects/kas bundle exec rails db:seed wagon:seed
+```
+
+The seed is idempotent, so it can be re-run to switch between generated and
+KAS-provided credentials. It prints both at the end.
+
 ### Inspection reminders
 
 ```
