@@ -13,6 +13,10 @@ if [ ! -f .envrc ]; then
     direnv allow
 fi
 
+if [ ! -f oauth_jwt_signing_key ]; then
+    openssl genpkey -algorithm RSA -out oauth_jwt_signing_key -pkeyopt rsa_keygen_bits:2048
+fi
+
 pushd hitobito
     if [ ! -L Gemfile.local ]; then
         ln -s Gemfile Gemfile.local
