@@ -22,11 +22,10 @@ The development seeds create an OAuth application and an API key (service token)
 named `KAS`, both with randomly generated credentials. To instead reuse the
 credentials a local KAS checkout already has in its `config/application.yml`
 (`HITOBITO_OAUTH_ID`, `HITOBITO_OAUTH_SECRET` and `HITOBITO_API_KEY`), point
-`KAS_PROJECT_PATH` at it:
+`KAS_PROJECT_PATH` at it via `.envrc`:
 
 ```sh
-cd hitobito
-KAS_PROJECT_PATH=~/projects/kas bundle exec rails db:seed wagon:seed
+bundle exec rails db:seed wagon:seed
 ```
 
 The seed is idempotent, so it can be re-run to switch between generated and
