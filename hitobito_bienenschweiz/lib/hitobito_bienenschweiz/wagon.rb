@@ -27,6 +27,9 @@ module HitobitoBienenschweiz
       Group.include Bienenschweiz::Group
       Person.include Bienenschweiz::Person
 
+      # Additional gender option "divers".
+      Bienenschweiz::Genders.register!
+
       Role::Types::Permissions << :layer_contacts
       AbilityDsl::UserContext::GROUP_PERMISSIONS << :layer_contacts
       AbilityDsl::UserContext::LAYER_PERMISSIONS << :layer_contacts

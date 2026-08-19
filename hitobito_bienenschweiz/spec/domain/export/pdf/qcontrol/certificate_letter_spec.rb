@@ -59,6 +59,50 @@ describe Export::Pdf::Qcontrol::CertificateLetter do
     end
   end
 
+  describe "salutation" do
+    # the address block is the first thing written on the page
+    def address_lines
+      PDF::Inspector::Text.analyze(letter.render).strings.first(4)
+    end
+
+    it "prints the salutation as the first address line" do
+      expect(address_lines).to eq(["Frau", "Maja Biene", "Blumenweg 5", "8000 Zürich"])
+    end
+
+    context "with a longer salutation" do
+      before { person.update!(salutation: "Sehr geehrte Frau Doktor") }
+
+      it "prints it as given" do
+        expect(address_lines.first).to eq("Sehr geehrte Frau Doktor")
+      end
+    end
+
+    context "without a salutation" do
+      before { person.update!(salutation: nil) }
+
+      it "omits the line and starts the address with the name" do
+        expect(address_lines).to eq(["Maja Biene", "Blumenweg 5", "8000 Zürich",
+          "Appenzell, im Mai 2026"])
+      end
+    end
+
+    context "for a person with gender divers" do
+      before { person.update!(gender: "d", salutation: "Guten Tag") }
+
+      it "prints the salutation as given" do
+        expect(address_lines).to eq(["Guten Tag", "Maja Biene", "Blumenweg 5", "8000 Zürich"])
+      end
+    end
+
+    context "with a blank salutation" do
+      before { person.update!(salutation: "") }
+
+      it "omits the line" do
+        expect(address_lines.first).to eq("Maja Biene")
+      end
+    end
+  end
+
   describe "#draw_all" do
     it "does not raise" do
       expect { letter.draw_all }.not_to raise_error

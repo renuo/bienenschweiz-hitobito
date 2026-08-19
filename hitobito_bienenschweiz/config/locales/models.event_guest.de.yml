@@ -3,15 +3,13 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
-
+# Event::Guest builds its gender enum and setter from Person::GENDERS, so the
+# additional gender "d" needs a translation in its own attribute scope as well.
+# The setter translates every possible value on each assignment, which means a
+# missing entry here breaks assigning m/w to a guest, not just d.
 de:
   activerecord:
     attributes:
-      person:
+      event/guest:
         genders:
           d: divers
-        canton_short: Kanton
-        hive_count: Anzahl Völker
-        honey_yield: Honigertrag
-        export_to_website: Auf Webseite exportieren
-        num_ad_boards: Anzahl Werbetafeln
