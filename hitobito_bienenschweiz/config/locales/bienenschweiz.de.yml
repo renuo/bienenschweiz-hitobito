@@ -377,3 +377,6 @@ de:
     expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden
     full: Warteliste
     open: Freie plätze, Anmeldung möglich
+  admins:
+    show:
+      bees: BienenSchweiz

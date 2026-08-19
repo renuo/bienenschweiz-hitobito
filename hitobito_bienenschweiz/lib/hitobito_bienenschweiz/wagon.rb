@@ -46,8 +46,13 @@ module HitobitoBienenschweiz
        if: ->(_) { can?(:manage_orphans, Qcontrol) },
        active_for: %w[orphan_qcontrols]}
 
-      admin_item = NavigationHelper::MAIN.find { |item| item[:label] == :admin }
-      admin_item[:active_for] += %w[supervision_type signatures]
+      NavigationHelper::ADMIN_GROUPS[:bees] = {
+        heading: "admins.show.bees",
+        items: [
+          NavigationHelper::Item.new(model: SupervisionType, path: :supervision_types_path),
+          NavigationHelper::Item.new(model: Signature, path: :signatures_path)
+        ]
+      }
 
       # Keep the "Kurse" main nav section active/expanded while on the
       # feedback report, whose link is added to its left nav via
