@@ -14,3 +14,4 @@ export INSPECTION_REPLY_TO_EMAIL='11@renuo.ch'
 export INSPECTION_BCC_EMAIL='11@renuo.ch'
 export DEFAULT_FROM_EMAIL='11@renuo.ch'
 export PRINTER_EMAIL='11@renuo.ch'
+export KAS_PROJECT_PATH=$PWD/../vdrb-kas
