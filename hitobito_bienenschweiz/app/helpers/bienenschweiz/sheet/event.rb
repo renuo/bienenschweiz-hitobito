@@ -12,7 +12,7 @@ module Bienenschweiz::Sheet::Event
       "events.form_tabs.course_materials",
       :group_event_course_materials_path,
       if: (lambda do |view, _group, event|
-        view.can?(:update, event)
+        event.course? && view.can?(:update, event)
       end)
     )
 

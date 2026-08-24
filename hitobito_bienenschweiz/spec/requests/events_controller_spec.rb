@@ -170,6 +170,37 @@ RSpec.describe EventsController, type: :request do
         end.to raise_error(CanCan::AccessDenied)
       end
     end
+
+    context "for a non-course event" do
+      let(:event) { Fabricate(:event, groups: [group]) }
+
+      before do
+        roles(:admin)
+        sign_in(admin)
+      end
+
+      it "does not show the Kursunterlagen tab" do
+        get group_event_path(group, event)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include(group_event_course_materials_path(group, event))
+      end
+
+      it "redirects with an error message" do
+        get group_event_course_materials_path(group, event)
+
+        expect(response).to redirect_to(group_event_path(group, event))
+        expect(flash[:alert]).to eq("Kursunterlagen gibt es nur für Kurse.")
+      end
+
+      it "still raises CanCan::AccessDenied without update permission" do
+        sign_in(other_person)
+
+        expect do
+          get group_event_course_materials_path(group, event)
+        end.to raise_error(CanCan::AccessDenied)
+      end
+    end
   end
 
   describe "event question relevance" do

@@ -56,9 +56,16 @@ module Bienenschweiz::EventsController
     skip_authorize_resource only: [:course_materials, :new_from_kind]
     helper_method :new_from_kind_dropdown
 
+    # Course materials only exist on courses. Authorize first so that people
+    # without access to the event get the usual AccessDenied rather than a
+    # redirect to a page they may not be allowed to see.
     def course_materials
       @event = Event.find(params[:event_id])
       authorize! :update, @event
+      return if @event.is_a?(Event::Course)
+
+      redirect_to group_event_path(@group, @event),
+        alert: t("events.course_materials.not_a_course")
     end
   end
 
