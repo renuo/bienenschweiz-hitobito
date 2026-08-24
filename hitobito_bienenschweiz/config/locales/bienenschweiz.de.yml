@@ -275,6 +275,7 @@ de:
     invite:
       subject: "Feedback zum Kurs %{event}"
   feedback_rounds:
+    not_a_course: Feedback-Runden gibt es nur für Kurse.
     list:
       responses: Antworten
       show: Anzeigen
