@@ -1,0 +1,24 @@
+---
+description: Das ist die Vorlage für Weiterbildung, die in der Regel durch die Kantonalverbände
+  oder Sektionen organisiert wird.
+location: ''
+cost: ''
+requires_approval: false
+external_applications: true
+applications_cancelable: false
+display_booking_info: true
+participations_visible: true
+export_to_website: true
+delivery_address: ''
+billing_address: ''
+required_contact_attrs:
+- country
+- language
+hidden_contact_attrs:
+- nickname
+- company_name
+visible_contact_attributes:
+- name
+motto: ''
+application_questions: []
+admin_questions: []
