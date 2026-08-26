@@ -132,6 +132,60 @@ RSpec.describe FeedbackRoundsController, type: :request do
     end
   end
 
+  describe "a non-course event" do
+    let(:other_event) { Fabricate(:event, groups: [sektion]) }
+
+    it "does not show the Feedback tab" do
+      get group_event_path(sektion, other_event)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include(group_event_feedback_rounds_path(sektion, other_event))
+    end
+
+    it "redirects #index with an error message" do
+      get group_event_feedback_rounds_path(sektion, other_event)
+
+      expect(response).to redirect_to(group_event_path(sektion, other_event))
+      expect(flash[:alert]).to eq("Feedback-Runden gibt es nur für Kurse.")
+    end
+
+    it "redirects #new with an error message" do
+      get new_group_event_feedback_round_path(sektion, other_event)
+      expect(response).to redirect_to(group_event_path(sektion, other_event))
+    end
+
+    it "redirects #show without loading the entry" do
+      get group_event_feedback_round_path(sektion, other_event, round)
+      expect(response).to redirect_to(group_event_path(sektion, other_event))
+    end
+
+    it "redirects #report without loading the entry" do
+      get report_group_event_feedback_round_path(sektion, other_event, round)
+      expect(response).to redirect_to(group_event_path(sektion, other_event))
+    end
+
+    it "redirects #export without loading the entry" do
+      get export_group_event_feedback_round_path(sektion, other_event, round)
+      expect(response).to redirect_to(group_event_path(sektion, other_event))
+    end
+
+    it "redirects #create without creating a round" do
+      expect {
+        post group_event_feedback_rounds_path(sektion, other_event),
+          params: {feedback_round: {kind: "intermediate"}}
+      }.not_to change(FeedbackRound, :count)
+
+      expect(response).to redirect_to(group_event_path(sektion, other_event))
+    end
+
+    it "redirects #destroy without destroying the round" do
+      expect {
+        delete group_event_feedback_round_path(sektion, other_event, round)
+      }.not_to change(FeedbackRound, :count)
+
+      expect(response).to redirect_to(group_event_path(sektion, other_event))
+    end
+  end
+
   describe "#export" do
     it "sends an xlsx file" do
       get export_group_event_feedback_round_path(sektion, event, round)
