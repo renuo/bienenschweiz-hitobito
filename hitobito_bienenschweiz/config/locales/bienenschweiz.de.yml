@@ -346,6 +346,7 @@ de:
     global:
       link:
         new_from_kind: Kurs nach Vorlage erstellen
+        new_from_template: Anlass nach Vorlage erstellen
     tabs:
       participants: Personen
     form_tabs:

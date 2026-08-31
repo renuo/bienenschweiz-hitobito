@@ -1,0 +1,21 @@
+---
+label: Vorlage Anlass
+location: ''
+cost: ''
+external_applications: true
+applications_cancelable: false
+display_booking_info: true
+participations_visible: false
+export_to_website: true
+required_contact_attrs:
+- country
+- language
+hidden_contact_attrs:
+- nickname
+- company_name
+visible_contact_attributes:
+- name
+motto: ''
+globally_visible: true
+application_questions: []
+admin_questions: []

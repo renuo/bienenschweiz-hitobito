@@ -4,28 +4,35 @@
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 
-# Template for Event::Kind with this ID.
-# File name must match the Event::Kind ID (e.g. 42.yml for kind with id=42).
+# Template for a non-course event (Anlass).
 #
-# Generate from an existing course:
-#   cd hitobito && bundle exec rake bienenschweiz:event_kind_template:dump[COURSE_ID]
+# Unlike courses, plain events have no Event::Kind, so each template is keyed by
+# its file name. Every *.yml file in this directory shows up as one entry in the
+# "Anlass nach Vorlage erstellen" dropdown on the Anlässe tab.
+# Files starting with an underscore (like this one) are documentation and are
+# never offered in the dropdown.
+#
+# Generate from an existing event:
+#   cd hitobito && bundle exec rake bienenschweiz:event_template:dump[EVENT_ID,slug]
 # Or print the YAML instead of writing the file:
-#   cd hitobito && bundle exec rake bienenschweiz:event_kind_template:dump[COURSE_ID,stdout]
-#
-# Course fields:
-description: "Beschreibung des Kurses"
+#   cd hitobito && bundle exec rake bienenschweiz:event_template:dump[EVENT_ID,slug,stdout]
+
+# Label shown in the dropdown. Defaults to the humanized file name if omitted.
+label: "Beispielanlass"
+
+# Event fields:
+description: "Beschreibung des Anlasses"
 location: "BienenSchweiz, Musterstrasse 1, 3000 Bern"
-cost: "150 CHF"
-maximum_participants: 20
+motto: ""
+cost: "20 CHF"
+maximum_participants: 40
 minimum_participants: 5
-requires_approval: false
 external_applications: false
 applications_cancelable: true
 display_booking_info: true
 participations_visible: true
+globally_visible: false
 export_to_website: true
-delivery_address: "Lieferadresse..."
-billing_address: "Rechnungsadresse..."
 application_conditions: "Voraussetzungen für die Teilnahme..."
 
 # Contact attribute visibility. Lists must contain valid contact attr names.
@@ -42,12 +49,9 @@ visible_contact_attributes:
 # Questions appended to the form after any group-level question templates.
 # Supported question fields: question, type, required, multiple_choices, choices
 application_questions:
-  - question: "Haben Sie Erfahrung mit Bienenhaltung?"
+  - question: "Nehmen Sie am Apéro teil?"
     type: "Event::Question::Default"
-    required: true
+    required: false
     multiple_choices: false
 
-admin_questions:
-  - question: "Teilnahme bestätigt?"
-    type: "Event::Question::Default"
-    required: true
+admin_questions: []

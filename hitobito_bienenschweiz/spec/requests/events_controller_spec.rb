@@ -138,6 +138,160 @@ RSpec.describe EventsController, type: :request do
     end
   end
 
+  describe "GET #index (events)" do
+    let(:template_dir) { HitobitoBienenschweiz::Wagon.root.join("config", "event_templates") }
+
+    before do
+      roles(:admin)
+      sign_in(admin)
+    end
+
+    context "when an event template exists" do
+      around do |example|
+        template_file = template_dir.join("hoeck.yml")
+        template_file.write({"label" => "Höck"}.to_yaml)
+        example.run
+      ensure
+        template_file.delete if template_file.exist?
+      end
+
+      it "shows the new_from_template dropdown" do
+        get group_events_path(group)
+        expect(response.body).to include(new_from_template_group_events_path(group,
+          event_template: "hoeck"))
+        expect(response.body).to include("Höck")
+      end
+
+      it "does not show the dropdown on the courses tab" do
+        get group_events_path(group, type: "Event::Course")
+        expect(response.body).not_to include("new_from_template")
+      end
+
+      it "does not offer underscore-prefixed templates" do
+        get group_events_path(group)
+        expect(response.body).not_to include(new_from_template_group_events_path(group,
+          event_template: "_example"))
+      end
+    end
+
+    context "when no event template exists" do
+      before do
+        # Stub on the prepended module, not on EventsController: a prepended
+        # method wins over one defined on the class, so any_instance_of on the
+        # controller would not intercept it.
+        allow_any_instance_of(Bienenschweiz::EventsController)
+          .to receive(:event_templates).and_return({})
+      end
+
+      it "does not show the new_from_template dropdown" do
+        get group_events_path(group)
+        expect(response.body).not_to include("new_from_template")
+      end
+    end
+  end
+
+  describe "GET #new_from_template" do
+    let(:template_dir) { HitobitoBienenschweiz::Wagon.root.join("config", "event_templates") }
+    let(:template_data) do
+      {
+        "label" => "Höck",
+        "description" => "Prefilled event description",
+        "location" => "Prefilled event location",
+        "required_contact_attrs" => ["phone_numbers"],
+        "hidden_contact_attrs" => ["nickname"],
+        "application_questions" => [{"question" => "Kommst du zum Apéro?", "required" => false}],
+        "admin_questions" => [{"question" => "Anmeldung geprüft?", "required" => false}]
+      }
+    end
+
+    around do |example|
+      template_file = template_dir.join("hoeck.yml")
+      template_file.write(template_data.to_yaml)
+      example.run
+    ensure
+      template_file.delete if template_file.exist?
+    end
+
+    context "as admin with create permission" do
+      before do
+        roles(:admin)
+        sign_in(admin)
+      end
+
+      it "renders the new event form" do
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "builds a plain event, not a course" do
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(assigns(:event)).to be_an_instance_of(Event)
+        expect(assigns(:event).groups).to eq([group])
+      end
+
+      it "does not use the label as an event attribute" do
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(response.body).not_to include(">Höck<")
+      end
+
+      it "prefills description from template" do
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(response.body).to include("Prefilled event description")
+      end
+
+      it "prefills location from template" do
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(response.body).to include("Prefilled event location")
+      end
+
+      it "prefills application questions from template" do
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(response.body).to include("Kommst du zum Apéro?")
+      end
+
+      it "prefills admin questions from template" do
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(response.body).to include("Anmeldung geprüft?")
+      end
+
+      it "marks required_contact_attrs as required" do
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(response.body).to include(
+          'id="event_contact_attrs_phone_numbers_required" value="required" checked="checked"'
+        )
+      end
+
+      it "marks hidden_contact_attrs as hidden" do
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(response.body).to include(
+          'id="event_contact_attrs_nickname_hidden" value="hidden" checked="checked"'
+        )
+      end
+
+      it "raises RecordNotFound for an unknown template" do
+        expect do
+          get new_from_template_group_events_path(group, event_template: "does-not-exist")
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises RecordNotFound for an underscore-prefixed template" do
+        expect do
+          get new_from_template_group_events_path(group, event_template: "_example")
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "as person without create permission" do
+      before { sign_in(other_person) }
+
+      it "raises CanCan::AccessDenied" do
+        expect do
+          get new_from_template_group_events_path(group, event_template: "hoeck")
+        end.to raise_error(CanCan::AccessDenied)
+      end
+    end
+  end
+
   describe "GET #course_materials" do
     context "as admin with update permission" do
       before do
