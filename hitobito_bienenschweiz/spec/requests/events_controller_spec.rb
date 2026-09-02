@@ -253,6 +253,74 @@ RSpec.describe EventsController, type: :request do
     end
   end
 
+  describe "course-only form tabs" do
+    let(:course_tab_labels) do
+      [I18n.t("events.form_tabs.course_materials"), I18n.t("events.form_tabs.diploma")]
+    end
+
+    before do
+      roles(:admin)
+      sign_in(admin)
+    end
+
+    def rendered_tab_labels
+      response.body.scan(/data-bs-toggle="tab"[^>]*>([^<]*)</).flatten.map(&:strip)
+    end
+
+    context "for a course" do
+      it "shows them on the blank new form" do
+        get new_group_event_path(group, event: {type: "Event::Course"})
+        expect(rendered_tab_labels).to include(*course_tab_labels)
+      end
+
+      it "shows them on the new form built from a kind template" do
+        get new_from_kind_group_events_path(group, event_kind_id: kind.id)
+        expect(rendered_tab_labels).to include(*course_tab_labels)
+      end
+
+      it "shows them on the edit form" do
+        get edit_group_event_path(group, course)
+        expect(rendered_tab_labels).to include(*course_tab_labels)
+      end
+
+      it "renders the course material fields" do
+        get edit_group_event_path(group, course)
+        expect(response.body).to include("event_delivery_address")
+        expect(response.body).to include("event_billing_address")
+      end
+    end
+
+    context "for a plain event" do
+      let(:event) { Fabricate(:event, groups: [group]) }
+
+      it "hides them on the blank new form" do
+        get new_group_event_path(group, event: {type: "Event"})
+        expect(rendered_tab_labels).not_to include(*course_tab_labels)
+      end
+
+      it "hides them on the new form built from an event template" do
+        template_file = HitobitoBienenschweiz::Wagon.root
+          .join("config", "event_templates", "hoeck.yml")
+        template_file.write({"label" => "Höck"}.to_yaml)
+        get new_from_template_group_events_path(group, event_template: "hoeck")
+        expect(rendered_tab_labels).not_to include(*course_tab_labels)
+      ensure
+        template_file.delete if template_file.exist?
+      end
+
+      it "hides them on the edit form" do
+        get edit_group_event_path(group, event)
+        expect(rendered_tab_labels).not_to include(*course_tab_labels)
+      end
+
+      it "does not render the course material fields" do
+        get edit_group_event_path(group, event)
+        expect(response.body).not_to include("event_delivery_address")
+        expect(response.body).not_to include("event_billing_address")
+      end
+    end
+  end
+
   describe "GET #course_materials" do
     context "as admin with update permission" do
       before do

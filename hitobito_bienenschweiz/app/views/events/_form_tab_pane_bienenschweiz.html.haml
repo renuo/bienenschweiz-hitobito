@@ -4,16 +4,17 @@
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 
-#course_materials.tab-pane
-  = field_set_tag do
-    = f.labeled_input_field :delivery_address
-    = f.labeled_input_field :billing_address
+- if entry.course?
+  #course_materials.tab-pane
+    = field_set_tag do
+      = f.labeled_input_field :delivery_address
+      = f.labeled_input_field :billing_address
 
-#diploma.tab-pane
-  = field_set_tag do
-    - entry.used?(:diploma_location) do
-      = f.labeled_input_field(:diploma_location)
-    - entry.used?(:diploma_issued_at) do
-      = f.labeled_date_field(:diploma_issued_at)
-    - entry.used?(:diploma_only_leader) do
-      = f.labeled_boolean_field(:diploma_only_leader)
+  #diploma.tab-pane
+    = field_set_tag do
+      - entry.used?(:diploma_location) do
+        = f.labeled_input_field(:diploma_location)
+      - entry.used?(:diploma_issued_at) do
+        = f.labeled_date_field(:diploma_issued_at)
+      - entry.used?(:diploma_only_leader) do
+        = f.labeled_boolean_field(:diploma_only_leader)
