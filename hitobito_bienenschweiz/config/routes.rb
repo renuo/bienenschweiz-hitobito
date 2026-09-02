@@ -49,6 +49,8 @@ Rails.application.routes.draw do
         get :course_materials, as: :course_materials
         collection do
           get "new_from_kind/:event_kind_id", action: :new_from_kind, as: :new_from_kind
+          get "new_from_template/:event_template", action: :new_from_template,
+            as: :new_from_template, constraints: {event_template: /[a-z0-9_-]+/}
         end
         resources :participations, only: [] do
           collection do
