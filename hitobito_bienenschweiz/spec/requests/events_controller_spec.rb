@@ -8,6 +8,14 @@
 require "spec_helper"
 
 RSpec.describe EventsController, type: :request do
+  # The specs run against the templates that actually ship in the wagon rather
+  # than writing throw-away YAML files. Kind templates are keyed by Event::Kind
+  # id, so the kind under test is fabricated with the id of a shipped template.
+  let(:template_kind_id) { 4 }
+  let(:template_slug) { "vorlage-anlass" }
+  let(:kind_template) { load_template("event_kind_templates", template_kind_id) }
+  let(:event_template) { load_template("event_templates", template_slug) }
+
   let(:group) { groups(:root) }
   let(:admin) { people(:admin) }
   let(:other_person) { Fabricate(:person) }
@@ -18,6 +26,10 @@ RSpec.describe EventsController, type: :request do
       billing_address: "Buchhaltung AG\n8000 Zürich")
   end
 
+  def load_template(dir, key)
+    YAML.safe_load_file(HitobitoBienenschweiz::Wagon.root.join("config", dir, "#{key}.yml"))
+  end
+
   describe "GET #index (courses)" do
     context "as admin with create permission" do
       before do
@@ -26,14 +38,7 @@ RSpec.describe EventsController, type: :request do
       end
 
       context "when a kind has a template file" do
-        around do |example|
-          template_dir = HitobitoBienenschweiz::Wagon.root.join("config", "event_kind_templates")
-          template_file = template_dir.join("#{kind.id}.yml")
-          template_file.write({"description" => "Test"}.to_yaml)
-          example.run
-        ensure
-          template_file.delete if template_file.exist?
-        end
+        let!(:kind) { Fabricate(:event_kind, id: template_kind_id) }
 
         it "shows the new_from_kind dropdown" do
           get group_events_path(group, type: "Event::Course")
@@ -70,59 +75,50 @@ RSpec.describe EventsController, type: :request do
         expect(response.body).to include(kind.id.to_s)
       end
 
+      # Uses config/event_kind_templates/4.yml ("Basiskurs Imkern")
       context "with a template file for the kind" do
-        let(:template_data) do
-          {
-            "description" => "Prefilled description",
-            "location" => "Prefilled location",
-            "required_contact_attrs" => ["phone_numbers"],
-            "hidden_contact_attrs" => ["nickname"],
-            "application_questions" => [{"question" => "Wie viele Völker?", "required" => true}],
-            "admin_questions" => [{"question" => "Bestätigt?", "required" => false}]
-          }
-        end
-
-        around do |example|
-          template_dir = HitobitoBienenschweiz::Wagon.root.join("config", "event_kind_templates")
-          template_file = template_dir.join("#{kind.id}.yml")
-          template_file.write(template_data.to_yaml)
-          example.run
-        ensure
-          template_file.delete if template_file.exist?
-        end
+        let(:kind) { Fabricate(:event_kind, id: template_kind_id) }
 
         it "prefills description from template" do
           get new_from_kind_group_events_path(group, event_kind_id: kind.id)
-          expect(response.body).to include("Prefilled description")
+          expect(response.body).to include(kind_template["description"].lines.first.strip)
         end
 
-        it "prefills location from template" do
+        it "prefills motto from template" do
           get new_from_kind_group_events_path(group, event_kind_id: kind.id)
-          expect(response.body).to include("Prefilled location")
+          expect(response.body).to include(kind_template["motto"])
         end
 
         it "prefills application questions from template" do
           get new_from_kind_group_events_path(group, event_kind_id: kind.id)
-          expect(response.body).to include("Wie viele Völker?")
+          expect(response.body).to include(
+            CGI.escapeHTML(kind_template["application_questions"].first["question"].strip)
+          )
         end
 
         it "prefills admin questions from template" do
           get new_from_kind_group_events_path(group, event_kind_id: kind.id)
-          expect(response.body).to include("Bestätigt?")
+          expect(response.body).to include(
+            CGI.escapeHTML(kind_template["admin_questions"].last["question"].strip)
+          )
         end
 
         it "marks required_contact_attrs as required" do
           get new_from_kind_group_events_path(group, event_kind_id: kind.id)
-          expect(response.body).to include(
-            'id="event_contact_attrs_phone_numbers_required" value="required" checked="checked"'
-          )
+          kind_template["required_contact_attrs"].each do |attr|
+            expect(response.body).to include(
+              %(id="event_contact_attrs_#{attr}_required" value="required" checked="checked")
+            )
+          end
         end
 
         it "marks hidden_contact_attrs as hidden" do
           get new_from_kind_group_events_path(group, event_kind_id: kind.id)
-          expect(response.body).to include(
-            'id="event_contact_attrs_nickname_hidden" value="hidden" checked="checked"'
-          )
+          kind_template["hidden_contact_attrs"].each do |attr|
+            expect(response.body).to include(
+              %(id="event_contact_attrs_#{attr}_hidden" value="hidden" checked="checked")
+            )
+          end
         end
       end
     end
@@ -139,27 +135,17 @@ RSpec.describe EventsController, type: :request do
   end
 
   describe "GET #index (events)" do
-    let(:template_dir) { HitobitoBienenschweiz::Wagon.root.join("config", "event_templates") }
-
     before do
       roles(:admin)
       sign_in(admin)
     end
 
-    context "when an event template exists" do
-      around do |example|
-        template_file = template_dir.join("hoeck.yml")
-        template_file.write({"label" => "Höck"}.to_yaml)
-        example.run
-      ensure
-        template_file.delete if template_file.exist?
-      end
-
+    context "with the templates shipped in config/event_templates" do
       it "shows the new_from_template dropdown" do
         get group_events_path(group)
         expect(response.body).to include(new_from_template_group_events_path(group,
-          event_template: "hoeck"))
-        expect(response.body).to include("Höck")
+          event_template: template_slug))
+        expect(response.body).to include(event_template["label"])
       end
 
       it "does not show the dropdown on the courses tab" do
@@ -190,28 +176,8 @@ RSpec.describe EventsController, type: :request do
     end
   end
 
+  # config/event_templates/vorlage-anlass.yml
   describe "GET #new_from_template" do
-    let(:template_dir) { HitobitoBienenschweiz::Wagon.root.join("config", "event_templates") }
-    let(:template_data) do
-      {
-        "label" => "Höck",
-        "description" => "Prefilled event description",
-        "location" => "Prefilled event location",
-        "required_contact_attrs" => ["phone_numbers"],
-        "hidden_contact_attrs" => ["nickname"],
-        "application_questions" => [{"question" => "Kommst du zum Apéro?", "required" => false}],
-        "admin_questions" => [{"question" => "Anmeldung geprüft?", "required" => false}]
-      }
-    end
-
-    around do |example|
-      template_file = template_dir.join("hoeck.yml")
-      template_file.write(template_data.to_yaml)
-      example.run
-    ensure
-      template_file.delete if template_file.exist?
-    end
-
     context "as admin with create permission" do
       before do
         roles(:admin)
@@ -219,53 +185,48 @@ RSpec.describe EventsController, type: :request do
       end
 
       it "renders the new event form" do
-        get new_from_template_group_events_path(group, event_template: "hoeck")
+        get new_from_template_group_events_path(group, event_template: template_slug)
         expect(response).to have_http_status(:ok)
       end
 
       it "builds a plain event, not a course" do
-        get new_from_template_group_events_path(group, event_template: "hoeck")
+        get new_from_template_group_events_path(group, event_template: template_slug)
         expect(assigns(:event)).to be_an_instance_of(Event)
         expect(assigns(:event).groups).to eq([group])
       end
 
       it "does not use the label as an event attribute" do
-        get new_from_template_group_events_path(group, event_template: "hoeck")
-        expect(response.body).not_to include(">Höck<")
+        get new_from_template_group_events_path(group, event_template: template_slug)
+        expect(assigns(:event).attributes).not_to include("label")
+        expect(response.body).not_to include(">#{event_template["label"]}<")
       end
 
-      it "prefills description from template" do
-        get new_from_template_group_events_path(group, event_template: "hoeck")
-        expect(response.body).to include("Prefilled event description")
-      end
-
-      it "prefills location from template" do
-        get new_from_template_group_events_path(group, event_template: "hoeck")
-        expect(response.body).to include("Prefilled event location")
-      end
-
-      it "prefills application questions from template" do
-        get new_from_template_group_events_path(group, event_template: "hoeck")
-        expect(response.body).to include("Kommst du zum Apéro?")
-      end
-
-      it "prefills admin questions from template" do
-        get new_from_template_group_events_path(group, event_template: "hoeck")
-        expect(response.body).to include("Anmeldung geprüft?")
+      it "prefills the event attributes from the template" do
+        get new_from_template_group_events_path(group, event_template: template_slug)
+        expect(assigns(:event)).to have_attributes(
+          external_applications: event_template["external_applications"],
+          applications_cancelable: event_template["applications_cancelable"],
+          globally_visible: event_template["globally_visible"],
+          export_to_website: event_template["export_to_website"]
+        )
       end
 
       it "marks required_contact_attrs as required" do
-        get new_from_template_group_events_path(group, event_template: "hoeck")
-        expect(response.body).to include(
-          'id="event_contact_attrs_phone_numbers_required" value="required" checked="checked"'
-        )
+        get new_from_template_group_events_path(group, event_template: template_slug)
+        event_template["required_contact_attrs"].each do |attr|
+          expect(response.body).to include(
+            %(id="event_contact_attrs_#{attr}_required" value="required" checked="checked")
+          )
+        end
       end
 
       it "marks hidden_contact_attrs as hidden" do
-        get new_from_template_group_events_path(group, event_template: "hoeck")
-        expect(response.body).to include(
-          'id="event_contact_attrs_nickname_hidden" value="hidden" checked="checked"'
-        )
+        get new_from_template_group_events_path(group, event_template: template_slug)
+        event_template["hidden_contact_attrs"].each do |attr|
+          expect(response.body).to include(
+            %(id="event_contact_attrs_#{attr}_hidden" value="hidden" checked="checked")
+          )
+        end
       end
 
       it "raises RecordNotFound for an unknown template" do
@@ -286,7 +247,7 @@ RSpec.describe EventsController, type: :request do
 
       it "raises CanCan::AccessDenied" do
         expect do
-          get new_from_template_group_events_path(group, event_template: "hoeck")
+          get new_from_template_group_events_path(group, event_template: template_slug)
         end.to raise_error(CanCan::AccessDenied)
       end
     end
