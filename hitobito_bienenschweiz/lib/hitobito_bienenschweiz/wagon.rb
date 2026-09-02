@@ -77,6 +77,7 @@ module HitobitoBienenschweiz
       Role.used_attributes += [:export_to_website]
       EventsController.permitted_attrs += [:export_to_website]
       Event.used_attributes += [:export_to_website]
+      Event.used_attributes += [:group_ids]
       Event.prepend Bienenschweiz::ClearsArrayColumnValidators
       Event::Course.prepend Bienenschweiz::ClearsArrayColumnValidators
       Event::Kind.include Bienenschweiz::Event::Kind

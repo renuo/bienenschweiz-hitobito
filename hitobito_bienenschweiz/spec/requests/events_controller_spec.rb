@@ -321,6 +321,64 @@ RSpec.describe EventsController, type: :request do
     end
   end
 
+  describe "group selection (Durchgefuehrt von)" do
+    let(:kv1) { groups(:aargauer_kantonalverband) }
+    let(:kv2) { groups(:berner_kantonalverband) }
+    let(:sektion) { groups(:aarau_und_umgebung) }
+    let(:kv_admin) do
+      admin_group = Group::KantonalverbandAdministrator.create!(name: "Admin", parent: kv1)
+      person = Fabricate(:person)
+      Fabricate(Group::KantonalverbandAdministrator::AdminKanton.name.to_sym,
+        group: admin_group, person: person)
+      person.reload
+    end
+
+    before { sign_in(kv_admin) }
+
+    it "is offered on the plain event form" do
+      get new_group_event_path(kv1, event: {type: "Event"})
+      expect(response.body).to include("event_group_ids")
+      expect(response.body).to include(I18n.t("event.run_by"))
+    end
+
+    it "is still offered on the course form" do
+      get new_group_event_path(kv1, event: {type: "Event::Course"})
+      expect(response.body).to include("event_group_ids")
+    end
+
+    it "persists several groups on a plain event" do
+      post group_events_path(kv1), params: {event: {
+        type: "Event", name: "Mehrgruppig", group_ids: [kv1.id, kv2.id],
+        dates_attributes: {"0" => {start_at_date: Time.zone.today.to_s}}
+      }}
+
+      expect(Event.find_by(name: "Mehrgruppig").groups).to contain_exactly(kv1, kv2)
+    end
+
+    it "rejects groups of differing types" do
+      event = Event.new(name: "Gemischt", groups: [kv1, sektion])
+      event.dates.build(start_at: Time.zone.today)
+
+      expect(event).not_to be_valid
+      expect(event.errors[:group_ids]).to include(
+        I18n.t("activerecord.errors.messages.must_have_same_type")
+      )
+    end
+
+    it "lists a multi-group event only once from a common ancestor" do
+      event = Event.new(name: "Mehrgruppig", groups: [kv1, kv2])
+      event.dates.build(start_at: Time.zone.today)
+      event.save!
+
+      sign_in(people(:admin))
+      get group_events_path(groups(:root))
+
+      # groups(:root).self_and_descendants covers both groups, so the
+      # joins(:groups) fan-out must not duplicate the event in the list.
+      expect(response.body.scan(%r{/events/#{event.id}(?:\?|")}).size).to eq(1)
+    end
+  end
+
   describe "GET #course_materials" do
     context "as admin with update permission" do
       before do
