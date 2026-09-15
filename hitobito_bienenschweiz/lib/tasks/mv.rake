@@ -52,7 +52,8 @@ namespace :mv do
       failed_members = {}
 
       scope = Member.all.includes(:login)
-      # scope = scope.limit(1000)
+      # scope = scope.limit(10)
+      scope = scope.where(robinson: false)
       scope.find_each do |member|
         total_count += 1
         new_id = member.id + ::MEMBER_ID_OFFSET # offset to not conflict with admin or test data
@@ -121,14 +122,14 @@ namespace :mv do
             email_duplicate_count += 1
           end
           puts "\n"
-          failed_members[member] = e.message
+          failed_members[member] = [e.message,person]
         end
       end
       CSV.open(failure_csv, "w",
         write_headers: true,
-        headers: ["id", "selectline_number", "error"]) do |csv|
-        failed_members.each do |m, error|
-          csv << [m.id, m.selectline_customer_number, error]
+        headers: ["id", "selectline_number", "email", "error"]) do |csv|
+        failed_members.each do |m, (error,person)|
+          csv << [m.id, m.selectline_customer_number, person&.email, error]
         end
       end
       puts "Imported #{success_count}/#{total_count} members (email duplicate: #{email_duplicate_count}, imported without zip validation: #{import_without_validations})"
