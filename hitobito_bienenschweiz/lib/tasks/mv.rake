@@ -51,6 +51,23 @@ namespace :mv do
       import_without_validations = 0
       failed_members = {}
 
+      private_email_category = ContactAccountCategory.for(AdditionalEmail, Person).find_by!(key: :private)
+
+      def try_add_phone(person, number, type)
+        return if number.blank?
+
+        sanitized_number = Phonelib.parse(number)
+        if sanitized_number.valid?
+          number = sanitized_number.international
+          person.phone_numbers.where(number:).first_or_initialize do |phone|
+            phone.number = number
+            phone.category = ContactAccountCategory.for(PhoneNumber, Person).find_by!(key: type)
+          end
+        else
+          puts "Ignoring invalid #{type} number: #{number}"
+        end
+      end
+
       scope = Member.all.includes(:login)
       # scope = scope.limit(10)
       scope = scope.where(robinson: false)
@@ -81,7 +98,7 @@ namespace :mv do
           member.email_contacts.each do |email|
             person.email ||= email unless email == 'honig@bienenschweiz.ch'
             unless email == person.email
-              person.additional_emails.where(email:, label: "Private").first_or_initialize
+              person.additional_emails.where(email:, category: private_email_category).first_or_initialize
             end
           end
           person.birthday = member.birthdate
@@ -89,18 +106,11 @@ namespace :mv do
           if key = member.lang_key
             person.language = {D: "de", E: "en", F: "fr", I: "it"}.fetch(key&.to_sym)
           end
-          person.phone_numbers.where(number: member.phone1).first_or_initialize do |phone|
-            phone.number = member.phone1
-            phone.label = :private
-          end
-          person.phone_numbers.where(number: member.phone2).first_or_initialize do |phone|
-            phone.number = member.phone2
-            phone.label = :private
-          end
-          person.phone_numbers.where(number: member.mobile).first_or_initialize do |phone|
-            phone.number = member.mobile
-            phone.label = :mobile
-          end
+          try_add_phone(person, member.phone1, :landline)
+          try_add_phone(person, member.phone2, :other)
+          try_add_phone(person, member.mobile, :mobile)
+          try_add_phone(person, member.office_phone, :work)
+
           person.validate
           if person.errors.count == 1 && person.errors[:zip_code].present? && person.country != "CH"
             puts "Importing member #{member.id} without validations"
@@ -177,8 +187,9 @@ namespace :mv do
     end
 
     def try_add_website(group, intern_structure)
+      @category ||= ContactAccountCategory.for(SocialAccount, Group).find_by!(key: :website)
       if intern_structure.url.present?
-        group.social_accounts.where(label: :Website, name: intern_structure.url).first_or_create!
+        group.social_accounts.where(category: @category, name: intern_structure.url).first_or_create!
       end
     end
 
