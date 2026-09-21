@@ -35,7 +35,8 @@ describe Export::Pdf::Qcontrol::Checklist do
   subject(:text) { PDF::Inspector::Text.analyze(described_class.new(qcontrol).render).strings }
 
   before do
-    person.phone_numbers.create!(number: "+41 79 123 45 67", label: "Mobil")
+    category = contact_account_categories(:phone_number_person_mobile)
+    person.phone_numbers.create!(number: "+41 79 123 45 67", category: category)
     Fabricate(:quality_control_answer, qcontrol: qcontrol, quality_control_question: question_one,
       fulfilled: "passed", notes: "Alles gut", deadline_at: nil)
     Fabricate(:quality_control_answer, qcontrol: qcontrol, quality_control_question: question_two,
