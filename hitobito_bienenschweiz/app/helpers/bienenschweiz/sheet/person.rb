@@ -32,5 +32,10 @@ module Bienenschweiz::Sheet::Person
       :group_person_memos_path,
       if: ->(view, _group, _person) { view.can?(:index, Memo) }
     )
+    tabs << Sheet::Tab.new(
+      "people.tabs.bienenschweiz_magazine_subscriptions",
+      :group_person_magazine_subscriptions_path,
+      if: ->(view, _group, _person) { view.can?(:index, MagazineSubscription) }
+    )
   end
 end
