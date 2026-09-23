@@ -31,7 +31,7 @@ class MagazineSubscription < ApplicationRecord
   scope :list, -> { order(start_date: :desc, id: :desc) }
 
   scope :active_in_month, lambda { |date|
-    month = date.beginning_of_month..date.end_of_month
+    month = date.all_month
     where(start_date: ..month.end)
       .where(arel_table[:end_date].eq(nil).or(arel_table[:end_date].gteq(month.begin)))
   }
