@@ -5,6 +5,10 @@
 
 
 de:
+  date:
+    formats:
+      month_year: '%B %Y'
+
   activerecord:
     models:
 
@@ -197,6 +201,17 @@ de:
       success: Betriebsprüfung wurde gelöscht.
       error: Betriebsprüfung konnte nicht gelöscht werden.
 
+  magazine_subscription_reports:
+    index:
+      title: Bienen Abo Statistik
+      explanation: Anzahl Abos (Summe der Anzahl) der letzten drei Monate. Gezählt wird jedes Abo, das im jeweiligen Monat lief.
+      subscription_type: Abomodell
+      total: Total
+      categories:
+        buchhaendler: Buchhändler-Abos
+        gratis: Gratis-Abos
+        bezahlt: Bezahlte Abos
+
   people:
     tabs:
       bienenschweiz_qcontrols: Betriebsprüfungen
@@ -362,6 +377,7 @@ de:
   navigation:
     qcontrols: Betriebsprüfungen
     signatures: Unterschriften
+    admin/magazine_subscription_reports: Bienen Abo Statistik (WEMF)
   events:
     course_materials:
       not_a_course: Kursunterlagen gibt es nur für Kurse.
