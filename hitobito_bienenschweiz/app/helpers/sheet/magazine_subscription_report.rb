@@ -5,13 +5,7 @@
 # or later. See the COPYING file at the top-level directory or at
 # https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
 
-class MagazineSubscriptionAbility < AbilityDsl::Base
-  on(MagazineSubscription) do
-    class_side(:index, :index_report).if_admin
-    permission(:any).may(:show, :create, :update, :destroy).if_admin
-  end
-
-  def if_admin
-    role_type?(Group::Dachverband::AdministratorBienenSchweiz)
+module Sheet
+  class MagazineSubscriptionReport < Sheet::Admin
   end
 end
