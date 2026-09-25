@@ -128,6 +128,18 @@ de:
           online_abo: Online-Abo
           geschenk_abo: Geschenk-Abo
           buchhaendler_abo: Buchhändler-Abo
+        cancellation_reasons:
+          biwe: BIWE (Bienen weg)
+          dopp: DOPP (doppeltes Abo)
+          gesg: GESG (gesundheitliche Gründe)
+          gest: GEST (gestorben)
+          hoal: HOAL (hohes Alter)
+          jahr: JAHR (Schnupperabo für ein Jahr)
+          kint: KINT (kein Interesse)
+          ogru: OGRU (ohne Grund)
+          ret: RET (Retoure Post, keine neue Adresse gefunden)
+          zahl: ZAHL (Abostopp da nicht bezahlt)
+          zeit: ZEIT (keine Zeit)
       signature:
         key: Dokument
         name: Name
