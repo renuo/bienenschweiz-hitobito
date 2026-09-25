@@ -81,12 +81,67 @@ RSpec.describe MagazineSubscriptionReportsController, type: :request do
     end
   end
 
+  describe "#export" do
+    around { |example| travel_to(Date.new(2026, 9, 23)) { example.run } }
+
+    def csv
+      CSV.parse(response.body.delete_prefix("\uFEFF"), col_sep: ";")
+    end
+
+    it "sends a CSV attachment named after the export date" do
+      get export_magazine_subscription_reports_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/csv")
+      expect(response.headers["Content-Disposition"]).to include("bienen-abos_2026-09-23.csv")
+    end
+
+    it "exports one row per subscriber with address, Abos and total" do
+      subscriber = Fabricate(:person, first_name: "Anna", last_name: "Muster",
+        street: "Bienenweg", housenumber: "7b", zip_code: "3000", town: "Bern")
+      subscribe("abo", Date.new(2026, 1, 1), amount: 2)
+      Fabricate(:magazine_subscription, person: subscriber, subscription_type: "gratis_abo",
+        start_date: Date.new(2026, 1, 1), amount: 1)
+      Fabricate(:magazine_subscription, person: subscriber, subscription_type: "abo",
+        start_date: Date.new(2026, 1, 1), amount: 4)
+
+      get export_magazine_subscription_reports_path
+
+      row = csv.find { |values| values.include?("Muster") }
+      expect(csv.size).to eq(3) # header + the two subscribers
+      expect(row).to include("Anna", "Bienenweg", "7b", "3000", "Bern", "Abo (4), Gratis-Abo (1)",
+        "5")
+    end
+
+    it "leaves out people whose subscriptions have ended" do
+      subscribe("abo", Date.new(2026, 1, 1), end_date: Date.new(2026, 8, 31))
+
+      get export_magazine_subscription_reports_path
+
+      expect(csv.size).to eq(1) # header only
+    end
+
+    it "is offered as a link on the report page" do
+      get magazine_subscription_reports_path
+
+      expect(response.body).to include(export_magazine_subscription_reports_path)
+    end
+  end
+
   describe "authorization" do
     it "denies access to non-admins" do
       sign_in(Fabricate(:person))
 
       expect do
         get magazine_subscription_reports_path
+      end.to raise_error(CanCan::AccessDenied)
+    end
+
+    it "denies the export to non-admins" do
+      sign_in(Fabricate(:person))
+
+      expect do
+        get export_magazine_subscription_reports_path
       end.to raise_error(CanCan::AccessDenied)
     end
 
