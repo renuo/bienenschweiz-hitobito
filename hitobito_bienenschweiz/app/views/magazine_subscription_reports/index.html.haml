@@ -8,6 +8,12 @@
 
 %p= t(".explanation")
 
+%p
+  = link_to export_magazine_subscription_reports_path, class: "btn btn-primary btn-sm",
+    data: {turbo: "false"} do
+    = icon(:download)
+    = t(".export")
+
 .table-responsive
   %table.table.table-striped
     %thead

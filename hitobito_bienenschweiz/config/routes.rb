@@ -12,7 +12,11 @@ Rails.application.routes.draw do
     # Define wagon routes here
     resources :supervision_types
     resources :signatures, only: [:index, :edit, :update]
-    resources :magazine_subscription_reports, only: [:index]
+    resources :magazine_subscription_reports, only: [:index] do
+      collection do
+        get :export
+      end
+    end
 
     resources :groups, only: [] do
       resources :events, only: [] do
