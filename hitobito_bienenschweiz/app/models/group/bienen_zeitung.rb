@@ -8,29 +8,9 @@
 class Group::BienenZeitung < ::Group
   ### ROLES
 
-  class Abo < ::Role
+  class Abonnent < ::Role
     self.permissions = []
   end
 
-  class AboEuro < ::Role
-    self.permissions = []
-  end
-
-  class GratisAbo < ::Role
-    self.permissions = []
-  end
-
-  class OnlineAbo < ::Role
-    self.permissions = []
-  end
-
-  class GeschenkAbo < ::Role
-    self.permissions = []
-  end
-
-  class BuchhaendlerAbo < ::Role
-    self.permissions = []
-  end
-
-  roles Abo, AboEuro, GratisAbo, OnlineAbo, GeschenkAbo, BuchhaendlerAbo
+  roles Abonnent
 end

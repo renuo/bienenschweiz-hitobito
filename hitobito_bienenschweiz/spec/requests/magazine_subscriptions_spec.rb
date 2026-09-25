@@ -24,7 +24,7 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
           start_date: Date.new(2024, 1, 1)),
         Fabricate(:magazine_subscription, person: person, subscription_type: "online_abo",
           start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 8, 31),
-          cancellation_reason: "Umzug ins Ausland", amount: 3)
+          cancellation_reason: "kint", amount: 3)
       ]
     end
 
@@ -34,7 +34,7 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Abo")
       expect(response.body).to include("Online-Abo")
-      expect(response.body).to include("Umzug ins Ausland")
+      expect(response.body).to include("KINT (kein Interesse)")
       expect(response.body).to include("31.08.2026")
     end
   end
@@ -48,6 +48,14 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
       expect(response.body).to include("Abbestellungsgrund")
       MagazineSubscription.subscription_type_labels.each_value do |label|
         expect(response.body).to include(label)
+      end
+    end
+
+    it "renders the form with all cancellation reasons" do
+      get new_group_person_magazine_subscription_path(sektion, person)
+
+      MagazineSubscription.cancellation_reason_labels.each_value do |label|
+        expect(response.body).to include(ERB::Util.html_escape(label))
       end
     end
 
@@ -169,7 +177,7 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
 
     let(:params) do
       {subscription_type: "gratis_abo", amount: 5, end_date: "31.12.2026",
-       cancellation_reason: "Kein Interesse mehr"}
+       cancellation_reason: "hoal"}
     end
 
     it "updates the subscription" do
@@ -180,7 +188,16 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
       expect(subscription.subscription_type).to eq("gratis_abo")
       expect(subscription.amount).to eq(5)
       expect(subscription.end_date).to eq(Date.new(2026, 12, 31))
-      expect(subscription.cancellation_reason).to eq("Kein Interesse mehr")
+      expect(subscription.cancellation_reason).to eq("hoal")
+    end
+
+    it "refuses to set an end date without a cancellation reason" do
+      patch group_person_magazine_subscription_path(sektion, person, subscription),
+        params: {magazine_subscription: params.merge(cancellation_reason: "")}
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Abbestellungsgrund muss ausgefüllt werden")
+      expect(subscription.reload.end_date).to be_nil
     end
 
     it "redirects to the index after update" do

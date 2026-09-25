@@ -9,7 +9,5 @@
     = subscription.subscription_type_label
   - t.attrs(:start_date, :end_date, :amount)
   - t.col(MagazineSubscription.human_attribute_name(:cancellation_reason)) do |subscription|
-    - if subscription.cancellation_reason.present?
-      %span{title: subscription.cancellation_reason}
-        = subscription.cancellation_reason.truncate(60)
+    = subscription.cancellation_reason_label
   - add_table_actions(t)
