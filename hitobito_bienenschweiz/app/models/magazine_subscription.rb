@@ -30,14 +30,24 @@ class MagazineSubscription < ApplicationRecord
 
   scope :list, -> { order(start_date: :desc, id: :desc) }
 
-  scope :active_in_month, lambda { |date|
-    month = date.all_month
-    where(start_date: ..month.end)
-      .where(arel_table[:end_date].eq(nil).or(arel_table[:end_date].gteq(month.begin)))
+  # Every Abo running at any point during the range: started on or before it ends and
+  # either still open or ended on or after it begins.
+  scope :active_between, lambda { |range|
+    where(start_date: ..range.end)
+      .where(arel_table[:end_date].eq(nil).or(arel_table[:end_date].gteq(range.begin)))
   }
+
+  scope :active_in_month, ->(date) { active_between(date.all_month) }
+
+  scope :active_on, ->(date) { active_between(date..date) }
 
   def to_s
     [subscription_type_label, start_date && I18n.l(start_date)].compact.join(", ")
+  end
+
+  # In-memory counterpart of the active_on scope, for preloaded subscriptions.
+  def active_on?(date)
+    start_date <= date && (end_date.nil? || end_date >= date)
   end
 
   private

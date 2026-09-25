@@ -207,10 +207,14 @@ de:
       explanation: Anzahl Abos (Summe der Anzahl) der letzten drei Monate. Gezählt wird jedes Abo, das im jeweiligen Monat lief.
       subscription_type: Abomodell
       total: Total
+      export: Adressliste als CSV exportieren
       categories:
         buchhaendler: Buchhändler-Abos
         gratis: Gratis-Abos
         bezahlt: Bezahlte Abos
+    export:
+      subscriptions: Abos
+      total_amount: Total Anzahl
 
   people:
     tabs:

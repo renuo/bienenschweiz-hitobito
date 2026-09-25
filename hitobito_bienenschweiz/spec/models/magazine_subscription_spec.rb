@@ -93,6 +93,25 @@ describe MagazineSubscription do
     end
   end
 
+  describe ".active_on / #active_on?" do
+    let(:date) { Date.new(2026, 9, 23) }
+
+    # the export filters preloaded records in Ruby while the report filters in SQL,
+    # so the two rules have to stay in step
+    it "agree for every start/end combination around the date" do
+      [nil, date - 1.day, date, date + 1.day].each do |end_date|
+        [date - 1.day, date, date + 1.day].each do |start_date|
+          record = Fabricate(:magazine_subscription, start_date: start_date,
+            end_date: end_date && [end_date, start_date].max)
+
+          expect(described_class.active_on(date).exists?(record.id))
+            .to eq(record.active_on?(date)),
+              "start #{start_date}, end #{record.end_date.inspect}"
+        end
+      end
+    end
+  end
+
   describe "#to_s" do
     it "combines type label and start date" do
       subscription.start_date = Date.new(2026, 5, 1)
