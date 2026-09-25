@@ -19,13 +19,30 @@ class MagazineSubscription < ApplicationRecord
     buchhaendler_abo
   ].freeze
 
+  # Abbestellungsgründe gemäss Codeliste der Bienenzeitung.
+  CANCELLATION_REASONS = %w[
+    biwe
+    dopp
+    gesg
+    gest
+    hoal
+    jahr
+    kint
+    ogru
+    ret
+    zahl
+    zeit
+  ].freeze
+
   belongs_to :person
 
   i18n_enum :subscription_type, SUBSCRIPTION_TYPES, queries: true
+  i18n_enum :cancellation_reason, CANCELLATION_REASONS
 
   validates_by_schema
   validates :amount, numericality: {only_integer: true, greater_than: 0,
                                     less_than: 2_147_483_648, allow_nil: true}
+  validates :cancellation_reason, presence: true, if: -> { end_date.present? }
   validate :assert_end_date_after_start_date
 
   scope :list, -> { order(start_date: :desc, id: :desc) }
