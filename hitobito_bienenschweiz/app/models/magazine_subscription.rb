@@ -43,6 +43,7 @@ class MagazineSubscription < ApplicationRecord
   validates :amount, numericality: {only_integer: true, greater_than: 0,
                                     less_than: 2_147_483_648, allow_nil: true}
   validates :cancellation_reason, presence: true, if: -> { end_date.present? }
+  validates :cancellation_reason, absence: true, unless: -> { end_date.present? }
   validate :assert_end_date_after_start_date
 
   scope :list, -> { order(start_date: :desc, id: :desc) }
