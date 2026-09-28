@@ -1,0 +1,11 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+= entry_form do |f|
+  = f.labeled_i18n_enum_field :subscription_type, MagazineSubscription.subscription_type_labels, class: 'form-select form-select-sm'
+  = f.labeled_input_fields :start_date, :end_date, :amount
+  = f.labeled :cancellation_reason do
+    = f.text_area :cancellation_reason, class: 'form-control form-control-sm', rows: 3

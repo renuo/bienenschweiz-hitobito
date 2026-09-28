@@ -1,0 +1,15 @@
+-#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+= crud_table do |t|
+  - t.col(MagazineSubscription.human_attribute_name(:subscription_type)) do |subscription|
+    = subscription.subscription_type_label
+  - t.attrs(:start_date, :end_date, :amount)
+  - t.col(MagazineSubscription.human_attribute_name(:cancellation_reason)) do |subscription|
+    - if subscription.cancellation_reason.present?
+      %span{title: subscription.cancellation_reason}
+        = subscription.cancellation_reason.truncate(60)
+  - add_table_actions(t)

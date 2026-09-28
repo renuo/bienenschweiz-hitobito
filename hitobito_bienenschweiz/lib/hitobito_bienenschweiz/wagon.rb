@@ -110,6 +110,7 @@ module HitobitoBienenschweiz
       Ability.store.register DiplomaAbility
       Ability.store.register QcontrolAbility
       Ability.store.register MemoAbility
+      Ability.store.register MagazineSubscriptionAbility
       Ability.store.register SupervisionAbility
       Ability.store.register SupervisionTypeAbility
       Ability.store.register FeedbackRoundAbility

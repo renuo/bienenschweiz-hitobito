@@ -40,6 +40,10 @@ de:
         one: Memo
         other: Memos
 
+      magazine_subscription:
+        one: Bienen Abo
+        other: Bienen Abos
+
       supervision:
         one: Supervision
         other: Supervisionen
@@ -108,6 +112,22 @@ de:
         author_id: Erstellt von
         author_name: Erstellt von
         created_at: Erstellt am
+      magazine_subscription:
+        person: Person
+        person_id: Person
+        start_date: Startdatum
+        end_date: Enddatum
+        subscription_type: Abomodell
+        amount: Anzahl Exemplare
+        cancellation_reason: Abbestellungsgrund
+        subscription_types:
+          abo: Abo
+          abo_eur: Abo-EUR
+          gratis_abo: Gratis-Abo
+          schnupper_abo: Schnupper-Abo
+          online_abo: Online-Abo
+          geschenk_abo: Geschenk-Abo
+          buchhaendler_abo: Buchhändler-Abo
       signature:
         key: Dokument
         name: Name
@@ -166,6 +186,7 @@ de:
         not_allowed_for_kind: 'ist für %{kind} nicht zulässig'
         only_for_sektion: 'kann nur für Sektionen gesetzt werden'
         not_in_range: 'muss zwischen 1 und 5 liegen'
+        not_after_start_date: 'muss nach dem Startdatum liegen'
         final_round_exists: 'für diesen Kurs wurde bereits eine Schlussrunde gestartet, es kann keine weitere Runde mehr gestartet werden'
   orphan_qcontrols:
     title: Blanko-Betriebsprüfungen
@@ -181,6 +202,7 @@ de:
       bienenschweiz_qcontrols: Betriebsprüfungen
       bienenschweiz_supervisions: Supervisionen
       bienenschweiz_memos: Memos
+      bienenschweiz_magazine_subscriptions: Bienen Abo
   qcontrol_default_title: 'Betriebsprüfung'
   checklist_attachment_name: "Betriebspruefung.pdf"
   fee_remarks: "Betriebsprüfung %{name}"

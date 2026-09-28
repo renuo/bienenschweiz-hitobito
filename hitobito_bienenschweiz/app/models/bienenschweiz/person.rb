@@ -21,6 +21,7 @@ module Bienenschweiz::Person
     has_many :qcontrols, dependent: :destroy
     has_many :supervisions, dependent: :destroy
     has_many :memos, dependent: :destroy
+    has_many :magazine_subscriptions, dependent: :restrict_with_error
 
     def beeaudit_authentication_token
       signed_id(expires_in: 2.months, purpose: :beeaudit)
