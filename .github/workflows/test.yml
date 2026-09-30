@@ -89,13 +89,13 @@ jobs:
         run: bundle exec rake app:ci:setup:rspec
         working-directory: hitobito_bienenschweiz
 
+      - name: "Build Assets"
+        run: bundle exec rake assets:precompile
+        working-directory: hitobito
+
       - name: "Run specs"
         run: bundle exec rake spec:without_features
         working-directory: hitobito_bienenschweiz
-
-      - name: "Run Webpacker"
-        run: bundle exec rake webpacker:compile
-        working-directory: hitobito
 
       - name: "Run feature specs"
         env:
