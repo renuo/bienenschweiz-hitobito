@@ -90,6 +90,9 @@ jobs:
         working-directory: hitobito_bienenschweiz
 
       - name: "Build Assets"
+        # Propshaft's manifest must include the same wagon as the specs.
+        env:
+          BUNDLE_GEMFILE: ../hitobito_bienenschweiz/Gemfile
         run: bundle exec rake assets:precompile
         working-directory: hitobito
 
