@@ -48,6 +48,9 @@ class MagazineSubscription < ApplicationRecord
   validate :assert_person_is_subscriber, on: :create
 
   scope :list, -> { order(start_date: :desc, id: :desc) }
+  scope :active, lambda { |date = Time.zone.today|
+    where(start_date: ..date).where("end_date IS NULL OR end_date >= ?", date)
+  }
 
   scope :active_in_month, lambda { |date|
     month = date.all_month
