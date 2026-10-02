@@ -17,7 +17,8 @@ describe MagazineSubscriptions::Report do
 
   def subscribe(type, start_date, end_date: nil, amount: 1)
     Fabricate(:magazine_subscription, person: person, subscription_type: type,
-      start_date: start_date, end_date: end_date, amount: amount)
+      start_date: start_date, end_date: end_date, amount: amount,
+      cancellation_reason: end_date ? "biwe" : nil)
   end
 
   around { |example| travel_to(Date.new(2026, 9, 15)) { example.run } }
