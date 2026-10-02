@@ -73,7 +73,50 @@ describe MagazineSubscription do
   it "is valid when end_date equals start_date" do
     subscription.start_date = Date.new(2026, 5, 1)
     subscription.end_date = Date.new(2026, 5, 1)
+    subscription.cancellation_reason = "kint"
     expect(subscription).to be_valid
+  end
+
+  describe "cancellation_reason" do
+    it "is required as soon as an end_date is set" do
+      subscription.end_date = subscription.start_date + 1.year
+      subscription.cancellation_reason = nil
+
+      expect(subscription).not_to be_valid
+      expect(subscription.errors.full_messages)
+        .to include("Abbestellungsgrund muss ausgefüllt werden")
+    end
+
+    it "is valid with an end_date and a known reason" do
+      subscription.end_date = subscription.start_date + 1.year
+      subscription.cancellation_reason = "gest"
+
+      expect(subscription).to be_valid
+    end
+
+    it "is invalid with an unknown reason" do
+      subscription.cancellation_reason = "umzug"
+
+      expect(subscription).not_to be_valid
+      expect(subscription.errors[:cancellation_reason]).to be_present
+    end
+
+    it "translates the reason" do
+      subscription.cancellation_reason = "ret"
+
+      expect(subscription.cancellation_reason_label)
+        .to eq("RET (Retoure Post, keine neue Adresse gefunden)")
+    end
+
+    it "has a label for every reason" do
+      described_class.cancellation_reason_labels.each do |value, label|
+        expect(label).not_to include("translation missing"), "missing label for #{value}"
+      end
+    end
+
+    it "labels a blank reason as an empty string" do
+      expect(subscription.cancellation_reason_label).to eq("")
+    end
   end
 
   describe "#subscription_type_label" do

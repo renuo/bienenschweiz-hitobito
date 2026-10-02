@@ -7,5 +7,4 @@
 = entry_form do |f|
   = f.labeled_i18n_enum_field :subscription_type, MagazineSubscription.subscription_type_labels, class: 'form-select form-select-sm'
   = f.labeled_input_fields :start_date, :end_date, :amount
-  = f.labeled :cancellation_reason do
-    = f.text_area :cancellation_reason, class: 'form-control form-control-sm', rows: 3
+  = f.labeled_i18n_enum_field :cancellation_reason, MagazineSubscription.cancellation_reason_labels, class: 'form-select form-select-sm'
