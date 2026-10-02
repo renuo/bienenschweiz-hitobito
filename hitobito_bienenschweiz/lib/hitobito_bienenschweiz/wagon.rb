@@ -50,7 +50,10 @@ module HitobitoBienenschweiz
         heading: "admins.show.bees",
         items: [
           NavigationHelper::Item.new(model: SupervisionType, path: :supervision_types_path),
-          NavigationHelper::Item.new(model: Signature, path: :signatures_path)
+          NavigationHelper::Item.new(model: Signature, path: :signatures_path),
+          NavigationHelper::Item.new(label: "navigation.admin/magazine_subscription_reports",
+            path: :magazine_subscription_reports_path,
+            if: ->(_) { can?(:index_report, MagazineSubscription) })
         ]
       }
 
