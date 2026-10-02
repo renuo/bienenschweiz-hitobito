@@ -127,6 +127,7 @@ module HitobitoBienenschweiz
       Event::KindCategory.include Bienenschweiz::Event::KindCategory
       EventsController.prepend Bienenschweiz::EventsController
       HealthzController.prepend Bienenschweiz::HealthzController
+      OidcClaimSetup.prepend Bienenschweiz::OidcClaimSetup
       Event::KindCategoriesController.permitted_attrs += [:layer_group_type]
       Sheet::Event.prepend Bienenschweiz::Sheet::Event
 

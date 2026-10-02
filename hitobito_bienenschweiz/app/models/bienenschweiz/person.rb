@@ -27,6 +27,10 @@ module Bienenschweiz::Person
       signed_id(expires_in: 2.months, purpose: :beeaudit)
     end
 
+    def magazine_subscriber?
+      magazine_subscriptions.active.exists?
+    end
+
     def qcontrol_inspector?
       roles.any? { |role| QCONTROLLER_ROLES.include?(role.type) }
     end

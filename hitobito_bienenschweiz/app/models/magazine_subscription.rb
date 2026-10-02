@@ -47,6 +47,9 @@ class MagazineSubscription < ApplicationRecord
   validate :assert_end_date_after_start_date
 
   scope :list, -> { order(start_date: :desc, id: :desc) }
+  scope :active, lambda { |date = Time.zone.today|
+    where(start_date: ..date).where("end_date IS NULL OR end_date >= ?", date)
+  }
 
   scope :active_in_month, lambda { |date|
     month = date.all_month
