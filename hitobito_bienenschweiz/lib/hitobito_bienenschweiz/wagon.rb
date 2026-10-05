@@ -85,7 +85,8 @@ module HitobitoBienenschweiz
       Event::Course.prepend Bienenschweiz::ClearsArrayColumnValidators
       Event::Kind.include Bienenschweiz::Event::Kind
       Event::KindsController.permitted_attrs += [:kas_fee_code, :kas_fixed_fee,
-        :kas_instructor_fees]
+        :kas_instructor_fees, :grants_trial_subscription]
+      Event::Qualifier.prepend Bienenschweiz::Event::Qualifier
       Event::ParticipationsController.prepend Bienenschweiz::Event::ParticipationsController
       EventParticipationsHelper.include Bienenschweiz::EventParticipationsHelper
 
