@@ -10,7 +10,7 @@ require "spec_helper"
 describe MagazineSubscriptions::Report do
   subject(:report) { described_class.new }
 
-  let(:person) { Fabricate(:person) }
+  let(:person) { Fabricate(:magazine_subscriber) }
   let(:july) { Date.new(2026, 7, 1) }
   let(:august) { Date.new(2026, 8, 1) }
   let(:september) { Date.new(2026, 9, 1) }

@@ -10,7 +10,7 @@ require "spec_helper"
 RSpec.describe MagazineSubscriptionsController, type: :request do
   let(:sektion) { groups(:aarau_und_umgebung) }
   let(:admin) { people(:admin) }
-  let(:person) { Fabricate(:person) }
+  let(:person) { Fabricate(:magazine_subscriber) }
 
   before do
     roles(:admin)
@@ -116,6 +116,20 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
 
       expect(response.location)
         .to include(group_person_magazine_subscriptions_path(sektion, person))
+    end
+
+    context "for a person without the Abonnent/in role" do
+      let(:person) { Fabricate(:person) }
+
+      it "does not create a subscription and renders the form with an error" do
+        expect do
+          post group_person_magazine_subscriptions_path(sektion, person),
+            params: {magazine_subscription: params}
+        end.not_to change { MagazineSubscription.count }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include("muss zuerst als Abonnent/in erfasst werden")
+      end
     end
 
     context "with invalid params" do

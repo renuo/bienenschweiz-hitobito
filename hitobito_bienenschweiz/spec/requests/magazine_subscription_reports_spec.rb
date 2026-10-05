@@ -9,7 +9,7 @@ require "spec_helper"
 
 RSpec.describe MagazineSubscriptionReportsController, type: :request do
   let(:admin) { people(:admin) }
-  let(:person) { Fabricate(:person) }
+  let(:person) { Fabricate(:magazine_subscriber) }
 
   before do
     roles(:admin)
