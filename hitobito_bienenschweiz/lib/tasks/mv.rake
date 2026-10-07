@@ -51,7 +51,11 @@ namespace :mv do
       import_without_validations = 0
       failed_members = {}
 
-      private_email_category = ContactAccountCategory.for(AdditionalEmail, Person).find_by!(key: :private)
+      # additional emails get the next free category in this order, since each category may only be
+      # used once per person. invoices is left out on purpose so imported emails don't receive invoices.
+      additional_email_categories = %w[private work other].map do |key|
+        ContactAccountCategory.for(AdditionalEmail, Person).find_by!(key:)
+      end
 
       def try_add_phone(person, number, type)
         return if number.blank?
@@ -93,12 +97,17 @@ namespace :mv do
           person.town = member.location
           person.created_at = member.created_at
           person.updated_at = member.updated_at
-          person.country = ISO3166::Country[member.country_key].translations["de"]
           person.email = (member.login || member.kas_user)&.email
           member.email_contacts.each do |email|
             person.email ||= email unless email == 'honig@bienenschweiz.ch'
-            unless email == person.email
-              person.additional_emails.where(email:, category: private_email_category).first_or_initialize
+            next if email == person.email || person.additional_emails.any? { |e| e.email == email }
+
+            used_category_ids = person.additional_emails.map(&:category_id)
+            category = additional_email_categories.find { |c| used_category_ids.exclude?(c.id) }
+            if category
+              person.additional_emails.build(email:, category:)
+            else
+              puts "Skipping additional email #{email} of member #{member.id}: no free email category left"
             end
           end
           person.birthday = member.birthdate
@@ -110,6 +119,14 @@ namespace :mv do
           try_add_phone(person, member.phone2, :other)
           try_add_phone(person, member.mobile, :mobile)
           try_add_phone(person, member.office_phone, :work)
+
+          unless member.country_key.blank?
+            if (iso_country = ISO3166::Country[member.country_key])
+              person.country = iso_country.translations["de"]
+            else
+              raise "Unknown country_key #{member.country_key}"
+            end
+          end
 
           person.validate
           if person.errors.count == 1 && person.errors[:zip_code].present? && person.country != "CH"
