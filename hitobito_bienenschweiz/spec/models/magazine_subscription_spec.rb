@@ -162,6 +162,27 @@ describe MagazineSubscription do
     end
   end
 
+  describe ".active" do
+    let(:person) { Fabricate(:magazine_subscriber) }
+    let(:today) { Date.new(2026, 6, 15) }
+
+    def subscription(start_date, end_date = nil)
+      Fabricate(:magazine_subscription, person:, start_date:, end_date:,
+        cancellation_reason: end_date && "kint")
+    end
+
+    it "includes running subscriptions and excludes future or ended ones" do
+      open_ended = subscription(today - 1.year)
+      ending_today = subscription(today - 1.year, today)
+      starting_today = subscription(today)
+      subscription(today + 1.day)
+      subscription(today - 1.year, today - 1.day)
+
+      expect(described_class.active(today))
+        .to contain_exactly(open_ended, ending_today, starting_today)
+    end
+  end
+
   describe "#to_s" do
     it "combines type label and start date" do
       subscription.start_date = Date.new(2026, 5, 1)
