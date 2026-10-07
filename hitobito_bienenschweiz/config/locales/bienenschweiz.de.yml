@@ -203,6 +203,7 @@ de:
         only_for_sektion: 'kann nur für Sektionen gesetzt werden'
         not_in_range: 'muss zwischen 1 und 5 liegen'
         not_after_start_date: 'muss nach dem Startdatum liegen'
+        not_subscriber: 'muss zuerst als Abonnent/in erfasst werden'
         final_round_exists: 'für diesen Kurs wurde bereits eine Schlussrunde gestartet, es kann keine weitere Runde mehr gestartet werden'
   orphan_qcontrols:
     title: Blanko-Betriebsprüfungen

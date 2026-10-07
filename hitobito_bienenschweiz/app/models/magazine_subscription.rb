@@ -45,6 +45,7 @@ class MagazineSubscription < ApplicationRecord
   validates :cancellation_reason, presence: true, if: -> { end_date.present? }
   validates :cancellation_reason, absence: true, unless: -> { end_date.present? }
   validate :assert_end_date_after_start_date
+  validate :assert_person_is_subscriber, on: :create
 
   scope :list, -> { order(start_date: :desc, id: :desc) }
 
@@ -64,5 +65,12 @@ class MagazineSubscription < ApplicationRecord
     return if start_date.blank? || end_date.blank?
 
     errors.add(:end_date, :not_after_start_date) if end_date < start_date
+  end
+
+  def assert_person_is_subscriber
+    return if person.blank?
+    return if person.roles.exists?(type: Group::BienenZeitung::Abonnent.sti_name)
+
+    errors.add(:person, :not_subscriber)
   end
 end

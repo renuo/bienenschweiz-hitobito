@@ -8,7 +8,9 @@
 require "spec_helper"
 
 describe MagazineSubscription do
-  subject(:subscription) { Fabricate.build(:magazine_subscription) }
+  subject(:subscription) do
+    Fabricate.build(:magazine_subscription, person: Fabricate(:magazine_subscriber))
+  end
 
   it { is_expected.to be_valid }
 
@@ -55,6 +57,30 @@ describe MagazineSubscription do
   it "is invalid without a person" do
     subscription.person = nil
     expect(subscription).not_to be_valid
+  end
+
+  describe "person" do
+    it "is invalid for a person without the Abonnent/in role" do
+      subscription.person = Fabricate(:person)
+
+      expect(subscription).not_to be_valid
+      expect(subscription.errors.full_messages)
+        .to include("Person muss zuerst als Abonnent/in erfasst werden")
+    end
+
+    it "is invalid for a person whose Abonnent/in role has ended" do
+      subscription.person.roles.first.update!(end_on: 1.day.ago)
+
+      expect(subscription).not_to be_valid
+      expect(subscription.errors[:person]).to be_present
+    end
+
+    it "keeps an existing subscription valid once the role has ended" do
+      subscription.save!
+      subscription.person.roles.first.update!(end_on: 1.day.ago)
+
+      expect(subscription.reload).to be_valid
+    end
   end
 
   it "is valid without an end_date and cancellation_reason" do
@@ -128,7 +154,7 @@ describe MagazineSubscription do
 
   describe ".list" do
     it "orders by start_date descending" do
-      person = Fabricate(:person)
+      person = Fabricate(:magazine_subscriber)
       old = Fabricate(:magazine_subscription, person: person, start_date: Date.new(2024, 1, 1))
       recent = Fabricate(:magazine_subscription, person: person, start_date: Date.new(2026, 1, 1))
 
