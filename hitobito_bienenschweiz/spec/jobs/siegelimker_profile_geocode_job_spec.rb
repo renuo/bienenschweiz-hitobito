@@ -14,7 +14,7 @@ describe SiegelimkerProfileGeocodeJob do
   let(:profile) { SiegelimkerProfile.create!(person:) }
 
   it "geocodes the profile" do
-    stub_geo_admin("Einisberg 178, 3415 Hasle", result: [47.0113983, 7.6386184])
+    stub_geocoding("Einisberg 178, 3415 Hasle", [47.0113983, 7.6386184])
     profile.update_columns(lat: 1, lng: 2, geocoded_address: "Old address")
 
     described_class.new(profile.id).perform
