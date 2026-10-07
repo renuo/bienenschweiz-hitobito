@@ -46,6 +46,7 @@ Rails.application.routes.draw do
         resources :supervisions
         resources :memos
         resources :magazine_subscriptions, except: [:show]
+        resource :siegelimker_profile, only: [:show, :edit, :update]
       end
       resources :events, only: [] do
         get :course_materials, as: :course_materials

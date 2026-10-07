@@ -117,6 +117,7 @@ module HitobitoBienenschweiz
       Ability.store.register SupervisionAbility
       Ability.store.register SupervisionTypeAbility
       Ability.store.register FeedbackRoundAbility
+      Ability.store.register SiegelimkerProfileAbility
 
       TableDisplay.register_column(Person, TableDisplays::PublicColumn, :canton_short)
       Person::FILTER_ATTRS << [:canton_short, :string]
