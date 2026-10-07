@@ -205,4 +205,33 @@ describe Person do
       expect(person.gender).to eq("d")
     end
   end
+
+  describe "geocoding of the siegelimker profile" do
+    let(:person) { Fabricate(:person, street: "Einisberg", zip_code: "3415", town: "Hasle") }
+    let!(:profile) { SiegelimkerProfile.create!(person:, lat: 47, lng: 7) }
+
+    def geocode_jobs
+      Delayed::Job.where("handler LIKE ?", "%SiegelimkerProfileGeocodeJob%")
+    end
+
+    before { profile.update_columns(manual_coordinates: false) }
+
+    it "enqueues a job when the address changes" do
+      expect { person.update!(street: "Schlössli") }.to change { geocode_jobs.count }.by(1)
+    end
+
+    it "does not enqueue a job for other changes" do
+      expect { person.update!(first_name: "Ruedi") }.not_to change { geocode_jobs.count }
+    end
+
+    it "does not enqueue a job for manual coordinates" do
+      profile.update_columns(manual_coordinates: true)
+      expect { person.update!(town: "Burgdorf") }.not_to change { geocode_jobs.count }
+    end
+
+    it "does not enqueue a job without profile" do
+      other = Fabricate(:person)
+      expect { other.update!(town: "Burgdorf") }.not_to change { geocode_jobs.count }
+    end
+  end
 end

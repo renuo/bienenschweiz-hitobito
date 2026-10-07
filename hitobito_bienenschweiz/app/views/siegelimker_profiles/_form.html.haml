@@ -1,0 +1,42 @@
+-#  Copyright (c) 2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+- profile_path = group_person_siegelimker_profile_path(@group, @person)
+= crud_form(entry, url: profile_path, method: :patch, cancel_url: profile_path) do |f|
+  = field_set_tag(t('.profile')) do
+    = f.labeled_boolean_field :public_profile
+    = f.labeled_input_field :title
+    = f.labeled_input_field :description, rows: 5
+    = f.labeled_input_field :siegelimker_since, min: 1900, max: Time.zone.today.year
+    = f.labeled_input_field :website, placeholder: 'https://'
+    = f.labeled(:background_image) do
+      = f.file_field :background_image, accept: SiegelimkerProfile::IMAGE_CONTENT_TYPES.join(', '), class: 'mw-100 mw-md-60ch form-control form-control-sm'
+    - if entry.background_image.attached? && entry.background_image.variable?
+      = f.labeled(:remove_background_image) do
+        .mb-2= image_tag(entry.background_image.variant(resize_to_limit: [400, 200]))
+        = f.boolean_field :remove_background_image
+
+  = field_set_tag(t('.offer')) do
+    = f.labeled_boolean_field :public_offer
+    - SiegelimkerProfile::PRODUCTS.each do |product|
+      = f.labeled_i18n_enum_field :"#{product}_availability", SiegelimkerProfile.send(:"#{product}_availability_labels"), class: 'form-select form-select-sm'
+
+  = field_set_tag(SiegelimkerSalesPoint.model_name.human(count: 2)) do
+    = f.labeled_inline_fields_for :sales_points, 'siegelimker_profiles/sales_point_fields', nil, false, SiegelimkerProfile::MAX_SALES_POINTS
+
+  = field_set_tag(t('.locations')) do
+    - SiegelimkerProfile::BEE_LOCATIONS.each do |attr|
+      = f.labeled_input_field attr
+    = f.labeled_input_field :further_information, rows: 5
+
+  = field_set_tag(t('.coordinates'), data: {controller: 'bienenschweiz--siegelimker-map'}) do
+    - [:lat, :lng].each do |attr|
+      = f.labeled_input_field attr, step: 'any',
+        data: {'bienenschweiz--siegelimker-map-target': attr, action: 'input->bienenschweiz--siegelimker-map#update'}
+    = f.indented do
+      = f.help_block(siegelimker_coordinates_source(entry))
+      = f.help_block(t('.coordinates_help'))
+      = render 'map'

@@ -44,6 +44,14 @@ de:
         one: Memo
         other: Memos
 
+      siegelimker_profile:
+        one: Website-Profil
+        other: Website-Profile
+
+      siegelimker_sales_point:
+        one: Verkaufsstelle
+        other: Verkaufsstellen
+
       magazine_subscription:
         one: Bienen Abo
         other: Bienen Abos
@@ -107,6 +115,40 @@ de:
           not_passed: nicht erfüllt
           partially_passed: erfüllt unter Vorbehalt
           not_necessary: 'nicht nötig'
+      siegelimker_profile:
+        public_profile: Öffentliches Profil
+        title: Titel der Imkerei
+        description: Beschreibung
+        siegelimker_since: Siegelimker seit
+        website: Webseite
+        public_offer: Angebot öffentlich anzeigen
+        honey_availability: Honig mit goldenem Qualitätssiegel
+        propolis_availability: Propolis
+        pollen_availability: Pollen
+        queens_availability: Bienenköniginnen
+        wax_availability: Wachs
+        availabilities:
+          not_offered: nicht im Angebot
+          available: derzeit erhältlich
+          unavailable: derzeit leider nicht erhältlich
+        sales_points: Verkaufsstellen
+        bee_location_1: Bienenstandort 1
+        bee_location_2: Bienenstandort 2
+        bee_location_3: Bienenstandort 3
+        bee_location_4: Bienenstandort 4
+        bee_location_5: Bienenstandort 5
+        further_information: Weitere Informationen
+        lat: Breitengrad
+        lng: Längengrad
+        manual_coordinates: Koordinaten manuell erfasst
+        geocoded_address: Adresse für Koordinaten
+        background_image: Hintergrundbild
+        remove_background_image: Hintergrundbild entfernen
+      siegelimker_sales_point:
+        name: Verkaufsstelle
+        address: Adresse
+        email: E-Mail-Adresse
+        phone: Telefonnummer
       memo:
         title: Titel
         body: Text
@@ -203,6 +245,7 @@ de:
         only_for_sektion: 'kann nur für Sektionen gesetzt werden'
         not_in_range: 'muss zwischen 1 und 5 liegen'
         not_after_start_date: 'muss nach dem Startdatum liegen'
+        too_many: 'darf höchstens %{count} Einträge haben'
         not_subscriber: 'muss zuerst als Abonnent/in erfasst werden'
         final_round_exists: 'für diesen Kurs wurde bereits eine Schlussrunde gestartet, es kann keine weitere Runde mehr gestartet werden'
   orphan_qcontrols:
@@ -231,6 +274,32 @@ de:
       bienenschweiz_supervisions: Supervisionen
       bienenschweiz_memos: Memos
       bienenschweiz_magazine_subscriptions: Bienen Abo
+      bienenschweiz_siegelimker_profile: Website-Profil
+  siegelimker_profiles:
+    show:
+      profile: Profil
+      offer: Angebot
+      locations: Bienenstandorte
+      coordinates: Koordinaten
+      coordinates_value: Breitengrad, Längengrad
+      coordinates_source: Quelle
+    form:
+      profile: Profil
+      offer: Angebot
+      locations: Bienenstandorte
+      coordinates: Koordinaten
+      coordinates_help: >-
+        Die Koordinaten werden aus der Adresse der ersten Verkaufsstelle oder, falls keine
+        erfasst ist, aus der Adresse der Person ermittelt. Manuell angepasste Koordinaten
+        werden beibehalten. Leeren Sie beide Felder, um sie wieder automatisch zu ermitteln.
+    coordinates_source:
+      manual: Manuell erfasst
+      geocoded: 'Automatisch ermittelt aus «%{address}»'
+      not_found: '«%{address}» konnte nicht gefunden werden, bitte Koordinaten manuell erfassen.'
+      no_address: Keine Adresse vorhanden
+    map:
+      title: Karte
+      open: In OpenStreetMap öffnen
   qcontrol_default_title: 'Betriebsprüfung'
   checklist_attachment_name: "Betriebspruefung.pdf"
   fee_remarks: "Betriebsprüfung %{name}"
