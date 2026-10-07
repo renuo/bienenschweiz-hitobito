@@ -8,7 +8,7 @@
 require "spec_helper"
 
 describe "GET oauth/profile", type: :request do
-  let(:user) { people(:admin) }
+  let(:user) { Fabricate(:magazine_subscriber) }
   let(:token) do
     Fabricate(:access_token, application: Fabricate(:application),
       scopes: "email name with_roles", resource_owner_id: user.id)

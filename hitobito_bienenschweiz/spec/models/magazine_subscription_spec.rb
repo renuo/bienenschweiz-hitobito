@@ -163,7 +163,7 @@ describe MagazineSubscription do
   end
 
   describe ".active" do
-    let(:person) { Fabricate(:person) }
+    let(:person) { Fabricate(:magazine_subscriber) }
     let(:today) { Date.new(2026, 6, 15) }
 
     def subscription(start_date, end_date = nil)
