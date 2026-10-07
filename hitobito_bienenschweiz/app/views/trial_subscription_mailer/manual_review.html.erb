@@ -1,0 +1,17 @@
+<p>
+  <%= link_to @person.full_name, person_url(@person) %> hat einen Kurs abgeschlossen,
+  der zu einem Schnupper-Abo berechtigt. Die bestehenden Abonnemente erfordern eine
+  manuelle Prüfung (mehrere Abonnemente, mehrere Exemplare oder kein bezahltes Abo).
+  Es wurden keine Abonnemente automatisch geändert oder erstellt.
+</p>
+<ul>
+  <% @subscriptions.each do |subscription| %>
+    <li>
+      <%= subscription.subscription_type_label %>:
+      <%= subscription.amount %> Exemplar(e),
+      Beginn: <%= I18n.l(subscription.start_date) %>,
+      Ende: <%= subscription.end_date ? I18n.l(subscription.end_date) : "unbefristet" %>
+    </li>
+  <% end %>
+</ul>
+<p>Bitte das Schnupper-Abo und das anschliessende Abo manuell einrichten.</p>

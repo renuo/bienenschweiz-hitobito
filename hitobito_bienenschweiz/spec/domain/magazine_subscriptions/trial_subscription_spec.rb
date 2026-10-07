@@ -8,7 +8,7 @@
 require "spec_helper"
 
 describe MagazineSubscriptions::TrialSubscription do
-  let(:person) { Fabricate(:person) }
+  let(:person) { Fabricate(:magazine_subscriber) }
   let(:today) { Date.new(2026, 10, 2) }
 
   subject(:trial) { described_class.new(person, today: today) }
@@ -23,7 +23,7 @@ describe MagazineSubscriptions::TrialSubscription do
 
   context "without a subscription" do
     it "creates a one year Schnupper-Abo starting on the first of next month" do
-      expect { trial.create }.to change { person.magazine_subscriptions.count }.by(1)
+      expect { trial.create }.to change { person.magazine_subscriptions.count }.by(2)
 
       expect(schnupper_abo).to have_attributes(start_date: Date.new(2026, 11, 1),
         end_date: Date.new(2027, 10, 31), amount: 1, cancellation_reason: "jahr")
@@ -45,7 +45,7 @@ describe MagazineSubscriptions::TrialSubscription do
       trial.create
 
       expect(subscription.reload).to have_attributes(end_date: Date.new(2027, 2, 28),
-        cancellation_reason: "jahr")
+        cancellation_reason: "ogru")
       expect(schnupper_abo).to have_attributes(start_date: Date.new(2027, 3, 1),
         end_date: Date.new(2028, 2, 29))
     end
@@ -65,7 +65,7 @@ describe MagazineSubscriptions::TrialSubscription do
       trial.create
 
       expect(subscription.reload.end_date).to eq(today)
-      expect(schnupper_abo.start_date).to eq(Date.new(2026, 10, 3))
+      expect(schnupper_abo.start_date).to eq(Date.new(2026, 11, 1))
     end
   end
 
@@ -73,13 +73,61 @@ describe MagazineSubscriptions::TrialSubscription do
     let!(:later) { subscribe(Date.new(2024, 6, 1)) }
     let!(:sooner) { subscribe(Date.new(2023, 1, 1)) }
 
-    it "terminates only the one whose billing cycle ends first" do
-      trial.create
+    it "requests manual review without changing subscriptions" do
+      expect(TrialSubscriptionMailer).to receive(:manual_review)
+        .with(person, match_array([later, sooner]))
+        .and_return(double(deliver_later: true))
 
-      expect(sooner.reload.end_date).to eq(Date.new(2026, 12, 31))
+      expect { trial.create }.not_to change { person.magazine_subscriptions.count }
+      expect(sooner.reload.end_date).to be_nil
       expect(later.reload.end_date).to be_nil
-      expect(schnupper_abo.start_date).to eq(Date.new(2027, 1, 1))
     end
+  end
+
+  context "with multiple copies" do
+    let!(:subscription) { subscribe(Date.new(2025, 3, 1), amount: 2) }
+
+    it "requests manual review without changing subscriptions" do
+      expect(TrialSubscriptionMailer).to receive(:manual_review).with(person, [subscription])
+        .and_return(double(deliver_later: true))
+
+      expect { trial.create }.not_to change { person.magazine_subscriptions.count }
+      expect(subscription.reload.end_date).to be_nil
+    end
+  end
+
+  it "creates an open-ended Abo immediately after the trial" do
+    trial.create
+
+    expect(person.magazine_subscriptions.find_sole_by(subscription_type: "abo"))
+      .to have_attributes(start_date: Date.new(2027, 11, 1), end_date: nil,
+        cancellation_reason: nil, amount: 1)
+  end
+
+  it "ends a trial starting in March on the last day of February" do
+    described_class.new(person, today: Date.new(2026, 2, 15)).create
+
+    expect(schnupper_abo).to have_attributes(start_date: Date.new(2026, 3, 1),
+      end_date: Date.new(2027, 2, 28), cancellation_reason: "jahr")
+  end
+
+  it "preserves an existing termination and appends the trial" do
+    subscription = subscribe(Date.new(2025, 3, 1), end_date: Date.new(2027, 2, 28),
+      cancellation_reason: "kint")
+
+    trial.create
+
+    expect(subscription.reload.cancellation_reason).to eq("kint")
+    expect(schnupper_abo.start_date).to eq(Date.new(2027, 3, 1))
+  end
+
+  it "requests manual review for a free subscription" do
+    subscription = subscribe(Date.new(2025, 3, 1), subscription_type: "gratis_abo")
+    expect(TrialSubscriptionMailer).to receive(:manual_review).with(person, [subscription])
+      .and_return(double(deliver_later: true))
+
+    expect { trial.create }.not_to change { person.magazine_subscriptions.count }
+    expect(subscription.reload.end_date).to be_nil
   end
 
   it "does nothing when the person already got a Schnupper-Abo" do
