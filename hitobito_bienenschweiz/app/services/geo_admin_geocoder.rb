@@ -75,7 +75,8 @@ class GeoAdminGeocoder
     return candidates.first unless number
 
     candidates.min_by do |attrs|
-      [(attrs["number"].to_i - number.to_i).abs, (attrs["number"] == number) ? 0 : 1, attrs["number"]]
+      [(attrs["number"].to_i - number.to_i).abs, (attrs["number"] == number) ? 0 : 1,
+        attrs["number"]]
     end
   end
 

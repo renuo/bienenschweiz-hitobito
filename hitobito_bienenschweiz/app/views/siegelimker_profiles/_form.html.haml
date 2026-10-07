@@ -34,7 +34,8 @@
 
   = field_set_tag(t('.coordinates'), data: {controller: 'bienenschweiz--siegelimker-map'}) do
     - [:lat, :lng].each do |attr|
-      = f.labeled_input_field attr, step: 'any',
+      -# Core's decimal_field rounds via number_with_precision (2 digits); keep full precision.
+      = f.labeled_input_field attr, step: 'any', value: entry.send(attr)&.to_s('F'),
         data: {'bienenschweiz--siegelimker-map-target': attr, action: 'input->bienenschweiz--siegelimker-map#update'}
     = f.indented do
       = f.help_block(siegelimker_coordinates_source(entry))

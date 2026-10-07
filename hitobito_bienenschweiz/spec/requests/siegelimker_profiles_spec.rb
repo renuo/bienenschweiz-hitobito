@@ -78,6 +78,13 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
       expect(response.body).to include('data-controller="bienenschweiz--siegelimker-map"')
     end
 
+    it "keeps the full coordinate precision in the edit form" do
+      SiegelimkerProfile.create!(person: siegelimker, lat: 47.0113983, lng: 7.6386184)
+
+      get edit_group_person_siegelimker_profile_path(group, siegelimker)
+      expect(response.body).to include('value="47.0113983"', 'value="7.6386184"')
+    end
+
     it "uploads a background image" do
       image = Rack::Test::UploadedFile.new(
         Rails.root.join("spec", "fixtures", "files", "logo-icon.png"), "image/png"
