@@ -18,6 +18,10 @@ describe Event::Qualifier do
     end
   end
 
+  before do
+    Fabricate(:group, type: Group::BienenZeitung.sti_name, parent: groups(:root))
+  end
+
   def issue
     described_class.for(participation.reload).issue
   end
@@ -25,7 +29,9 @@ describe Event::Qualifier do
   it "grants a Schnupper-Abo when a participant gets qualified" do
     issue
 
-    expect(person.magazine_subscriptions.pluck(:subscription_type)).to eq(["schnupper_abo"])
+    expect(person.magazine_subscriptions.pluck(:subscription_type))
+      .to match_array(%w[schnupper_abo abo])
+    expect(person.roles.where(type: Group::BienenZeitung::Abonnent.sti_name).count).to eq(1)
   end
 
   it "does not grant another one when re-issuing an already qualified participant" do
