@@ -99,7 +99,7 @@ describe SiegelimkerProfile do
     subject(:profile) { described_class.new(person:) }
 
     it "geocodes the person address" do
-      stub_geo_admin(person_address, result: [47.0113983, 7.6386184])
+      stub_geocoding(person_address, [47.0113983, 7.6386184])
       profile.save!
       expect(profile).to have_attributes(lat: BigDecimal("47.0113983"),
         lng: BigDecimal("7.6386184"), geocoded_address: person_address,
@@ -107,7 +107,7 @@ describe SiegelimkerProfile do
     end
 
     it "prefers the address of the first sales point with an address" do
-      stub_geo_admin("Dorfstrasse 1, 3000 Bern", result: [46.9, 7.4])
+      stub_geocoding("Dorfstrasse 1, 3000 Bern", [46.9, 7.4])
       profile.sales_points.build(name: "Markt")
       profile.sales_points.build(address: "Dorfstrasse 1, 3000 Bern")
       profile.sales_points.build(address: "Hauptgasse 2, 4500 Solothurn")
@@ -128,26 +128,25 @@ describe SiegelimkerProfile do
     end
 
     it "only looks up again when the address changes" do
-      lookup = stub_geo_admin(person_address, result: [47.0113983, 7.6386184])
+      stub_geocoding(person_address, [47.0113983, 7.6386184])
       profile.save!
       profile.update!(title: "Imkerei")
-      expect(lookup).to have_been_requested.once
+      expect(geocoder_stub).to have_received(:lookup).with(person_address).once
 
-      stub_geo_admin("Dorfstrasse 1, 3000 Bern", result: [46.9, 7.4])
+      stub_geocoding("Dorfstrasse 1, 3000 Bern", [46.9, 7.4])
       profile.update!(sales_points_attributes: [{address: "Dorfstrasse 1, 3000 Bern"}])
       expect(profile.lat).to eq(BigDecimal("46.9"))
     end
 
     it "clears the coordinates if the address is not found" do
-      stub_geo_admin(person_address)
-      stub_geo_admin(person_address, origins: "zipcode,gg25,gazetteer")
+      stub_geocoding(person_address, nil)
       profile.assign_attributes(lat: nil, lng: nil, geocoded_address: "Old address")
       profile.save!
       expect(profile).to have_attributes(lat: nil, lng: nil, geocoded_address: person_address)
     end
 
     it "keeps the coordinates if the service fails" do
-      stub_geo_admin(person_address, status: 500)
+      stub_geocoding(person_address, error: "geo.admin.ch search failed with 500")
       profile.save!
       profile.update_columns(lat: 1, lng: 2, geocoded_address: "Old address")
       expect(Rails.logger).to receive(:warn).with(/failed/)
@@ -165,7 +164,7 @@ describe SiegelimkerProfile do
 
     it "geocodes again when the manual coordinates are cleared" do
       profile.update!(lat: 46.5, lng: 7.5)
-      stub_geo_admin(person_address, result: [47.0113983, 7.6386184])
+      stub_geocoding(person_address, [47.0113983, 7.6386184])
       profile.update!(lat: nil, lng: nil)
       expect(profile).to have_attributes(manual_coordinates: false, lat: BigDecimal("47.0113983"))
     end

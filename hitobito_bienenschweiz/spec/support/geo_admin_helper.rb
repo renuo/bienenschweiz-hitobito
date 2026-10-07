@@ -6,10 +6,26 @@
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 module GeoAdminHelper
-  def stub_geo_admin(address, origins: "address", result: nil, status: 200)
-    results = result ? [{attrs: {lat: result[0], lon: result[1]}}] : []
+  # Stubs the geocoder used by models and jobs, see GeoAdminGeocoder spec for the HTTP level.
+  def stub_geocoding(address, result = nil, error: nil)
+    stub = allow(geocoder_stub).to receive(:lookup).with(address)
+    error ? stub.and_raise(GeoAdminGeocoder::Error, error) : stub.and_return(result)
+  end
+
+  def geocoder_stub
+    @geocoder_stub ||= instance_double(GeoAdminGeocoder).tap do |geocoder|
+      allow(GeoAdminGeocoder).to receive(:new).and_return(geocoder)
+    end
+  end
+
+  # Stubs a search request to geo.admin.ch, results are given as [label, lat, lon]
+  # (zip codes and municipalities also need a detail).
+  def stub_geo_admin_search(text, origins, *results, status: 200)
+    results = results.map do |label, lat, lon, detail|
+      {attrs: {label:, lat:, lon:, detail:}.compact}
+    end
     stub_request(:get, GeoAdminGeocoder::URL)
-      .with(query: hash_including(searchText: address, origins:))
+      .with(query: hash_including(searchText: text, origins:))
       .to_return(status:, body: {results:}.to_json)
   end
 end
