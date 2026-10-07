@@ -43,7 +43,8 @@ describe GeoAdminGeocoder do
     end
 
     it "requires the town without zip code" do
-      stub_geo_admin_search("Gmeisstrasse 4", "address", ["Gmeisstrasse 4 <b>8887 Mels</b>", 47.0, 9.4])
+      stub_geo_admin_search("Gmeisstrasse 4", "address",
+        ["Gmeisstrasse 4 <b>8887 Mels</b>", 47.0, 9.4])
       stub_geo_admin_search("Gmeisstrasse 4", "gg25")
       stub_geo_admin_search("gmeisstrasse", "gg25")
       expect(lookup("Gmeisstrasse 4")).to be_nil
@@ -70,7 +71,8 @@ describe GeoAdminGeocoder do
 
       stub_geo_admin_search("eins zwei drei vier fünf sechs Gasse 1 8000 Zürich", "address",
         ["Gasse 1 <b>8000 Zürich</b>", 47.37, 8.54])
-      expect(lookup("null eins zwei drei vier fünf sechs Gasse 1, 8000 Zürich")).to eq([47.37, 8.54])
+      expect(lookup("null eins zwei drei vier fünf sechs Gasse 1, 8000 Zürich")).to eq([47.37,
+        8.54])
     end
 
     it "uses the first matching street without house number" do
@@ -82,7 +84,8 @@ describe GeoAdminGeocoder do
 
   context "with places" do
     it "falls back to the zip code" do
-      stub_geo_admin_search("Volg 6275 Ballwil", "address", ["Hasli # <b>6275 Ballwil</b>", 47.15, 8.31])
+      stub_geo_admin_search("Volg 6275 Ballwil", "address",
+        ["Hasli # <b>6275 Ballwil</b>", 47.15, 8.31])
       stub_geo_admin_search("6275", "zipcode", ["<b>6275 - Ballwil</b>", 47.156, 8.332, "6275"])
       expect(lookup("Volg, 6275 Ballwil")).to eq([47.156, 8.332])
     end
