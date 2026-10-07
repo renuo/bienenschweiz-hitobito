@@ -60,6 +60,16 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
       expect(response.body).to include("openstreetmap.org/export/embed.html?bbox=")
     end
 
+    it "does not offer to delete the profile, even for root" do
+      sign_in(Fabricate(:person, email: Settings.root_email))
+      SiegelimkerProfile.create!(person: siegelimker)
+
+      get group_person_siegelimker_profile_path(group, siegelimker)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Bearbeiten")
+      expect(response.body).not_to include("Löschen")
+    end
+
     it "renders the edit form" do
       get edit_group_person_siegelimker_profile_path(group, siegelimker)
       expect(response).to have_http_status(:ok)
