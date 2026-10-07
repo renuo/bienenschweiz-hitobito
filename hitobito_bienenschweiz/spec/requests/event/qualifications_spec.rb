@@ -26,6 +26,7 @@ RSpec.describe "Event::QualificationsController", type: :request do
   before do
     # The qualifications list joins on these, they are only filled by the seeds.
     EventRoleTypeOrder.create!(name: Event::Course::Role::Participant.sti_name, order_weight: 1)
+    Fabricate(:group, type: Group::BienenZeitung.sti_name, parent: Group::Dachverband.first)
     roles(:admin)
     sign_in(people(:admin))
   end
@@ -40,7 +41,7 @@ RSpec.describe "Event::QualificationsController", type: :request do
     save_qualifications(participation)
 
     expect(response).to redirect_to(group_event_qualifications_path(group, course))
-    expect(person.magazine_subscriptions.pluck(:subscription_type)).to eq(["schnupper_abo"])
+    expect(person.magazine_subscriptions.pluck(:subscription_type)).to eq(%w[schnupper_abo abo])
   end
 
   it "grants nothing to participants left unqualified" do
