@@ -111,7 +111,7 @@ class GeoAdminGeocoder
       sr: 4326, limit: LIMIT)
     raise Error, "geo.admin.ch search failed with #{response.status}" unless response.success?
 
-    JSON.parse(response.body).fetch("results", []).map { |result| result["attrs"] }
+    JSON.parse(response.body).fetch("results", []).pluck("attrs")
   rescue Faraday::Error, JSON::ParserError => e
     raise Error, e.message
   end
