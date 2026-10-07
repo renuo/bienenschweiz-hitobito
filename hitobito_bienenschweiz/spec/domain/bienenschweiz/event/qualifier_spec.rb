@@ -41,6 +41,18 @@ describe Event::Qualifier do
     expect { issue }.not_to change { person.magazine_subscriptions.count }
   end
 
+  context "without a participation" do
+    it "issues qualifications without granting a trial subscription" do
+      qualification_kind = Fabricate(:qualification_kind)
+      Event::KindQualificationKind.create!(event_kind: kind, category: "qualification",
+        role: "participant", qualification_kind: qualification_kind)
+      qualifier = described_class.new(person, course, "participant")
+
+      expect { qualifier.issue }.not_to change { person.magazine_subscriptions.count }
+      expect(person.qualifications.pluck(:qualification_kind_id)).to include(qualification_kind.id)
+    end
+  end
+
   context "for a leader" do
     let(:role_type) { :"Event::Role::Leader" }
 
