@@ -80,13 +80,17 @@ describe SiegelimkerProfile do
     end
 
     it "purges the background image when set to a truthy value" do
-      expect { profile.remove_background_image = "1" }
-        .to change { profile.background_image.attached? }.from(true).to(false)
+      expect do
+        profile.remove_background_image = "1"
+        profile.save
+      end.to change { profile.background_image.attached? }.from(true).to(false)
     end
 
     it "keeps the background image when set to a falsy value" do
-      expect { profile.remove_background_image = "0" }
-        .not_to change { profile.background_image.attached? }.from(true)
+      expect do
+        profile.remove_background_image = "0"
+        profile.save
+      end.not_to change { profile.background_image.attached? }.from(true)
     end
   end
 
