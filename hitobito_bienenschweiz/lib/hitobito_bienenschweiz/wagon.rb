@@ -78,7 +78,8 @@ module HitobitoBienenschweiz
         :export_to_website,
         :num_ad_boards,
         :num_ad_boards_legacy,
-        :show_email_on_website
+        :show_email_on_website,
+        :abacus_subject_key
       ]
 
       GroupsController.permitted_attrs += [:code, :member_count]
@@ -124,6 +125,11 @@ module HitobitoBienenschweiz
       Ability.store.register SupervisionTypeAbility
       Ability.store.register FeedbackRoundAbility
       Ability.store.register SiegelimkerProfileAbility
+      Ability.store.register ExternalInvoiceAbility
+      ApiScopeAbility::REQUIRED_SCOPES[:ExternalInvoice] = :invoices
+
+      HitobitoLogEntry.categories += [ExternalInvoice::ERROR_CATEGORY]
+      JobManager.wagon_jobs += [Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob]
 
       TableDisplay.register_column(Person, TableDisplays::PublicColumn, :canton_short)
       Person::FILTER_ATTRS << [:canton_short, :string]
