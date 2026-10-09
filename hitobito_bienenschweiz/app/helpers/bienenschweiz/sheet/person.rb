@@ -7,7 +7,7 @@
 module Bienenschweiz::Sheet::Person
   extend ActiveSupport::Concern
 
-  prepended do
+  prepended do # rubocop:disable Metrics/BlockLength
     # The Info tab (group_person_path) has no no_alt: true, so its substring regex matches any
     # nested path (e.g. memos/new) and it wins first in detect. Mark it exact-match-only so
     # the actual nested-resource tab gets highlighted on new/edit/show actions.
@@ -36,6 +36,14 @@ module Bienenschweiz::Sheet::Person
       "people.tabs.bienenschweiz_magazine_subscriptions",
       :group_person_magazine_subscriptions_path,
       if: ->(view, _group, _person) { view.can?(:index, MagazineSubscription) }
+    )
+    tabs << Sheet::Tab.new(
+      "people.tabs.bienenschweiz_siegelimker_profile",
+      :group_person_siegelimker_profile_path,
+      if: lambda { |view, _group, person|
+        person.siegelimker? &&
+          view.can?(:show, person.siegelimker_profile || SiegelimkerProfile.new(person:))
+      }
     )
   end
 end

@@ -1,0 +1,42 @@
+-#  Copyright (c) 2026, BienenSchweiz. This file is part of
+-#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+- title entry.to_s
+
+- content_for(:toolbar, render('actions_show'))
+
+%h2= t('.profile')
+= render_attrs(entry, :public_profile, :title, :description, :siegelimker_since)
+= render_attrs_group do
+  = labeled(captionize(:website, SiegelimkerProfile)) do
+    = link_to(entry.website, entry.website, target: '_blank', rel: 'noopener') if entry.website.present?
+  = labeled(captionize(:background_image, SiegelimkerProfile)) do
+    - if entry.background_image.attached? && entry.background_image.variable?
+      = image_tag(entry.background_image.variant(resize_to_limit: [400, 200]))
+
+%h2= t('.offer')
+= render_attrs(entry, :public_offer, *SiegelimkerProfile::PRODUCTS.map { |p| :"#{p}_availability" })
+
+%h2= SiegelimkerSalesPoint.model_name.human(count: 2)
+- if entry.sales_points.any?
+  - entry.sales_points.each do |sales_point|
+    = render_attrs(sales_point, :name, :address, :email, :phone)
+- else
+  = render_attrs_group do
+    = t('global.no_list_entries')
+
+%h2= t('.locations')
+= render_attrs(entry, *SiegelimkerProfile::BEE_LOCATIONS, :further_information)
+
+%h2= t('.coordinates')
+= render_attrs_group do
+  = labeled(t('.coordinates_value')) do
+    = [entry.lat, entry.lng].compact.join(', ')
+  = labeled(t('.coordinates_source')) do
+    = siegelimker_coordinates_source(entry)
+  - if entry.coordinates?
+    = labeled(t('siegelimker_profiles.map.title')) do
+      = render 'map'

@@ -9,5 +9,7 @@ module Bienenschweiz::PersonResource
   extend ActiveSupport::Concern
   included do
     attribute :export_to_website, :boolean
+
+    has_one :siegelimker_profile, writable: false
   end
 end
