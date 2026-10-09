@@ -84,7 +84,13 @@ class SiegelimkerProfile < ApplicationRecord
   # Looks up the coordinates if the geocoding address changed since the last lookup.
   def geocode
     address = geocoding_address
-    return if address.blank? || (address == geocoded_address && coordinates?)
+    if address.blank?
+      self.lat = nil
+      self.lng = nil
+      self.geocoded_address = nil
+      return
+    end
+    return if address == geocoded_address && coordinates?
 
     self.lat, self.lng = GeoAdminGeocoder.new.lookup(address)
     self.geocoded_address = address
