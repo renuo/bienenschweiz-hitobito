@@ -19,7 +19,8 @@ RSpec.describe PeopleController, type: :request do
   describe "#show" do
     let(:person) {
       Fabricate(:person, hive_count: "around 8", honey_yield: "a bunch", export_to_website: false,
-        num_ad_boards: 66, num_ad_boards_legacy: 77, salutation: "the very magnificent")
+        num_ad_boards: 66, num_ad_boards_legacy: 77, salutation: "the very magnificent",
+        abacus_subject_key: 123456)
     }
 
     before do
@@ -37,6 +38,8 @@ RSpec.describe PeopleController, type: :request do
       expect(response.body).to include(Person.human_attribute_name(:num_ad_boards_legacy))
       expect(response.body).to include("77")
       expect(response.body).to include("the very magnificent")
+      expect(response.body).to include("Abacus Kundennummer")
+      expect(response.body).to include("123456")
     end
 
     context "with a role with export_to_website false" do
@@ -90,7 +93,8 @@ RSpec.describe PeopleController, type: :request do
         num_ad_boards: 5,
         num_ad_boards_legacy: 3,
         salutation: "Dear Max",
-        show_email_on_website: false
+        show_email_on_website: false,
+        abacus_subject_key: 4711
       }
     end
 
@@ -113,6 +117,12 @@ RSpec.describe PeopleController, type: :request do
       expect(person.num_ad_boards_legacy).to eq(3)
       expect(person.salutation).to eq("Dear Max")
       expect(person.show_email_on_website).to eq(false)
+      expect(person.abacus_subject_key).to eq(4711)
+    end
+
+    it "shows the abacus subject key field in the form" do
+      get "/groups/#{group.id}/people/#{person.id}/edit"
+      expect(response.body).to include("person[abacus_subject_key]")
     end
   end
 end
