@@ -38,6 +38,24 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
       expect(response.body).to include("31.08.2026")
     end
 
+    it "lists the invoices of the subscriptions" do
+      ExternalInvoice::Magazine.create!(person:, link: subscriptions.first, state: :payed,
+        period_start: Date.new(2025, 1, 1), total: 42.5, abacus_sales_order_key: 4711)
+
+      get group_person_magazine_subscriptions_path(sektion, person)
+
+      expect(response.body).to include("Rechnungen")
+      expect(response.body).to include("01.01.2025")
+      expect(response.body).to include("Bezahlt")
+      expect(response.body).to include("4711")
+    end
+
+    it "does not show the invoices section without invoices" do
+      get group_person_magazine_subscriptions_path(sektion, person)
+
+      expect(response.body).not_to include("Rechnungen")
+    end
+
     context "with a gift subscription" do
       let(:gifter) { Fabricate(:person) }
 

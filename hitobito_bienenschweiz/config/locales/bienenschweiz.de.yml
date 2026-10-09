@@ -56,6 +56,10 @@ de:
         one: Bienen Abo
         other: Bienen Abos
 
+      external_invoice:
+        one: Rechnung
+        other: Rechnungen
+
       supervision:
         one: Supervision
         other: Supervisionen
@@ -188,6 +192,19 @@ de:
           ret: RET (Retoure Post, keine neue Adresse gefunden)
           zahl: ZAHL (Abostopp da nicht bezahlt)
           zeit: ZEIT (keine Zeit)
+      external_invoice:
+        link: Abo
+        period_start: Periodenbeginn
+        state: Status
+        states:
+          draft: Entwurf
+          open: Offen
+          payed: Bezahlt
+          cancelled: Storniert
+          error: Fehler
+        total: Total
+        sent_at: Rechnungsdatum
+        abacus_sales_order_key: Abacus Auftragsnummer
       signature:
         key: Dokument
         name: Name
@@ -269,6 +286,19 @@ de:
         buchhaendler: Buchhändler-Abos
         gratis: Gratis-Abos
         bezahlt: Bezahlte Abos
+
+  magazine_subscriptions:
+    invoices:
+      title: Rechnungen
+
+  invoices:
+    magazine_subscription:
+      position: "%{subscription_type} %{period}"
+    errors:
+      abacus_subject_key_missing: Rechnung konnte nicht erstellt werden, da die Abacus Kundennummer fehlt
+      article_missing: Rechnung konnte nicht erstellt werden, da für %{subscription_type} kein Abacus Artikel konfiguriert ist
+      create_invoice_failed: Rechnung konnte nicht in Abacus erstellt werden
+      cancel_invoice_failed: Rechnung konnte nicht in Abacus storniert werden
 
   people:
     tabs:

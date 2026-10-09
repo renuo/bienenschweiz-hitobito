@@ -224,4 +224,59 @@ describe MagazineSubscription do
       expect(subscription.to_s).to eq("Abo, 01.05.2026")
     end
   end
+
+  describe "#next_period_start" do
+    before { subscription.start_date = Date.new(2024, 5, 1) }
+
+    it "returns the anniversary later this year" do
+      expect(subscription.next_period_start(Date.new(2026, 3, 1))).to eq(Date.new(2026, 5, 1))
+    end
+
+    it "returns the anniversary of next year once this year's has passed" do
+      expect(subscription.next_period_start(Date.new(2026, 5, 2))).to eq(Date.new(2027, 5, 1))
+    end
+
+    it "returns the anniversary on its day" do
+      expect(subscription.next_period_start(Date.new(2026, 5, 1))).to eq(Date.new(2026, 5, 1))
+    end
+
+    it "never returns the start of the first period" do
+      expect(subscription.next_period_start(Date.new(2024, 3, 1))).to eq(Date.new(2025, 5, 1))
+      expect(subscription.next_period_start(Date.new(2024, 5, 1))).to eq(Date.new(2025, 5, 1))
+    end
+  end
+
+  describe "ending a subscription" do
+    let(:subscription) do
+      Fabricate(:magazine_subscription, start_date: Date.new(2025, 5, 1))
+    end
+
+    def invoice(period_start, state, abacus_sales_order_key = nil)
+      ExternalInvoice::Magazine.create!(person: subscription.person, link: subscription,
+        period_start:, state:, abacus_sales_order_key:)
+    end
+
+    it "cancels the invoices of later periods" do
+      payed = invoice(Date.new(2026, 5, 1), :payed, 41)
+      open = invoice(Date.new(2027, 5, 1), :open, 42)
+      draft = invoice(Date.new(2028, 5, 1), :draft)
+
+      expect do
+        subscription.update!(end_date: Date.new(2027, 4, 30), cancellation_reason: "kint")
+      end.to change { Delayed::Job.count }.by(1)
+
+      expect(payed.reload).to be_payed
+      expect(open.reload).to be_cancelled
+      expect(draft.reload).to be_cancelled
+      expect(subscription.reload.cancellation_reason).to eq("kint")
+    end
+
+    it "keeps the invoice of the period that is still running" do
+      open = invoice(Date.new(2026, 5, 1), :open, 42)
+
+      subscription.update!(end_date: Date.new(2026, 8, 31), cancellation_reason: "kint")
+
+      expect(open.reload).to be_open
+    end
+  end
 end
