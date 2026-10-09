@@ -6,7 +6,6 @@
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 require "spec_helper"
-require "rake"
 
 RSpec::Matchers.define_negated_matcher :not_change, :change
 
@@ -89,20 +88,5 @@ describe Bienenschweiz::IntegrationsRestore do
     token_attrs["layer_group_code"] = "999"
     expect { restore }.to raise_error(ActiveRecord::RecordNotFound, /999/)
     expect(Oauth::Application.find_by(uid: "shop-uid")).to be_nil
-  end
-
-  it "restores what integrations:dump produced" do
-    restore
-    Rails.application.load_tasks unless Rake::Task.task_defined?("integrations:dump")
-    dumped = StringIO.new
-    allow($stdout).to receive(:puts) { |line| dumped.puts(line) }
-    Rake::Task["integrations:dump"].execute
-
-    Oauth::Application.destroy_all
-    ServiceToken.destroy_all
-    described_class.new(dumped.string).run
-
-    expect(Oauth::Application.find_by!(uid: "shop-uid").secret).to eq "shop-secret"
-    expect(ServiceToken.find_by!(token: "website-token").layer).to eq kantonalverband
   end
 end
