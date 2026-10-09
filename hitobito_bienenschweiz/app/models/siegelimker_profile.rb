@@ -49,19 +49,22 @@ class SiegelimkerProfile < ApplicationRecord
   before_validation :detect_manual_coordinates,
     if: -> { will_save_change_to_lat? || will_save_change_to_lng? }
   before_save :geocode, unless: :manual_coordinates?
+  after_commit :purge_background_image, on: %i[create update], if: :remove_background_image
 
   def to_s
     title.presence || person.to_s
   end
 
   def remove_background_image
-    false
+    @remove_background_image || false
   end
 
   def remove_background_image=(value)
-    if ActiveRecord::Type::Boolean.new.cast(value) && background_image.persisted?
-      background_image.purge_later
-    end
+    @remove_background_image = ActiveRecord::Type::Boolean.new.cast(value)
+  end
+
+  def purge_background_image
+    background_image.purge_later if background_image.persisted?
   end
 
   def bee_locations
