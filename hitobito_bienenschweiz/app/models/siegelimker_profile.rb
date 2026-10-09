@@ -35,7 +35,8 @@ class SiegelimkerProfile < ApplicationRecord
     only_integer: true, greater_than_or_equal_to: 1900,
     less_than_or_equal_to: ->(_) { Time.zone.today.year }
   }, allow_nil: true
-  validates :website, format: {with: URI::DEFAULT_PARSER.make_regexp(%w[http https])},
+  validates :website,
+    format: {with: /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/},
     allow_blank: true
   validates :lat, numericality: {in: -90..90}, allow_nil: true
   validates :lng, numericality: {in: -180..180}, allow_nil: true
