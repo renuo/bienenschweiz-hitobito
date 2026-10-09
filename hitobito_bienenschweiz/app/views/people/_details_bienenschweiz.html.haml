@@ -9,3 +9,5 @@
   = render_attrs(entry, :num_ad_boards)
 - if entry.num_ad_boards_legacy.present?
   = render_attrs(entry, :num_ad_boards_legacy)
+- if entry.abacus_subject_key.present? && can?(:index, MagazineSubscription)
+  = render_attrs(entry, :abacus_subject_key)
