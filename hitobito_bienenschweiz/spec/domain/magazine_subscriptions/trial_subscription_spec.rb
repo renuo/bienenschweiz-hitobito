@@ -25,10 +25,16 @@ describe MagazineSubscriptions::TrialSubscription do
     it "creates a one year Schnupper-Abo starting on the first of next month" do
       expect { trial.create }.to change { person.magazine_subscriptions.count }.by(2)
 
-      expect(schnupper_abo).to have_attributes(start_date: Date.new(2026, 11, 1),
-        end_date: Date.new(2027, 10, 31), amount: 1, cancellation_reason: "jahr") 
-      expect(person.magazine_subscriptions.last).to have_attributes(start_date: Date.new(2027, 11, 1),
-        end_date: nil), amount: 1, cancellation_reason: nil)
+      expect(schnupper_abo).to have_attributes(
+        start_date: Date.new(2026, 11, 1),
+        end_date: Date.new(2027, 10, 31),
+        amount: 1, cancellation_reason: "jahr"
+      )
+      expect(person.magazine_subscriptions.last).to have_attributes(
+        start_date: Date.new(2027, 11, 1),
+        end_date: nil,
+        amount: 1, cancellation_reason: nil
+      )
     end
 
     it "ignores subscriptions that already ended" do
