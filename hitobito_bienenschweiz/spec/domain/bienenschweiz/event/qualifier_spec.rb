@@ -41,7 +41,7 @@ describe Event::Qualifier do
     expect { issue }.not_to change { person.magazine_subscriptions.count }
   end
 
-  context "without a participation" do
+  context "manually created qualifications without a participation" do
     it "issues qualifications without granting a trial subscription" do
       qualification_kind = Fabricate(:qualification_kind)
       Event::KindQualificationKind.create!(event_kind: kind, category: "qualification",
