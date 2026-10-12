@@ -744,6 +744,156 @@ namespace :mv do
       puts "Imported #{import_count} and grouped #{merge_count} courses"
     end
 
+    desc "Import website profiles of Siegelimker from the website CSV export " \
+         "(set SKIP_IMAGES=1 to skip downloading background images)"
+    task :siegelimker_profiles, [:path] => :environment do |_, args|
+      require "csv"
+      require "open-uri"
+
+      class MvRecord < ApplicationRecord
+        self.abstract_class = true
+        connects_to database: {reading: :mv, writing: :mv}
+      end
+
+      class MvMember < MvRecord
+        self.table_name = "members"
+      end
+
+      availabilities = {
+        "nicht im Angebot" => "not_offered",
+        "derzeit erhältlich" => "available",
+        "derzeit leider nicht erhältlich" => "unavailable"
+      }
+      products = {
+        honey: "honig_mit_goldenem_qualitaetssiegel",
+        propolis: "propolis",
+        pollen: "pollen",
+        queens: "bienenkoniginnen",
+        wax: "wachs"
+      }
+      prefixes = ["", "2_", "3_", "4_", "5_"]
+
+      boolean = ->(value) { value.to_s.strip == "Ja" }
+      text = ->(value) { value.to_s.strip.presence }
+
+      # ext_id is the selectline customer number of the member, which is only available in MV
+      member_ids = MvMember.where.not(selectline_customer_number: [nil, ""])
+        .pluck(:selectline_customer_number, :id)
+        .group_by { |number, _| number.to_s.strip }
+        .transform_values { |pairs| pairs.map(&:last) }
+      member_ids.select { |_, ids| ids.many? }.each do |number, ids|
+        puts "Selectline customer number #{number} is used by multiple members: #{ids.join(", ")}"
+      end
+
+      find_person = lambda do |row|
+        ext_id = text.call(row["ext_id"])
+        email = text.call(row["e-mail"])
+        ids = ext_id && member_ids[ext_id]
+        if ids&.one?
+          person = Person.find_by(id: ids.first + MEMBER_ID_OFFSET)
+          puts "Member #{ids.first} (ext_id #{ext_id}) was not imported" unless person
+          person
+        elsif email
+          puts "Unknown or ambiguous ext_id #{ext_id}, matching by email #{email}" if ext_id
+          Person.find_by(email:)
+        end
+      end
+
+      sales_point_attrs = lambda do |row, prefix|
+        # mostly addresses, sometimes with the name of the shop
+        address = text.call(row["#{prefix}verkaufsstelle"])
+        email = text.call(row["#{prefix}verkaufsstelle_email_adresse"])
+        phone = text.call(row["#{prefix}verkaufsstelle_telefonnummer"])
+        # the phone column contains email addresses in some rows
+        if phone&.include?("@")
+          email ||= phone
+          phone = nil
+        end
+        {address:, email:, phone:}.compact.presence
+      end
+
+      attach_image = lambda do |profile, value|
+        url = value.to_s.split(",").map(&:strip).find(&:present?)
+        return if url.blank? || ENV["SKIP_IMAGES"].present?
+
+        profile.background_image.attach(io: URI.parse(url).open, # rubocop:disable Security/Open
+          filename: File.basename(URI.parse(url).path))
+      rescue => e
+        puts "  could not download background image #{url}: #{e.message}"
+      end
+
+      stats = Hash.new(0)
+      CSV.foreach(args[:path], headers: true, encoding: "bom|utf-8") do |row|
+        stats[:total] += 1
+        person = find_person.call(row)
+        unless person
+          stats[:person_missing] += 1
+          puts "No person found for ext_id #{row["ext_id"]} / #{row["e-mail"]}"
+          next
+        end
+        stats[:not_siegelimker] += 1 unless person.siegelimker?
+
+        email = text.call(row["e-mail"])
+        if person.email.blank? && email
+          person.email = email
+          person.validate
+          if person.errors[:email].present?
+            puts "Person #{person.id}: not setting email #{email}: #{person.errors[:email].join(", ")}"
+            person.email = nil
+          else
+            # other errors are ignored, some members were imported without zip validation
+            person.save!(validate: false)
+            stats[:email_set] += 1
+          end
+        end
+
+        profile = person.siegelimker_profile || person.build_siegelimker_profile
+        year = text.call(row["siegelimker_seit_jahr"])
+        profile.assign_attributes(
+          public_profile: boolean.call(row["oeffentliches_profil"]),
+          title: text.call(row["titel_der_imkerei"]),
+          siegelimker_since: (year.to_i if year&.match?(/\A\d{4}\z/)),
+          website: text.call(row["webseite"]),
+          public_offer: boolean.call(row["oeffentlich_angebot_anzeigen"]),
+          further_information: text.call(row["weitere_informationen"]),
+          **products.to_h do |product, column|
+            [:"#{product}_availability", availabilities.fetch(text.call(row[column]), "not_offered")]
+          end,
+          **SiegelimkerProfile::BEE_LOCATIONS.zip(prefixes).to_h do |attr, prefix|
+            [attr, text.call(row["#{prefix}bienen-standort"])]
+          end
+        )
+        profile.sales_points.each(&:mark_for_destruction)
+        prefixes.filter_map { |prefix| sales_point_attrs.call(row, prefix) }
+          .each { |attrs| profile.sales_points.build(attrs) }
+        attach_image.call(profile, row["background_image"])
+        # keep the coordinates of the website until the address changes,
+        # profiles without coordinates are geocoded when saving
+        lat = text.call(row["map_lat"])
+        lng = text.call(row["map_lng"])
+        profile.assign_geocoded_coordinates(lat, lng) if lat && lng
+
+        unless profile.valid?
+          # drop invalid values instead of skipping the whole profile
+          puts "Person #{person.id}: dropping invalid #{profile.errors.full_messages.join(", ")}"
+          profile.sales_points.each do |sales_point|
+            sales_point.email = nil if sales_point.errors.include?(:email)
+          end
+          (profile.errors.attribute_names & profile.attribute_names.map(&:to_sym))
+            .each { |attr| profile[attr] = nil }
+        end
+
+        if profile.save
+          stats[:imported] += 1
+        else
+          stats[:failed] += 1
+          puts "Person #{person.id}: #{profile.errors.full_messages.join(", ")}"
+        end
+      end
+
+      puts stats.map { |key, count| "#{key}: #{count}" }.join(", ")
+    end
+
     task reset_id_sequences: :environment do
       ActiveRecord::Base.connection.tables.each do |t|
         puts "Resetting primary key sequence for #{t}"
