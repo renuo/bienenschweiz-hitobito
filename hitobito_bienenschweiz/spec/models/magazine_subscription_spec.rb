@@ -226,8 +226,9 @@ describe MagazineSubscription do
     it "agree for every start/end combination around the date" do
       [nil, date - 1.day, date, date + 1.day].each do |end_date|
         [date - 1.day, date, date + 1.day].each do |start_date|
+          actual_end_date = end_date && [end_date, start_date].max
           record = Fabricate(:magazine_subscription, start_date: start_date,
-            end_date: end_date && [end_date, start_date].max)
+            end_date: actual_end_date, cancellation_reason: end_date && "kint")
 
           expect(described_class.active_on(date).exists?(record.id))
             .to eq(record.active_on?(date)),
