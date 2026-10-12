@@ -11,6 +11,7 @@ de:
         kas_fee_code: KAS Spesentyp Code
         kas_fixed_fee: KAS Pauschalspese
         kas_instructor_fees: KAS Kursleitungsspesen
+        grants_trial_subscription: Schnupper-Abo bei Kursabschluss
     errors:
       models:
         event/kind:

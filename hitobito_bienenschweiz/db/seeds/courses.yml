@@ -220,6 +220,7 @@ event_kinds:
   kas_fee_code: '100'
   kas_fixed_fee: false
   kas_instructor_fees: true
+  grants_trial_subscription: true
   translations:
   - id: 4
     event_kind_id: 4
