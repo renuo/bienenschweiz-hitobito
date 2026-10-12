@@ -36,4 +36,8 @@ class SiegelimkerProfileResource < ApplicationResource
   belongs_to :person, writable: false
   has_many :sales_points, resource: SiegelimkerSalesPointResource, writable: false,
     foreign_key: :siegelimker_profile_id
+
+  def base_scope
+    super.with_attached_background_image
+  end
 end

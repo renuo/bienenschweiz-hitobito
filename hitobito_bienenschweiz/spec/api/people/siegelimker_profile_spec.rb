@@ -40,6 +40,29 @@ RSpec.describe "people#show with siegelimker profile", type: :request do
     expect(included["siegelimker_sales_points"]["attributes"]).to include("name" => "Hofladen")
   end
 
+  it "preloads the background images when listing people" do
+    image = Rails.root.join("spec", "fixtures", "files", "images", "logo.png")
+    others = Fabricate.times(2, :beekeeper, group_id: groups(:aarau_und_umgebung).id)
+    [siegelimker, *others].each do |person|
+      profile = person.siegelimker_profile || SiegelimkerProfile.create!(person:, title: "Profil")
+      profile.background_image.attach(io: File.open(image), filename: "logo.png")
+    end
+
+    counter = QueryHelpers.count_queries do
+      jsonapi_get "/api/people",
+        params: {include: "siegelimker_profile",
+                 filter: {id: {eq: [siegelimker, *others].map(&:id).join(",")}}}
+    end
+
+    expect(response).to have_http_status(:ok)
+    lazy_loads = counter.queries.select { |q|
+      q[:location].include?("siegelimker_profile_resource")
+    }
+    expect(lazy_loads).to be_empty
+    images = json["included"].map { |r| r["attributes"]["background_image"] }
+    expect(images).to all(include("logo.png"))
+  end
+
   context "with a service token" do
     let(:service_token) do
       Fabricate(:service_token, layer: groups(:root), people: true,
