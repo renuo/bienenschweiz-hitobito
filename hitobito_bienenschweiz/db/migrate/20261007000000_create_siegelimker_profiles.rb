@@ -8,7 +8,7 @@
 class CreateSiegelimkerProfiles < ActiveRecord::Migration[8.0]
   def change
     create_table :siegelimker_profiles do |t|
-      t.belongs_to :person, null: false, index: {unique: true}
+      t.belongs_to :person, null: false, index: {unique: true}, foreign_key: {to_table: :people}
       t.boolean :public_profile, null: false, default: false
       t.string :title
       t.text :description
@@ -33,7 +33,7 @@ class CreateSiegelimkerProfiles < ActiveRecord::Migration[8.0]
     end
 
     create_table :siegelimker_sales_points do |t|
-      t.belongs_to :siegelimker_profile, null: false
+      t.belongs_to :siegelimker_profile, null: false, foreign_key: true
       t.string :name
       t.string :address
       t.string :email
