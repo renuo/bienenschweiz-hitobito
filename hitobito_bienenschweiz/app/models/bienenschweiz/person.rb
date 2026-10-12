@@ -22,6 +22,15 @@ module Bienenschweiz::Person
     has_many :supervisions, dependent: :destroy
     has_many :memos, dependent: :destroy
     has_many :magazine_subscriptions, dependent: :restrict_with_error
+    has_one :siegelimker_profile, dependent: :destroy
+
+    after_commit :geocode_siegelimker_profile, on: :update, if: lambda {
+      (saved_changes.keys & %w[street housenumber zip_code town]).any?
+    }
+
+    def siegelimker?
+      roles.any? { |role| BEEKEEPER_ROLES.include?(role.type) }
+    end
 
     def beeaudit_authentication_token
       signed_id(expires_in: 2.months, purpose: :beeaudit)
@@ -118,6 +127,13 @@ module Bienenschweiz::Person
     end
 
     private
+
+    def geocode_siegelimker_profile
+      profile = siegelimker_profile
+      if profile && !profile.manual_coordinates?
+        SiegelimkerProfileGeocodeJob.new(profile.id).enqueue!
+      end
+    end
 
     def sektionen_for_role(role)
       group = role.group
