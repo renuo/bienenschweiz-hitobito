@@ -265,7 +265,8 @@ de:
       explanation: Anzahl Abos (Summe der Anzahl) der letzten drei Monate. Gezählt wird jedes Abo, das im jeweiligen Monat lief.
       subscription_type: Abomodell
       total: Total
-      export: Adressliste als CSV exportieren
+      export: Adressliste als CSV exportieren (Druck)
+      wemf_title: WEMF Zahlen
       categories:
         buchhaendler: Buchhändler-Abos
         gratis: Gratis-Abos
@@ -468,7 +469,7 @@ de:
   navigation:
     qcontrols: Betriebsprüfungen
     signatures: Unterschriften
-    admin/magazine_subscription_reports: Bienen Abo Statistik (WEMF)
+    admin/magazine_subscription_reports: Bienen Abo Statistik
   events:
     course_materials:
       not_a_course: Kursunterlagen gibt es nur für Kurse.

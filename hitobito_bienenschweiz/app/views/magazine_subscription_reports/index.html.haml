@@ -6,13 +6,15 @@
 
 - title t(".title")
 
-%p= t(".explanation")
-
 %p
   = link_to export_magazine_subscription_reports_path, class: "btn btn-primary btn-sm",
     data: {turbo: "false"} do
     = icon(:download)
     = t(".export")
+
+%h2= t(".wemf_title")
+
+%p= t(".explanation")
 
 .table-responsive
   %table.table.table-striped

@@ -20,6 +20,7 @@ module Export::Tabular::MagazineSubscriptions
 
     def build_attribute_labels
       labels = {
+        id: ::Person.human_attribute_name(:id),
         salutation: ::Person.human_attribute_name(:salutation),
         first_name: ::Person.human_attribute_name(:first_name),
         last_name: ::Person.human_attribute_name(:last_name),

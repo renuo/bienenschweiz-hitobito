@@ -14,7 +14,7 @@ module Export::Tabular::MagazineSubscriptions
     attr_writer :date
 
     def country
-      entry.country_label
+      entry.country&.upcase
     end
 
     def subscriptions

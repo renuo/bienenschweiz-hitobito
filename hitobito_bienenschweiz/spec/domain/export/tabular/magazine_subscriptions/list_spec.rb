@@ -13,14 +13,15 @@ describe Export::Tabular::MagazineSubscriptions::List do
   subject(:list) { described_class.new(date: today) }
 
   let(:subscriber) do
-    Fabricate(:person, first_name: "Anna", last_name: "Muster", salutation: "Frau",
+    Fabricate(:magazine_subscriber, first_name: "Anna", last_name: "Muster", salutation: "Frau",
       address_care_of: "c/o Imkerei", street: "Bienenweg", housenumber: "7b",
       postbox: "Postfach 42", zip_code: "3000", town: "Bern", country: "CH")
   end
 
   def subscribe(person, type, start_date: today - 1.month, end_date: nil, amount: 1)
     Fabricate(:magazine_subscription, person: person, subscription_type: type,
-      start_date: start_date, end_date: end_date, amount: amount)
+      start_date: start_date, end_date: end_date, amount: amount,
+      cancellation_reason: end_date && "kint")
   end
 
   def rows
@@ -37,14 +38,18 @@ describe Export::Tabular::MagazineSubscriptions::List do
   end
 
   describe "#attribute_labels" do
-    it "splits the postal address into its own columns" do
-      expect(list.attributes).to eq(%i[salutation first_name last_name company_name
+    it "starts with the Personennummer and splits the postal address into its own columns" do
+      expect(list.attributes).to eq(%i[id salutation first_name last_name company_name
         address_care_of street housenumber postbox zip_code town country
         subscriptions total_amount])
     end
 
     it "labels the computed columns" do
       expect(list.labels.last(2)).to eq(["Abos", "Total Anzahl"])
+    end
+
+    it "labels the id column as Personennummer" do
+      expect(list.labels.first).to eq("Personennummer")
     end
   end
 
@@ -59,6 +64,7 @@ describe Export::Tabular::MagazineSubscriptions::List do
     it "exports the full postal address" do
       subscribe(subscriber, "abo")
 
+      expect(value(subscriber, :id)).to eq(subscriber.id)
       expect(value(subscriber, :salutation)).to eq("Frau")
       expect(value(subscriber, :first_name)).to eq("Anna")
       expect(value(subscriber, :last_name)).to eq("Muster")
@@ -68,7 +74,7 @@ describe Export::Tabular::MagazineSubscriptions::List do
       expect(value(subscriber, :postbox)).to eq("Postfach 42")
       expect(value(subscriber, :zip_code)).to eq("3000")
       expect(value(subscriber, :town)).to eq("Bern")
-      expect(value(subscriber, :country)).to eq("Schweiz")
+      expect(value(subscriber, :country)).to eq("CH")
     end
 
     it "names each subscription with its Anzahl" do
@@ -84,6 +90,13 @@ describe Export::Tabular::MagazineSubscriptions::List do
 
       expect(value(subscriber, :total_amount)).to eq(22)
     end
+  end
+
+  it "upcases a lowercase country code" do
+    subscriber.update_column(:country, "de")
+    subscribe(subscriber, "abo")
+
+    expect(value(subscriber, :country)).to eq("DE")
   end
 
   describe "active subscriptions only" do
@@ -117,9 +130,9 @@ describe Export::Tabular::MagazineSubscriptions::List do
 
   describe "ordering" do
     it "sorts by last name, then first name" do
-      zeller = Fabricate(:person, first_name: "Anna", last_name: "Zeller")
-      aebi_beat = Fabricate(:person, first_name: "Beat", last_name: "Aebi")
-      aebi_anna = Fabricate(:person, first_name: "Anna", last_name: "Aebi")
+      zeller = Fabricate(:magazine_subscriber, first_name: "Anna", last_name: "Zeller")
+      aebi_beat = Fabricate(:magazine_subscriber, first_name: "Beat", last_name: "Aebi")
+      aebi_anna = Fabricate(:magazine_subscriber, first_name: "Anna", last_name: "Aebi")
       [zeller, aebi_beat, aebi_anna].each { |person| subscribe(person, "abo") }
 
       expect(list.list.map(&:to_s)).to eq([aebi_anna, aebi_beat, zeller].map(&:to_s))
@@ -133,6 +146,8 @@ describe Export::Tabular::MagazineSubscriptions::List do
       # the generator writes a BOM and uses ";" so Excel opens it directly
       csv = CSV.parse(described_class.csv(date: today).delete_prefix("\uFEFF"), col_sep: ";")
 
+      expect(csv.first.first).to eq("Personennummer")
+      expect(csv.second.first).to eq(subscriber.id.to_s)
       expect(csv.first).to include("Abos", "Total Anzahl", "PLZ", "Ort")
       expect(csv.size).to eq(2)
       expect(csv.second).to include("Muster", "Bern", "Abo (3)", "3")

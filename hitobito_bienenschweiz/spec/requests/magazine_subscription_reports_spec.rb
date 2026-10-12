@@ -18,7 +18,8 @@ RSpec.describe MagazineSubscriptionReportsController, type: :request do
 
   def subscribe(type, start_date, end_date: nil, amount: 1)
     Fabricate(:magazine_subscription, person: person, subscription_type: type,
-      start_date: start_date, end_date: end_date, amount: amount)
+      start_date: start_date, end_date: end_date, amount: amount,
+      cancellation_reason: end_date && "kint")
   end
 
   # the row a category renders as, without its leading label cell
@@ -97,7 +98,7 @@ RSpec.describe MagazineSubscriptionReportsController, type: :request do
     end
 
     it "exports one row per subscriber with address, Abos and total" do
-      subscriber = Fabricate(:person, first_name: "Anna", last_name: "Muster",
+      subscriber = Fabricate(:magazine_subscriber, first_name: "Anna", last_name: "Muster",
         street: "Bienenweg", housenumber: "7b", zip_code: "3000", town: "Bern")
       subscribe("abo", Date.new(2026, 1, 1), amount: 2)
       Fabricate(:magazine_subscription, person: subscriber, subscription_type: "gratis_abo",
