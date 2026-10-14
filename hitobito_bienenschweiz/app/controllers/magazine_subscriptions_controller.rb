@@ -9,7 +9,7 @@ class MagazineSubscriptionsController < CrudController
   self.nesting = Group, Person
 
   self.permitted_attrs = [:start_date, :end_date, :subscription_type, :amount,
-    :cancellation_reason]
+    :cancellation_reason, :gifter_id]
 
   decorates :group, :person
 
@@ -29,6 +29,10 @@ class MagazineSubscriptionsController < CrudController
   end
 
   private
+
+  def list_entries
+    super.includes(:gifter)
+  end
 
   def build_entry
     @person.magazine_subscriptions.build(start_date: default_start_date)

@@ -35,11 +35,14 @@ class MagazineSubscription < ApplicationRecord
   ].freeze
 
   belongs_to :person
+  belongs_to :gifter, class_name: "Person", optional: true
 
   i18n_enum :subscription_type, SUBSCRIPTION_TYPES, queries: true
   i18n_enum :cancellation_reason, CANCELLATION_REASONS
 
   validates_by_schema
+  validates :gifter, presence: true, if: :geschenk_abo?
+  validates :gifter_id, absence: true, unless: :geschenk_abo?
   validates :amount, numericality: {only_integer: true, greater_than: 0,
                                     less_than: 2_147_483_648, allow_nil: true}
   validates :cancellation_reason, presence: true, if: -> { end_date.present? }

@@ -82,7 +82,8 @@ describe MagazineSubscriptions::Report do
       subscribe("gratis_abo", july, amount: 2)
       subscribe("abo", july)
       subscribe("online_abo", july)
-      subscribe("geschenk_abo", july, amount: 3)
+      Fabricate(:magazine_subscription, person: person, subscription_type: "geschenk_abo",
+        start_date: july, amount: 3, gifter: Fabricate(:person))
 
       expect(report.amount(july, :buchhaendler)).to eq(20)
       expect(report.amount(july, :gratis)).to eq(2)

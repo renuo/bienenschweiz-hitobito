@@ -39,6 +39,16 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
     end
   end
 
+  it "lists the gifting person for a gift subscription" do
+    gifter = Fabricate(:person)
+    Fabricate(:magazine_subscription, person: person, subscription_type: "geschenk_abo",
+      gifter: gifter)
+
+    get group_person_magazine_subscriptions_path(sektion, person)
+
+    expect(response.body).to include(ERB::Util.html_escape(gifter.to_s))
+  end
+
   describe "#new" do
     it "renders the form with all subscription types" do
       get new_group_person_magazine_subscription_path(sektion, person)
@@ -46,6 +56,8 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Abomodell")
       expect(response.body).to include("Abbestellungsgrund")
+      expect(response.body).to include("magazine_subscription[gifter_id]")
+      expect(response.body).to include("Schenkende Person")
       MagazineSubscription.subscription_type_labels.each_value do |label|
         expect(response.body).to include(label)
       end
@@ -92,8 +104,10 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
   end
 
   describe "#create" do
+    let(:gifter) { Fabricate(:person) }
+
     let(:params) do
-      {start_date: "01.05.2026", subscription_type: "geschenk_abo", amount: 2}
+      {start_date: "01.05.2026", subscription_type: "geschenk_abo", amount: 2, gifter_id: gifter.id}
     end
 
     it "creates a subscription for the person" do
@@ -108,6 +122,34 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
       expect(subscription.subscription_type).to eq("geschenk_abo")
       expect(subscription.amount).to eq(2)
       expect(subscription.end_date).to be_nil
+    end
+
+    it "sets the gifting person" do
+      gifter = Fabricate(:person)
+      post group_person_magazine_subscriptions_path(sektion, person),
+        params: {magazine_subscription: params.merge(gifter_id: gifter.id)}
+
+      expect(MagazineSubscription.last.gifter).to eq(gifter)
+    end
+
+    it "rejects a gift subscription without a gifting person" do
+      expect do
+        post group_person_magazine_subscriptions_path(sektion, person),
+          params: {magazine_subscription: params.merge(gifter_id: "")}
+      end.not_to change { MagazineSubscription.count }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Schenkende Person muss ausgefüllt werden")
+    end
+
+    it "rejects a gifting person for other subscription types" do
+      expect do
+        post group_person_magazine_subscriptions_path(sektion, person),
+          params: {magazine_subscription: params.merge(subscription_type: "abo")}
+      end.not_to change { MagazineSubscription.count }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Schenkende Person darf nicht ausgefüllt werden")
     end
 
     it "redirects to the index after creation" do
@@ -203,6 +245,35 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
       expect(subscription.amount).to eq(5)
       expect(subscription.end_date).to eq(Date.new(2026, 12, 31))
       expect(subscription.cancellation_reason).to eq("hoal")
+    end
+
+    it "sets the gifting person and rejects removing it from a gift subscription" do
+      gifter = Fabricate(:person)
+      patch group_person_magazine_subscription_path(sektion, person, subscription),
+        params: {magazine_subscription: {subscription_type: "geschenk_abo", gifter_id: gifter.id}}
+
+      expect(subscription.reload.gifter).to eq(gifter)
+
+      get edit_group_person_magazine_subscription_path(sektion, person, subscription)
+      expect(response.body).to include(ERB::Util.html_escape(gifter.to_s))
+
+      patch group_person_magazine_subscription_path(sektion, person, subscription),
+        params: {magazine_subscription: {gifter_id: ""}}
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("Schenkende Person muss ausgefüllt werden")
+      expect(subscription.reload.gifter).to eq(gifter)
+    end
+
+    it "allows changing a gift subscription to another type when the gifting person is cleared" do
+      subscription.update!(subscription_type: "geschenk_abo", gifter: Fabricate(:person))
+
+      patch group_person_magazine_subscription_path(sektion, person, subscription),
+        params: {magazine_subscription: {subscription_type: "abo", gifter_id: ""}}
+
+      expect(response).to have_http_status(:see_other)
+      expect(subscription.reload.subscription_type).to eq("abo")
+      expect(subscription.gifter).to be_nil
     end
 
     it "refuses to set an end date without a cancellation reason" do
