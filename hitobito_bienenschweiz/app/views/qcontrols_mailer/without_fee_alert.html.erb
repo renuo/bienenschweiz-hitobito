@@ -1,0 +1,46 @@
+<p>Liebes BienenSchweiz-Sekretariat</p>
+
+<p>
+  In der MV gibt es derzeit <%= @qcontrols.size %> Betriebsprüfungen, für welche auf KAS
+  keine Spesen generiert worden sind.
+</p>
+
+<% if @failed_qcontrols.any? %>
+  <p>
+    <%= @failed_qcontrols.size %> davon haben beim Versuch, die Spese zu generieren, einen
+    Fehler verursacht. Renuo ist über diesen Vorfall benachrichtigt worden.
+  </p>
+<% end %>
+
+<% if @orphans.any? %>
+  <p>
+    Zusätzlich gibt es <%= @orphans.size %> Betriebsprüfungen ohne dazugehörenden Siegelimker,
+    für welche somit keine Spese generiert werden konnte. Bitte weisen Sie diesen einen
+    Siegelimker zu, sodass eine Spese generiert wird.
+  </p>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th><%= Qcontrol.human_attribute_name(:title) %></th>
+      <th><%= Qcontrol.human_attribute_name(:author) %></th>
+      <th><%= Qcontrol.human_attribute_name(:group) %></th>
+      <th><%= Qcontrol.human_attribute_name(:control_date) %></th>
+      <th><%= Qcontrol.human_attribute_name(:person) %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @qcontrols.each do |qcontrol| %>
+      <tr>
+        <td><%= qcontrol %></td>
+        <td><%= qcontrol.author&.full_name || qcontrol.author_name %></td>
+        <td><%= qcontrol.group %></td>
+        <td><%= I18n.l(qcontrol.control_date) %></td>
+        <td><%= link_to qcontrol.person.full_name, person_url(qcontrol.person) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p><%= link_to "Hier gelangen Sie zu den Blanko-Betriebsprüfungen in der MV", orphan_qcontrols_url %></p>

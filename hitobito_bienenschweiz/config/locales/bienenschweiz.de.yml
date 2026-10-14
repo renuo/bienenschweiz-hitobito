@@ -389,6 +389,9 @@ de:
     print_certificate_and_letter:
       subject: Ausdruck Zertifikat und Begleitbrief für %{name}
       attachment_name: Zertifikat_Begleitbrief_%{name}
+  qcontrols_mailer:
+    without_fee_alert:
+      subject: Betriebsprüfungen ohne Entschädigung
   diploma_mailer:
     order:
       subject: "Diplom drucken für %{name} am %{date}"

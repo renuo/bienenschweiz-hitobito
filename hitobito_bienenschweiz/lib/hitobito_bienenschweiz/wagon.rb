@@ -24,6 +24,8 @@ module HitobitoBienenschweiz
 
     config.to_prepare do # rubocop:disable Metrics/BlockLength
       # extend application classes here
+      JobManager.wagon_jobs += [QcontrolsVerifierJob]
+
       Group.include Bienenschweiz::Group
       Person.include Bienenschweiz::Person
 

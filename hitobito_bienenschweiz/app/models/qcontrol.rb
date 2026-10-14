@@ -58,16 +58,15 @@ class Qcontrol < ApplicationRecord
   scope :before, ->(date) { where(arel_table[:control_date].lt(date)) }
   scope :orphan, -> { where(person: nil) }
   scope :from_yesterday, -> { where(updated_at: 1.day.ago..Time.zone.now) }
-  # TODO: add back when implementing fee creating in KAS
-  # scope :needs_fee_creation, lambda {
-  #   fee_not_created
-  #     .where.not(person: nil)
-  #     .where.not(no_control_reason: %i[
-  #       termination_of_business
-  #       beekeeper_deceased
-  #       resignation_from_certification_program
-  #     ])
-  # }
+  scope :needs_fee_creation, lambda {
+    no_control = %w[termination_of_business beekeeper_deceased
+      resignation_from_certification_program]
+    # NOT IN does not match NULL, so control performed must be checked explicitly
+    # inner join, as some imported person_ids point to people that no longer exist
+    fee_not_created
+      .where.associated(:person)
+      .merge(where.not(no_control_reason: no_control).or(where(no_control_reason: nil)))
+  }
 
   before_save :set_control_state
   before_create :set_author_name
