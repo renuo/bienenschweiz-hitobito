@@ -744,11 +744,25 @@ namespace :mv do
       puts "Imported #{import_count} and grouped #{merge_count} courses"
     end
 
-    desc "Import website profiles of Siegelimker from the website CSV export " \
-         "(set SKIP_IMAGES=1 to skip downloading background images)"
-    task :siegelimker_profiles, [:path] => :environment do |_, args|
+    # MV member ids by selectline customer number, which is only available in MV.
+    # Requires the MvMember class to be defined by the calling task.
+    def selectline_member_ids
+      return @selectline_member_ids if @selectline_member_ids
+
+      @selectline_member_ids = MvMember.where.not(selectline_customer_number: [nil, ""])
+        .pluck(:selectline_customer_number, :id)
+        .group_by { |number, _| number.to_s.strip }
+        .transform_values { |pairs| pairs.map(&:last) }
+      @selectline_member_ids.select { |_, ids| ids.many? }.each do |number, ids|
+        puts "Selectline customer number #{number} is used by multiple members: #{ids.join(", ")}"
+      end
+      @selectline_member_ids
+    end
+
+    desc "Import running Bienenzeitung subscriptions from the selectline CSV export " \
+         "(invalid_members_path defaults to invalid_members.csv of the members import)"
+    task :magazine_subscriptions, [:path, :invalid_members_path] => :environment do |_, args|
       require "csv"
-      require "open-uri"
 
       class MvRecord < ApplicationRecord
         self.abstract_class = true
@@ -758,6 +772,116 @@ namespace :mv do
       class MvMember < MvRecord
         self.table_name = "members"
       end
+
+      failure_csv = "invalid_magazine_subscriptions.csv"
+      subscription_types = {
+        "abo-biez" => "abo",
+        "abo-biez-EURO" => "abo_eur",
+        # CHF priced subscriptions delivered to the EU, the old system had no own type for them
+        "abo-biez-CHF-EU" => "abo"
+      }
+      bienen_zeitung = Group::BienenZeitung.first!
+      subscriber_role = Group::BienenZeitung::Abonnent.sti_name
+      text = ->(value) { value.to_s.strip.presence }
+
+      # errors of the members import by MV member id, to explain why a member is missing
+      invalid_members_path = args[:invalid_members_path] || "invalid_members.csv"
+      member_errors = if File.exist?(invalid_members_path)
+        CSV.foreach(invalid_members_path, headers: true).to_h { |row| [row["id"].to_i, row["error"]] }
+      else
+        puts "#{invalid_members_path} not found, missing members are reported without reason"
+        {}
+      end
+      missing_member_reason = lambda do |member_id|
+        if (error = member_errors[member_id])
+          "failed member import: #{error.chomp}"
+        elsif MvMember.where(id: member_id).pick(:robinson)
+          "excluded on purpose: robinson"
+        else
+          "unknown reason"
+        end
+      end
+
+      find_person = lambda do |number|
+        ids = selectline_member_ids[number]
+        raise "Unknown selectline customer number #{number}" if ids.blank?
+        raise "Ambiguous selectline customer number #{number}" if ids.many?
+
+        Person.find_by(id: ids.first + MEMBER_ID_OFFSET) ||
+          raise("Member #{ids.first} (selectline customer number #{number}) was not imported " \
+                "(#{missing_member_reason.call(ids.first)})")
+      end
+
+      stats = Hash.new(0)
+      failed_rows = []
+      seen_rows = Set.new
+      headers = nil
+      CSV.foreach(args[:path], headers: true, encoding: "bom|utf-8") do |row|
+        headers ||= row.headers
+        stats[:total] += 1
+        # we only import running subscriptions
+        if text.call(row["Kündigungsdatum"])
+          stats[:cancelled] += 1
+          next
+        end
+        # the export contains some rows multiple times
+        unless seen_rows.add?(row.fields)
+          stats[:duplicate] += 1
+          next
+        end
+
+        number = text.call(row["adressnummer"])
+        if (reason = text.call(row["Kündigungsgrund"]))
+          puts "Ignoring cancellation reason #{reason} of running subscription of #{number}"
+        end
+
+        billing_date = text.call(row["nächster Verrechnungstermin"])
+        raise "Missing next billing date" unless billing_date
+
+        gifter_number = text.call(row["geschenkabo von Kunde"])
+        subscription_type = if gifter_number
+          "geschenk_abo"
+        elsif text.call(row["GR Abo"])
+          "gratis_abo"
+        else
+          subscription_types.fetch(text.call(row["artikelnummer"])) do |article|
+            raise "Unknown article number #{article}"
+          end
+        end
+
+        person = find_person.call(number)
+        subscription = person.magazine_subscriptions.where(
+          subscription_type:,
+          start_date: Date.strptime(billing_date, "%d.%m.%Y").prev_year,
+          gifter: gifter_number && find_person.call(gifter_number)
+        ).first_or_initialize
+        subscription.amount = Integer(row["Anzahl"])
+
+        MagazineSubscription.transaction do
+          unless person.roles.exists?(type: subscriber_role)
+            person.roles.create!(type: subscriber_role, group: bienen_zeitung)
+          end
+          subscription.save!
+        end
+        stats[:imported] += 1
+      rescue => e
+        stats[:failed] += 1
+        puts "Row #{stats[:total]} (#{row["adressnummer"]}): #{e.message}"
+        failed_rows << row.fields + [e.message]
+      end
+
+      CSV.open(failure_csv, "w", write_headers: true, headers: headers.to_a + ["error"]) do |csv|
+        failed_rows.each { |fields| csv << fields }
+      end
+      puts stats.map { |key, count| "#{key}: #{count}" }.join(", ")
+      puts "Failed rows written to #{failure_csv}" if failed_rows.any?
+    end
+
+    desc "Import website profiles of Siegelimker from the website CSV export " \
+         "(set SKIP_IMAGES=1 to skip downloading background images)"
+    task :siegelimker_profiles, [:path] => :environment do |_, args|
+      require "csv"
+      require "open-uri"
 
       availabilities = {
         "nicht im Angebot" => "not_offered",
@@ -776,19 +900,11 @@ namespace :mv do
       boolean = ->(value) { value.to_s.strip == "Ja" }
       text = ->(value) { value.to_s.strip.presence }
 
-      # ext_id is the selectline customer number of the member, which is only available in MV
-      member_ids = MvMember.where.not(selectline_customer_number: [nil, ""])
-        .pluck(:selectline_customer_number, :id)
-        .group_by { |number, _| number.to_s.strip }
-        .transform_values { |pairs| pairs.map(&:last) }
-      member_ids.select { |_, ids| ids.many? }.each do |number, ids|
-        puts "Selectline customer number #{number} is used by multiple members: #{ids.join(", ")}"
-      end
-
       find_person = lambda do |row|
+        # ext_id is the selectline customer number of the member
         ext_id = text.call(row["ext_id"])
         email = text.call(row["e-mail"])
-        ids = ext_id && member_ids[ext_id]
+        ids = ext_id && selectline_member_ids[ext_id]
         if ids&.one?
           person = Person.find_by(id: ids.first + MEMBER_ID_OFFSET)
           puts "Member #{ids.first} (ext_id #{ext_id}) was not imported" unless person
