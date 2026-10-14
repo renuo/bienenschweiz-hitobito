@@ -59,6 +59,41 @@ describe MagazineSubscription do
     expect(subscription).not_to be_valid
   end
 
+  describe "gifter" do
+    it "stores a gifting person without requiring a subscriber role" do
+      subscription.subscription_type = "geschenk_abo"
+      subscription.gifter = Fabricate(:person)
+      subscription.save!
+
+      expect(subscription.reload.gifter).to be_present
+    end
+
+    it "requires a gifting person for gift subscriptions" do
+      subscription.subscription_type = "geschenk_abo"
+
+      expect(subscription).not_to be_valid
+      expect(subscription.errors[:gifter]).to include("muss ausgefüllt werden")
+    end
+
+    (MagazineSubscription::SUBSCRIPTION_TYPES - ["geschenk_abo"]).each do |type|
+      it "rejects a gifting person for #{type}" do
+        subscription.subscription_type = type
+        subscription.gifter = Fabricate(:person)
+
+        expect(subscription).not_to be_valid
+        expect(subscription.errors[:gifter_id]).to include("darf nicht ausgefüllt werden")
+      end
+    end
+
+    it "rejects a gift subscription referencing a nonexistent person" do
+      subscription.subscription_type = "geschenk_abo"
+      subscription.gifter_id = -1
+
+      expect(subscription).not_to be_valid
+      expect(subscription.errors[:gifter]).to be_present
+    end
+  end
+
   describe "person" do
     it "is invalid for a person without the Abonnent/in role" do
       subscription.person = Fabricate(:person)

@@ -163,6 +163,8 @@ de:
         person_id: Person
         start_date: Startdatum
         end_date: Enddatum
+        gifter: Schenkende Person
+        gifter_id: Schenkende Person
         subscription_type: Abomodell
         amount: Anzahl Exemplare
         cancellation_reason: Abbestellungsgrund

@@ -7,7 +7,7 @@
 = crud_table do |t|
   - t.col(MagazineSubscription.human_attribute_name(:subscription_type)) do |subscription|
     = subscription.subscription_type_label
-  - t.attrs(:start_date, :end_date, :amount)
+  - t.attrs(:gifter, :start_date, :end_date, :amount)
   - t.col(MagazineSubscription.human_attribute_name(:cancellation_reason)) do |subscription|
     = subscription.cancellation_reason_label
   - add_table_actions(t)
