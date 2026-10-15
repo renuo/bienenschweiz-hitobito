@@ -47,14 +47,27 @@ class Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob < RecurringJob
     )
     invoice = prepare_external_invoice(invoice_data)
 
-    if subscription.person.abacus_subject_key.blank?
-      assign_error(invoice, I18n.t("invoices.errors.abacus_subject_key_missing"))
-    elsif !invoice_data.invoice?
+    if !invoice_data.invoice?
       assign_error(invoice, I18n.t("invoices.errors.article_missing",
         subscription_type: subscription.subscription_type_label))
+    elsif (subject_errors = ensure_customer(subscription.person))
+      assign_error(invoice, I18n.t("invoices.errors.create_subject_failed"), subject_errors)
     else
       Invoices::Abacus::SalesOrder.new(invoice, invoice_data.positions)
     end
+  end
+
+  # Creates the person as subject and customer in Abacus if missing.
+  # Returns the error messages if this failed, nil otherwise.
+  def ensure_customer(person)
+    @subject_errors ||= {}
+    return @subject_errors[person.id] if @subject_errors.key?(person.id)
+
+    subject = Invoices::Abacus::Subject.new(person)
+    @subject_errors[person.id] =
+      subject_interface.ensure_customer(subject) ? nil : subject.error_messages.join(", ")
+  rescue RestClient::Exception, SocketError, Errno::ECONNREFUSED => e
+    @subject_errors[person.id] = e.message
   end
 
   def prepare_external_invoice(invoice_data)
@@ -97,7 +110,15 @@ class Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob < RecurringJob
   end
 
   def sales_order_interface
-    @sales_order_interface ||= Invoices::Abacus::SalesOrderInterface.new
+    @sales_order_interface ||= Invoices::Abacus::SalesOrderInterface.new(client)
+  end
+
+  def subject_interface
+    @subject_interface ||= Invoices::Abacus::SubjectInterface.new(client)
+  end
+
+  def client
+    @client ||= Invoices::Abacus::Client.new
   end
 
   def config

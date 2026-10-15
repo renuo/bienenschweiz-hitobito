@@ -18,7 +18,7 @@ module Invoices
       # TODO: Placeholders taken over from the SAC magazine invoices
       # until the Abacus mandant of BienenSchweiz is set up.
       DOCUMENT_CODES = {
-        magazine_subscription: "RA"
+        magazine_subscription: "R10"
       }.with_indifferent_access.freeze
 
       PROCESS_FLOW_NUMBERS = {
@@ -59,12 +59,17 @@ module Invoices
       end
 
       def sales_order_attrs # rubocop:disable Metrics/AbcSize
+        fake_date = 1.year.from_now.to_date
         {
           customer_id: entity.person.abacus_subject_key,
-          order_date: entity.created_at.to_date,
-          delivery_date: entity.sent_at,
-          invoice_date: entity.sent_at,
-          invoice_value_date: entity.issued_at,
+          # order_date: entity.created_at.to_date,
+          # delivery_date: entity.sent_at,
+          # invoice_date: entity.sent_at,
+          # invoice_value_date: entity.issued_at,
+          order_date: fake_date,
+          delivery_date: fake_date + 20.days,
+          invoice_date: fake_date,
+          invoice_value_date: fake_date,
           total_amount: entity.total.to_f,
           language: entity.person.language,
           document_code_invoice: DOCUMENT_CODES.fetch(entity.invoice_kind),
