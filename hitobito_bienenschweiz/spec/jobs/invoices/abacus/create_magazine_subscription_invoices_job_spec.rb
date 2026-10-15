@@ -14,6 +14,7 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
   let(:enabled) { true }
   let(:person) { Fabricate(:magazine_subscriber, abacus_subject_key: 7) }
   let(:interface) { instance_double(Invoices::Abacus::SalesOrderInterface) }
+  let(:subject_interface) { instance_double(Invoices::Abacus::SubjectInterface) }
   let(:submitted) { [] }
 
   before do
@@ -22,7 +23,10 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
       enabled: enabled,
       articles: {abo: {article_number: "4711", price: 42.5}, online_abo: {article_number: "4712"}}
     )
+    allow(Invoices::Abacus::Client).to receive(:new)
     allow(Invoices::Abacus::SalesOrderInterface).to receive(:new).and_return(interface)
+    allow(Invoices::Abacus::SubjectInterface).to receive(:new).and_return(subject_interface)
+    allow(subject_interface).to receive(:ensure_customer).and_return(true)
     allow(interface).to receive(:create_batch) do |sales_orders|
       submitted.concat(sales_orders)
       sales_orders.map do |sales_order|
@@ -101,8 +105,24 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
     end
   end
 
-  context "without abacus subject key" do
-    let(:person) { Fabricate(:magazine_subscriber) }
+  it "makes sure the person exists as customer in Abacus once per person" do
+    subscription(Date.new(2025, 12, 1))
+    subscription(Date.new(2025, 11, 1))
+
+    job.perform_internal
+
+    expect(subject_interface).to have_received(:ensure_customer).once
+      .with(having_attributes(entity: person))
+    expect(submitted.size).to eq(2)
+  end
+
+  context "when the person cannot be created as customer in Abacus" do
+    before do
+      allow(subject_interface).to receive(:ensure_customer) do |subject|
+        subject.errors[:abacus_subject_key] = :not_found_in_abacus
+        false
+      end
+    end
 
     it "marks the invoice as error and logs it" do
       subscription(Date.new(2025, 12, 1))
@@ -111,18 +131,30 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
 
       invoice = ExternalInvoice.last
       expect(invoice).to be_error
-      expect(invoice.hitobito_log_entries.first.message).to include("Abacus Kundennummer fehlt")
+      log = invoice.hitobito_log_entries.first
+      expect(log.message).to include("nicht als Kunde in Abacus erfasst")
+      expect(log.payload).to eq("Abacus Kundennummer wurde in Abacus nicht gefunden")
       expect(submitted).to be_empty
     end
 
     it "retries the invoice on the next run" do
       subscription(Date.new(2025, 12, 1))
       job.perform_internal
-      person.update!(abacus_subject_key: 7)
+      allow(subject_interface).to receive(:ensure_customer).and_return(true)
 
       expect { described_class.new.perform_internal }.not_to change { ExternalInvoice.count }
       expect(ExternalInvoice.last).to be_open
     end
+  end
+
+  it "marks the invoice as error when Abacus is not reachable to check the customer" do
+    subscription(Date.new(2025, 12, 1))
+    allow(subject_interface).to receive(:ensure_customer).and_raise(Errno::ECONNREFUSED)
+
+    job.perform_internal
+
+    expect(ExternalInvoice.last).to be_error
+    expect(submitted).to be_empty
   end
 
   it "marks the invoice as error when the article has no price" do
