@@ -266,6 +266,7 @@ de:
         not_after_start_date: 'muss nach dem Startdatum liegen'
         too_many: 'darf höchstens %{count} Einträge haben'
         not_subscriber: 'muss zuerst als Abonnent/in erfasst werden'
+        not_found_in_abacus: 'wurde in Abacus nicht gefunden'
         final_round_exists: 'für diesen Kurs wurde bereits eine Schlussrunde gestartet, es kann keine weitere Runde mehr gestartet werden'
   orphan_qcontrols:
     title: Blanko-Betriebsprüfungen
@@ -295,7 +296,7 @@ de:
     magazine_subscription:
       position: "%{subscription_type} %{period}"
     errors:
-      abacus_subject_key_missing: Rechnung konnte nicht erstellt werden, da die Abacus Kundennummer fehlt
+      create_subject_failed: Rechnung konnte nicht erstellt werden, da die Person nicht als Kunde in Abacus erfasst werden konnte
       article_missing: Rechnung konnte nicht erstellt werden, da für %{subscription_type} kein Abacus Artikel konfiguriert ist
       create_invoice_failed: Rechnung konnte nicht in Abacus erstellt werden
       cancel_invoice_failed: Rechnung konnte nicht in Abacus storniert werden
