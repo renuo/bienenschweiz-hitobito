@@ -41,6 +41,7 @@ additional_email:
     enabled: false
 
 additional_address:
+  enabled: false
   custom_label:
     enabled: false
 
