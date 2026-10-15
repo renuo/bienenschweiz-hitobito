@@ -26,6 +26,6 @@ class MagazineSubscriptionReportsController < ApplicationController
   end
 
   def export_filename
-    "bienen-abos_#{Time.zone.today.strftime("%Y-%m-%d")}.csv"
+    "bienen-abos_#{Time.zone.today.iso8601}.csv"
   end
 end
