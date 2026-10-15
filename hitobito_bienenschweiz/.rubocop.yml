@@ -10,6 +10,7 @@ AllCops:
     - config/**/*
     - bin/**/*
     - tmp/**/*
+    - lib/tasks/mv.rake
 
 # core sets belongs_to_required_by_default = false so this is not redundant
 Rails/RedundantPresenceValidationOnBelongsTo:

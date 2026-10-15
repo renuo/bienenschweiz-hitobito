@@ -18,5 +18,8 @@ Gem::Specification.new do |s|
   # to match core Gemfile.lock which is otherwise not considered locally
   s.dependencies << Gem::Dependency.new("haml", "~> 6.3.0")
   s.dependencies << Gem::Dependency.new("image_processing", "~> 1.14.0")
+  s.add_dependency "carrierwave", "~> 3.0"
+  s.add_dependency "carrierwave-aws"
+  s.add_dependency "mysql2"
   # rubocop:enable Style/SingleSpaceBeforeFirstArg
 end
