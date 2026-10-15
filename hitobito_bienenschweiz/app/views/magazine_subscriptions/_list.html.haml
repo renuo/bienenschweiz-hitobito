@@ -11,3 +11,12 @@
   - t.col(MagazineSubscription.human_attribute_name(:cancellation_reason)) do |subscription|
     = subscription.cancellation_reason_label
   - add_table_actions(t)
+
+- invoices = ExternalInvoice::Magazine.where(link: entries).includes(:link).order(period_start: :desc)
+- if invoices.any?
+  %h2.mt-4= t("magazine_subscriptions.invoices.title")
+  = table(invoices, class: "table table-striped table-hover") do |t|
+    - t.col(ExternalInvoice.human_attribute_name(:link)) { |invoice| invoice.link.to_s }
+    - t.attrs(:period_start, :sent_at, :total)
+    - t.col(ExternalInvoice.human_attribute_name(:state)) { |invoice| invoice.state_label }
+    - t.attrs(:abacus_sales_order_key)

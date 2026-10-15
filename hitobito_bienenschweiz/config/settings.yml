@@ -50,3 +50,28 @@ personal_documents:
 kas:
   base_url: <%= ENV['KAS_BASE_URL'] %>
   api_token: <%= ENV['KAS_API_TOKEN'] %>
+
+# Abacus API to create invoices (see app/domain/invoices/abacus)
+abacus:
+  host: <%= ENV['ABACUS_HOST'] %>
+  mandant: <%= ENV['ABACUS_MANDANT'] %>
+  username: <%= ENV['ABACUS_USERNAME'] %>
+  password: <%= ENV['ABACUS_PASSWORD'] %>
+
+magazine_subscription_invoicing:
+  # Creates the yearly invoices of magazine subscriptions in Abacus if true.
+  enabled: <%= ENV['MAGAZINE_SUBSCRIPTION_INVOICING_ENABLED'] == 'true' %>
+  # Number of months before the next subscription period starts to create the invoice.
+  lead_time_months: 2
+  # Billable subscription types with their Abacus article number and price per copy.
+  # TODO: All types use a dummy article until the real articles exist in Abacus.
+  articles:
+    abo:
+      article_number: <%= ENV['ABACUS_DUMMY_ARTICLE_NUMBER'] %>
+      price: <%= ENV['ABACUS_DUMMY_ARTICLE_PRICE'] %>
+    abo_eur:
+      article_number: <%= ENV['ABACUS_DUMMY_ARTICLE_NUMBER'] %>
+      price: <%= ENV['ABACUS_DUMMY_ARTICLE_PRICE'] %>
+    online_abo:
+      article_number: <%= ENV['ABACUS_DUMMY_ARTICLE_NUMBER'] %>
+      price: <%= ENV['ABACUS_DUMMY_ARTICLE_PRICE'] %>

@@ -7,3 +7,5 @@
 = render_attrs(entry, :salutation, :canton_short, :export_to_website)
 - if entry.num_ad_boards.present?
   = render_attrs(entry, :num_ad_boards)
+- if entry.abacus_subject_key.present? && can?(:index, MagazineSubscription)
+  = render_attrs(entry, :abacus_subject_key)

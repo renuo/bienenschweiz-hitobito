@@ -89,6 +89,11 @@ Rails.application.routes.draw do
     end
   end
 
+  scope path: ApplicationResource.endpoint_namespace, module: :json_api,
+    constraints: {format: "jsonapi"}, defaults: {format: "jsonapi"} do
+    resources :external_invoices, only: [:index, :show, :update]
+  end
+
   namespace :api, defaults: {formats: :json} do
     namespace :mobile do
       namespace :v1 do

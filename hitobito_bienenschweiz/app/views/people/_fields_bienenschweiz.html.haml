@@ -5,3 +5,5 @@
 
 
 = f.labeled_input_fields(:salutation, :hive_count, :honey_yield, :export_to_website, :num_ad_boards)
+- if can?(:index, MagazineSubscription)
+  = f.labeled_input_field(:abacus_subject_key)

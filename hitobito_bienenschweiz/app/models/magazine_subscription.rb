@@ -36,6 +36,8 @@ class MagazineSubscription < ApplicationRecord
 
   belongs_to :person
   belongs_to :gifter, class_name: "Person", optional: true
+  has_many :external_invoices, as: :link, class_name: "ExternalInvoice::Magazine",
+    dependent: :restrict_with_error, inverse_of: :link
 
   i18n_enum :subscription_type, SUBSCRIPTION_TYPES, queries: true
   i18n_enum :cancellation_reason, CANCELLATION_REASONS
@@ -49,6 +51,8 @@ class MagazineSubscription < ApplicationRecord
   validates :cancellation_reason, absence: true, unless: -> { end_date.present? }
   validate :assert_end_date_after_start_date
   validate :assert_person_is_subscriber, on: :create
+
+  after_save :cancel_invoices_after_end_date, if: :saved_change_to_end_date?
 
   scope :list, -> { order(start_date: :desc, id: :desc) }
   scope :active, lambda { |date = Time.zone.today|
@@ -65,7 +69,26 @@ class MagazineSubscription < ApplicationRecord
     [subscription_type_label, start_date && I18n.l(start_date)].compact.join(", ")
   end
 
+  # Periods last one year from the start date. The first period is invoiced
+  # by the shop, so the next period is never the first one.
+  def next_period_start(date = Time.zone.today)
+    years = [date.year - start_date.year, 1].max
+    period_start = start_date + years.years
+    (period_start < date) ? start_date + (years + 1).years : period_start
+  end
+
   private
+
+  def cancel_invoices_after_end_date
+    return if end_date.nil?
+
+    external_invoices.where(period_start: end_date.next_day..)
+      .where(state: %w[draft open error]).find_each do |invoice|
+      cancel_in_abacus = invoice.cancellable?
+      invoice.update!(state: :cancelled)
+      Invoices::Abacus::CancelInvoiceJob.new(invoice).enqueue! if cancel_in_abacus
+    end
+  end
 
   def assert_end_date_after_start_date
     return if start_date.blank? || end_date.blank?
