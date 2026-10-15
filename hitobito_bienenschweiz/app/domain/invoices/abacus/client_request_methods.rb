@@ -18,7 +18,8 @@ module Invoices
 
       def request_path(method, path, params)
         if params && method == :get
-          "#{path}?#{RestClient::Utils.encode_query_string(params)}"
+          # Abacus does not decode "+" as space (e.g. in "$orderby=Id desc")
+          "#{path}?#{URI.encode_www_form(params).gsub("+", "%20")}"
         else
           path
         end
