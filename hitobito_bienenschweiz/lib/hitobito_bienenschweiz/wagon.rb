@@ -150,6 +150,15 @@ module HitobitoBienenschweiz
       end
     end
 
+    initializer "bienenschweiz.onlylogs" do
+      if Rails.env.prouduction?
+        require "onlylogs"
+        Rails.application.configure do
+          config.logger = ::Onlylogs::HttpLogger.new
+        end
+      end
+    end
+
     private
 
     def seed_fixtures
