@@ -152,10 +152,12 @@ module HitobitoBienenschweiz
 
     initializer "bienenschweiz.onlylogs" do
       if Rails.env.prouduction?
+        # :nocov:
         require "onlylogs"
         Rails.application.configure do
           config.logger = ::Onlylogs::HttpLogger.new
         end
+        # :nocov:
       end
     end
 
