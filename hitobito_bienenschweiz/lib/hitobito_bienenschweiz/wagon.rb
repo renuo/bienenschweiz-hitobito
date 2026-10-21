@@ -150,7 +150,7 @@ module HitobitoBienenschweiz
       end
     end
 
-    initializer "bienenschweiz.onlylogs" do
+    initializer "bienenschweiz.onlylogs", before: :initialize_logger do
       if Rails.env.production?
         # :nocov:
         require "onlylogs"
