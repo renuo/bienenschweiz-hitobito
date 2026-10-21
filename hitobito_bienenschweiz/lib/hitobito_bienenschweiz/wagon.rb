@@ -161,6 +161,14 @@ module HitobitoBienenschweiz
       end
     end
 
+    initializer "bienenschweiz.log_format", after: :load_config_initializers do |app|
+      if Rails.env.production?
+        # :nocov:
+        app.config.lograge.formatter = Lograge::Formatters::KeyValue.new
+        # :nocov:
+      end
+    end
+
     private
 
     def seed_fixtures
