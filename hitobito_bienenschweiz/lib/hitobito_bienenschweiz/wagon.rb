@@ -151,7 +151,7 @@ module HitobitoBienenschweiz
     end
 
     initializer "bienenschweiz.onlylogs" do
-      if Rails.env.prouduction?
+      if Rails.env.production?
         # :nocov:
         require "onlylogs"
         Rails.application.configure do
