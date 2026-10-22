@@ -22,12 +22,13 @@ describe Event::Qualifier do
     Fabricate(:group, type: Group::BienenZeitung.sti_name, parent: groups(:root))
   end
 
-  def issue
-    described_class.for(participation.reload).issue
+  def qualify
+    participation.reload.qualified = true
+    described_class.for(participation).apply
   end
 
   it "grants a Schnupper-Abo when a participant gets qualified" do
-    issue
+    qualify
 
     expect(person.magazine_subscriptions.pluck(:subscription_type))
       .to match_array(%w[schnupper_abo abo])
@@ -35,29 +36,24 @@ describe Event::Qualifier do
   end
 
   it "does not grant another one when re-issuing an already qualified participant" do
-    issue
+    qualify
     person.magazine_subscriptions.destroy_all
 
-    expect { issue }.not_to change { person.magazine_subscriptions.count }
+    expect { qualify }.not_to change { person.magazine_subscriptions.count }
   end
 
-  context "manually created qualifications without a participation" do
-    it "issues qualifications without granting a trial subscription" do
-      qualification_kind = Fabricate(:qualification_kind)
-      Event::KindQualificationKind.create!(event_kind: kind, category: "qualification",
-        role: "participant", qualification_kind: qualification_kind)
-      qualifier = described_class.new(person, course, "participant")
+  it "grants nothing when the participant is not qualified" do
+    participation.reload.qualified = false
 
-      expect { qualifier.issue }.not_to change { person.magazine_subscriptions.count }
-      expect(person.qualifications.pluck(:qualification_kind_id)).to include(qualification_kind.id)
-    end
+    expect { described_class.for(participation).apply }
+      .not_to change { person.magazine_subscriptions.count }
   end
 
   context "for a leader" do
     let(:role_type) { :"Event::Role::Leader" }
 
     it "grants nothing" do
-      expect { issue }.not_to change { person.magazine_subscriptions.count }
+      expect { qualify }.not_to change { person.magazine_subscriptions.count }
     end
   end
 
@@ -65,7 +61,7 @@ describe Event::Qualifier do
     let(:kind) { Fabricate(:event_kind) }
 
     it "grants nothing" do
-      expect { issue }.not_to change { person.magazine_subscriptions.count }
+      expect { qualify }.not_to change { person.magazine_subscriptions.count }
     end
   end
 end
