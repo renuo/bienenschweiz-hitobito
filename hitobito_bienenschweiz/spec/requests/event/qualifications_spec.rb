@@ -31,21 +31,21 @@ RSpec.describe "Event::QualificationsController", type: :request do
     sign_in(people(:admin))
   end
 
-  def save_qualifications(*participations)
+  def save_qualifications(qualified:)
     put group_event_qualifications_path(group, course),
-      params: {participation_ids: participations.map(&:id)}
+      params: {qualifications: {participation.id => {qualified: qualified}}}
   end
 
   it "grants a single Schnupper-Abo even when the form is saved repeatedly" do
-    save_qualifications(participation)
-    save_qualifications(participation)
+    save_qualifications(qualified: true)
+    save_qualifications(qualified: true)
 
     expect(response).to redirect_to(group_event_qualifications_path(group, course))
     expect(person.magazine_subscriptions.pluck(:subscription_type)).to eq(%w[schnupper_abo abo])
   end
 
   it "grants nothing to participants left unqualified" do
-    save_qualifications
+    save_qualifications(qualified: false)
 
     expect(person.magazine_subscriptions).to be_empty
   end
