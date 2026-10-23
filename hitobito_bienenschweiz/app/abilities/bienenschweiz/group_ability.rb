@@ -16,6 +16,9 @@ class Bienenschweiz::GroupAbility < AbilityDsl::Base
     permission(:layer_events)
       .may(:index_events, :"index_event/courses", :export_events, :"export_event/courses")
       .in_same_layer
+    permission(:layer_and_below_events)
+      .may(:index_events, :"index_event/courses", :export_events, :"export_event/courses")
+      .in_same_layer_or_below
   end
 
   private

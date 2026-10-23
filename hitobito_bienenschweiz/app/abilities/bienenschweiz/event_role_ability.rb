@@ -10,6 +10,7 @@ class Bienenschweiz::EventRoleAbility < AbilityDsl::Base
 
   on(Event::Role) do
     permission(:layer_events).may(:manage).in_same_layer_if_active
+    permission(:layer_and_below_events).may(:manage).in_same_layer_or_below_if_active
   end
 
   private

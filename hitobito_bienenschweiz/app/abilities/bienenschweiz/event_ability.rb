@@ -19,6 +19,16 @@ class Bienenschweiz::EventAbility < AbilityDsl::Base
         :create_tags, :assign_tags, :manage_attachments)
       .in_same_layer_if_active
 
+    permission(:layer_and_below_events)
+      .may(:index_participations, :index_full_participations, :qualifications_read, :show)
+      .in_same_layer_or_below
+    permission(:layer_and_below_events)
+      .may(:index_invitations).in_same_layer_or_below_and_invitations_supported
+    permission(:layer_and_below_events)
+      .may(:update, :create, :destroy, :application_market, :qualify,
+        :create_tags, :assign_tags, :manage_attachments)
+      .in_same_layer_or_below_if_active
+
     # Core restricts layer_and_below_full to creating/destroying events in the own layer.
     # BienenSchweiz admins act as support for all layers and need to do this everywhere.
     permission(:admin).may(:create, :destroy).at_least_one_group_not_deleted
