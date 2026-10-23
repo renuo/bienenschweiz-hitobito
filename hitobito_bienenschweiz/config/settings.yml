@@ -51,3 +51,6 @@ personal_documents:
 kas:
   base_url: <%= ENV['KAS_BASE_URL'] %>
   api_token: <%= ENV['KAS_API_TOKEN'] %>
+
+messages:
+  enable_writing: true
