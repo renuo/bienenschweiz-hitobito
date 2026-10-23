@@ -32,15 +32,12 @@ module HitobitoBienenschweiz
       # Additional gender option "divers".
       Bienenschweiz::Genders.register!
 
-      Role::Types::Permissions << :layer_contacts
-      AbilityDsl::UserContext::GROUP_PERMISSIONS << :layer_contacts
-      AbilityDsl::UserContext::LAYER_PERMISSIONS << :layer_contacts
+      permissions = [:layer_contacts, :layer_events, :layer_and_below_events]
+      Role::Types::Permissions.push(*permissions)
+      AbilityDsl::UserContext::GROUP_PERMISSIONS.push(*permissions)
+      AbilityDsl::UserContext::LAYER_PERMISSIONS.push(*permissions)
       GroupBasedReadables.same_layer_permissions << :layer_contacts
       PersonLayerWritables.same_layer_permissions << :layer_contacts
-
-      Role::Types::Permissions << :layer_events
-      AbilityDsl::UserContext::GROUP_PERMISSIONS << :layer_events
-      AbilityDsl::UserContext::LAYER_PERMISSIONS << :layer_events
 
       NavigationHelper::MAIN << {label: :qcontrols,
        url: :orphan_qcontrols_path,
