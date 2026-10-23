@@ -12,5 +12,8 @@ class Bienenschweiz::EventInvitationAbility < AbilityDsl::Base
     permission(:layer_events)
       .may(:new, :create, :destroy)
       .in_same_layer_and_invitations_supported
+    permission(:layer_and_below_events)
+      .may(:new, :create, :destroy)
+      .in_same_layer_or_below_and_invitations_supported
   end
 end

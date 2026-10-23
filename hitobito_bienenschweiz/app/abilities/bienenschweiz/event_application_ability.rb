@@ -13,5 +13,8 @@ class Bienenschweiz::EventApplicationAbility < AbilityDsl::Base
     permission(:layer_events)
       .may(:show_priorities, :show_approval)
       .in_same_layer_or_different_prio
+    permission(:layer_and_below_events)
+      .may(:show_priorities, :show_approval)
+      .in_same_layer_or_below_or_different_prio
   end
 end

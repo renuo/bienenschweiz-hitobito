@@ -9,3 +9,9 @@ de:
     attributes:
       role:
         export_to_website: Auf der Webseite anzeigen
+        class:
+          permission:
+            description:
+              layer_contacts: Personen und Rollen auf dieser Ebene lesen und verwalten.
+              layer_events: Anlässe und Kurse auf dieser Ebene verwalten.
+              layer_and_below_events: Anlässe und Kurse auf dieser Ebene und allen darunter liegenden Ebenen verwalten.

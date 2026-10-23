@@ -16,6 +16,12 @@ class Bienenschweiz::EventParticipationAbility < AbilityDsl::Base
     permission(:layer_events)
       .may(:create, :destroy, :send_mails)
       .in_same_layer_if_active
+    permission(:layer_and_below_events)
+      .may(:show, :show_details, :show_full, :print, :update)
+      .in_same_layer_or_below_or_different_prio
+    permission(:layer_and_below_events)
+      .may(:create, :destroy, :send_mails)
+      .in_same_layer_or_below_if_active
   end
 
   private

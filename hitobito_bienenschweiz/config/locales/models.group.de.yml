@@ -76,6 +76,13 @@ de:
         one: Supervisor
         other: Supervisoren
 
+      group/apiservice:
+        one: apiservice
+        other: apiservice
+      group/apiservice/veranstaltungen_kurse:
+        one: Veranstaltungen/Kurse
+        other: Veranstaltungen/Kurse
+
       group/kantonalverband:
         one: Kantonalverband
         other: Kantonalverbände
