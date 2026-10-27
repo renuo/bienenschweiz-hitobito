@@ -11,10 +11,10 @@ class Group::Dachverband < ::Group
   self.event_types = [Event, Event::Course]
 
   self.default_children = [Group::Mitglieder, Group::Zentralvorstand, Group::Shop,
-    Group::BienenZeitung, Group::ThemenbezogeneKontakte, Group::Apiservice]
+    Group::BienenZeitung, Group::ThemenbezogeneKontakte, Group::Apiservice, Group::Mitarbeiter]
 
   children Group::Kantonalverband, Group::Mitglieder, Group::Zentralvorstand, Group::Shop,
-    Group::BienenZeitung, Group::ThemenbezogeneKontakte, Group::Apiservice
+    Group::BienenZeitung, Group::ThemenbezogeneKontakte, Group::Apiservice, Group::Mitarbeiter
 
   ### ROLES
 

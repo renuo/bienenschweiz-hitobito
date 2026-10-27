@@ -83,6 +83,13 @@ de:
         one: Veranstaltungen/Kurse
         other: Veranstaltungen/Kurse
 
+      group/mitarbeiter:
+        one: Mitarbeiter/in
+        other: Mitarbeiter/innen
+      group/mitarbeiter/mitarbeiter:
+        one: Mitarbeiter/in
+        other: Mitarbeiter/innen
+
       group/kantonalverband:
         one: Kantonalverband
         other: Kantonalverbände

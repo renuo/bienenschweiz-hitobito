@@ -31,6 +31,8 @@ of Bienenschweiz.
     * Supervisor: [:layer_and_below_read]
   * apiservice
     * Veranstaltungen/Kurse: [:layer_and_below_events, :layer_and_below_read]
+  * Mitarbeiter/in
+    * Mitarbeiter/in: []
 * Kantonalverband < Dachverband
   * Kantonalverband
   * Administrator
