@@ -25,7 +25,8 @@ pushd hitobito_bienenschweiz
   direnv exec bin/rails mv:import:documents
   direnv exec bin/rails mv:import:memos
   direnv exec bin/rails mv:import:fees
-  bundle exec rake "mv:import:magazine_subscriptions[../hitobito_bienenschweiz/Export_selectline_abo.csv,../hitobito_bienenschweiz/invalid_members.csv]"
+  direnv exec bin/rails "mv:import:siegelimker_profiles[../hitobito_bienenschweiz/siegelimker-2026-10-23-145302.csv]"
+  bundle exec rake "mv:import:magazine_subscriptions[../hitobito_bienenschweiz/export_abo.csv,../hitobito_bienenschweiz/invalid_members.csv]"
   direnv exec bin/rails mv:import:reset_id_sequences
 popd
 

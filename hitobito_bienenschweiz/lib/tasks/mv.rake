@@ -802,6 +802,9 @@ namespace :mv do
         end
       end
 
+      # needs to be reset if the roles import ran but the mv:import:reset_id_sequences hasn't yet
+      ActiveRecord::Base.connection.reset_pk_sequence!("roles")
+
       find_person = lambda do |number|
         ids = selectline_member_ids[number]
         raise "Unknown selectline customer number #{number}" if ids.blank?
@@ -816,7 +819,7 @@ namespace :mv do
       failed_rows = []
       seen_rows = Set.new
       headers = nil
-      CSV.foreach(args[:path], headers: true, encoding: "bom|utf-8") do |row|
+      CSV.foreach(args[:path], headers: true, col_sep: ';', encoding: "bom|utf-8") do |row|
         headers ||= row.headers
         stats[:total] += 1
         # we only import running subscriptions
@@ -875,6 +878,7 @@ namespace :mv do
       end
       puts stats.map { |key, count| "#{key}: #{count}" }.join(", ")
       puts "Failed rows written to #{failure_csv}" if failed_rows.any?
+      puts headers.inspect
     end
 
     desc "Import website profiles of Siegelimker from the website CSV export " \
@@ -882,6 +886,15 @@ namespace :mv do
     task :siegelimker_profiles, [:path] => :environment do |_, args|
       require "csv"
       require "open-uri"
+
+      class MvRecord < ApplicationRecord
+        self.abstract_class = true
+        connects_to database: {reading: :mv, writing: :mv}
+      end
+
+      class MvMember < MvRecord
+        self.table_name = "members"
+      end
 
       availabilities = {
         "nicht im Angebot" => "not_offered",
