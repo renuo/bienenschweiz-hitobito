@@ -22,7 +22,7 @@ RSpec.describe "people#show with website visibility of contact data", type: :req
   end
 
   def included_attributes(type)
-    json["included"].select { |r| r["type"] == type }.map { |r| r["attributes"] }
+    json["included"].select { |r| r["type"] == type }.pluck("attributes")
   end
 
   it "exposes whether the primary e-mail is shown on the website" do
