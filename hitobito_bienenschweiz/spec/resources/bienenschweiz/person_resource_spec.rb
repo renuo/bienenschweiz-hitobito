@@ -12,7 +12,7 @@ describe PersonResource, type: :resource do
   let(:person) { people(:admin) }
 
   let(:record) do
-    Fabricate(:person, export_to_website: false).tap do |p|
+    Fabricate(:person, export_to_website: false, show_email_on_website: false).tap do |p|
       Fabricate(:role, person: p, group: groups(:root),
         type: Group::Dachverband::AdministratorBienenSchweiz.sti_name)
     end
@@ -22,6 +22,12 @@ describe PersonResource, type: :resource do
     params[:filter] = {id: {eq: record.id}}
     render
     expect(jsonapi_data[0].attributes["export_to_website"]).to eq false
+  end
+
+  it "includes show_email_on_website" do
+    params[:filter] = {id: {eq: record.id}}
+    render
+    expect(jsonapi_data[0].attributes["show_email_on_website"]).to eq false
   end
 
   describe "siegelimker_profile" do
