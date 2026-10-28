@@ -3,6 +3,8 @@
 set -e
 
 echo "Executing rubocop"
+# rubocop-rails only enables its Rails-version-dependent cops if it finds a Gemfile.lock
+cp hitobito/Gemfile.local.lock hitobito_bienenschweiz/Gemfile.lock
 pushd hitobito_bienenschweiz
   if ! bundle exec rubocop -D -c .rubocop.yml --fail-fast
   then

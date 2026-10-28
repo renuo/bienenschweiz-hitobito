@@ -26,6 +26,8 @@ pushd hitobito
 popd
 
 cp hitobito/Gemfile.local.lock hitobito_bienenschweiz/Gemfile.local.lock
+# rubocop-rails only enables its Rails-version-dependent cops if it finds a Gemfile.lock
+cp hitobito/Gemfile.local.lock hitobito_bienenschweiz/Gemfile.lock
 
 if [ ! -f .git/hooks/pre-push ]; then
     echo -e "\n== Creating pre-push hook link =="
