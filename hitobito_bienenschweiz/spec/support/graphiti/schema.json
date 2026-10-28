@@ -3212,6 +3212,12 @@
           "readable": true,
           "writable": true,
           "description": null
+        },
+        "show_email_on_website": {
+          "type": "boolean",
+          "readable": true,
+          "writable": true,
+          "description": null
         }
       },
       "extra_attributes": {},
@@ -3237,7 +3243,8 @@
         "language": {},
         "updated_at": {},
         "additional_information": {},
-        "export_to_website": {}
+        "export_to_website": {},
+        "show_email_on_website": {}
       },
       "filters": {
         "id": {
@@ -3532,6 +3539,13 @@
           ]
         },
         "export_to_website": {
+          "type": "boolean",
+          "operators": [
+            "eq"
+          ],
+          "single": true
+        },
+        "show_email_on_website": {
           "type": "boolean",
           "operators": [
             "eq"

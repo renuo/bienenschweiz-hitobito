@@ -72,7 +72,8 @@ module HitobitoBienenschweiz
         :hive_count,
         :honey_yield,
         :export_to_website,
-        :num_ad_boards
+        :num_ad_boards,
+        :show_email_on_website
       ]
 
       GroupsController.permitted_attrs += [:code, :member_count]

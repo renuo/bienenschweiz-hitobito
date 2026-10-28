@@ -64,6 +64,16 @@ RSpec.describe PeopleController, type: :request do
     end
   end
 
+  describe "#edit" do
+    it "renders the show_email_on_website checkbox next to the email" do
+      get edit_group_person_path(group, admin)
+      expect(response).to have_http_status(:ok)
+      email_row = Capybara.string(response.body).find_field("person[email]").find(:xpath, "..")
+      expect(email_row).to have_field("person[show_email_on_website]", type: "checkbox")
+      expect(email_row).to have_text("Auf Webseite anzeigen")
+    end
+  end
+
   describe "#update" do
     let(:person) { Fabricate(:person) }
     let(:person_params) do
@@ -75,7 +85,8 @@ RSpec.describe PeopleController, type: :request do
         honey_yield: "42 Liter",
         export_to_website: false,
         num_ad_boards: 5,
-        salutation: "Dear Max"
+        salutation: "Dear Max",
+        show_email_on_website: false
       }
     end
 
@@ -96,6 +107,7 @@ RSpec.describe PeopleController, type: :request do
       expect(person.export_to_website).to eq(false)
       expect(person.num_ad_boards).to eq(5)
       expect(person.salutation).to eq("Dear Max")
+      expect(person.show_email_on_website).to eq(false)
     end
   end
 end
