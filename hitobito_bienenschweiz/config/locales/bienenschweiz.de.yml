@@ -109,7 +109,7 @@ de:
           not_necessary: 'nicht nötig'
       siegelimker_profile:
         public_profile: Öffentliches Profil
-        title: Titel der Imkerei
+        title: Name der Imkerei
         description: Beschreibung
         siegelimker_since: Siegelimker seit
         website: Webseite

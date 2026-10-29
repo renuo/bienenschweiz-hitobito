@@ -73,7 +73,7 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
     it "renders the edit form" do
       get edit_group_person_siegelimker_profile_path(group, siegelimker)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Titel der Imkerei")
+      expect(response.body).to include("Name der Imkerei")
       expect(response.body).to include("derzeit leider nicht erhältlich")
       expect(response.body).to include('data-controller="bienenschweiz--siegelimker-map"')
     end
