@@ -18,6 +18,9 @@
         .mb-2= image_tag(entry.background_image.variant(resize_to_limit: [400, 200]))
         = f.boolean_field :remove_background_image
 
+  = field_set_tag(t('.further_information')) do
+    = f.labeled_input_field :further_information, rows: 5, label: '&nbsp;'.html_safe
+
   = field_set_tag(t('.offer')) do
     = f.labeled_boolean_field :public_offer
     - SiegelimkerProfile::PRODUCTS.each do |product|
@@ -29,7 +32,6 @@
   = field_set_tag(t('.locations')) do
     - SiegelimkerProfile::BEE_LOCATIONS.each do |attr|
       = f.labeled_input_field attr
-    = f.labeled_input_field :further_information, rows: 5
 
   = field_set_tag(t('.coordinates'), data: {controller: 'bienenschweiz--siegelimker-map'}) do
     - [:lat, :lng].each do |attr|

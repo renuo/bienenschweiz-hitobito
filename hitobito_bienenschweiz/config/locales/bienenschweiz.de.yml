@@ -278,6 +278,7 @@ de:
     show:
       profile: Profil
       offer: Angebot
+      further_information: Weitere Informationen
       locations: Bienenstandorte
       coordinates: Koordinaten
       coordinates_value: Breitengrad, Längengrad
@@ -285,6 +286,7 @@ de:
     form:
       profile: Profil
       offer: Angebot
+      further_information: Weitere Informationen
       locations: Bienenstandorte
       coordinates: Koordinaten
       coordinates_help: >-
