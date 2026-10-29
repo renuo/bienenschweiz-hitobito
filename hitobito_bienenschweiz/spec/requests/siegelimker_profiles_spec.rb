@@ -30,18 +30,18 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
 
     it "shows the tab on the person page" do
       get group_person_path(group, siegelimker)
-      expect(response.body).to include("Website-Profil")
+      expect(response.body).to include("Siegelimker-Profil")
     end
 
     it "does not show the tab for people without the Siegelimker role" do
       get group_person_path(groups(:root), people(:leader))
-      expect(response.body).not_to include("Website-Profil")
+      expect(response.body).not_to include("Siegelimker-Profil")
     end
 
     it "renders the show page without an existing profile" do
       get group_person_siegelimker_profile_path(group, siegelimker)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to match(/<li class="active"[^>]*>.*Website-Profil.*<\/li>/m)
+      expect(response.body).to match(/<li class="active"[^>]*>.*Siegelimker-Profil.*<\/li>/m)
     end
 
     it "renders the show page with an existing profile" do
@@ -137,7 +137,7 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
 
     it "shows the tab on the own person page" do
       get group_person_path(group, siegelimker)
-      expect(response.body).to include("Website-Profil")
+      expect(response.body).to include("Siegelimker-Profil")
     end
 
     it "may edit the own profile" do

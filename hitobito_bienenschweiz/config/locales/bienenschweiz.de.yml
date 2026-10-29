@@ -37,8 +37,8 @@ de:
         other: Memos
 
       siegelimker_profile:
-        one: Website-Profil
-        other: Website-Profile
+        one: Siegelimker-Profil
+        other: Siegelimker-Profile
 
       siegelimker_sales_point:
         one: Verkaufsstelle
@@ -273,7 +273,7 @@ de:
       bienenschweiz_supervisions: Supervisionen
       bienenschweiz_memos: Memos
       bienenschweiz_magazine_subscriptions: Bienen Abo
-      bienenschweiz_siegelimker_profile: Website-Profil
+      bienenschweiz_siegelimker_profile: Siegelimker-Profil
   siegelimker_profiles:
     show:
       profile: Profil
