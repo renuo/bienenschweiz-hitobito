@@ -17,7 +17,6 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
     {
       public_profile: "1",
       title: "Emmentaler Imkerei",
-      siegelimker_since: "2018",
       honey_availability: "available",
       lat: "47.01139832",
       lng: "7.638618469",
@@ -106,7 +105,7 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
       expect(response).to redirect_to(group_person_siegelimker_profile_path(group, siegelimker))
       profile = siegelimker.reload.siegelimker_profile
       expect(profile).to have_attributes(public_profile: true, title: "Emmentaler Imkerei",
-        siegelimker_since: 2018, honey_availability: "available")
+        honey_availability: "available")
       expect(profile.lat).to eq(BigDecimal("47.01139832"))
       expect(profile.sales_points.map(&:name)).to eq(["Hofladen"])
     end

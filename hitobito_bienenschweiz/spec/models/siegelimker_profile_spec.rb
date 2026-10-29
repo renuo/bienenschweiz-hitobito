@@ -22,13 +22,30 @@ describe SiegelimkerProfile do
     expect(profile).not_to be_valid
   end
 
-  it "validates siegelimker_since as a plausible year" do
-    profile.siegelimker_since = 10
-    expect(profile).not_to be_valid
-    profile.siegelimker_since = Time.zone.today.year + 1
-    expect(profile).not_to be_valid
-    profile.siegelimker_since = 2018
-    expect(profile).to be_valid
+  describe "#siegelimker_since" do
+    let(:sektion) { groups(:aarau_und_umgebung) }
+    let(:person) { Fabricate(:beekeeper, group_id: sektion.id) }
+
+    subject(:profile) { described_class.create!(person:) }
+
+    def create_qcontrol(year, control_state)
+      Fabricate(:qcontrol, person:, group: sektion, control_state:,
+        control_date: Date.new(year, 6, 1))
+    end
+
+    it "is nil without any qcontrol" do
+      expect(profile.siegelimker_since).to be_nil
+    end
+
+    it "is the year of the first passed or partially passed qcontrol" do
+      create_qcontrol(2016, "not_passed")
+      create_qcontrol(2020, "passed")
+      create_qcontrol(2018, "partially_passed")
+      Fabricate(:qcontrol, group: sektion, control_state: "passed",
+        control_date: Date.new(2010, 6, 1))
+
+      expect(profile.siegelimker_since).to eq(2018)
+    end
   end
 
   it "validates the website as http(s) url" do

@@ -14,7 +14,7 @@ class SiegelimkerProfileResource < ApplicationResource
     attribute :public_profile, :boolean
     attribute :title, :string
     attribute :description, :string
-    attribute :siegelimker_since, :integer
+    attribute :siegelimker_since, :integer, sortable: false, filterable: false
     attribute :website, :string
     attribute :public_offer, :boolean
     SiegelimkerProfile::PRODUCTS.each do |product|
@@ -38,6 +38,6 @@ class SiegelimkerProfileResource < ApplicationResource
     foreign_key: :siegelimker_profile_id
 
   def base_scope
-    super.with_attached_background_image
+    super.with_attached_background_image.includes(:certified_qcontrols)
   end
 end

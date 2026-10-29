@@ -10,7 +10,6 @@
     = f.labeled_boolean_field :public_profile
     = f.labeled_input_field :title
     = f.labeled_input_field :description, rows: 5
-    = f.labeled_input_field :siegelimker_since, min: 1900, max: Time.zone.today.year
     = f.labeled_input_field :website, placeholder: 'https://'
     = f.labeled(:background_image) do
       = f.file_field :background_image, accept: SiegelimkerProfile::IMAGE_CONTENT_TYPES.join(', '), class: 'mw-100 mw-md-60ch form-control form-control-sm'
