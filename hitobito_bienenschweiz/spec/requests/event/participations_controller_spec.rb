@@ -25,7 +25,7 @@ RSpec.describe "Event::ParticipationsController", type: :request do
   def stub_kas_success
     stub_request(:post, "#{kas_base_url}/api/v1/fees")
       .to_return(status: 201,
-        body: {id: 1}.to_json,
+        body: {fee: {id: 1}}.to_json,
         headers: {"Content-Type" => "application/json"})
   end
 
@@ -120,7 +120,7 @@ RSpec.describe "Event::ParticipationsController", type: :request do
           before do
             stub_request(:post, "#{kas_base_url}/api/v1/fees")
               .to_return(
-                {status: 201, body: {id: 1}.to_json,
+                {status: 201, body: {fee: {id: 1}}.to_json,
                  headers: {"Content-Type" => "application/json"}},
                 {status: 422, body: {error: "invalid"}.to_json,
                  headers: {"Content-Type" => "application/json"}}
