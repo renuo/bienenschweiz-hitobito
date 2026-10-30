@@ -9,7 +9,7 @@ class SiegelimkerProfilesController < CrudController
   self.nesting = Group, Person
 
   self.permitted_attrs = [
-    :public_profile, :title, :description, :siegelimker_since, :website,
+    :public_profile, :title, :description, :website,
     :public_offer, *SiegelimkerProfile::PRODUCTS.map { |p| :"#{p}_availability" },
     *SiegelimkerProfile::BEE_LOCATIONS, :further_information, :lat, :lng,
     :background_image, :remove_background_image,

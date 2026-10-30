@@ -37,8 +37,8 @@ de:
         other: Memos
 
       siegelimker_profile:
-        one: Website-Profil
-        other: Website-Profile
+        one: Siegelimker-Profil
+        other: Siegelimker-Profile
 
       siegelimker_sales_point:
         one: Verkaufsstelle
@@ -109,7 +109,7 @@ de:
           not_necessary: 'nicht nötig'
       siegelimker_profile:
         public_profile: Öffentliches Profil
-        title: Titel der Imkerei
+        title: Name der Imkerei
         description: Beschreibung
         siegelimker_since: Siegelimker seit
         website: Webseite
@@ -273,11 +273,12 @@ de:
       bienenschweiz_supervisions: Supervisionen
       bienenschweiz_memos: Memos
       bienenschweiz_magazine_subscriptions: Bienen Abo
-      bienenschweiz_siegelimker_profile: Website-Profil
+      bienenschweiz_siegelimker_profile: Siegelimker-Profil
   siegelimker_profiles:
     show:
       profile: Profil
       offer: Angebot
+      further_information: Weitere Informationen
       locations: Bienenstandorte
       coordinates: Koordinaten
       coordinates_value: Breitengrad, Längengrad
@@ -285,6 +286,7 @@ de:
     form:
       profile: Profil
       offer: Angebot
+      further_information: Weitere Informationen
       locations: Bienenstandorte
       coordinates: Koordinaten
       coordinates_help: >-

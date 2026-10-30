@@ -17,7 +17,6 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
     {
       public_profile: "1",
       title: "Emmentaler Imkerei",
-      siegelimker_since: "2018",
       honey_availability: "available",
       lat: "47.01139832",
       lng: "7.638618469",
@@ -30,18 +29,18 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
 
     it "shows the tab on the person page" do
       get group_person_path(group, siegelimker)
-      expect(response.body).to include("Website-Profil")
+      expect(response.body).to include("Siegelimker-Profil")
     end
 
     it "does not show the tab for people without the Siegelimker role" do
       get group_person_path(groups(:root), people(:leader))
-      expect(response.body).not_to include("Website-Profil")
+      expect(response.body).not_to include("Siegelimker-Profil")
     end
 
     it "renders the show page without an existing profile" do
       get group_person_siegelimker_profile_path(group, siegelimker)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to match(/<li class="active"[^>]*>.*Website-Profil.*<\/li>/m)
+      expect(response.body).to match(/<li class="active"[^>]*>.*Siegelimker-Profil.*<\/li>/m)
     end
 
     it "renders the show page with an existing profile" do
@@ -73,7 +72,7 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
     it "renders the edit form" do
       get edit_group_person_siegelimker_profile_path(group, siegelimker)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Titel der Imkerei")
+      expect(response.body).to include("Name der Imkerei")
       expect(response.body).to include("derzeit leider nicht erhältlich")
       expect(response.body).to include('data-controller="bienenschweiz--siegelimker-map"')
     end
@@ -106,7 +105,7 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
       expect(response).to redirect_to(group_person_siegelimker_profile_path(group, siegelimker))
       profile = siegelimker.reload.siegelimker_profile
       expect(profile).to have_attributes(public_profile: true, title: "Emmentaler Imkerei",
-        siegelimker_since: 2018, honey_availability: "available")
+        honey_availability: "available")
       expect(profile.lat).to eq(BigDecimal("47.01139832"))
       expect(profile.sales_points.map(&:name)).to eq(["Hofladen"])
     end
@@ -137,7 +136,7 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
 
     it "shows the tab on the own person page" do
       get group_person_path(group, siegelimker)
-      expect(response.body).to include("Website-Profil")
+      expect(response.body).to include("Siegelimker-Profil")
     end
 
     it "may edit the own profile" do

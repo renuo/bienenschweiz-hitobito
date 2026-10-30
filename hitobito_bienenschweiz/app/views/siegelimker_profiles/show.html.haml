@@ -17,6 +17,9 @@
     - if entry.background_image.attached? && entry.background_image.variable?
       = image_tag(entry.background_image.variant(resize_to_limit: [400, 200]))
 
+%h2= t('.further_information')
+= render_attrs_group(labeled(nil, format_attr(entry, :further_information)))
+
 %h2= t('.offer')
 = render_attrs(entry, :public_offer, *SiegelimkerProfile::PRODUCTS.map { |p| :"#{p}_availability" })
 
@@ -29,7 +32,7 @@
     = t('global.no_list_entries')
 
 %h2= t('.locations')
-= render_attrs(entry, *SiegelimkerProfile::BEE_LOCATIONS, :further_information)
+= render_attrs(entry, *SiegelimkerProfile::BEE_LOCATIONS)
 
 %h2= t('.coordinates')
 = render_attrs_group do

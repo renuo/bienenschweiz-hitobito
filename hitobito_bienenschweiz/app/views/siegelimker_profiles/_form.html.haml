@@ -10,7 +10,6 @@
     = f.labeled_boolean_field :public_profile
     = f.labeled_input_field :title
     = f.labeled_input_field :description, rows: 5
-    = f.labeled_input_field :siegelimker_since, min: 1900, max: Time.zone.today.year
     = f.labeled_input_field :website, placeholder: 'https://'
     = f.labeled(:background_image) do
       = f.file_field :background_image, accept: SiegelimkerProfile::IMAGE_CONTENT_TYPES.join(', '), class: 'mw-100 mw-md-60ch form-control form-control-sm'
@@ -18,6 +17,9 @@
       = f.labeled(:remove_background_image) do
         .mb-2= image_tag(entry.background_image.variant(resize_to_limit: [400, 200]))
         = f.boolean_field :remove_background_image
+
+  = field_set_tag(t('.further_information')) do
+    = f.labeled_input_field :further_information, rows: 5, label: '&nbsp;'.html_safe
 
   = field_set_tag(t('.offer')) do
     = f.labeled_boolean_field :public_offer
@@ -30,7 +32,6 @@
   = field_set_tag(t('.locations')) do
     - SiegelimkerProfile::BEE_LOCATIONS.each do |attr|
       = f.labeled_input_field attr
-    = f.labeled_input_field :further_information, rows: 5
 
   = field_set_tag(t('.coordinates'), data: {controller: 'bienenschweiz--siegelimker-map'}) do
     - [:lat, :lng].each do |attr|

@@ -4458,7 +4458,6 @@
         "public_profile": {},
         "title": {},
         "description": {},
-        "siegelimker_since": {},
         "website": {},
         "public_offer": {},
         "honey_availability": {},
@@ -4534,17 +4533,6 @@
             "not_suffix",
             "match",
             "not_match"
-          ]
-        },
-        "siegelimker_since": {
-          "type": "integer",
-          "operators": [
-            "eq",
-            "not_eq",
-            "gt",
-            "gte",
-            "lt",
-            "lte"
           ]
         },
         "website": {

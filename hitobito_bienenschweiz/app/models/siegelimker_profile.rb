@@ -16,6 +16,9 @@ class SiegelimkerProfile < ApplicationRecord
   IMAGE_CONTENT_TYPES = %w[image/jpeg image/png].freeze
 
   belongs_to :person
+  has_many :certified_qcontrols, -> { where(control_state: %w[passed partially_passed]) },
+    class_name: "Qcontrol", primary_key: :person_id, foreign_key: :person_id,
+    inverse_of: false, dependent: nil
   has_many :sales_points, -> { order(:id) }, class_name: "SiegelimkerSalesPoint",
     dependent: :destroy, inverse_of: :siegelimker_profile
 
@@ -31,10 +34,6 @@ class SiegelimkerProfile < ApplicationRecord
   end
 
   validates_by_schema
-  validates :siegelimker_since, numericality: {
-    only_integer: true, greater_than_or_equal_to: 1900,
-    less_than_or_equal_to: ->(_) { Time.zone.today.year }
-  }, allow_nil: true
   validates :website,
     format: {with: /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/},
     allow_blank: true
@@ -53,6 +52,11 @@ class SiegelimkerProfile < ApplicationRecord
 
   def to_s
     title.presence || person.to_s
+  end
+
+  # Year of the first passed or partially passed quality control.
+  def siegelimker_since
+    certified_qcontrols.filter_map(&:control_date).min&.year
   end
 
   def remove_background_image

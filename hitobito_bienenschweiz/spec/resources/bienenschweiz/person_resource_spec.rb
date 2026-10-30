@@ -34,9 +34,14 @@ describe PersonResource, type: :resource do
     let(:siegelimker) { Fabricate(:beekeeper, group_id: groups(:aarau_und_umgebung).id) }
     let!(:profile) do
       SiegelimkerProfile.create!(person: siegelimker, public_profile: true,
-        title: "Emmentaler Imkerei", siegelimker_since: 2018, honey_availability: "available",
+        title: "Emmentaler Imkerei", honey_availability: "available",
         bee_location_1: "Einisberg", lat: 47.01139832, lng: 7.638618469,
         sales_points_attributes: [{name: "Hofladen", email: "hof@example.com"}])
+    end
+
+    before do
+      Fabricate(:qcontrol, person: siegelimker, group: groups(:aarau_und_umgebung),
+        control_state: "passed", control_date: Date.new(2018, 6, 1))
     end
 
     def sideloaded(type)
