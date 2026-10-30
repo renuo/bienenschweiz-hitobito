@@ -38,7 +38,7 @@ describe Kas::FeeCreationService do
     context "when the KAS API succeeds" do
       before do
         stub_request(:post, "#{base_url}/api/v1/fees")
-          .to_return(status: 201, body: {id: 42, total_amount: "20.00"}.to_json,
+          .to_return(status: 201, body: {fee: {id: 42, total_amount: "20.00"}}.to_json,
             headers: {"Content-Type" => "application/json"})
       end
 

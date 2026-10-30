@@ -40,13 +40,13 @@ describe KasClient do
             }
           )
           .to_return(status: 201,
-            body: {id: 99}.to_json,
+            body: {fee: {id: 99}}.to_json,
             headers: {"Content-Type" => "application/json"})
       end
 
       it "returns the parsed response body" do
         result = client.create_fee(fee_params)
-        expect(result).to eq("id" => 99)
+        expect(result).to eq("fee" => {"id" => 99})
       end
     end
 
