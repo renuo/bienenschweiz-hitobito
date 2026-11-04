@@ -73,7 +73,8 @@ class Qcontrol < ApplicationRecord
   before_save :set_control_state
   before_create :set_author_name
   after_create :update_beekeeper_role
-  after_create :create_siegelimker_qualification
+  # also covers orphan qcontrols which get a person assigned later on
+  after_save :create_siegelimker_qualification, if: :saved_change_to_person_id?
 
   # TODO: Add back when implementing PDF
   # hacking
@@ -196,7 +197,7 @@ class Qcontrol < ApplicationRecord
       return
     end
 
-    person.qualifications.create!(qualification_kind: kind, start_at: control_date)
+    person.qualifications.find_or_create_by!(qualification_kind: kind, start_at: control_date)
   end
 
   def siegelimker_qualification_kind
