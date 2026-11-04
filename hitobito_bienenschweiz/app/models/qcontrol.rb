@@ -24,6 +24,8 @@ class Qcontrol < ApplicationRecord
   has_many :quality_control_answers, dependent: :destroy, inverse_of: :qcontrol
   accepts_nested_attributes_for :quality_control_answers, allow_destroy: true
 
+  SIEGELIMKER_QUALIFICATION_LABEL = "Qualifikation Siegelimker/in"
+
   i18n_enum :control_state, %w[passed not_passed partially_passed], queries: true
 
   enum :no_control_reason, {
@@ -71,6 +73,7 @@ class Qcontrol < ApplicationRecord
   before_save :set_control_state
   before_create :set_author_name
   after_create :update_beekeeper_role
+  after_create :create_siegelimker_qualification
 
   # TODO: Add back when implementing PDF
   # hacking
@@ -181,6 +184,24 @@ class Qcontrol < ApplicationRecord
 
     beekeeper_role.update(end_on: (Time.zone.today + 20.days)) if not_passed?
     beekeeper_role.update(end_on: Time.zone.today) if no_control_necessary?
+  end
+
+  def create_siegelimker_qualification
+    return if person.nil? || !passed? || no_control_necessary?
+
+    kind = siegelimker_qualification_kind
+    if kind.nil?
+      Rails.logger.warn("Qualification kind '#{SIEGELIMKER_QUALIFICATION_LABEL}' not found, " \
+        "no qualification created for qcontrol #{id}")
+      return
+    end
+
+    person.qualifications.create!(qualification_kind: kind, start_at: control_date)
+  end
+
+  def siegelimker_qualification_kind
+    QualificationKind.joins(:translations)
+      .find_by(qualification_kind_translations: {label: SIEGELIMKER_QUALIFICATION_LABEL})
   end
 
   def beekeeper_role

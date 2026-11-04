@@ -291,4 +291,62 @@ describe Qcontrol do
       end
     end
   end
+
+  describe "#create_siegelimker_qualification" do
+    let(:person) { Fabricate(:beekeeper, group_id: group.id) }
+    let!(:kind) do
+      Fabricate(:qualification_kind, label: Qcontrol::SIEGELIMKER_QUALIFICATION_LABEL,
+        validity: 4)
+    end
+    let(:no_control_reason) { :no_reason }
+    let(:qcontrol) do
+      Fabricate(:qcontrol, person: person, group: group, control_date: Date.new(2026, 5, 1),
+        control_state:, no_control_reason:)
+    end
+
+    context "when control_state is passed" do
+      let(:control_state) { "passed" }
+
+      it "creates a 4 year siegelimker qualification starting at the control date" do
+        expect { qcontrol }.to change { person.qualifications.count }.by(1)
+
+        qualification = person.qualifications.last
+        expect(qualification.qualification_kind).to eq(kind)
+        expect(qualification.start_at).to eq(Date.new(2026, 5, 1))
+        expect(qualification.finish_at).to eq(Date.new(2030, 12, 31))
+      end
+
+      context "when there is a no_control reason" do
+        let(:no_control_reason) { :beekeeper_deceased }
+
+        it "does not create a qualification" do
+          expect { qcontrol }.not_to change { Qualification.count }
+        end
+      end
+
+      context "when the qualification kind does not exist" do
+        before { kind.really_destroy! }
+
+        it "does not create a qualification" do
+          expect { qcontrol }.not_to change { Qualification.count }
+        end
+      end
+
+      it "does not create a qualification for orphan qcontrols" do
+        expect {
+          Fabricate(:qcontrol, person: nil, group: group, control_state: "passed")
+        }.not_to change { Qualification.count }
+      end
+    end
+
+    %w[not_passed partially_passed].each do |state|
+      context "when control_state is #{state}" do
+        let(:control_state) { state }
+
+        it "does not create a qualification" do
+          expect { qcontrol }.not_to change { Qualification.count }
+        end
+      end
+    end
+  end
 end
