@@ -4,7 +4,7 @@
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 
-= entry_form do |f|
+= entry_form(cancel_url: index_path) do |f|
   %div{data: {controller: 'bienenschweiz--magazine-subscription-form'}}
     = f.labeled_i18n_enum_field :subscription_type, MagazineSubscription.subscription_type_labels, class: 'form-select form-select-sm', data: { 'bienenschweiz--magazine-subscription-form-target': 'type', action: 'change->bienenschweiz--magazine-subscription-form#update' }
     %div{class: ('hidden' unless entry.geschenk_abo?), data: {'bienenschweiz--magazine-subscription-form-target': 'gifter'}}
