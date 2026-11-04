@@ -383,6 +383,13 @@ RSpec.describe "Event::ParticipationsController", type: :request do
           expect(response.body).to include(leader.full_name)
         end
 
+        it "shows the submit button" do
+          get_new_kas_instructor_fees
+          expect(response.body).to include(
+            I18n.t("event/participations.new_kas_instructor_fees.submit")
+          )
+        end
+
         it "shows the current year as a column" do
           get_new_kas_instructor_fees
           expect(response.body).to include(Time.zone.today.year.to_s)
@@ -486,6 +493,7 @@ RSpec.describe "Event::ParticipationsController", type: :request do
         before do
           Fabricate(:event_date, event: instructor_course,
             start_at: "2025-01-10", finish_at: "2026-12-15")
+          add_leader(Fabricate(:person))
         end
 
         it "shows both years as columns" do
@@ -498,6 +506,7 @@ RSpec.describe "Event::ParticipationsController", type: :request do
         before do
           Fabricate(:event_date, event: instructor_course,
             start_at: "2025-06-30", finish_at: "2026-04-30")
+          add_leader(Fabricate(:person))
         end
 
         it "includes the start year" do
@@ -510,6 +519,7 @@ RSpec.describe "Event::ParticipationsController", type: :request do
         before do
           Fabricate(:event_date, event: instructor_course,
             start_at: "2025-08-15", finish_at: "2026-04-30")
+          add_leader(Fabricate(:person))
         end
 
         it "excludes the start year" do
@@ -529,6 +539,80 @@ RSpec.describe "Event::ParticipationsController", type: :request do
           get_new_kas_instructor_fees
           expect(response).to have_http_status(:ok)
           expect(response.body).not_to include(">2025<")
+        end
+
+        it "shows an error callout and no submit button" do
+          get_new_kas_instructor_fees
+          expect(response.body).to include("alert-danger")
+          expect(response.body).to include(
+            I18n.t("event/participations.new_kas_instructor_fees.no_valid_years")
+          )
+          expect(response.body).not_to include(
+            I18n.t("event/participations.new_kas_instructor_fees.submit")
+          )
+        end
+      end
+
+      context "without any instructors" do
+        before do
+          participation = Fabricate(:event_participation, event: instructor_course,
+            participant: Fabricate(:person), active: true)
+          Fabricate(:"Event::Course::Role::Participant", participation: participation)
+        end
+
+        it "shows an error callout and no submit button" do
+          get_new_kas_instructor_fees
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(
+            I18n.t("event/participations.new_kas_instructor_fees.no_instructors")
+          )
+          expect(response.body).not_to include(
+            I18n.t("event/participations.new_kas_instructor_fees.submit")
+          )
+        end
+      end
+
+      context "when the only eligible year is in the future" do
+        let(:instructor_course) do
+          Fabricate(:course, kind: instructor_kind,
+            dates: [Event::Date.new(start_at: Time.zone.local(2026, 11, 2, 9),
+              finish_at: Time.zone.local(2027, 3, 1, 17), label: "Hauptanlass")])
+        end
+
+        around { |example| travel_to(Time.zone.local(2026, 11, 2, 8)) { example.run } }
+
+        before { add_leader(Fabricate(:person)) }
+
+        it "shows the year column but no submit button" do
+          get_new_kas_instructor_fees
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(
+            I18n.t("event/participations.new_kas_instructor_fees.not_yet_available", year: 2027)
+          )
+          expect(response.body).not_to include(
+            I18n.t("event/participations.new_kas_instructor_fees.submit")
+          )
+        end
+      end
+
+      context "with a course starting today after June 30th" do
+        let(:instructor_course) do
+          Fabricate(:course, kind: instructor_kind,
+            dates: [Event::Date.new(start_at: Time.zone.local(2026, 11, 2, 9),
+              label: "Hauptanlass")])
+        end
+
+        around { |example| travel_to(Time.zone.local(2026, 11, 2, 8)) { example.run } }
+
+        it "shows an error callout and no submit button" do
+          get_new_kas_instructor_fees
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(
+            I18n.t("event/participations.new_kas_instructor_fees.no_valid_years")
+          )
+          expect(response.body).not_to include(
+            I18n.t("event/participations.new_kas_instructor_fees.submit")
+          )
         end
       end
 

@@ -500,6 +500,12 @@ de:
       current_year_header: laufendes Jahr - erfassbar
       participant_count: "%{count} Teilnehmende"
       not_yet_available: "Erfassung ab %{year} möglich"
+      no_valid_years: >-
+        Für diesen Kurs gibt es keine gültigen Jahre, für die KAS Kursleitungsspesen erfasst werden können.
+        Kurse, die nach dem 30. Juni beginnen, können erst ab dem Folgejahr erfasst werden.
+      no_instructors: >-
+        Dieser Kurs hat keine Kursleitungen, für die KAS Kursleitungsspesen erfasst werden können.
+        Nur Personen mit der Rolle Hauptleitung oder Leitung sind berechtigt.
   event_states:
     canceled: Abgesagt
     expired: Anmeldeschluss vorbei - Bitte telefonisch anmelden
