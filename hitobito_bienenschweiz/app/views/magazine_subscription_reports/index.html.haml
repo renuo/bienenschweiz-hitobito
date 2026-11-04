@@ -16,21 +16,10 @@
 
 %p= t(".explanation")
 
-.table-responsive
-  %table.table.table-striped
-    %thead
-      %tr
-        %th= t(".subscription_type")
-        - @report.months.each do |month|
-          %th.text-end= l(month, format: :month_year)
-    %tbody
-      - @report.categories.each do |category|
-        %tr
-          %td= t(".categories.#{category}")
-          - @report.months.each do |month|
-            %td.text-end= @report.amount(month, category)
-    %tfoot
-      %tr
-        %th= t(".total")
-        - @report.months.each do |month|
-          %th.text-end= @report.total(month)
+= render "table", amount: :amount,
+  rows: @report.categories.index_by { |category| t(".categories.#{category}") }
+
+%h2.mt-5= t(".by_type_title")
+
+= render "table", amount: :type_amount,
+  rows: @report.types.index_by { |type| MagazineSubscription.subscription_type_labels[type.to_sym] }
