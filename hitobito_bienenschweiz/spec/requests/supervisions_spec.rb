@@ -34,6 +34,11 @@ RSpec.describe SupervisionsController, type: :request do
       ]
     }
 
+    it "shows the person's name as title" do
+      get group_person_supervisions_path(sektion, person)
+      expect(Capybara.string(response.body)).to have_css("h1", text: person.to_s)
+    end
+
     it "shows the supervisions with their labels" do
       get group_person_supervisions_path(sektion, person)
       expect(response).to have_http_status(:ok)

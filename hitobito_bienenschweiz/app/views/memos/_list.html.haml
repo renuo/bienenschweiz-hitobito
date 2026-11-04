@@ -3,6 +3,7 @@
 -#  or later. See the COPYING file at the top-level directory or at
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
+- title @person.to_s
 
 = crud_table(:author_name, :created_at) do |t|
   - t.col(Memo.human_attribute_name(:title)) do |memo|

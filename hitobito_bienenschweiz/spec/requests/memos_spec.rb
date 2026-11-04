@@ -25,6 +25,11 @@ RSpec.describe MemosController, type: :request do
       ]
     end
 
+    it "shows the person's name as title" do
+      get group_person_memos_path(sektion, person)
+      expect(Capybara.string(response.body)).to have_css("h1", text: person.to_s)
+    end
+
     it "shows memo titles as links and does not show body text" do
       get group_person_memos_path(sektion, person)
       expect(response).to have_http_status(:ok)

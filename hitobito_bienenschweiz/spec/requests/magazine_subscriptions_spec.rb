@@ -28,6 +28,11 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
       ]
     end
 
+    it "shows the person's name as title" do
+      get group_person_magazine_subscriptions_path(sektion, person)
+      expect(Capybara.string(response.body)).to have_css("h1", text: person.to_s)
+    end
+
     it "lists the subscriptions of the person" do
       get group_person_magazine_subscriptions_path(sektion, person)
 

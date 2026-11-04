@@ -41,6 +41,11 @@ RSpec.describe QcontrolsController, type: :request do
       ]
     }
 
+    it "shows the person's name as title" do
+      get group_person_qcontrols_path(sektion, beekeeper)
+      expect(Capybara.string(response.body)).to have_css("h1", text: beekeeper.to_s)
+    end
+
     it "shows the qcontrols" do
       get group_person_qcontrols_path(sektion, beekeeper)
       expect(response).to have_http_status(:ok)
