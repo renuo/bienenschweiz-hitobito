@@ -15,7 +15,7 @@ module Kas
     end
 
     def perform
-      response = KasClient.new.create_fee(fee_params)
+      response = KasClient.new.create_fee(fee_params)["fee"]
       @generated_fee = {
         id: response["id"],
         total_amount: response["total_amount"],
