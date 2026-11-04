@@ -388,6 +388,59 @@ namespace :mv do
       end
     end
 
+    desc "Create qualifications from imported Fachperson roles and Siegelimker qcontrols " \
+         "(run after roles and quality_controls)"
+    task qualifications: :environment do
+      find_kind = lambda do |label|
+        QualificationKind.joins(:translations)
+          .find_by!(qualification_kind_translations: {label: "Qualifikation #{label}"})
+      end
+
+      upsert = lambda do |person_id, kind, start_at|
+        qualification = Qualification.find_or_initialize_by(person_id:, qualification_kind: kind)
+        qualification.update!(start_at:, qualified_at: start_at, origin: "MV Import")
+      end
+
+      # Fachpersonen keep their qualification forever, even if the role has ended.
+      # The start date is the start of their oldest role of that kind.
+      {
+        Group::Kader::FachpersonBildung => "Fachperson Bildung",
+        Group::Kader::FachpersonProdukte => "Fachperson Produkte",
+        Group::Kader::FachpersonZuchtVermehrung => "Fachperson Zucht"
+      }.each do |role_type, label|
+        kind = find_kind.call(label)
+        count = 0
+        Role.with_inactive.where(type: role_type.sti_name)
+          .group(:person_id)
+          .pluck(:person_id, Arel.sql("MIN(COALESCE(start_on, created_at::date))"))
+          .each do |person_id, start_at|
+            upsert.call(person_id, kind, start_at)
+            count += 1
+          rescue StandardError => e
+            puts "Error creating #{label} qualification for person #{person_id}: #{e.message}"
+          end
+        puts "Created #{count} #{label} qualifications"
+      end
+
+      # Siegelimker are qualified by their last (partially) passed qcontrol. The finish date
+      # is derived from the validity of the qualification kind.
+      kind = find_kind.call("Siegelimker/in")
+      count = 0
+      passed = Qcontrol.where(control_state: %w[passed partially_passed]).where.not(person_id: nil)
+      missing = passed.where.not(person_id: Person.select(:id)).distinct.count(:person_id)
+      puts "Skipping #{missing} not imported people with passed qcontrols" if missing.positive?
+      passed.where(person_id: Person.select(:id))
+        .group(:person_id)
+        .maximum(:control_date)
+        .each do |person_id, control_date|
+          upsert.call(person_id, kind, control_date)
+          count += 1
+        rescue StandardError => e
+          puts "Error creating Siegelimker qualification for person #{person_id}: #{e.message}"
+        end
+      puts "Created #{count} Siegelimker qualifications"
+    end
+
     task :quality_controls, [:redo_docs] => :environment do |t, args|
       require "carrierwave"
 
