@@ -977,11 +977,10 @@ namespace :mv do
         end
 
         profile = person.siegelimker_profile || person.build_siegelimker_profile
-        year = text.call(row["siegelimker_seit_jahr"])
         profile.assign_attributes(
           public_profile: boolean.call(row["oeffentliches_profil"]),
           title: text.call(row["titel_der_imkerei"]),
-          siegelimker_since: (year.to_i if year&.match?(/\A\d{4}\z/)),
+          description: text.call(row["description"]),
           website: text.call(row["webseite"]),
           public_offer: boolean.call(row["oeffentlich_angebot_anzeigen"]),
           further_information: text.call(row["weitere_informationen"]),
@@ -1012,15 +1011,34 @@ namespace :mv do
             .each { |attr| profile[attr] = nil }
         end
 
-        if profile.save
-          stats[:imported] += 1
-        else
-          stats[:failed] += 1
-          puts "Person #{person.id}: #{profile.errors.full_messages.join(", ")}"
+        begin
+          if profile.save
+            stats[:imported] += 1
+          else
+            stats[:failed] += 1
+            puts "Person #{person.id}: #{profile.errors.full_messages.join(", ")}"
+          end
+        rescue Seahorse::Client::NetworkingError => e
+          puts e.message
+          puts row["background_image"]
         end
       end
 
       puts stats.map { |key, count| "#{key}: #{count}" }.join(", ")
+    end
+
+    desc "Delete all files in the S3 bucket of the active storage service " \
+         "(run before a full import, the import recreates all attachments)"
+    task clear_storage_bucket: :environment do
+      service = ActiveStorage::Blob.service
+      # S3Service is only loaded when it is configured, so check for its bucket instead
+      unless service.respond_to?(:bucket)
+        abort "Active storage service #{service.name} is not S3, " \
+              "set RAILS_STORAGE_SERVICE=cloudscale"
+      end
+
+      puts "Deleting all #{service.bucket.objects.count} files in bucket #{service.bucket.name}"
+      service.delete_prefixed("")
     end
 
     task reset_id_sequences: :environment do
