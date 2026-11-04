@@ -150,7 +150,7 @@ module Bienenschweiz::Event::ParticipationsController
       occurred_on: Time.zone.today.iso8601,
       quantity: 1,
       total_amount: format("%.2f", amount),
-      group_id: kas_fee_sektion_id(Person.find_by(id: person_id))
+      group_id: kas_fee_sektion_id(Person.find(person_id))
     }
   end
 
@@ -195,7 +195,7 @@ module Bienenschweiz::Event::ParticipationsController
   def kas_fee_sektion_id(person)
     return @group.id if @group.is_a?(Group::Sektion)
 
-    person&.spesen_sektion_id || person&.layer_group&.id
+    person.spesen_sektion_id || person.layer_group&.id
   end
 
   def kas_fees_flash(total, failure_count)

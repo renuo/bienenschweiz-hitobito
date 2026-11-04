@@ -11,6 +11,9 @@ describe People::UpdateAfterRoleChangeJob do
   let(:person) { Fabricate(:person) }
   let(:sektion) { groups(:aarau_und_umgebung) }
 
+  # The core job excludes the root person, which is not part of the wagon fixtures.
+  before { allow(Person).to receive(:root).and_return(people(:admin)) }
+
   def add_role(group, **attrs)
     Fabricate(:role, group:, person:, type: Group::Kader::FachpersonBildung.sti_name, **attrs)
   end
@@ -19,7 +22,7 @@ describe People::UpdateAfterRoleChangeJob do
     add_role(groups(:kader_380), start_on: 1.month.ago, end_on: 1.day.from_now)
     expect(person.reload.spesen_sektion).to eq(sektion)
 
-    travel_to(2.days.from_now) { described_class.new.send(:update_spesen_sektionen) }
+    travel_to(2.days.from_now) { described_class.new.perform }
     expect(person.reload.spesen_sektion).to be_nil
   end
 
@@ -27,7 +30,7 @@ describe People::UpdateAfterRoleChangeJob do
     add_role(groups(:kader_380), start_on: 1.day.from_now)
     expect(person.reload.spesen_sektion).to be_nil
 
-    travel_to(2.days.from_now) { described_class.new.send(:update_spesen_sektionen) }
+    travel_to(2.days.from_now) { described_class.new.perform }
     expect(person.reload.spesen_sektion).to eq(sektion)
   end
 end

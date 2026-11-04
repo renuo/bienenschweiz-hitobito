@@ -20,6 +20,6 @@ module Bienenschweiz::Role
   end
 
   def sync_spesen_sektion
-    ::Person.find_by(id: person_id)&.sync_spesen_sektion!
+    ::Person.where(id: person_id).find_each(&:sync_spesen_sektion!)
   end
 end
