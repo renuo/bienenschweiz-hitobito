@@ -1027,6 +1027,100 @@ namespace :mv do
       puts stats.map { |key, count| "#{key}: #{count}" }.join(", ")
     end
 
+    desc "Import the events organized by apiservice from the website CSV export " \
+         "into the apiservice group below the Dachverband"
+    task :apiservice_events, [:path] => :environment do |_, args|
+      require "csv"
+
+      failure_csv = "invalid_apiservice_events.csv"
+      group = Group.root.children.find_by!(type: Group::Apiservice.sti_name)
+      text = ->(value) { value.to_s.gsub("\r\n", "\n").strip.presence }
+      boolean = ->(value) { value.to_s.strip == "Ja" }
+      # the export uses Europe/Vaduz, which has the same offsets as the app's Bern time zone
+      parse_time = lambda do |date, time, all_day|
+        date = text.call(date)
+        return nil unless date
+
+        # all day events are stored without time, hitobito then only shows the date
+        time = all_day ? nil : text.call(time)
+        Time.zone.parse([date, time].compact.join(" "))
+      end
+      # custom fields of the website, there are no corresponding event attributes in hitobito
+      additional_infos = {
+        "Zielgruppe" => "additional:_ecp_custom_2 (Zielgruppe)",
+        "Referent" => "additional:_ecp_custom_5 (Referent)",
+        "Besuchsmöglichkeit" => "additional:_ecp_custom_7 (Besuchsmöglichkeit)",
+        "Kontakt" => "additional:_ecp_custom_30 (Kontakt)",
+        "Sektion" => "additional:_ecp_custom_35 (Section)",
+        "Veranstalter" => "organizer_names",
+        "Website" => "event_website"
+      }
+
+      stats = Hash.new(0)
+      failed_rows = []
+      headers = nil
+      CSV.foreach(args[:path], headers: true, col_sep: ";", encoding: "bom|utf-8") do |row|
+        headers ||= row.headers
+        stats[:total] += 1
+        # for now only events organized by apiservice are imported
+        unless row["organizer_names"].to_s.split(/[|,]/).map(&:strip).include?("apiservice")
+          stats[:other_organizer] += 1
+          next
+        end
+
+        # the website event ids are already in their own range (10_000_000 + occurrence id),
+        # so they are used as they are to keep the import idempotent
+        event = Event.where(id: Integer(row["event_id"])).first_or_initialize
+        event.groups = [group]
+        event.name = text.call(row["title"])
+
+        infos = additional_infos.filter_map do |label, column|
+          value = text.call(row[column])
+          next if value.nil? || value == "Keine Sektion"
+
+          value = value.tr("|", ", ") if label == "Zielgruppe"
+          "#{label}: #{value}"
+        end
+        event.description = [text.call(row["description"]), infos.join("\n").presence]
+          .compact.join("\n\n")
+
+        event.location = [
+          text.call(row["venue"]),
+          text.call(row["venue_address"]),
+          [text.call(row["venue_postcode"]), text.call(row["venue_city"])]
+            .compact.join(" ").presence,
+          (text.call(row["venue_country"]) unless text.call(row["venue_country"]) == "Switzerland")
+        ].compact.join("\n").presence
+
+        cost = text.call(row["cost"])
+        # prefix numeric costs with the currency, keep texts like "Kostenlos" as they are
+        if cost&.match?(/\A[\d.]+\z/)
+          cost = [text.call(row["currency_code"]), cost].compact.join(" ")
+        end
+        event.cost = cost
+
+        all_day = boolean.call(row["all_day"])
+        start_at = parse_time.call(row["start_date"], row["start_time"], all_day)
+        finish_at = parse_time.call(row["end_date"], row["end_time"], all_day)
+        date = event.dates.first || event.dates.build
+        date.start_at = start_at
+        date.finish_at = (finish_at if finish_at && finish_at > start_at)
+
+        event.save!
+        stats[:imported] += 1
+      rescue => e
+        stats[:failed] += 1
+        puts "Row #{stats[:total]} (event #{row["event_id"]}, #{row["title"]}): #{e.message}"
+        failed_rows << row.fields + [e.message]
+      end
+
+      CSV.open(failure_csv, "w", write_headers: true, headers: headers.to_a + ["error"]) do |csv|
+        failed_rows.each { |fields| csv << fields }
+      end
+      puts stats.map { |key, count| "#{key}: #{count}" }.join(", ")
+      puts "Failed rows written to #{failure_csv}" if failed_rows.any?
+    end
+
     desc "Delete all files in the S3 bucket of the active storage service " \
          "(run before a full import, the import recreates all attachments)"
     task clear_storage_bucket: :environment do
