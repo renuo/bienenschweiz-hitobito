@@ -57,6 +57,20 @@ RSpec.describe MagazineSubscriptionReportsController, type: :request do
       expect(row_values("Bezahlte Abos")).to eq([0, 0, 4])
     end
 
+    it "reports the Anzahl per subscription type and month" do
+      subscribe("buchhaendler_abo", Date.new(2026, 7, 1), amount: 20)
+      subscribe("abo", Date.new(2026, 8, 1), amount: 3)
+      subscribe("online_abo", Date.new(2026, 9, 1))
+
+      get magazine_subscription_reports_path
+
+      expect(response.body).to include("Zahlen nach Abomodell")
+      expect(row_values("Buchhändler-Abo")).to eq([20, 20, 20])
+      expect(row_values("Abo")).to eq([0, 3, 3])
+      expect(row_values("Online-Abo")).to eq([0, 0, 1])
+      expect(row_values("Abo-EUR")).to eq([0, 0, 0])
+    end
+
     it "totals every category per month" do
       subscribe("buchhaendler_abo", Date.new(2026, 8, 1), amount: 20)
       subscribe("gratis_abo", Date.new(2026, 8, 1), amount: 2)

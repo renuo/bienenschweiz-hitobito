@@ -28,25 +28,27 @@ module MagazineSubscriptions
       CATEGORIES.keys
     end
 
+    def types
+      MagazineSubscription::SUBSCRIPTION_TYPES
+    end
+
     def amount(month, category)
-      totals_by_month.fetch(month).fetch(category)
+      CATEGORIES.fetch(category).sum { |type| type_amount(month, type) }
+    end
+
+    def type_amount(month, type)
+      sums_by_month.fetch(month)[type].to_i
     end
 
     def total(month)
-      categories.sum { |category| amount(month, category) }
+      types.sum { |type| type_amount(month, type) }
     end
 
     private
 
-    def totals_by_month
-      @totals_by_month ||= months.index_with { |month| category_totals(month) }
-    end
-
-    def category_totals(month)
-      sums = MagazineSubscription.active_in_month(month).group(:subscription_type).sum(:amount)
-
-      CATEGORIES.transform_values do |types|
-        types.sum { |type| sums[type].to_i }
+    def sums_by_month
+      @sums_by_month ||= months.index_with do |month|
+        MagazineSubscription.active_in_month(month).group(:subscription_type).sum(:amount)
       end
     end
   end

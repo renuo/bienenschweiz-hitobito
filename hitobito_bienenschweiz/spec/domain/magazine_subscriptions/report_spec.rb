@@ -91,6 +91,25 @@ describe MagazineSubscriptions::Report do
     end
   end
 
+  describe "#types" do
+    it "lists every subscription type" do
+      expect(report.types).to eq(MagazineSubscription::SUBSCRIPTION_TYPES)
+    end
+  end
+
+  describe "#type_amount" do
+    it "sums the Anzahl per subscription type" do
+      subscribe("abo", july, amount: 3)
+      subscribe("abo", august, amount: 2)
+      subscribe("online_abo", july)
+
+      expect(report.type_amount(july, "abo")).to eq(3)
+      expect(report.type_amount(august, "abo")).to eq(5)
+      expect(report.type_amount(august, "online_abo")).to eq(1)
+      expect(report.type_amount(august, "abo_eur")).to eq(0)
+    end
+  end
+
   describe "#total" do
     it "sums all categories of the month" do
       subscribe("buchhaendler_abo", august, amount: 20)

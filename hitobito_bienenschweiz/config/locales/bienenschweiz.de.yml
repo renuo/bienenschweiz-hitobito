@@ -255,14 +255,16 @@ de:
     index:
       title: Bienen Abo Statistik
       explanation: Anzahl Abos (Summe der Anzahl) der letzten drei Monate. Gezählt wird jedes Abo, das im jeweiligen Monat lief.
-      subscription_type: Abomodell
-      total: Total
       export: Adressliste als CSV exportieren (Druck)
       wemf_title: WEMF Zahlen
+      by_type_title: Zahlen nach Abomodell
       categories:
         buchhaendler: Buchhändler-Abos
         gratis: Gratis-Abos
         bezahlt: Bezahlte Abos
+    table:
+      subscription_type: Abomodell
+      total: Total
     export:
       subscriptions: Abos
       total_amount: Total Anzahl
