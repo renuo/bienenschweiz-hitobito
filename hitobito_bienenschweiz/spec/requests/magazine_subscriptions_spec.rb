@@ -101,6 +101,15 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
       expect(field(:end_date)).not_to include("value=")
     end
 
+    it "links the cancel button to the index" do
+      get new_group_person_magazine_subscription_path(sektion, person)
+
+      index = group_person_magazine_subscriptions_path(sektion, person)
+      paths = Nokogiri::HTML(response.body).css("a.cancel").map { |a| URI.parse(a["href"]).path }
+      expect(paths).to be_present
+      expect(paths).to all(eq(index))
+    end
+
     it "shows the Bienen Abo tab as active" do
       get new_group_person_magazine_subscription_path(sektion, person)
 
@@ -235,6 +244,15 @@ RSpec.describe MagazineSubscriptionsController, type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Abomodell")
+    end
+
+    it "links the cancel button to the index" do
+      get edit_group_person_magazine_subscription_path(sektion, person, subscription)
+
+      index = group_person_magazine_subscriptions_path(sektion, person)
+      paths = Nokogiri::HTML(response.body).css("a.cancel").map { |a| URI.parse(a["href"]).path }
+      expect(paths).to be_present
+      expect(paths).to all(eq(index))
     end
 
     context "for a gift subscription" do

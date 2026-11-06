@@ -13,6 +13,9 @@ class MagazineSubscriptionsController < CrudController
 
   decorates :group, :person
 
+  # there is no show page, so forms link back to the index
+  helper_method :index_path
+
   # load parents before authorization
   prepend_before_action :parent
 
