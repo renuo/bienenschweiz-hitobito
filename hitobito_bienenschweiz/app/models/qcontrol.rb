@@ -24,6 +24,12 @@ class Qcontrol < ApplicationRecord
   has_many :quality_control_answers, dependent: :destroy, inverse_of: :qcontrol
   accepts_nested_attributes_for :quality_control_answers, allow_destroy: true
 
+  SIEGELIMKER_QUALIFICATION_LABEL = "Qualifikation Siegelimker/in"
+
+  # Deliberately not an ActiveRecord::RecordNotFound, which Rails maps to a 404 without
+  # reporting it. A missing kind is a misconfiguration that must surface as a 500.
+  class MissingQualificationKindError < StandardError; end
+
   i18n_enum :control_state, %w[passed not_passed partially_passed], queries: true
 
   enum :no_control_reason, {
@@ -71,6 +77,8 @@ class Qcontrol < ApplicationRecord
   before_save :set_control_state
   before_create :set_author_name
   after_create :update_beekeeper_role
+  # also covers orphan qcontrols which get a person assigned later on
+  after_save :create_siegelimker_qualification, if: :saved_change_to_person_id?
 
   # TODO: Add back when implementing PDF
   # hacking
@@ -181,6 +189,21 @@ class Qcontrol < ApplicationRecord
 
     beekeeper_role.update(end_on: (Time.zone.today + 20.days)) if not_passed?
     beekeeper_role.update(end_on: Time.zone.today) if no_control_necessary?
+  end
+
+  def create_siegelimker_qualification
+    return if person.nil? || !passed? || no_control_necessary?
+
+    person.qualifications.find_or_create_by!(
+      qualification_kind: siegelimker_qualification_kind, start_at: control_date
+    )
+  end
+
+  def siegelimker_qualification_kind
+    QualificationKind.joins(:translations)
+      .find_by(qualification_kind_translations: {label: SIEGELIMKER_QUALIFICATION_LABEL}) ||
+      raise(MissingQualificationKindError,
+        "Qualification kind '#{SIEGELIMKER_QUALIFICATION_LABEL}' not found")
   end
 
   def beekeeper_role
