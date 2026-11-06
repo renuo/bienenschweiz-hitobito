@@ -28,6 +28,10 @@ module HitobitoBienenschweiz
 
       Group.include Bienenschweiz::Group
       Person.include Bienenschweiz::Person
+      Role.include Bienenschweiz::Role
+      PeopleController.prepend Bienenschweiz::PeopleController
+      GroupDecorator.prepend Bienenschweiz::GroupDecorator
+      People::UpdateAfterRoleChangeJob.prepend Bienenschweiz::UpdateAfterRoleChangeJob
 
       # Additional gender option "divers".
       Bienenschweiz::Genders.register!

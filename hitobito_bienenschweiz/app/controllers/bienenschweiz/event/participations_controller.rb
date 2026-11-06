@@ -150,7 +150,7 @@ module Bienenschweiz::Event::ParticipationsController
       occurred_on: Time.zone.today.iso8601,
       quantity: 1,
       total_amount: format("%.2f", amount),
-      group_id: @group.id
+      group_id: kas_fee_sektion_id(Person.find(person_id))
     }
   end
 
@@ -185,14 +185,17 @@ module Bienenschweiz::Event::ParticipationsController
   end
 
   # KAS requires group_id to reference a Sektion. The event's own group may be nested
-  # under a Kantonalverband or the Dachverband, so fall back to the participant's primary
-  # group in that case, letting them resolve the issue by fixing their primary group.
-  # Only a layer group (e.g. a Sektion) can be used, so a primary group in a sub group
-  # like Kader is resolved up to its layer group.
+  # under a Kantonalverband or the Dachverband, so fall back to the person's Spesen Sektion
+  # (set explicitly on their roles eligible for Spesen) in that case. People without such
+  # a role fall back to the layer of their primary group.
   def kas_fee_group_id(participation)
+    kas_fee_sektion_id(participation.person)
+  end
+
+  def kas_fee_sektion_id(person)
     return @group.id if @group.is_a?(Group::Sektion)
 
-    participation.person.layer_group&.id
+    person.spesen_sektion_id || person.layer_group&.id
   end
 
   def kas_fees_flash(total, failure_count)

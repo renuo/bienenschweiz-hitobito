@@ -268,6 +268,9 @@ de:
       total_amount: Total Anzahl
 
   people:
+    roles_aside:
+      spesen_sektion: Spesen Sektion
+      set_spesen_sektion: Spesen Sektion setzen
     tabs:
       bienenschweiz_qcontrols: Betriebsprüfungen
       bienenschweiz_supervisions: Supervisionen

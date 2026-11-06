@@ -333,6 +333,26 @@ RSpec.describe "Event::ParticipationsController", type: :request do
             .with { |req| JSON.parse(req.body)["fee"]["group_id"] == sektion.id }
         end
       end
+
+      context "when the event's group is not a Sektion and the participant has a Spesen Sektion" do
+        let(:group) { groups(:aargauer_kantonalverband) }
+        let(:spesen_sektion) { groups(:aargauisches_seetal) }
+        let!(:participant) { Fabricate(:person) }
+
+        before do
+          Fabricate(:role, person: participant, group: groups(:kader_383),
+            type: Group::Kader::FachpersonBildung.sti_name)
+          participant.update_column(:primary_group_id, groups(:kader_380).id)
+          add_participant(participant)
+          stub_kas_success
+        end
+
+        it "sends the Spesen Sektion instead of the primary group's layer" do
+          post_create_kas_fees
+          expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+            .with { |req| JSON.parse(req.body)["fee"]["group_id"] == spesen_sektion.id }
+        end
+      end
     end
 
     context "as person without update permission" do
@@ -670,7 +690,9 @@ RSpec.describe "Event::ParticipationsController", type: :request do
     let(:instructor_kind) {
       Fabricate(:event_kind, kas_instructor_fees: true, kas_fee_code: "INST_FEE")
     }
-    let(:instructor_course) { Fabricate(:course, kind: instructor_kind) }
+    let(:instructor_course) do
+      Fabricate(:course, kind: instructor_kind, groups: [groups(:aarau_und_umgebung)])
+    end
     let(:instructor_group) { instructor_course.groups.first }
 
     def add_leader(person)
@@ -718,6 +740,24 @@ RSpec.describe "Event::ParticipationsController", type: :request do
                 body["group_id"] == instructor_group.id &&
                 body["total_amount"] == "150.00"
             }
+        end
+
+        context "when the event's group is not a Sektion" do
+          let(:instructor_course) do
+            Fabricate(:course, kind: instructor_kind, groups: [groups(:aargauer_kantonalverband)])
+          end
+          let(:spesen_sektion) { groups(:aargauisches_seetal) }
+
+          before do
+            Fabricate(:role, person: leader, group: groups(:kader_383),
+              type: Group::Kader::FachpersonProdukte.sti_name)
+          end
+
+          it "sends the leader's Spesen Sektion as group_id" do
+            post_instructor_fees(leader.id.to_s => {"2025" => "150.00"})
+            expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
+              .with { |req| JSON.parse(req.body)["fee"]["group_id"] == spesen_sektion.id }
+          end
         end
 
         it "sends today's date as occurred_on regardless of the selected fee year" do

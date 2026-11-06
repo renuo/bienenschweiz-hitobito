@@ -41,6 +41,9 @@ Rails.application.routes.draw do
         end
       end
       resources :people, only: [] do
+        member do
+          put :spesen_sektion
+        end
         resources :qcontrols do
           member do
             get :checklist, as: :checklist

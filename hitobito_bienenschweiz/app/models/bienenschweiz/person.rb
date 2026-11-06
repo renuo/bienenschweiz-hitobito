@@ -17,7 +17,19 @@ module Bienenschweiz::Person
     Group::Siegelimker::Siegelimker.sti_name
   ]
 
+  # Roles eligible to request Spesen (KAS fees). The Sektion of one of these roles is used
+  # as the person's Spesen Sektion when a course is not given by a specific Sektion.
+  SPESEN_ROLES = [
+    Group::Kader::FachpersonBildung.sti_name,
+    Group::Kader::FachpersonProdukte.sti_name,
+    Group::Kader::FachpersonZuchtVermehrung.sti_name
+  ].freeze
+
   included do # rubocop:disable Metrics/BlockLength
+    belongs_to :spesen_sektion, class_name: "Group", optional: true
+
+    validate :assert_spesen_sektion_eligible, if: :spesen_sektion_id_changed?
+
     has_many :qcontrols, dependent: :destroy
     has_many :supervisions, dependent: :destroy
     has_many :memos, dependent: :destroy
@@ -126,7 +138,29 @@ module Bienenschweiz::Person
       full_name(:list)
     end
 
+    # Ids of the Sektionen in which the person has an active role eligible for Spesen,
+    # ordered by the oldest role first.
+    def spesen_sektion_ids
+      layer_ids = ::Role.where(person_id: id, type: SPESEN_ROLES)
+        .joins(:group).order("roles.id").pluck("groups.layer_group_id").uniq
+      layer_ids & Group::Sektion.where(id: layer_ids).pluck(:id)
+    end
+
+    # Keeps the Spesen Sektion pointing to a Sektion with an eligible role: defaults to the
+    # Sektion of the first eligible role and is un-set once no eligible role is left.
+    def sync_spesen_sektion!
+      ids = spesen_sektion_ids
+      new_id = ids.include?(spesen_sektion_id) ? spesen_sektion_id : ids.first
+      update_column(:spesen_sektion_id, new_id) if new_id != spesen_sektion_id # rubocop:disable Rails/SkipsModelValidations
+    end
+
     private
+
+    def assert_spesen_sektion_eligible
+      return if spesen_sektion_id.nil? || spesen_sektion_ids.include?(spesen_sektion_id)
+
+      errors.add(:spesen_sektion_id, :inclusion)
+    end
 
     def geocode_siegelimker_profile
       profile = siegelimker_profile
