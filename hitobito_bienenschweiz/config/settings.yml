@@ -54,3 +54,6 @@ kas:
 
 messages:
   enable_writing: true
+
+impersonate:
+  notify: false
