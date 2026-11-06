@@ -26,6 +26,10 @@ class Qcontrol < ApplicationRecord
 
   SIEGELIMKER_QUALIFICATION_LABEL = "Qualifikation Siegelimker/in"
 
+  # Deliberately not an ActiveRecord::RecordNotFound, which Rails maps to a 404 without
+  # reporting it. A missing kind is a misconfiguration that must surface as a 500.
+  class MissingQualificationKindError < StandardError; end
+
   i18n_enum :control_state, %w[passed not_passed partially_passed], queries: true
 
   enum :no_control_reason, {
@@ -190,19 +194,16 @@ class Qcontrol < ApplicationRecord
   def create_siegelimker_qualification
     return if person.nil? || !passed? || no_control_necessary?
 
-    kind = siegelimker_qualification_kind
-    if kind.nil?
-      Rails.logger.warn("Qualification kind '#{SIEGELIMKER_QUALIFICATION_LABEL}' not found, " \
-        "no qualification created for qcontrol #{id}")
-      return
-    end
-
-    person.qualifications.find_or_create_by!(qualification_kind: kind, start_at: control_date)
+    person.qualifications.find_or_create_by!(
+      qualification_kind: siegelimker_qualification_kind, start_at: control_date
+    )
   end
 
   def siegelimker_qualification_kind
     QualificationKind.joins(:translations)
-      .find_by(qualification_kind_translations: {label: SIEGELIMKER_QUALIFICATION_LABEL})
+      .find_by(qualification_kind_translations: {label: SIEGELIMKER_QUALIFICATION_LABEL}) ||
+      raise(MissingQualificationKindError,
+        "Qualification kind '#{SIEGELIMKER_QUALIFICATION_LABEL}' not found")
   end
 
   def beekeeper_role

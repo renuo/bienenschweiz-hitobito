@@ -294,10 +294,7 @@ describe Qcontrol do
 
   describe "#create_siegelimker_qualification" do
     let(:person) { Fabricate(:beekeeper, group_id: group.id) }
-    let!(:kind) do
-      Fabricate(:qualification_kind, label: Qcontrol::SIEGELIMKER_QUALIFICATION_LABEL,
-        validity: 4)
-    end
+    let(:kind) { qualification_kinds(:siegelimker) }
     let(:no_control_reason) { :no_reason }
     let(:qcontrol) do
       Fabricate(:qcontrol, person: person, group: group, control_date: Date.new(2026, 5, 1),
@@ -324,11 +321,23 @@ describe Qcontrol do
         end
       end
 
-      context "when the qualification kind does not exist" do
-        before { kind.really_destroy! }
+      context "when the qualification kind has been deleted" do
+        before { kind.destroy! }
 
-        it "does not create a qualification" do
-          expect { qcontrol }.not_to change { Qualification.count }
+        it "raises and does not save the qcontrol" do
+          expect { qcontrol }.to raise_error(Qcontrol::MissingQualificationKindError)
+          expect(person.qcontrols).to be_empty
+          expect(person.qualifications).to be_empty
+        end
+      end
+
+      context "when the qualification kind has been renamed" do
+        before { kind.update!(label: "Qualifikation Siegelimker") }
+
+        it "raises and does not save the qcontrol" do
+          expect { qcontrol }.to raise_error(Qcontrol::MissingQualificationKindError)
+          expect(person.qcontrols).to be_empty
+          expect(person.qualifications).to be_empty
         end
       end
 
