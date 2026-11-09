@@ -897,7 +897,9 @@ namespace :mv do
         course = courses[key] ||= Event::Course.create!(
           name: "#{kas_fee.fee_type.title} #{kas_fee.occurred_on.strftime("%d.%m.%Y")}",
           location: kas_fee.place, cost: kas_fee.total_amount,
-          kind_id: kind_id, group_ids: [group_id], dates: [date]
+          kind_id: kind_id, group_ids: [group_id], dates: [date],
+          globally_visible: false,
+          export_to_website: false
         )
         participation = course.participations.create!(
           participant_id: member_id + MEMBER_ID_OFFSET,
