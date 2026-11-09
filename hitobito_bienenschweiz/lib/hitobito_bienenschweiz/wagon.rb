@@ -77,6 +77,7 @@ module HitobitoBienenschweiz
         :honey_yield,
         :export_to_website,
         :num_ad_boards,
+        :num_ad_boards_legacy,
         :show_email_on_website
       ]
 

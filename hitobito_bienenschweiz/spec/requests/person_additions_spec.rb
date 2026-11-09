@@ -19,7 +19,7 @@ RSpec.describe PeopleController, type: :request do
   describe "#show" do
     let(:person) {
       Fabricate(:person, hive_count: "around 8", honey_yield: "a bunch", export_to_website: false,
-        num_ad_boards: 66, salutation: "the very magnificent")
+        num_ad_boards: 66, num_ad_boards_legacy: 77, salutation: "the very magnificent")
     }
 
     before do
@@ -34,6 +34,8 @@ RSpec.describe PeopleController, type: :request do
       expect(response.body).not_to include("around 8")
       expect(response.body).not_to include("a bunch")
       expect(response.body).to include("66")
+      expect(response.body).to include(Person.human_attribute_name(:num_ad_boards_legacy))
+      expect(response.body).to include("77")
       expect(response.body).to include("the very magnificent")
     end
 
@@ -53,13 +55,14 @@ RSpec.describe PeopleController, type: :request do
 
     context "without num_ad_boards" do
       let(:person) {
-        Fabricate(:person, num_ad_boards: nil)
+        Fabricate(:person, num_ad_boards: nil, num_ad_boards_legacy: nil)
       }
 
       it "does not render num_ad_boards" do
         get group_person_path(group, person)
         expect(response).to have_http_status(:ok)
         expect(response.body).not_to include(Person.human_attribute_name(:num_ad_boards))
+        expect(response.body).not_to include(Person.human_attribute_name(:num_ad_boards_legacy))
       end
     end
   end
@@ -85,6 +88,7 @@ RSpec.describe PeopleController, type: :request do
         honey_yield: "42 Liter",
         export_to_website: false,
         num_ad_boards: 5,
+        num_ad_boards_legacy: 3,
         salutation: "Dear Max",
         show_email_on_website: false
       }
@@ -106,6 +110,7 @@ RSpec.describe PeopleController, type: :request do
       expect(person.honey_yield).to eq("42 Liter")
       expect(person.export_to_website).to eq(false)
       expect(person.num_ad_boards).to eq(5)
+      expect(person.num_ad_boards_legacy).to eq(3)
       expect(person.salutation).to eq("Dear Max")
       expect(person.show_email_on_website).to eq(false)
     end
