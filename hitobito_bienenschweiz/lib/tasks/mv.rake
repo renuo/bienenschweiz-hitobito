@@ -16,7 +16,13 @@ namespace :mv do
     DOCUMENT_ID_OFFSET = 10_000
     MEMO_ID_OFFSET = 10_000
 
-    task members: :environment do
+    desc "Import the MV members that have at least one imported role or a running " \
+         "magazine subscription in the selectline CSV export (run after groups)"
+    task :members, [:abo_path] => :environment do |_, args|
+      require "csv"
+
+      abo_path = args[:abo_path]
+      abort "Usage: mv:import:members[path/to/export_abo.csv]" if abo_path.blank?
       failure_csv = "invalid_members.csv"
 
       class MvRecord < ApplicationRecord
@@ -44,6 +50,36 @@ namespace :mv do
 
       class User < KasRecord
       end
+
+      class MvMember < MvRecord
+        self.table_name = "members"
+      end
+
+      class MvRole < MvRecord
+        self.table_name = "roles"
+      end
+
+      class InternStructure < MvRecord
+        enum :structure_type, {verein: 1, verband: 2, sektion: 3}
+      end
+
+      class Membership < MvRecord
+        belongs_to :role, class_name: "MvRole"
+        belongs_to :intern_structure
+      end
+
+      # The old system contains a lot of people that should not be taken over. Only members with
+      # a membership that is imported as role (see the roles task) or with a running magazine
+      # subscription are imported. All other data of excluded members is skipped by the later tasks.
+      role_member_ids = Membership.includes(:role, :intern_structure).find_each.filter_map do |membership|
+        membership.member_id if importable_role(membership)
+      end.to_set
+      subscriber_member_ids = subscription_customer_numbers(abo_path).filter_map do |number|
+        ids = selectline_member_ids[number]
+        ids.first if ids&.one?
+      end.to_set
+      puts "Members with imported roles: #{role_member_ids.count}, " \
+           "with running subscriptions but without roles: #{(subscriber_member_ids - role_member_ids).count}"
 
       total_count = 0
       success_count = 0
@@ -75,6 +111,8 @@ namespace :mv do
       scope = Member.all.includes(:login)
       # scope = scope.limit(10)
       scope = scope.where(robinson: false)
+      scope = scope.where(id: (role_member_ids | subscriber_member_ids).to_a)
+      puts "Excluding #{Member.where(robinson: false).count - scope.count} members without roles or subscriptions"
       scope.find_each do |member|
         total_count += 1
         new_id = member.id + ::MEMBER_ID_OFFSET # offset to not conflict with admin or test data
@@ -320,6 +358,54 @@ namespace :mv do
       end
     end
 
+    # Ended admin memberships are not imported, they are no reason to import the member either.
+    def ended_admin_role?(role_type, membership)
+      role_type == Group::Dachverband::AdministratorBienenSchweiz && membership.valid_until&.past?
+    end
+
+    def role_group(membership, role_type)
+      @role_groups ||= {}
+      key = [membership.intern_structure_id, role_type]
+      return @role_groups[key] if @role_groups.key?(key)
+
+      group_class = role_type.model_name.to_s.deconstantize.constantize
+      group = if membership.intern_structure.verein?
+        Group.root
+      else
+        Group.find_by(id: membership.intern_structure_id + GROUP_ID_OFFSET)
+      end
+      @role_groups[key] = group.is_a?(group_class) ? group : group&.children&.find_by(type: group_class.sti_name)
+    end
+
+    # The role type and group a membership is imported as, nil if it is not imported.
+    def importable_role(membership)
+      role_type = find_role(membership)
+      return unless role_type.is_a?(Class) && !ended_admin_role?(role_type, membership)
+
+      group = role_group(membership, role_type)
+      [role_type, group] if group
+    rescue StandardError
+      nil # unknown mappings are reported by the roles task
+    end
+
+    # selectline customer numbers of the recipients and gifters of running magazine subscriptions
+    def subscription_customer_numbers(path)
+      numbers = Set.new
+      CSV.foreach(path, headers: true, col_sep: ";", encoding: "bom|utf-8") do |row|
+        next if row["Kündigungsdatum"].to_s.strip.present?
+
+        numbers << row["adressnummer"].to_s.strip << row["geschenkabo von Kunde"].to_s.strip
+      end
+      numbers.delete("")
+      numbers
+    end
+
+    # Whether the person of the MV member was imported, the members task only imports some of them.
+    def imported_member?(member_id)
+      @imported_person_ids ||= Person.pluck(:id).to_set
+      @imported_person_ids.include?(member_id + MEMBER_ID_OFFSET)
+    end
+
     task roles: :environment do
       class MvRecord < ApplicationRecord
         self.abstract_class = true
@@ -344,7 +430,7 @@ namespace :mv do
       total = scope.count
       mapped_count = 0
       unknown_mappings = []
-      scope.includes(:role).find_each do |membership|
+      scope.includes(:role, :intern_structure).find_each do |membership|
         role_type = find_role(membership)
         if role_type.nil?
           puts "Unknown mapping for #{membership.id} with role #{membership.role.name} (#{membership.role.name_t}) on structure type #{membership.intern_structure.structure_type}"
@@ -355,15 +441,12 @@ namespace :mv do
           # puts "Skipping #{membership.id} with role #{membership.role.name} (#{membership.role.name_t}) on structure type #{membership.intern_structure.structure_type}"
           next
         end
-        group_class = role_type.model_name.to_s.deconstantize.constantize
-        group = membership.intern_structure.verein? ? Group.root : Group.find(membership.intern_structure_id + ::GROUP_ID_OFFSET)
+        next if ended_admin_role?(role_type, membership)
+
+        group = role_group(membership, role_type)
+        raise "No group for #{role_type} of membership #{membership.id}" unless group
+
         person = Person.find(membership.member_id + ::MEMBER_ID_OFFSET)
-        if group.is_a? group_class
-          # puts "Matched #{group_class}"
-        else
-          group = group.children.where(type: group_class.sti_name).first
-        end
-        # puts "Adding to #{group.inspect}"
 
         # TODO: do we need/want this?
         # PeopleManager.where(managed: person, manager: admin).first_or_create!
@@ -501,7 +584,14 @@ namespace :mv do
       # inspector_id references a kas user in MV, but a person in hitobito
       inspector_member_ids = User.where.not(member_id: nil).pluck(:id, :member_id).to_h
 
-      MvQcontrol.find_each.map do |mv_qcontrol|
+      imported_qcontrol_ids = Set.new
+      skipped = 0
+      MvQcontrol.find_each do |mv_qcontrol|
+        if mv_qcontrol.member_id && !imported_member?(mv_qcontrol.member_id)
+          skipped += 1
+          next
+        end
+        imported_qcontrol_ids << mv_qcontrol.id
         inspector_member_id = inspector_member_ids[mv_qcontrol.inspector_id]
         qcontrol = Qcontrol.where(id: mv_qcontrol.id + QCONTROL_ID_OFFSET).first_or_initialize
         qcontrol.update(mv_qcontrol.attributes.except("id", "member_id", "intern_structure_id", "document", "content_type", "file_size").merge(
@@ -528,7 +618,11 @@ namespace :mv do
         end
       end
 
-      answer_rows = MvQualityControlAnswer.find_each.map do |answer|
+      puts "Skipped #{skipped} qcontrols of not imported members"
+
+      answer_rows = MvQualityControlAnswer.find_each.filter_map do |answer|
+        next unless imported_qcontrol_ids.include?(answer.qcontrol_id)
+
         answer.attributes.merge(
           "id" => answer.id + QUALITY_CONTROL_ANSWER_ID_OFFSET,
           "qcontrol_id" => answer.qcontrol_id + QCONTROL_ID_OFFSET
@@ -590,7 +684,12 @@ namespace :mv do
       end
 
       count = 0
+      skipped = 0
       MvSupervision.find_each do |mv_supervision|
+        if mv_supervision.member_id && !imported_member?(mv_supervision.member_id)
+          skipped += 1
+          next
+        end
         supervision = Supervision.where(id: mv_supervision.id + SUPERVISION_ID_OFFSET).first_or_initialize
         supervision.assign_attributes(
           mv_supervision.attributes.except("id", "member_id", "document", "content_type", "file_size", "course_type").merge(
@@ -617,7 +716,7 @@ namespace :mv do
         end
         count += 1
       end
-      puts "Imported #{count} supervisions"
+      puts "Imported #{count} supervisions, skipped #{skipped} of not imported members"
 
       missing = {
         people: Supervision.where.not(person_id: Person.select(:id)).count,
@@ -656,7 +755,12 @@ namespace :mv do
       end
 
       count = 0
+      skipped = 0
       MvDocument.find_each do |mv_document|
+        unless imported_member?(mv_document.member_id)
+          skipped += 1
+          next
+        end
         doc = PersonalDocument.where(id: mv_document.id + DOCUMENT_ID_OFFSET).first_or_initialize
         doc.assign_attributes(
           "person_id" => mv_document.member_id + MEMBER_ID_OFFSET,
@@ -685,7 +789,7 @@ namespace :mv do
       rescue StandardError => e
         puts "Error importing document #{mv_document.id}: #{e.message}"
       end
-      puts "Imported #{count} documents"
+      puts "Imported #{count} documents, skipped #{skipped} of not imported members"
 
       missing = {
         people: PersonalDocument.where.not(person_id: Person.select(:id)).count,
@@ -705,7 +809,12 @@ namespace :mv do
       end
 
       count = 0
+      skipped = 0
       MvMemo.find_each do |mv_memo|
+        unless imported_member?(mv_memo.member_id)
+          skipped += 1
+          next
+        end
         memo = Memo.where(id: mv_memo.id + MEMO_ID_OFFSET).first_or_initialize
         memo.assign_attributes(
           mv_memo.attributes.except("id", "member_id", "text", "show_on_personnel_file").merge(
@@ -719,7 +828,7 @@ namespace :mv do
       rescue StandardError => e
         puts "Error importing memo #{mv_memo.id}: #{e.message}"
       end
-      puts "Imported #{count} memos"
+      puts "Imported #{count} memos, skipped #{skipped} of not imported members"
 
       missing = {
         people: Memo.where.not(person_id: Person.select(:id)).count,
@@ -769,8 +878,15 @@ namespace :mv do
       courses = {}
       import_count = 0
       merge_count = 0
+      skipped = 0
 
-      kas_fees.includes(:fee_type).find_each do |kas_fee|
+      kas_fees.includes(:fee_type, :user).find_each do |kas_fee|
+        member_id = kas_fee.user&.member_id
+        unless member_id && imported_member?(member_id)
+          skipped += 1
+          next
+        end
+
         kind = kas_fee_types[kas_fee.fee_type.title]
         kind_id = event_kinds[kind]
         group_id = kas_fee.intern_structure_id + GROUP_ID_OFFSET
@@ -784,7 +900,7 @@ namespace :mv do
           kind_id: kind_id, group_ids: [group_id], dates: [date]
         )
         participation = course.participations.create!(
-          participant_id: kas_fee.user.member_id + MEMBER_ID_OFFSET,
+          participant_id: member_id + MEMBER_ID_OFFSET,
           participant_type: Person.sti_name, active: true
         )
         role = kind == "Basiskurs Imkern" ? Event::Role::Leader : Event::Course::Role::Participant
@@ -794,7 +910,8 @@ namespace :mv do
         puts "Error importing fee #{kas_fee.id}: #{e.message}"
       end
 
-      puts "Imported #{import_count} and grouped #{merge_count} courses"
+      puts "Imported #{import_count} and grouped #{merge_count} courses, " \
+           "skipped #{skipped} fees of not imported members"
     end
 
     # MV member ids by selectline customer number, which is only available in MV.
