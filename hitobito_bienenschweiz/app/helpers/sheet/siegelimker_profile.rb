@@ -8,5 +8,9 @@
 module Sheet
   class SiegelimkerProfile < Base
     self.parent_sheet = Sheet::Person
+
+    def self.current(view_context)
+      Sheet::Person.new(view_context)
+    end
   end
 end
