@@ -15,10 +15,11 @@ namespace :help_texts do
     data = HelpText.unscoped.includes(translations: :rich_text_body).to_a
       .sort_by { |help_text| help_text_key_columns.map { |col| help_text[col].to_s } }
       .map do |help_text|
-        bodies = help_text.translations.sort_by(&:locale).to_h do |translation|
-          [translation.locale.to_s,
-            translation.rich_text_body&.read_attribute_before_type_cast(:body).to_s]
-        end
+        bodies = help_text.translations.select(&:rich_text_body).sort_by(&:locale)
+          .to_h do |translation|
+            [translation.locale.to_s,
+              translation.rich_text_body.read_attribute_before_type_cast(:body)]
+          end
         help_text.attributes.slice(*help_text_key_columns, "start_open").merge("body" => bodies)
       end
 
@@ -55,7 +56,7 @@ namespace :help_texts do
           if bodies.key?(translation.locale.to_s)
             translation.help_text_id = help_text.id
             translation.save!
-          elsif translation.persisted?
+          else
             translation.destroy!
           end
         end

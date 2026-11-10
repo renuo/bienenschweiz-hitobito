@@ -54,11 +54,14 @@ describe "help_texts rake tasks" do
   it "round-trips help texts with all translations" do
     create_help_text(controller: "people", model: "person", kind: "field", name: "birthday",
       start_open: true, bodies: {de: "<div>Geburtstag</div>", fr: "<div>Anniversaire</div>"})
-    create_help_text(controller: "groups", model: "group", kind: "action", name: "edit",
+    edit = create_help_text(controller: "groups", model: "group", kind: "action", name: "edit",
       bodies: {de: "<div>Bearbeiten</div>"})
+    HelpText::Translation.create!(help_text_id: edit.id, locale: "it")
 
     yaml = export_yaml
-    expect(YAML.safe_load(yaml)["help_texts"].pluck("controller")).to eq %w[groups people]
+    entries = YAML.safe_load(yaml)["help_texts"]
+    expect(entries.pluck("controller")).to eq %w[groups people]
+    expect(entries.first["body"].keys).to eq %w[de]
 
     path.write(yaml)
     HelpText.destroy_all
@@ -80,12 +83,12 @@ describe "help_texts rake tasks" do
     create_help_text(controller: "groups", model: "group", kind: "action", name: "edit",
       bodies: {de: "<div>weg</div>"})
 
-    path.write({"help_texts" => [{
+    allow($stdin).to receive(:read).and_return({"help_texts" => [{
       "controller" => "people", "model" => "person", "kind" => "field", "name" => "birthday",
       "start_open" => true, "body" => {"de" => "<div>neu</div>"}
     }]}.to_yaml)
 
-    expect { run(:import, path.to_s) }.to output.to_stderr
+    expect { run(:import) }.to output(/Imported 1 help texts/).to_stderr
 
     expect(HelpText.pluck(:id)).to eq [kept.id]
     expect(kept.reload.start_open).to be true
