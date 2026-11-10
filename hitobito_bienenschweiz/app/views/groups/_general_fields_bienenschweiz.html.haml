@@ -4,6 +4,6 @@
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 
-= f.labeled_input_fields(:code)
+= f.labeled_input_field(:code, disabled: !can?(:modify_superior, entry.model))
 - if entry.is_a?(Group::Sektion)
   = f.labeled_input_fields(:member_count)

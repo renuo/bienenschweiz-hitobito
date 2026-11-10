@@ -13,7 +13,9 @@ module Bienenschweiz::Group
   included do
     # Define additional used attributes
     # self.used_attributes += [:website, :bank_account, :description]
-    # self.superior_attributes = [:bank_account]
+
+    # Only admins (AdministratorBienenSchweiz) may change these, see Bienenschweiz::GroupAbility.
+    self.superior_attributes = [:name, :code]
 
     root_types Group::Dachverband
 
