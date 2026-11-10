@@ -9,19 +9,19 @@ class Group::Zentralvorstand < ::Group
   ### ROLES
 
   class Praesident < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_and_below_read]
   end
 
   class Vizepraesident < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_and_below_read]
   end
 
   class Finanzen < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_and_below_read]
   end
 
   class Beisitzer < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_and_below_read]
   end
 
   roles Praesident, Vizepraesident, Finanzen, Beisitzer

@@ -9,15 +9,15 @@ class Group::Kader < ::Group
   ### ROLES
 
   class FachpersonBildung < ::Role
-    self.permissions = [:contact_data, :layer_read]
+    self.permissions = [:layer_read]
   end
 
   class FachpersonProdukte < ::Role
-    self.permissions = [:contact_data, :layer_read]
+    self.permissions = [:layer_read]
   end
 
   class FachpersonZuchtVermehrung < ::Role
-    self.permissions = [:contact_data, :layer_read]
+    self.permissions = [:layer_read]
   end
 
   roles FachpersonBildung, FachpersonProdukte, FachpersonZuchtVermehrung
