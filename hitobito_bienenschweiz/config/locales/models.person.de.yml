@@ -14,5 +14,6 @@ de:
         hive_count: Anzahl Völker
         honey_yield: Honigertrag
         export_to_website: Auf Webseite exportieren
-        num_ad_boards: Anzahl Werbetafeln
+        num_ad_boards: Anzahl Werbetafeln (2020)
+        num_ad_boards_legacy: Anzahl Werbetafeln (alt)
         show_email_on_website: Auf Webseite anzeigen

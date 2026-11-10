@@ -7,3 +7,5 @@
 = render_attrs(entry, :salutation, :canton_short, :export_to_website)
 - if entry.num_ad_boards.present?
   = render_attrs(entry, :num_ad_boards)
+- if entry.num_ad_boards_legacy.present?
+  = render_attrs(entry, :num_ad_boards_legacy)
