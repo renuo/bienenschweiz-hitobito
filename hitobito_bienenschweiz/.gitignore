@@ -33,3 +33,5 @@ db/schema.rb.diff
 # custom local gemfile
 Gemfile.local
 Gemfile.local.lock
+
+# ignore .ruby-version which get's copied during `bin/setup` runs
