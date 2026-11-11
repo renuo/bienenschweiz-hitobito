@@ -20,6 +20,10 @@ class Bienenschweiz::GroupAbility < AbilityDsl::Base
       .may(:index_events, :"index_event/courses", :export_events, :"export_event/courses")
       .in_same_layer_or_below
 
+    general(:index_person_add_requests,
+      :activate_person_add_requests,
+      :deactivate_person_add_requests).none
+
     # Groups are static (imported during data migration), so only admins may create or
     # destroy them. Likewise, name and code (superior_attributes) may only be changed by
     # admins. Core grants these to e.g. :layer_full/:layer_and_below_full; the general

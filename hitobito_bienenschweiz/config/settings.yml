@@ -57,3 +57,7 @@ messages:
 
 impersonate:
   notify: false
+
+groups:
+  statistics:
+    enabled: false
