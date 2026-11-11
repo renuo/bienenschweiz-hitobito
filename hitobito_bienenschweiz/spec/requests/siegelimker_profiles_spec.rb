@@ -40,7 +40,9 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
     it "renders the show page without an existing profile" do
       get group_person_siegelimker_profile_path(group, siegelimker)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to match(/<li class="active"[^>]*>.*Siegelimker-Profil.*<\/li>/m)
+      expect(Capybara.string(response.body)).to have_css(
+        "#main-content .nav-sub > li.active", text: "Siegelimker-Profil"
+      )
     end
 
     it "renders the show page with an existing profile" do
@@ -54,6 +56,7 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
 
       get group_person_siegelimker_profile_path(group, siegelimker)
       expect(response).to have_http_status(:ok)
+      expect(Capybara.string(response.body)).to have_css("#main-content h1", text: profile.title)
       expect(response.body).to include("Emmentaler Imkerei", "https://imkerei.example.com",
         "Hofladen", "079 123 45 67", "47.0113983, 7.6386184", "Manuell erfasst")
       expect(response.body).to include("openstreetmap.org/export/embed.html?bbox=")
@@ -75,6 +78,14 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
       expect(response.body).to include("Name der Imkerei")
       expect(response.body).to include("derzeit leider nicht erhältlich")
       expect(response.body).to include('data-controller="bienenschweiz--siegelimker-map"')
+    end
+
+    it "keeps the profile tab active in the page header while editing" do
+      get edit_group_person_siegelimker_profile_path(group, siegelimker)
+
+      expect(Capybara.string(response.body)).to have_css(
+        "#main-content .nav-sub > li.active", text: "Siegelimker-Profil"
+      )
     end
 
     it "keeps the full coordinate precision in the edit form" do
@@ -121,6 +132,9 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
       patch group_person_siegelimker_profile_path(group, siegelimker),
         params: {siegelimker_profile: {website: "keine url"}}
       expect(response).to have_http_status(:unprocessable_content)
+      expect(Capybara.string(response.body)).to have_css(
+        "#main-content .nav-sub > li.active", text: "Siegelimker-Profil"
+      )
       expect(SiegelimkerProfile.count).to eq(0)
     end
 
@@ -137,6 +151,14 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
     it "shows the tab on the own person page" do
       get group_person_path(group, siegelimker)
       expect(response.body).to include("Siegelimker-Profil")
+    end
+
+    it "shows the active profile tab and a link back to the own person page" do
+      get group_person_siegelimker_profile_path(group, siegelimker)
+
+      tabs = Capybara.string(response.body).find("#main-content .nav-sub")
+      expect(tabs).to have_css("li.active", text: "Siegelimker-Profil")
+      expect(tabs).to have_link(href: group_person_path(group, siegelimker))
     end
 
     it "may edit the own profile" do
