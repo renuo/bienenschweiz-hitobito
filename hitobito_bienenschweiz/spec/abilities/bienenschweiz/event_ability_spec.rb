@@ -34,8 +34,12 @@ describe Bienenschweiz::EventAbility do
               expect(ability).to be_able_to(:destroy, event)
             end
 
-            it "may not qualify" do
-              expect(ability).not_to be_able_to(:qualify, event)
+            it "may use the application market and qualify" do
+              # Anmeldungen tab
+              expect(ability).to be_able_to(:application_market, event)
+              # Qualifikationen tab
+              expect(ability).to be_able_to(:qualify, event)
+              expect(ability).to be_able_to(:qualifications_read, event)
             end
           end
         end

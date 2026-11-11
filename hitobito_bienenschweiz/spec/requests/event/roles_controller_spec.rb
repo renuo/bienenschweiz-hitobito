@@ -26,4 +26,27 @@ RSpec.describe "Event::RolesController", type: :request do
         .not_to include(Event::Role.human_attribute_name(:remove_participant_role))
     end
   end
+
+  describe "POST #create" do
+    let(:participant) { Fabricate(:person) }
+
+    [:root, :aargauer_kantonalverband, :aarau_und_umgebung].each do |group_key|
+      context "with a course in #{group_key}" do
+        let(:group) { groups(group_key) }
+        let(:course) { Fabricate(:course, groups: [group], kind: Fabricate(:event_kind)) }
+
+        it "adds a participant" do
+          expect do
+            post group_event_roles_path(group, course), params: {
+              event_role: {type: Event::Course::Role::Participant.sti_name,
+                           person_id: participant.id}
+            }
+          end.to change { course.participations.count }.by(1)
+
+          participation = course.participations.find_by(participant: participant)
+          expect(participation.roles.map(&:class)).to eq([Event::Course::Role::Participant])
+        end
+      end
+    end
+  end
 end
