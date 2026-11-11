@@ -18,6 +18,12 @@ class SiegelimkerProfilesController < CrudController
 
   decorates :group, :person
 
+  helper do
+    def sheet
+      @sheet ||= Sheet::Person.new(self)
+    end
+  end
+
   prepend_before_action :parent
   before_action :assert_siegelimker
   # authorize_resource only checks the class on singular resources (no :id param)
