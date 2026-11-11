@@ -19,6 +19,13 @@ class Bienenschweiz::GroupAbility < AbilityDsl::Base
     permission(:layer_and_below_events)
       .may(:index_events, :"index_event/courses", :export_events, :"export_event/courses")
       .in_same_layer_or_below
+
+    # Groups are static (imported during data migration), so only admins may create or
+    # destroy them. Likewise, name and code (superior_attributes) may only be changed by
+    # admins. Core grants these to e.g. :layer_full/:layer_and_below_full; the general
+    # constraints restrict that.
+    permission(:admin).may(:modify_superior).all
+    general(:create, :destroy, :modify_superior).if_admin
   end
 
   private

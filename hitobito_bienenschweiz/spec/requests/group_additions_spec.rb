@@ -83,6 +83,58 @@ RSpec.describe GroupsController, type: :request do
 
       expect(response.body).not_to include('name="group[member_count]"')
     end
+
+    it "shows enabled name and code inputs for an admin" do
+      get edit_group_path(groups(:aarau_und_umgebung))
+
+      html = Capybara.string(response.body)
+      expect(html).to have_field("group[name]", disabled: false)
+      expect(html).to have_field("group[code]", disabled: false)
+    end
+  end
+
+  context "as a Sektion admin" do
+    let(:sektion) { groups(:aarau_und_umgebung) }
+    let(:sektion_admin) { Fabricate(:person) }
+
+    before do
+      Fabricate(Group::SektionAdministrator::AdminSektion.sti_name.to_sym,
+        group: groups(:sektion_admin_381), person: sektion_admin)
+      sektion.update!(code: 381)
+      sign_in(sektion_admin)
+    end
+
+    it "shows disabled name and code inputs" do
+      get edit_group_path(sektion)
+
+      html = Capybara.string(response.body)
+      expect(html).to have_field("group[name]", disabled: true)
+      expect(html).to have_field("group[code]", disabled: true)
+    end
+
+    it "ignores name and code on update but saves other attributes" do
+      expect {
+        patch group_path(sektion), params: {group: {name: "Hacked", code: 999, member_count: 3}}
+        sektion.reload
+      }.to not_change { sektion.name }
+        .and not_change { sektion.code }
+        .and change { sektion.member_count }.to(3)
+    end
+
+    it "may not create a group" do
+      expect {
+        post groups_path, params: {group: {parent_id: sektion.id,
+                                           type: Group::SektionVorstand.sti_name,
+                                           name: "Neuer Vorstand"}}
+      }.to raise_error(CanCan::AccessDenied)
+    end
+
+    it "may not destroy a group" do
+      group = Fabricate(Group::SektionVorstand.sti_name, parent: sektion)
+
+      expect { delete group_path(group) }.to raise_error(CanCan::AccessDenied)
+      expect(group.reload.deleted_at).to be_nil
+    end
   end
 
   describe "#update" do
