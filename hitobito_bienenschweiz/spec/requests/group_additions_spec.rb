@@ -16,6 +16,39 @@ RSpec.describe GroupsController, type: :request do
     sign_in(admin)
   end
 
+  describe "group tabs" do
+    [:root, :aargauer_kantonalverband, :aarau_und_umgebung, :vorstand_379].each do |group_key|
+      it "shows only the applicable tabs for #{group_key}" do
+        group = groups(group_key)
+        get group_path(group)
+
+        nav = Capybara.string(response.body).find(".nav-sub")
+        expect(nav).to have_no_link(href: group_person_add_requests_path(group))
+        expect(nav).to have_no_link("Statistiken")
+
+        abos_path = group_mailing_lists_path(group, returning: true)
+        if group_key == :root
+          expect(nav).to have_link("Abos", href: abos_path)
+        else
+          expect(nav).to have_no_link(href: abos_path)
+        end
+      end
+    end
+  end
+
+  describe "person add request settings" do
+    it "denies access to the request queue" do
+      expect { get group_person_add_requests_path(root_group) }.to raise_error(CanCan::AccessDenied)
+    end
+
+    it "prevents admins from activating manual approval" do
+      expect do
+        post group_person_add_requests_path(root_group)
+      end.to raise_error(CanCan::AccessDenied)
+      expect(root_group.reload.require_person_add_requests?).to be(false)
+    end
+  end
+
   describe "#show" do
     let(:group) {
       Fabricate(:group, parent: root_group, code: 1234, type: Group::Kantonalverband.sti_name)
