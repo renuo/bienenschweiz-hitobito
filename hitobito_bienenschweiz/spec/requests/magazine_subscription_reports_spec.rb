@@ -22,29 +22,44 @@ RSpec.describe MagazineSubscriptionReportsController, type: :request do
       cancellation_reason: end_date && "kint")
   end
 
-  # the row a category renders as, without its leading label cell
-  def row_values(label)
-    row = response.body[/<tr>\s*<t[dh]>\s*#{Regexp.escape(label)}\s*<\/t[dh]>.*?<\/tr>/m]
-    row.to_s.scan(/<t[dh][^>]*>\s*(\d+)\s*<\/t[dh]>/).flatten.map(&:to_i)
+  def report_tables
+    Nokogiri::HTML(response.body).css(".table-responsive > table")
+  end
+
+  def row_values(table, month)
+    headers = table.css("thead th").map { |cell| cell.text.strip }
+    row = table.css("tbody tr").find { |entry| entry.at_css("th").text.strip == month }
+    headers.drop(1).zip(row.css("td").map { |cell| cell.text.to_i }).to_h
   end
 
   describe "#index" do
     around { |example| travel_to(Date.new(2026, 9, 15)) { example.run } }
 
-    it "renders the three reported months as columns" do
+    it "renders 18 month rows in a single table" do
       get magazine_subscription_reports_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Juli 2026", "August 2026", "September 2026")
+      expect(report_tables.size).to eq(1)
+      months = report_tables.first.css("tbody th[scope='row']").map { |cell| cell.text.strip }
+      expect(months.size).to eq(18)
+      expect(months).to start_with("September 2026").and end_with("April 2025")
     end
 
-    it "renders a row per category and a total row" do
+    it "shows the paid subtotal before the individual types and highlights the WEMF columns" do
       get magazine_subscription_reports_path
 
-      expect(response.body).to include("Buchhändler-Abos", "Gratis-Abos", "Bezahlte Abos", "Total")
+      wemf = report_tables.first
+      headers = ["Monat", "Bezahlte Abos", "Abo", "Abo-EUR", "Schnupper-Abo", "Online-Abo",
+        "Geschenk-Abo", "Gratis-Abo", "Buchhändler-Abo", "Total"]
+      expect(wemf.css("thead th").map { |cell| cell.text.strip }).to eq(headers)
+      paid_header = wemf.at_css("thead th.table-primary")
+      expect(paid_header.text.strip).to eq("Bezahlte Abos")
+      expect(paid_header["title"]).to eq("Abo, Abo-EUR, Schnupper-Abo, Online-Abo, Geschenk-Abo")
+      expect(wemf.css("thead .table-info").map { |cell| cell.text.strip })
+        .to contain_exactly("Gratis-Abo", "Buchhändler-Abo")
     end
 
-    it "reports the Anzahl per category and month" do
+    it "shows the paid subtotal, its components and the overall total for a month" do
       subscribe("buchhaendler_abo", Date.new(2026, 7, 1), amount: 20)
       subscribe("gratis_abo", Date.new(2026, 8, 1), amount: 2)
       subscribe("abo", Date.new(2026, 9, 1), amount: 3)
@@ -52,40 +67,18 @@ RSpec.describe MagazineSubscriptionReportsController, type: :request do
 
       get magazine_subscription_reports_path
 
-      expect(row_values("Buchhändler-Abos")).to eq([20, 20, 20])
-      expect(row_values("Gratis-Abos")).to eq([0, 2, 2])
-      expect(row_values("Bezahlte Abos")).to eq([0, 0, 4])
-    end
-
-    it "reports the Anzahl per subscription type and month" do
-      subscribe("buchhaendler_abo", Date.new(2026, 7, 1), amount: 20)
-      subscribe("abo", Date.new(2026, 8, 1), amount: 3)
-      subscribe("online_abo", Date.new(2026, 9, 1))
-
-      get magazine_subscription_reports_path
-
-      expect(response.body).to include("Zahlen nach Abomodell")
-      expect(row_values("Buchhändler-Abo")).to eq([20, 20, 20])
-      expect(row_values("Abo")).to eq([0, 3, 3])
-      expect(row_values("Online-Abo")).to eq([0, 0, 1])
-      expect(row_values("Abo-EUR")).to eq([0, 0, 0])
-    end
-
-    it "totals every category per month" do
-      subscribe("buchhaendler_abo", Date.new(2026, 8, 1), amount: 20)
-      subscribe("gratis_abo", Date.new(2026, 8, 1), amount: 2)
-      subscribe("abo", Date.new(2026, 9, 1), amount: 3)
-
-      get magazine_subscription_reports_path
-
-      expect(row_values("Total")).to eq([0, 22, 25])
+      expect(row_values(report_tables.first, "September 2026")).to eq(
+        "Bezahlte Abos" => 4, "Abo" => 3, "Abo-EUR" => 0, "Gratis-Abo" => 2,
+        "Schnupper-Abo" => 0, "Online-Abo" => 1, "Geschenk-Abo" => 0,
+        "Buchhändler-Abo" => 20, "Total" => 26
+      )
     end
 
     it "shows zeros when there are no subscriptions" do
       get magazine_subscription_reports_path
 
       expect(response).to have_http_status(:ok)
-      expect(row_values("Total")).to eq([0, 0, 0])
+      expect(row_values(report_tables.first, "September 2026").values).to all(eq(0))
     end
 
     it "links the report from the admin navigation" do
