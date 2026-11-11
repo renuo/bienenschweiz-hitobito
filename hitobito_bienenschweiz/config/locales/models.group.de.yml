@@ -69,9 +69,6 @@ de:
       group/themenbezogene_kontakte/inserenten:
         one: Inserenten
         other: Inserenten
-      group/themenbezogene_kontakte/mitarbeitende:
-        one: Mitarbeitende
-        other: Mitarbeitende
       group/themenbezogene_kontakte/supervisor:
         one: Supervisor
         other: Supervisoren
