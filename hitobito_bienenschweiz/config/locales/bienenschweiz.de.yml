@@ -254,16 +254,12 @@ de:
   magazine_subscription_reports:
     index:
       title: Bienen Abo Statistik
-      explanation: Anzahl Abos (Summe der Anzahl) der letzten drei Monate. Gezählt wird jedes Abo, das im jeweiligen Monat lief.
+      explanation: "Anzahl Abos (Summe der Anzahl) der letzten 18 Monate. Stichtag ist jeweils der 15. des Monats. Der aktuelle Monat wird ab dem 15. angezeigt."
       export: Adressliste als CSV exportieren (Druck)
       wemf_title: WEMF Zahlen
-      by_type_title: Zahlen nach Abomodell
-      categories:
-        buchhaendler: Buchhändler-Abos
-        gratis: Gratis-Abos
-        bezahlt: Bezahlte Abos
     table:
-      subscription_type: Abomodell
+      month: Monat
+      paid: Bezahlte Abos
       total: Total
     export:
       subscriptions: Abos

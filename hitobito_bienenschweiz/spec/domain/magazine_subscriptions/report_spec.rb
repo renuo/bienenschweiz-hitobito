@@ -8,8 +8,9 @@
 require "spec_helper"
 
 describe MagazineSubscriptions::Report do
-  subject(:report) { described_class.new }
+  subject(:report) { described_class.new(today: today) }
 
+  let(:today) { Date.new(2026, 9, 15) }
   let(:person) { Fabricate(:magazine_subscriber) }
   let(:july) { Date.new(2026, 7, 1) }
   let(:august) { Date.new(2026, 8, 1) }
@@ -21,47 +22,45 @@ describe MagazineSubscriptions::Report do
       cancellation_reason: end_date ? "biwe" : nil)
   end
 
-  around { |example| travel_to(Date.new(2026, 9, 15)) { example.run } }
-
   describe "#months" do
-    it "returns the current and the two preceding months, oldest first" do
-      expect(report.months).to eq([july, august, september])
+    it "includes the current month on the 15th and returns 18 months newest first" do
+      expect(report.months).to eq(Array.new(18) { |index| Date.new(2025, 4, 1) >> index }.reverse)
+    end
+
+    context "before the 15th" do
+      let(:today) { Date.new(2026, 9, 14) }
+
+      it "starts with the previous month" do
+        expect(report.months).to eq(Array.new(18) { |index| Date.new(2025, 3, 1) >> index }.reverse)
+      end
     end
   end
 
-  describe "#categories" do
-    it "reports Buchhändler, Gratis and the remaining paid types" do
-      expect(report.categories).to eq(%i[buchhaendler gratis bezahlt])
-    end
-
-    it "treats every type that is neither Buchhändler nor Gratis as paid" do
-      expect(described_class::CATEGORIES[:bezahlt])
-        .to match_array(%w[abo abo_eur schnupper_abo online_abo geschenk_abo])
-    end
-  end
-
-  describe "#amount" do
+  describe "#paid_amount" do
     it "counts an open subscription in every month from its start" do
       subscribe("abo", august)
 
-      expect(report.amount(july, :bezahlt)).to eq(0)
-      expect(report.amount(august, :bezahlt)).to eq(1)
-      expect(report.amount(september, :bezahlt)).to eq(1)
+      expect(report.paid_amount(july)).to eq(0)
+      expect(report.paid_amount(august)).to eq(1)
+      expect(report.paid_amount(september)).to eq(1)
     end
 
     it "stops counting after the end date" do
       subscribe("abo", july, end_date: Date.new(2026, 8, 31))
 
-      expect(report.amount(july, :bezahlt)).to eq(1)
-      expect(report.amount(august, :bezahlt)).to eq(1)
-      expect(report.amount(september, :bezahlt)).to eq(0)
+      expect(report.paid_amount(july)).to eq(1)
+      expect(report.paid_amount(august)).to eq(1)
+      expect(report.paid_amount(september)).to eq(0)
     end
 
-    it "counts a subscription that starts and ends inside one month" do
-      subscribe("abo", Date.new(2026, 8, 10), end_date: Date.new(2026, 8, 20))
+    it "only counts subscriptions active on the 15th, including starts and ends on that date" do
+      subscribe("abo", Date.new(2026, 8, 15), amount: 2)
+      subscribe("abo", august, end_date: Date.new(2026, 8, 15), amount: 3)
+      subscribe("abo", august, end_date: Date.new(2026, 8, 14), amount: 7)
+      subscribe("abo", Date.new(2026, 8, 16), amount: 11)
 
-      expect(report.amount(august, :bezahlt)).to eq(1)
-      expect(report.amount(september, :bezahlt)).to eq(0)
+      expect(report.paid_amount(august)).to eq(5)
+      expect(report.paid_amount(september)).to eq(13)
     end
 
     it "ignores subscriptions starting after the reported months" do
@@ -70,30 +69,23 @@ describe MagazineSubscriptions::Report do
       expect(report.months.sum { |month| report.total(month) }).to eq(0)
     end
 
-    it "sums the Anzahl instead of counting records" do
-      subscribe("buchhaendler_abo", july, amount: 20)
-      subscribe("buchhaendler_abo", july, amount: 5)
-
-      expect(report.amount(july, :buchhaendler)).to eq(25)
-    end
-
-    it "keeps the three categories apart" do
+    it "sums the paid types and excludes Buchhändler and Gratis" do
       subscribe("buchhaendler_abo", july, amount: 20)
       subscribe("gratis_abo", july, amount: 2)
       subscribe("abo", july)
+      subscribe("abo_eur", july, amount: 4)
+      subscribe("schnupper_abo", july, amount: 2)
       subscribe("online_abo", july)
       Fabricate(:magazine_subscription, person: person, subscription_type: "geschenk_abo",
         start_date: july, amount: 3, gifter: Fabricate(:person))
 
-      expect(report.amount(july, :buchhaendler)).to eq(20)
-      expect(report.amount(july, :gratis)).to eq(2)
-      expect(report.amount(july, :bezahlt)).to eq(5)
+      expect(report.paid_amount(july)).to eq(11)
     end
   end
 
   describe "#types" do
     it "lists every subscription type" do
-      expect(report.types).to eq(MagazineSubscription::SUBSCRIPTION_TYPES)
+      expect(report.types).to match_array(MagazineSubscription::SUBSCRIPTION_TYPES)
     end
   end
 
@@ -111,7 +103,7 @@ describe MagazineSubscriptions::Report do
   end
 
   describe "#total" do
-    it "sums all categories of the month" do
+    it "sums all subscription types for the month" do
       subscribe("buchhaendler_abo", august, amount: 20)
       subscribe("gratis_abo", august, amount: 2)
       subscribe("abo", august, amount: 3)

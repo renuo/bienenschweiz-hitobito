@@ -7,33 +7,28 @@
 
 module MagazineSubscriptions
   class Report
-    MONTH_COUNT = 3
-
-    CATEGORIES = {
-      buchhaendler: %w[buchhaendler_abo],
-      gratis: %w[gratis_abo],
-      bezahlt: MagazineSubscription::SUBSCRIPTION_TYPES - %w[buchhaendler_abo gratis_abo]
-    }.freeze
+    MONTH_COUNT = 18
+    SNAPSHOT_DAY = 15
+    WEMF_SPECIAL_TYPES = %w[gratis_abo buchhaendler_abo].freeze
 
     def initialize(today: Time.zone.today)
       @today = today
     end
 
-    # Oldest first, so the table reads chronologically.
     def months
-      @months ||= (1 - MONTH_COUNT..0).map { |offset| @today.beginning_of_month + offset.months }
-    end
-
-    def categories
-      CATEGORIES.keys
+      @months ||= Array.new(MONTH_COUNT) { |offset| latest_month << offset }
     end
 
     def types
-      MagazineSubscription::SUBSCRIPTION_TYPES
+      paid_types + WEMF_SPECIAL_TYPES
     end
 
-    def amount(month, category)
-      CATEGORIES.fetch(category).sum { |type| type_amount(month, type) }
+    def paid_types
+      MagazineSubscription::SUBSCRIPTION_TYPES - WEMF_SPECIAL_TYPES
+    end
+
+    def paid_amount(month)
+      paid_types.sum { |type| type_amount(month, type) }
     end
 
     def type_amount(month, type)
@@ -46,9 +41,15 @@ module MagazineSubscriptions
 
     private
 
+    def latest_month
+      month = @today.beginning_of_month
+      (@today.day < SNAPSHOT_DAY) ? month.prev_month : month
+    end
+
     def sums_by_month
       @sums_by_month ||= months.index_with do |month|
-        MagazineSubscription.active_in_month(month).group(:subscription_type).sum(:amount)
+        MagazineSubscription.active_on(month.change(day: SNAPSHOT_DAY))
+          .group(:subscription_type).sum(:amount)
       end
     end
   end

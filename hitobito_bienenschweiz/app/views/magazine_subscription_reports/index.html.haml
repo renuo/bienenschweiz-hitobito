@@ -16,10 +16,4 @@
 
 %p= t(".explanation")
 
-= render "table", amount: :amount,
-  rows: @report.categories.index_by { |category| t(".categories.#{category}") }
-
-%h2.mt-5= t(".by_type_title")
-
-= render "table", amount: :type_amount,
-  rows: @report.types.index_by { |type| MagazineSubscription.subscription_type_labels[type.to_sym] }
+= render "table"

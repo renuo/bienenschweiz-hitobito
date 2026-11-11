@@ -3,22 +3,23 @@
 -#  or later. See the COPYING file at the top-level directory or at
 -#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
--# rows: label => key, passed to @report.public_send(amount, month, key)
+- labels = MagazineSubscription.subscription_type_labels
+- paid_labels = @report.paid_types.map { |type| labels.fetch(type.to_sym) }
+- highlighted_types = MagazineSubscriptions::Report::WEMF_SPECIAL_TYPES
 .table-responsive
   %table.table.table-striped
     %thead
       %tr
-        %th= t(".subscription_type")
-        - @report.months.each do |month|
-          %th.text-end= l(month, format: :month_year)
+        %th{scope: "col"}= t(".month")
+        %th.text-end.table-primary.text-black{scope: "col", title: paid_labels.join(", ")}= t(".paid")
+        - @report.types.each do |type|
+          %th.text-end{scope: "col", class: ("table-info text-black" if highlighted_types.include?(type))}= labels[type.to_sym]
+        %th.text-end{scope: "col"}= t(".total")
     %tbody
-      - rows.each do |label, key|
+      - @report.months.each do |month|
         %tr
-          %td= label
-          - @report.months.each do |month|
-            %td.text-end= @report.public_send(amount, month, key)
-    %tfoot
-      %tr
-        %th= t(".total")
-        - @report.months.each do |month|
-          %th.text-end= @report.total(month)
+          %th.text-nowrap{scope: "row"}= l(month, format: :month_year)
+          %td.text-end.table-primary.text-black= @report.paid_amount(month)
+          - @report.types.each do |type|
+            %td.text-end{class: ("table-info text-black" if highlighted_types.include?(type))}= @report.type_amount(month, type)
+          %td.text-end.fw-bold= @report.total(month)
