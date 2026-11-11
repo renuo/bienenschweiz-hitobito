@@ -9,35 +9,35 @@ class Group::SektionVorstand < ::Group
   ### ROLES
 
   class Bildung < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_read]
   end
 
   class Produkte < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_read]
   end
 
   class Zucht < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_read]
   end
 
   class Praesident < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_read]
   end
 
   class Vizepraesident < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_read]
   end
 
   class Kassier < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_read]
   end
 
   class Aktuar < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_read]
   end
 
   class Beisitzer < ::Role
-    self.permissions = [:contact_data, :layer_and_below_read]
+    self.permissions = [:layer_read]
   end
 
   roles Bildung, Produkte, Zucht, Praesident, Vizepraesident, Kassier, Aktuar, Beisitzer

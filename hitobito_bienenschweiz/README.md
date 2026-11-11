@@ -10,16 +10,16 @@ of Bienenschweiz.
 (Output of rake app:hitobito:roles)
 * Dachverband
   * Dachverband
-    * Administrator BienenSchweiz: [:admin, :layer_and_below_full, :impersonation]
+    * Administrator BienenSchweiz: [:admin, :layer_and_below_full, :layer_and_below_events, :impersonation]
   * Mitglieder
-    * Ehrenmitglied: [:contact_data]
-    * Ehrenpräsident: [:contact_data]
+    * Ehrenmitglied: []
+    * Ehrenpräsident: []
     * Andere Mitglieder: []
   * Zentralvorstand
-    * Präsident: [:contact_data, :layer_and_below_read]
-    * Vizepräsident: [:contact_data, :layer_and_below_read]
-    * Finanzen: [:contact_data, :layer_and_below_read]
-    * Beisitzer: [:contact_data, :layer_and_below_read]
+    * Präsident: [:layer_and_below_read]
+    * Vizepräsident: [:layer_and_below_read]
+    * Finanzen: [:layer_and_below_read]
+    * Beisitzer: [:layer_and_below_read]
   * Shop
     * Kunde: []
   * BienenZeitung
@@ -40,14 +40,14 @@ of Bienenschweiz.
     * Kontakte: [:layer_contacts, :layer_read]
     * Veranstaltungen/Kurse: [:layer_events, :layer_read]
   * Vorstand
-    * Bildung: [:contact_data, :layer_and_below_read]
-    * Produkte: [:contact_data, :layer_and_below_read]
-    * Zucht: [:contact_data, :layer_and_below_read]
-    * Präsident/in: [:contact_data, :layer_and_below_read]
-    * Vizepräsident/in: [:contact_data, :layer_and_below_read]
-    * Kassier/in: [:contact_data, :layer_and_below_read]
-    * Aktuar/in: [:contact_data, :layer_and_below_read]
-    * Beisitzer/in: [:contact_data, :layer_and_below_read]
+    * Bildung: [:layer_read]
+    * Produkte: [:layer_read]
+    * Zucht: [:layer_read]
+    * Präsident/in: [:layer_read]
+    * Vizepräsident/in: [:layer_read]
+    * Kassier/in: [:layer_read]
+    * Aktuar/in: [:layer_read]
+    * Beisitzer/in: [:layer_read]
 * Sektion < Kantonalverband
   * Sektion
   * Siegelimker/in
@@ -63,16 +63,16 @@ of Bienenschweiz.
     * Aktivmitglied: []
     * Passivmitglied: []
   * Vorstand
-    * Bildung: [:contact_data, :layer_and_below_read]
-    * Produkte: [:contact_data, :layer_and_below_read]
-    * Zucht: [:contact_data, :layer_and_below_read]
-    * Präsident/in: [:contact_data, :layer_and_below_read]
-    * Vizepräsident/in: [:contact_data, :layer_and_below_read]
-    * Kassier/in: [:contact_data, :layer_and_below_read]
-    * Aktuar/in: [:contact_data, :layer_and_below_read]
-    * Beisitzer/in: [:contact_data, :layer_and_below_read]
+    * Bildung: [:layer_read]
+    * Produkte: [:layer_read]
+    * Zucht: [:layer_read]
+    * Präsident/in: [:layer_read]
+    * Vizepräsident/in: [:layer_read]
+    * Kassier/in: [:layer_read]
+    * Aktuar/in: [:layer_read]
+    * Beisitzer/in: [:layer_read]
   * Kader
-    * Fachperson Bildung: [:contact_data, :layer_read]
-    * Fachperson Produkte: [:contact_data, :layer_read]
-    * Fachperson Zucht & Vermehrung: [:contact_data, :layer_read]
+    * Fachperson Bildung: [:layer_read]
+    * Fachperson Produkte: [:layer_read]
+    * Fachperson Zucht & Vermehrung: [:layer_read]
 <!-- roles:end -->

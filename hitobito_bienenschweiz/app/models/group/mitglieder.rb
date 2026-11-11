@@ -9,11 +9,11 @@ class Group::Mitglieder < ::Group
   ### ROLES
 
   class Ehrenmitglied < ::Role
-    self.permissions = [:contact_data]
+    self.permissions = []
   end
 
   class Ehrenpraesident < ::Role
-    self.permissions = [:contact_data]
+    self.permissions = []
   end
 
   class AnderesMitglied < ::Role
