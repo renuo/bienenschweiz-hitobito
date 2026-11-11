@@ -16,13 +16,9 @@ class Group::ThemenbezogeneKontakte < ::Group
     self.permissions = []
   end
 
-  class Mitarbeitende < ::Role
-    self.permissions = [:layer_and_below_read]
-  end
-
   class Supervisor < ::Role
     self.permissions = [:layer_and_below_read]
   end
 
-  roles Haendler, Inserenten, Mitarbeitende, Supervisor
+  roles Haendler, Inserenten, Supervisor
 end
