@@ -36,6 +36,20 @@ RSpec.describe GroupsController, type: :request do
     end
   end
 
+  describe "mailing lists" do
+    it "allows the mailing list index on the Dachverband" do
+      get group_mailing_lists_path(root_group)
+      expect(response).to have_http_status(:ok)
+    end
+
+    [:aargauer_kantonalverband, :aarau_und_umgebung, :vorstand_379].each do |group_key|
+      it "denies the mailing list index on #{group_key}" do
+        expect { get group_mailing_lists_path(groups(group_key)) }
+          .to raise_error(CanCan::AccessDenied)
+      end
+    end
+  end
+
   describe "person add request settings" do
     it "denies access to the request queue" do
       expect { get group_person_add_requests_path(root_group) }.to raise_error(CanCan::AccessDenied)
