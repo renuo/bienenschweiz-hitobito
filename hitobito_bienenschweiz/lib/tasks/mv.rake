@@ -81,6 +81,25 @@ namespace :mv do
       puts "Members with imported roles: #{role_member_ids.count}, " \
            "with running subscriptions but without roles: #{(subscriber_member_ids - role_member_ids).count}"
 
+      # MV tagged ad boards (Werbetafeln) with one membership per board. They are imported as
+      # the number of active memberships, the 2015-2017 boards are counted as legacy boards.
+      ad_board_roles = {
+        num_ad_boards: %w[Siegelimker_Werbetafel_2020],
+        num_ad_boards_legacy: %w[Siegelimker_Werbetafel_2015 Siegelimker_Werbetafel_2016
+          Siegelimker_Werbetafel_2017]
+      }
+      today = Date.current
+      ad_board_counts = ad_board_roles.transform_values do |role_names|
+        Membership.joins(:role)
+          .where(roles: {name: role_names})
+          .where("memberships.valid_from IS NULL OR memberships.valid_from <= ?", today)
+          .where("memberships.valid_until IS NULL OR memberships.valid_until >= ?", today)
+          .group(:member_id)
+          .count
+      end
+      puts "Members with ad boards: " +
+        ad_board_counts.map { |attr, counts| "#{attr}: #{counts.count}" }.join(", ")
+
       total_count = 0
       success_count = 0
       email_duplicate_count = 0
@@ -150,6 +169,7 @@ namespace :mv do
           end
           person.birthday = member.birthdate
           person.export_to_website = member.typo3_export
+          ad_board_counts.each { |attr, counts| person[attr] = counts[member.id] }
           if key = member.lang_key
             person.language = {D: "de", E: "en", F: "fr", I: "it"}.fetch(key&.to_sym)
           end
@@ -251,7 +271,7 @@ namespace :mv do
     def find_role(membership)
       ad_roles = ["SI_We", "SI_WE", "SI WE", "SI_WE 2020"] # the different spellings are for different years ...
       if ad_roles.include?(membership.role.name_t)
-        # needs to be mapped to num_ad_boards later??
+        # imported as num_ad_boards(_legacy) by the members task
         return -1
       end
       # this one isn't included in the mapping table at all. shows up on verein and sektion
