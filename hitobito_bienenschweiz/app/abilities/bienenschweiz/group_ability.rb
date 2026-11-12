@@ -24,12 +24,19 @@ class Bienenschweiz::GroupAbility < AbilityDsl::Base
       :activate_person_add_requests,
       :deactivate_person_add_requests).none
 
+    # Abos (mailing lists) are managed centrally on the Dachverband only.
+    general(:index_mailing_lists).if_dachverband
+
     # Groups are static (imported during data migration), so only admins may create or
     # destroy them. Likewise, name and code (superior_attributes) may only be changed by
     # admins. Core grants these to e.g. :layer_full/:layer_and_below_full; the general
     # constraints restrict that.
     permission(:admin).may(:modify_superior).all
     general(:create, :destroy, :modify_superior).if_admin
+  end
+
+  def if_dachverband
+    group.is_a?(Group::Dachverband)
   end
 
   private

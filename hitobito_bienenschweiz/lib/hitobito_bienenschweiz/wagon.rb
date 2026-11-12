@@ -106,7 +106,6 @@ module HitobitoBienenschweiz
       end
 
       PersonReadables.prepend Bienenschweiz::PersonReadables
-      Sheet::Group.prepend Bienenschweiz::Sheet::Group
       Sheet::Person.prepend Bienenschweiz::Sheet::Person
       Ability.store.register Bienenschweiz::PersonAbility
       Ability.store.register Bienenschweiz::GroupAbility
