@@ -161,6 +161,35 @@ RSpec.describe SiegelimkerProfilesController, type: :request do
       expect(tabs).to have_link(href: group_person_path(group, siegelimker))
     end
 
+    it "renders the edit form for the own profile" do
+      get edit_group_person_siegelimker_profile_path(group, siegelimker)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Name der Imkerei")
+    end
+
+    it "may see the own person page" do
+      get group_person_path(group, siegelimker)
+      expect(response).to have_http_status(:ok)
+    end
+
+    context "with another person in the same layer" do
+      let(:other) { Fabricate(:beekeeper, group_id: sektion.id) }
+      let(:other_group) { other.roles.first.group }
+
+      it "may not see the person" do
+        expect do
+          get group_person_path(other_group, other)
+        end.to raise_error(CanCan::AccessDenied)
+      end
+
+      it "may not edit the person" do
+        expect do
+          patch group_person_path(other_group, other), params: {person: {first_name: "Hans"}}
+        end.to raise_error(CanCan::AccessDenied)
+        expect(other.reload.first_name).not_to eq("Hans")
+      end
+    end
+
     it "may edit the own profile" do
       patch group_person_siegelimker_profile_path(group, siegelimker),
         params: {siegelimker_profile: profile_params}

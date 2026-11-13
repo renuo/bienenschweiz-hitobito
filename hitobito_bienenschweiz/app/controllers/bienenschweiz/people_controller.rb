@@ -9,7 +9,10 @@ module Bienenschweiz::PeopleController
   extend ActiveSupport::Concern
 
   prepended do
-    prepend_before_action :entry, only: :spesen_sektion
+    # Do not declare another `prepend_before_action :entry` here: Rails replaces the
+    # core callback of the same name (and its `only:` list), which would leave @person
+    # unloaded on show/edit/update so authorize_resource falls back to the Person class.
+    # The action loads and authorizes the entry itself.
     skip_authorize_resource only: :spesen_sektion
   end
 

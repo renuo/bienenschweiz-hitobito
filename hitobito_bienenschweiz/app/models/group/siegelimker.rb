@@ -9,7 +9,7 @@ class Group::Siegelimker < ::Group
   ### ROLES
 
   class Siegelimker < ::Role
-    self.permissions = [:layer_read]
+    self.permissions = []
   end
 
   roles Siegelimker
