@@ -127,6 +127,35 @@ namespace :mv do
         end
       end
 
+      # The canton is derived from the swiss zip code (and the town for zip codes spanning multiple
+      # cantons), since the MV kanton column is missing for many members and sometimes contradicts
+      # the address. The MV kanton is only used as fallback.
+      locations_by_zip = Location.where(canton: Cantons.short_name_strings)
+        .pluck(:zip_code, :canton, :name)
+        .group_by(&:first)
+      canton_stats = Hash.new(0)
+
+      # MV stores Liechtenstein addresses as country CH with kanton FL (sometimes without kanton),
+      # they are imported with country LI instead.
+      liechtenstein_zips = Location.where(canton: "fl").distinct.pluck(:zip_code).to_set
+      def liechtenstein?(member, liechtenstein_zips)
+        member.kanton.to_s.strip.casecmp?("FL") || liechtenstein_zips.include?(member.zip.to_s.strip)
+      end
+
+      def mv_canton(member, locations_by_zip)
+        mv_canton = member.kanton.to_s.strip.downcase.presence_in(Cantons.short_name_strings)
+        candidates = locations_by_zip.fetch(member.zip.to_s.strip, [])
+        cantons = candidates.map(&:second).uniq
+        return [cantons.first, :zip] if cantons.one?
+
+        town = member.location.to_s.strip.downcase
+        town_cantons = candidates.select { |_, _, name| name.downcase == town }.map(&:second).uniq
+        return [town_cantons.first, :town] if town_cantons.one?
+        return [mv_canton, :mv] if mv_canton && (cantons.empty? || cantons.include?(mv_canton))
+
+        [nil, :unknown]
+      end
+
       scope = Member.all.includes(:login)
       # scope = scope.limit(10)
       scope = scope.where(robinson: false)
@@ -178,12 +207,26 @@ namespace :mv do
           try_add_phone(person, member.mobile, :mobile)
           try_add_phone(person, member.office_phone, :work)
 
-          unless member.country_key.blank?
-            if (iso_country = ISO3166::Country[member.country_key])
+          # The old system shows the country_key 001 as Switzerland
+          country_key = (member.country_key == "001") ? "CH" : member.country_key
+          unless country_key.blank?
+            if (iso_country = ISO3166::Country[country_key])
               person.country = iso_country.translations["de"]
             else
-              raise "Unknown country_key #{member.country_key}"
+              raise "Unknown country_key #{country_key}"
             end
+          end
+          person.country = "LI" if person.swiss? && liechtenstein?(member, liechtenstein_zips)
+
+          if person.swiss?
+            person.canton, source = mv_canton(member, locations_by_zip)
+            canton_stats[source] += 1
+            if source == :unknown
+              puts "No canton found for member #{member.id} (#{member.zip} #{member.location}, " \
+                   "MV kanton: #{member.kanton.inspect})"
+            end
+          else
+            person.canton = nil
           end
 
           person.validate
@@ -217,6 +260,7 @@ namespace :mv do
           csv << [m.id, m.selectline_customer_number, person&.email, error]
         end
       end
+      puts "Canton sources of swiss members: #{canton_stats.inspect}"
       puts "Imported #{success_count}/#{total_count} members (email duplicate: #{email_duplicate_count}, imported without zip validation: #{import_without_validations})"
     end
     task groups: :environment do
