@@ -7,7 +7,7 @@
 
 module Bienenschweiz::Event::Qualifier
   # Participants completing a course whose kind grants it (Grundkurs) get a
-  # Schnupper-Abo. The qualifications form re-issues all checked participations
+  # one year Gratis-Abo. The qualifications form re-issues all checked participations
   # on every save, so only the transition to qualified triggers it. #apply assigns
   # the submitted qualified flag before calling #issue and saves it afterwards.
   def issue

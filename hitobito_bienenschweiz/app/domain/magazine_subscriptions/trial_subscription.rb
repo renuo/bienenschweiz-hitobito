@@ -6,12 +6,13 @@
 # https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz
 
 module MagazineSubscriptions
-  # Grants a person a one year Schnupper-Abo. Without a running subscription it
-  # starts on the first of next month. Otherwise one running subscription is
-  # terminated at the end of its current yearly billing cycle and the
-  # Schnupper-Abo is followed by an open-ended paid Abo. Ambiguous cases require
-  # manual review.
+  # Grants a person a one year Gratis-Abo after completing a course. Without a
+  # running subscription it starts on the first of next month. Otherwise one running
+  # subscription is terminated at the end of its current yearly billing cycle. The
+  # Gratis-Abo is followed by an open-ended paid Abo. Ambiguous cases require manual
+  # review. A Gratis-Abo terminated with the JAHR reason marks one granted before.
   class TrialSubscription
+    SUBSCRIPTION_TYPE = "gratis_abo"
     CANCELLATION_REASON = "jahr"
     PAID_TYPES = MagazineSubscription::SUBSCRIPTION_TYPES - %w[buchhaendler_abo gratis_abo]
 
@@ -21,7 +22,7 @@ module MagazineSubscriptions
     end
 
     def create
-      return if subscriptions.exists?(subscription_type: "schnupper_abo")
+      return if already_granted?
 
       existing = subscriptions.where("end_date IS NULL OR end_date >= ?", @today).to_a
       if manual_review_required?(existing)
@@ -39,6 +40,11 @@ module MagazineSubscriptions
 
     private
 
+    def already_granted?
+      subscriptions.exists?(subscription_type: SUBSCRIPTION_TYPE,
+        cancellation_reason: CANCELLATION_REASON)
+    end
+
     def manual_review_required?(existing)
       existing.any? && (existing.size != 1 || existing.first.amount != 1 ||
         !PAID_TYPES.include?(existing.first.subscription_type))
@@ -52,7 +58,7 @@ module MagazineSubscriptions
     end
 
     def create_subscriptions(start_date)
-      trial = subscriptions.create!(subscription_type: "schnupper_abo",
+      trial = subscriptions.create!(subscription_type: SUBSCRIPTION_TYPE,
         start_date: start_date, end_date: start_date.next_year - 1.day,
         cancellation_reason: CANCELLATION_REASON)
       subscriptions.create!(subscription_type: "abo", start_date: trial.end_date + 1.day)
