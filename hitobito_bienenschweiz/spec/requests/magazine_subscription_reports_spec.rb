@@ -49,12 +49,12 @@ RSpec.describe MagazineSubscriptionReportsController, type: :request do
       get magazine_subscription_reports_path
 
       wemf = report_tables.first
-      headers = ["Monat", "Bezahlte Abos", "Abo", "Abo-EUR", "Schnupper-Abo", "Online-Abo",
-        "Geschenk-Abo", "Gratis-Abo", "Buchhändler-Abo", "Total"]
+      headers = ["Monat", "Bezahlte Abos", "Abo", "Abo-EUR", "Online-Abo", "Geschenk-Abo",
+        "Gratis-Abo", "Buchhändler-Abo", "Total"]
       expect(wemf.css("thead th").map { |cell| cell.text.strip }).to eq(headers)
       paid_header = wemf.at_css("thead th.table-primary")
       expect(paid_header.text.strip).to eq("Bezahlte Abos")
-      expect(paid_header["title"]).to eq("Abo, Abo-EUR, Schnupper-Abo, Online-Abo, Geschenk-Abo")
+      expect(paid_header["title"]).to eq("Abo, Abo-EUR, Online-Abo, Geschenk-Abo")
       expect(wemf.css("thead .table-info").map { |cell| cell.text.strip })
         .to contain_exactly("Gratis-Abo", "Buchhändler-Abo")
     end
@@ -69,7 +69,7 @@ RSpec.describe MagazineSubscriptionReportsController, type: :request do
 
       expect(row_values(report_tables.first, "September 2026")).to eq(
         "Bezahlte Abos" => 4, "Abo" => 3, "Abo-EUR" => 0, "Gratis-Abo" => 2,
-        "Schnupper-Abo" => 0, "Online-Abo" => 1, "Geschenk-Abo" => 0,
+        "Online-Abo" => 1, "Geschenk-Abo" => 0,
         "Buchhändler-Abo" => 20, "Total" => 26
       )
     end

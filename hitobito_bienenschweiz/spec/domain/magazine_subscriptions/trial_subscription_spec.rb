@@ -13,8 +13,8 @@ describe MagazineSubscriptions::TrialSubscription do
 
   subject(:trial) { described_class.new(person, today: today) }
 
-  def schnupper_abo
-    person.magazine_subscriptions.find_sole_by(subscription_type: "schnupper_abo")
+  def gratis_abo
+    person.magazine_subscriptions.find_sole_by(subscription_type: "gratis_abo")
   end
 
   def subscribe(start_date, **attrs)
@@ -22,10 +22,10 @@ describe MagazineSubscriptions::TrialSubscription do
   end
 
   context "without a subscription" do
-    it "creates a one year Schnupper-Abo starting on the first of next month" do
+    it "creates a one year Gratis-Abo starting on the first of next month" do
       expect { trial.create }.to change { person.magazine_subscriptions.count }.by(2)
 
-      expect(schnupper_abo).to have_attributes(
+      expect(gratis_abo).to have_attributes(
         start_date: Date.new(2026, 11, 1),
         end_date: Date.new(2027, 10, 31),
         amount: 1, cancellation_reason: "jahr"
@@ -42,19 +42,19 @@ describe MagazineSubscriptions::TrialSubscription do
 
       trial.create
 
-      expect(schnupper_abo.start_date).to eq(Date.new(2026, 11, 1))
+      expect(gratis_abo.start_date).to eq(Date.new(2026, 11, 1))
     end
   end
 
   context "with a running subscription" do
     let!(:subscription) { subscribe(Date.new(2025, 3, 1)) }
 
-    it "terminates it at the end of the current billing cycle and appends the Schnupper-Abo" do
+    it "terminates it at the end of the current billing cycle and appends the Gratis-Abo" do
       trial.create
 
       expect(subscription.reload).to have_attributes(end_date: Date.new(2027, 2, 28),
         cancellation_reason: "ogru")
-      expect(schnupper_abo).to have_attributes(start_date: Date.new(2027, 3, 1),
+      expect(gratis_abo).to have_attributes(start_date: Date.new(2027, 3, 1),
         end_date: Date.new(2028, 2, 29))
     end
 
@@ -64,7 +64,7 @@ describe MagazineSubscriptions::TrialSubscription do
       trial.create
 
       expect(subscription.reload.end_date).to eq(Date.new(2027, 11, 30))
-      expect(schnupper_abo.start_date).to eq(Date.new(2027, 12, 1))
+      expect(gratis_abo.start_date).to eq(Date.new(2027, 12, 1))
     end
 
     it "terminates on the last day of a cycle ending today" do
@@ -73,7 +73,7 @@ describe MagazineSubscriptions::TrialSubscription do
       trial.create
 
       expect(subscription.reload.end_date).to eq(today)
-      expect(schnupper_abo.start_date).to eq(Date.new(2026, 11, 1))
+      expect(gratis_abo.start_date).to eq(Date.new(2026, 11, 1))
     end
   end
 
@@ -115,7 +115,7 @@ describe MagazineSubscriptions::TrialSubscription do
   it "ends a trial starting in March on the last day of February" do
     described_class.new(person, today: Date.new(2026, 2, 15)).create
 
-    expect(schnupper_abo).to have_attributes(start_date: Date.new(2026, 3, 1),
+    expect(gratis_abo).to have_attributes(start_date: Date.new(2026, 3, 1),
       end_date: Date.new(2027, 2, 28), cancellation_reason: "jahr")
   end
 
@@ -126,7 +126,7 @@ describe MagazineSubscriptions::TrialSubscription do
     trial.create
 
     expect(subscription.reload.cancellation_reason).to eq("kint")
-    expect(schnupper_abo.start_date).to eq(Date.new(2027, 3, 1))
+    expect(gratis_abo.start_date).to eq(Date.new(2027, 3, 1))
   end
 
   it "requests manual review for a free subscription" do
@@ -138,12 +138,20 @@ describe MagazineSubscriptions::TrialSubscription do
     expect(subscription.reload.end_date).to be_nil
   end
 
-  it "does nothing when the person already got a Schnupper-Abo" do
-    subscribe(Date.new(2025, 1, 1), subscription_type: "schnupper_abo",
+  it "does nothing when the person already got a Gratis-Abo for a year" do
+    subscribe(Date.new(2025, 1, 1), subscription_type: "gratis_abo",
       end_date: Date.new(2025, 12, 31), cancellation_reason: "jahr")
     running = subscribe(Date.new(2024, 1, 1))
 
     expect { trial.create }.not_to change { person.magazine_subscriptions.count }
     expect(running.reload.end_date).to be_nil
+  end
+
+  it "grants one when an earlier Gratis-Abo ended for another reason" do
+    subscribe(Date.new(2024, 1, 1), subscription_type: "gratis_abo",
+      end_date: Date.new(2024, 12, 31), cancellation_reason: "kint")
+
+    expect { trial.create }.to change { person.magazine_subscriptions.count }.by(2)
+    expect(person.magazine_subscriptions.where(subscription_type: "gratis_abo").count).to eq(2)
   end
 end

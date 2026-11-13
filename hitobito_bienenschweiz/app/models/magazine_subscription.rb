@@ -13,7 +13,6 @@ class MagazineSubscription < ApplicationRecord
     abo
     abo_eur
     gratis_abo
-    schnupper_abo
     online_abo
     geschenk_abo
     buchhaendler_abo

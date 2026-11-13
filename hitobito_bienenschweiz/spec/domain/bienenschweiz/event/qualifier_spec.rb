@@ -27,11 +27,11 @@ describe Event::Qualifier do
     described_class.for(participation).apply
   end
 
-  it "grants a Schnupper-Abo when a participant gets qualified" do
+  it "grants a Gratis-Abo when a participant gets qualified" do
     qualify
 
     expect(person.magazine_subscriptions.pluck(:subscription_type))
-      .to match_array(%w[schnupper_abo abo])
+      .to match_array(%w[gratis_abo abo])
     expect(person.roles.where(type: Group::BienenZeitung::Abonnent.sti_name).count).to eq(1)
   end
 
