@@ -14,6 +14,10 @@ module Invoices
       BACKLOG_ID = 0
       TYPE = "Product"
       DISPATCH_TYPE = "Letter"
+      COMMENT_MAX_LENGTH = 60
+
+      # The Abacus mandant of BienenSchweiz does not accept dates before this one.
+      EARLIEST_DATE = Date.new(2027, 1, 1)
 
       # TODO: Placeholders taken over from the SAC magazine invoices
       # until the Abacus mandant of BienenSchweiz is set up.
@@ -59,23 +63,29 @@ module Invoices
       end
 
       def sales_order_attrs # rubocop:disable Metrics/AbcSize
-        fake_date = 1.year.from_now.to_date
         {
           customer_id: entity.person.abacus_subject_key,
-          # order_date: entity.created_at.to_date,
-          # delivery_date: entity.sent_at,
-          # invoice_date: entity.sent_at,
-          # invoice_value_date: entity.issued_at,
-          order_date: fake_date,
-          delivery_date: fake_date + 20.days,
-          invoice_date: fake_date,
-          invoice_value_date: fake_date,
+          order_date: abacus_date(entity.created_at.to_date),
+          delivery_date: abacus_date(entity.sent_at),
+          invoice_date: abacus_date(entity.sent_at),
+          invoice_value_date: abacus_date(entity.issued_at),
           total_amount: entity.total.to_f,
           language: entity.person.language,
           document_code_invoice: DOCUMENT_CODES.fetch(entity.invoice_kind),
           process_flow_number: PROCESS_FLOW_NUMBERS.fetch(entity.invoice_kind),
+          comment: comment,
           user_fields: order_user_fields
-        }
+        }.compact
+      end
+
+      # Abacus only accepts dates from EARLIEST_DATE on. Earlier invoice dates are moved
+      # to EARLIEST_DATE and the real ones are kept in the (internal) comment.
+      def comment
+        return unless dates_moved?
+
+        I18n.t("invoices.abacus.original_dates",
+          invoice_date: I18n.l(entity.sent_at),
+          value_date: I18n.l(entity.issued_at))[0, COMMENT_MAX_LENGTH]
       end
 
       def order_user_fields
@@ -84,6 +94,16 @@ module Invoices
           user_field2: SOURCE_SYSTEM,
           user_field3: DISPATCH_TYPE
         }
+      end
+
+      def abacus_date(date)
+        [date, EARLIEST_DATE].max
+      end
+
+      def dates_moved?
+        [entity.created_at.to_date, entity.sent_at, entity.issued_at].any? do |date|
+          date < EARLIEST_DATE
+        end
       end
 
       def sales_order_position_attrs(position, index)

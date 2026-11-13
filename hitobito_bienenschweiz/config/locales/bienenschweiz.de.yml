@@ -290,6 +290,8 @@ de:
   invoices:
     magazine_subscription:
       position: "%{subscription_type} %{period}"
+    abacus:
+      original_dates: "Effektiv: Rechnung %{invoice_date}, Valuta %{value_date}"
     errors:
       create_subject_failed: Rechnung konnte nicht erstellt werden, da die Person nicht als Kunde in Abacus erfasst werden konnte
       article_missing: Rechnung konnte nicht erstellt werden, da für %{subscription_type} kein Abacus Artikel konfiguriert ist

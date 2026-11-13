@@ -75,11 +75,12 @@ describe Invoices::Abacus::SalesOrderInterface do
         json = JSON.parse(request.body[/^\{.*\}\r$/])
         expect(json).to include(
           "CustomerId" => 7,
-          "InvoiceDate" => "2026-10-07",
-          "InvoiceValueDate" => "2026-12-01",
+          "InvoiceDate" => "2027-01-01",
+          "InvoiceValueDate" => "2027-01-01",
           "TotalAmount" => 85.0,
           "Language" => "de",
-          "DocumentCodeInvoice" => "RA",
+          "DocumentCodeInvoice" => "R10",
+          "Comment" => "Effektiv: Rechnung 07.10.2026, Valuta 01.12.2026",
           "ProcessFlowNumber" => 4,
           "UserFields" => {"UserField1" => invoice.id.to_s, "UserField2" => "hitobito",
                            "UserField3" => "Letter"}
