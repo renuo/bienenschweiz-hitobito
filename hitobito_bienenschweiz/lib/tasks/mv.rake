@@ -1019,6 +1019,12 @@ namespace :mv do
       bienen_zeitung = Group::BienenZeitung.first!
       subscriber_role = Group::BienenZeitung::Abonnent.sti_name
       text = ->(value) { value.to_s.strip.presence }
+      # start of the free subscriptions bridging the time until a subscription starts in the future
+      # (all imported subscriptions start on the first of a month)
+      import_date = ENV["IMPORT_DATE"].present? ? Date.parse(ENV["IMPORT_DATE"]) : Time.zone.today
+      import_date = import_date.beginning_of_month
+      # ended subscriptions require a cancellation reason, use the one of the Schnupper-Abo
+      gratis_cancellation_reason = "jahr"
 
       # errors of the members import by MV member id, to explain why a member is missing
       invalid_members_path = args[:invalid_members_path] || "invalid_members.csv"
@@ -1074,34 +1080,64 @@ namespace :mv do
           puts "Ignoring cancellation reason #{reason} of running subscription of #{number}"
         end
 
-        billing_date = text.call(row["nächster Verrechnungstermin"])
-        raise "Missing next billing date" unless billing_date
-
-        gifter_number = text.call(row["geschenkabo von Kunde"])
-        subscription_type = if gifter_number
-          "geschenk_abo"
-        elsif text.call(row["GR Abo"])
-          "gratis_abo"
-        else
-          subscription_types.fetch(text.call(row["artikelnummer"])) do |article|
-            raise "Unknown article number #{article}"
-          end
-        end
-
         person = find_person.call(number)
-        subscription = person.magazine_subscriptions.where(
-          subscription_type:,
-          start_date: Date.strptime(billing_date, "%d.%m.%Y").prev_year,
-          gifter: gifter_number && find_person.call(gifter_number)
-        ).first_or_initialize
-        subscription.amount = Integer(row["Anzahl"])
+        amount = Integer(row["Anzahl"])
+        subscriptions = []
+
+        billing_date = text.call(row["nächster Verrechnungstermin"])
+        if billing_date
+          gifter_number = text.call(row["geschenkabo von Kunde"])
+          subscription_type = if gifter_number
+            "geschenk_abo"
+          else
+            subscription_types.fetch(text.call(row["artikelnummer"])) do |article|
+              raise "Unknown article number #{article}"
+            end
+          end
+
+          # The first period of a subscription is never invoiced by hitobito, so it has to start
+          # one year before the next billing date to be invoiced on that date. Some billing dates
+          # were modified manually as workarounds, all subscriptions start on the first of a month.
+          start_date = Date.strptime(billing_date, "%d.%m.%Y").beginning_of_month.prev_year
+          subscriptions << person.magazine_subscriptions.where(
+            subscription_type:,
+            start_date:,
+            gifter: gifter_number && find_person.call(gifter_number)
+          ).first_or_initialize
+
+          # A free subscription bridges the time until a subscription starting in the future.
+          # GR Abos got their first year for free, so they get at least one free year before.
+          gratis_start_date = import_date
+          if text.call(row["GR Abo"])
+            gratis_start_date = [gratis_start_date, start_date.prev_year].min
+          end
+          if gratis_start_date < start_date
+            gratis = person.magazine_subscriptions.where(
+              subscription_type: "gratis_abo",
+              end_date: start_date - 1.day
+            ).first_or_initialize
+            if gratis.new_record? || gratis_start_date < gratis.start_date
+              gratis.start_date = gratis_start_date
+            end
+            gratis.cancellation_reason = gratis_cancellation_reason
+            subscriptions << gratis
+          end
+        else
+          # subscriptions without next billing date are never invoiced
+          subscriptions << person.magazine_subscriptions.where(
+            subscription_type: "gratis_abo",
+            end_date: nil
+          ).first_or_initialize(start_date: import_date)
+        end
+        subscriptions.each { |subscription| subscription.amount = amount }
 
         MagazineSubscription.transaction do
           unless person.roles.exists?(type: subscriber_role)
             person.roles.create!(type: subscriber_role, group: bienen_zeitung)
           end
-          subscription.save!
+          subscriptions.each(&:save!)
         end
+        stats[:gratis] += subscriptions.count(&:gratis_abo?)
         stats[:imported] += 1
       rescue => e
         stats[:failed] += 1
