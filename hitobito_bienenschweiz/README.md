@@ -50,7 +50,7 @@ of Bienenschweiz.
 * Sektion < Kantonalverband
   * Sektion
   * Siegelimker/in
-    * Siegelimker/in: [:layer_read]
+    * Siegelimker/in: []
   * Administrator
     * Admin Sektion: [:layer_and_below_full]
     * Veranstaltungen/Kurse: [:layer_events, :layer_read]
