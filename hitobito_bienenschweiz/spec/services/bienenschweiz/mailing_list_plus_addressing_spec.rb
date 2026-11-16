@@ -66,6 +66,19 @@ describe Bienenschweiz::MailingListPlusAddressing do
     expect(list.messages.sole.mail_log.status).to eq("sender_rejected")
   end
 
+  it "omits the posting address from a list without a mail name" do
+    list.mail_name = nil
+
+    expect(list.mail_address).to be_nil
+  end
+
+  it "discards a tagged message with no usable sender" do
+    expect do
+      retriever.process_mail(incoming_mail(to: tagged_address, from: nil))
+    end.not_to change(MailLog, :count)
+    expect(retriever).to have_received(:delete_mail).with(42)
+  end
+
   context "without the opt-in" do
     let(:flag) { false }
 
@@ -73,18 +86,29 @@ describe Bienenschweiz::MailingListPlusAddressing do
       expect(list.mail_address).to eq("mytest@#{Settings.email.list_domain}")
       retriever.process_mail(incoming_mail(to: mailbox, original_to: "mytest@example.com"))
 
-      expect(list.messages.sole.mail_log.status).to eq("retrieved")
+      message = list.messages.sole
+      expect(message.mail_log.status).to eq("retrieved")
+      outbound = Messages::BulkMail::MailFactory.new(message).instance_variable_get(:@mail)
+      expect(outbound.from).to eq([list.mail_address])
+    end
+
+    it "keeps the core recipient validation and sender extraction" do
+      message = incoming_mail(to: mailbox)
+      expect(MailingLists::BulkMail::ImapMailValidator.new(message)).to be_valid_mail
+
+      message_without_envelope_sender = incoming_mail(to: mailbox, imap_sender: false)
+      expect(message_without_envelope_sender.sender_email).to be_nil
     end
   end
 
-  def incoming_mail(to:, original_to: nil)
-    source = Mail.new(from: "Original Sender <#{sender}>", to:, subject: "Plus addressing",
+  def incoming_mail(to:, original_to: nil, from: "Original Sender <#{sender}>", imap_sender: !flag)
+    source = Mail.new(from:, to:, subject: "Plus addressing",
       body: "Test")
     source["Return-Path"] = "<#{sender}>"
     source["X-Original-To"] = original_to if original_to
     sender_address = Net::IMAP::Address.new("Original Sender", nil, "sender", "example.net")
     recipient = Net::IMAP::Address.new(nil, nil, "mailingliste", "example.com")
-    envelope_sender = flag ? nil : [sender_address]
+    envelope_sender = [sender_address] if imap_sender
     envelope = Net::IMAP::Envelope.new(nil, source.subject, nil, envelope_sender, nil, [recipient])
     Imap::Mail.build(Net::IMAP::FetchData.new(1,
       {"UID" => 42, "ENVELOPE" => envelope, "RFC822" => source.encoded}))

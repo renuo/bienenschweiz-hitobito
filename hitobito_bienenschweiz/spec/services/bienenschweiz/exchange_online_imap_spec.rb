@@ -67,11 +67,52 @@ describe "Exchange Online IMAP" do
     expect(imap).to have_received(:disconnect)
   end
 
+  it "reuses an already authenticated connection for the next IMAP operation" do
+    allow(token_client).to receive(:access_token).and_return("token")
+    allow(Net::IMAP).to receive(:new).with("outlook.office365.com", port: 993, ssl: true)
+      .and_return(imap)
+    allow(imap).to receive(:authenticate)
+    allow(imap).to receive(:select).with("INBOX")
+    allow(imap).to receive(:uid_search).with(["ALL"]).and_return([42])
+
+    connector = Imap::Connector.new
+    connector.send(:connect)
+    expect(connector.fetch_mail_uids(:inbox)).to eq([42])
+    expect(imap).to have_received(:authenticate).with("XOAUTH2", mailbox, "token").once
+    expect(imap).to have_received(:disconnect).once
+  end
+
+  it "surfaces token failures before opening an IMAP connection" do
+    allow(token_client).to receive(:access_token).and_raise(token_client::Error,
+      "Token unavailable")
+    expect(Net::IMAP).not_to receive(:new)
+
+    expect { Imap::Connector.new.fetch_mail_uids(:inbox) }
+      .to raise_error(token_client::Error, "Token unavailable")
+  end
+
+  it "reports incomplete IMAP settings" do
+    retriever.config = nil
+
+    expect { MailConfig.retriever_imap }
+      .to raise_error(token_client::Error, /address and user_name/)
+  end
+
   it "keeps the legacy retriever when OAuth is disabled and there is no mail.yml" do
     configuration.transform_values! { nil }
     allow(MailConfig).to receive(:load_file).and_return(nil)
 
     expect(JobManager.new.send(:mail_jobs)).to eq(MailRelayJob)
+
+    expect(Net::IMAP).to receive(:new).with("outlook.office365.com", port: 993, ssl: true)
+      .and_return(imap)
+    expect(imap).to receive(:login).with(mailbox, nil)
+    allow(imap).to receive(:select).with("INBOX")
+    allow(imap).to receive(:uid_search).with(["ALL"]).and_return([42])
+    expect(imap).to receive(:close)
+    expect(imap).to receive(:disconnect)
+
+    expect(Imap::Connector.new.fetch_mail_uids(:inbox)).to eq([42])
   end
 
   it "rejects incomplete OAuth configuration instead of falling back to legacy authentication" do
