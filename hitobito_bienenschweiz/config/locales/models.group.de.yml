@@ -203,15 +203,15 @@ de:
         one: Passivmitglied
         other: Passivmitglieder
 
-      group/kader:
+      group/fachpersonen:
         one: Fachpersonen
         other: Fachpersonen
-      group/kader/fachperson_bildung:
+      group/fachpersonen/fachperson_bildung:
         one: Fachperson Bildung
         other: Fachpersonen Bildung
-      group/kader/fachperson_produkte:
+      group/fachpersonen/fachperson_produkte:
         one: Fachperson Produkte
         other: Fachpersonen Produkte
-      group/kader/fachperson_zucht_vermehrung:
+      group/fachpersonen/fachperson_zucht_vermehrung:
         one: Fachperson Zucht & Vermehrung
         other: Fachpersonen Zucht & Vermehrung

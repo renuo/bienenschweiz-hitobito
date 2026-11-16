@@ -70,7 +70,7 @@ of Bienenschweiz.
     * Kassier/in: [:layer_read]
     * Aktuar/in: [:layer_read]
     * Beisitzer/in: [:layer_read]
-  * Kader
+  * Fachpersonen
     * Fachperson Bildung: [:layer_read]
     * Fachperson Produkte: [:layer_read]
     * Fachperson Zucht & Vermehrung: [:layer_read]

@@ -8,7 +8,7 @@
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::BlankInspectionsController, type: :request do
-  let(:group) { groups(:kader_380) }
+  let(:group) { groups(:fachpersonen_380) }
   let(:fachperson_produkte) { Fabricate(:fachperson_produkte, group_id: group.id) }
   let(:auth_headers) { {"Access-Token": fachperson_produkte.beeaudit_authentication_token} }
 
@@ -85,8 +85,8 @@ RSpec.describe Api::Mobile::V1::BlankInspectionsController, type: :request do
       end
       let(:fachperson_produkte_section) {
         fachperson_produkte.groups
-          .where(type: Group::Kader.sti_name)
-          .where(roles: {type: Group::Kader::FachpersonProdukte.sti_name}).first.parent
+          .where(type: Group::Fachpersonen.sti_name)
+          .where(roles: {type: Group::Fachpersonen::FachpersonProdukte.sti_name}).first.parent
       }
 
       it "assigns the intern structure where the user is fachperson_produkte" do
@@ -111,8 +111,8 @@ RSpec.describe Api::Mobile::V1::BlankInspectionsController, type: :request do
       end
       let(:fachperson_produkte_section) {
         fachperson_produkte.groups
-          .where(type: Group::Kader.sti_name)
-          .where(roles: {type: Group::Kader::FachpersonProdukte.sti_name}).first.parent
+          .where(type: Group::Fachpersonen.sti_name)
+          .where(roles: {type: Group::Fachpersonen::FachpersonProdukte.sti_name}).first.parent
       }
 
       before do

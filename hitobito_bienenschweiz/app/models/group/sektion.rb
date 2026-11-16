@@ -12,11 +12,11 @@ class Group::Sektion < ::Group
 
   self.default_children = [
     Group::Siegelimker, Group::SektionAdministrator, Group::SektionMitglieder,
-    Group::SektionVorstand, Group::Kader
+    Group::SektionVorstand, Group::Fachpersonen
   ]
 
   children Group::Siegelimker, Group::SektionAdministrator, Group::SektionMitglieder,
-    Group::SektionVorstand, Group::Kader
+    Group::SektionVorstand, Group::Fachpersonen
 
   ### ROLES
 

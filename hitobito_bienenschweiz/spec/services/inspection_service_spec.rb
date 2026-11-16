@@ -153,11 +153,11 @@ describe InspectionService do
 
   describe "inspector assignment" do
     context "for a Sektion" do
-      let(:kader_group) { Fabricate(:group, type: Group::Kader.sti_name, parent: sektion) }
+      let(:fachpersonen_group) { Fabricate(:group, type: Group::Fachpersonen.sti_name, parent: sektion) }
       let(:inspector) { Fabricate(:person) }
       let!(:inspector_role) do
-        Fabricate(:role, person: inspector, group: kader_group,
-          type: Group::Kader::FachpersonProdukte.sti_name)
+        Fabricate(:role, person: inspector, group: fachpersonen_group,
+          type: Group::Fachpersonen::FachpersonProdukte.sti_name)
       end
       let!(:beekeeper_role) { Fabricate(:siegel_imker_role, sektion: sektion) }
 
@@ -166,7 +166,7 @@ describe InspectionService do
           .and_return(mail_double)
       end
 
-      it "uses FachpersonProdukte from the Kader group as inspectors" do
+      it "uses FachpersonProdukte from the Fachpersonen group as inspectors" do
         result = service.build_structure_mails([sektion],
           :sectional_inspection_reminder_mail)
         expect(result.first.reminder.inspector_emails).to include(inspector.email)
