@@ -264,6 +264,11 @@ de:
       subscriptions: Abos
       total_amount: Total Anzahl
 
+  groups:
+    global:
+      link:
+        deleted_person: Inaktive Rollen
+
   people:
     roles_aside:
       spesen_sektion: Spesen Sektion

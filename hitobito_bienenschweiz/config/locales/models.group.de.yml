@@ -204,8 +204,8 @@ de:
         other: Passivmitglieder
 
       group/kader:
-        one: Kader
-        other: Kader
+        one: Fachpersonen
+        other: Fachpersonen
       group/kader/fachperson_bildung:
         one: Fachperson Bildung
         other: Fachpersonen Bildung

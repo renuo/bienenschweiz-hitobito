@@ -38,7 +38,7 @@ kader_380:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
   lft: 6
   rgt: 7
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_381:
   parent: aarau_und_umgebung
@@ -66,7 +66,7 @@ kader_383:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
   lft: 14
   rgt: 15
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_384:
   parent: aargauisches_seetal
@@ -94,7 +94,7 @@ kader_368:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
   lft: 22
   rgt: 23
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_369:
   parent: baden
@@ -143,7 +143,7 @@ kader_98:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
   lft: 124
   rgt: 125
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_99:
   parent: aarberg
@@ -171,7 +171,7 @@ kader_62:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
   lft: 132
   rgt: 133
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_63:
   parent: bern_mittelland
@@ -199,7 +199,7 @@ kader_602:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
   lft: 140
   rgt: 141
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_603:
   parent: bienengantrisch
@@ -234,7 +234,7 @@ kader_212:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
   lft: 310
   rgt: 311
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_213:
   parent: bienen_thal
@@ -262,7 +262,7 @@ kader_200:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
   lft: 318
   rgt: 319
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_201:
   parent: bienendorneck
@@ -290,7 +290,7 @@ kader_206:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
   lft: 326
   rgt: 327
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_207:
   parent: bucheggberg
@@ -325,7 +325,7 @@ kader_314:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
   lft: 400
   rgt: 401
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_315:
   parent: albula_surses
@@ -353,7 +353,7 @@ kader_317:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
   lft: 408
   rgt: 409
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_318:
   parent: bienenverein_am_hinterrhein
@@ -381,7 +381,7 @@ kader_323:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
   lft: 416
   rgt: 417
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_324:
   parent: bregaglia_bergell
@@ -416,7 +416,7 @@ kader_185:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
   lft: 508
   rgt: 509
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_186:
   parent: deutschfreiburger_seebezirk
@@ -444,7 +444,7 @@ kader_182:
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
   lft: 516
   rgt: 517
-  name: Kader
+  name: Fachpersonen
   type: Group::Kader
 sektion_admin_183:
   parent: freiburger_sensebezirk
