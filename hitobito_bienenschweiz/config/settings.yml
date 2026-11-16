@@ -28,6 +28,9 @@ application:
 # to this address to set a password.
 root_email: hitobito-bienenschweiz@renuo.ch
 
+email:
+  mailing_list_plus_addressing: <%= ENV['BIENENSCHWEIZ_MAILING_LIST_PLUS_ADDRESSING'] == 'true' %>
+
 phone_number:
   custom_label:
     enabled: false
