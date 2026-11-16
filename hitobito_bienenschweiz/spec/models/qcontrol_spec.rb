@@ -130,7 +130,9 @@ describe Qcontrol do
   end
 
   describe "fee creation" do
-    let(:fachpersonen_group) { Fabricate(:group, parent: group, type: Group::Fachpersonen.sti_name) }
+    let(:fachpersonen_group) do
+      Fabricate(:group, parent: group, type: Group::Fachpersonen.sti_name)
+    end
     let(:inspector) { Fabricate(:fachperson_produkte, group_id: fachpersonen_group.id) }
     let(:qcontrol) do
       Fabricate(:qcontrol, person: person, group: group, inspector: inspector,

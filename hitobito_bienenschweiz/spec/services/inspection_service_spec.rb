@@ -153,7 +153,9 @@ describe InspectionService do
 
   describe "inspector assignment" do
     context "for a Sektion" do
-      let(:fachpersonen_group) { Fabricate(:group, type: Group::Fachpersonen.sti_name, parent: sektion) }
+      let(:fachpersonen_group) do
+        Fabricate(:group, type: Group::Fachpersonen.sti_name, parent: sektion)
+      end
       let(:inspector) { Fabricate(:person) }
       let!(:inspector_role) do
         Fabricate(:role, person: inspector, group: fachpersonen_group,

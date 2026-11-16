@@ -15,7 +15,8 @@ describe People::UpdateAfterRoleChangeJob do
   before { allow(Person).to receive(:root).and_return(people(:admin)) }
 
   def add_role(group, **attrs)
-    Fabricate(:role, group:, person:, type: Group::Fachpersonen::FachpersonBildung.sti_name, **attrs)
+    Fabricate(:role, group:, person:,
+      type: Group::Fachpersonen::FachpersonBildung.sti_name, **attrs)
   end
 
   it "un-sets the Spesen Sektion once the only eligible role has expired" do

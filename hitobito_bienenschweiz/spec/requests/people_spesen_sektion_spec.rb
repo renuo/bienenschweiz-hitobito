@@ -35,7 +35,8 @@ RSpec.describe PeopleController, type: :request do
       expect(html).to have_css("a.spesen-sektion-#{fachpersonen.id}[title='Spesen Sektion']")
       expect(html).to have_css("a.spesen-sektion-#{fachpersonen.id} i.fas.fa-money-bill-1")
       expect(html).to have_css(
-        "a.spesen-sektion-#{other_fachpersonen.id}[title='Spesen Sektion setzen'] i.far.fa-money-bill-1"
+        "a.spesen-sektion-#{other_fachpersonen.id}[title='Spesen Sektion setzen'] " \
+        "i.far.fa-money-bill-1"
       )
       expect(html).not_to have_css("a.spesen-sektion-#{groups(:vorstand_379).id}")
     end

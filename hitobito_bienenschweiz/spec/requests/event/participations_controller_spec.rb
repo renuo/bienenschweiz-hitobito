@@ -318,7 +318,9 @@ RSpec.describe "Event::ParticipationsController", type: :request do
         "group is a sub group like Fachpersonen" do
         let(:group) { groups(:aargauer_kantonalverband) }
         let(:sektion) { Fabricate(:sektion) }
-        let(:fachpersonen_group) { Fabricate(:group, parent: sektion, type: Group::Fachpersonen.sti_name) }
+        let(:fachpersonen_group) do
+          Fabricate(:group, parent: sektion, type: Group::Fachpersonen.sti_name)
+        end
         let!(:participant) { Fabricate(:person) }
 
         before do

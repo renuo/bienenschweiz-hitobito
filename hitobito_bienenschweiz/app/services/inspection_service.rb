@@ -85,7 +85,10 @@ class InspectionService
   def sektion_inspectors(sektion)
     fachpersonen_groups = Group.where(type: Group::Fachpersonen.sti_name, parent_id: sektion.id)
     Person.joins(:roles)
-      .where(roles: {type: Group::Fachpersonen::FachpersonProdukte.sti_name, group: fachpersonen_groups})
+      .where(roles: {
+        type: Group::Fachpersonen::FachpersonProdukte.sti_name,
+        group: fachpersonen_groups
+      })
       .merge(Role.active)
       .distinct
   end
