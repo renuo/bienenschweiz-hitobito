@@ -23,7 +23,7 @@ namespace :mv do
     }.freeze
     # Codes of the sektionen below "9000 Unzugeordnete" that are not imported.
     # Their memberships are not imported either.
-    SKIPPED_SEKTION_CODES = [].freeze
+    SKIPPED_SEKTION_CODES = [211, 216, 225, 226, 1106, 1110, 1810, 1815, 9002, 21_400].freeze
 
     desc "Import the MV members that have at least one imported role or a running " \
          "magazine subscription in the selectline CSV export (run after groups)"
