@@ -16,6 +16,15 @@ namespace :mv do
     DOCUMENT_ID_OFFSET = 10_000
     MEMO_ID_OFFSET = 10_000
 
+    # Groups that get another name than in MV, by their code
+    GROUP_NAMES = {
+      9000 => "Weitere",
+      9001 => "Lichtensteiner Imkerverein"
+    }.freeze
+    # Codes of the sektionen below "9000 Unzugeordnete" that are not imported.
+    # Their memberships are not imported either.
+    SKIPPED_SEKTION_CODES = [211, 216, 225, 226, 1106, 1110, 1810, 1815, 9002, 21_400].freeze
+
     desc "Import the MV members that have at least one imported role or a running " \
          "magazine subscription in the selectline CSV export (run after groups)"
     task :members, [:abo_path] => :environment do |_, args|
@@ -275,9 +284,10 @@ namespace :mv do
 
       root_group = Group::Dachverband.first
       InternStructure.where(structure_type: InternStructure.structure_types[:verband]).find_each do |verband|
-        group = Group::Kantonalverband.where(name: verband.name).first_or_initialize do |group|
-          group.id = verband.id + GROUP_ID_OFFSET
-        end
+        name = group_name(verband)
+        group = Group::Kantonalverband.where(name: [verband.name, name])
+          .first_or_initialize { |group| group.id = verband.id + GROUP_ID_OFFSET }
+        group.name = name
         group.parent = root_group
         group.code = verband.code
         group.created_at = verband.created_at
@@ -287,9 +297,13 @@ namespace :mv do
       end
 
       InternStructure.where(structure_type: InternStructure.structure_types[:sektion]).find_each do |sektion|
-        group = Group::Sektion.where(name: sektion.name).first_or_initialize do |group|
+        next if skipped_structure?(sektion)
+
+        name = group_name(sektion)
+        group = Group::Sektion.where(name: [sektion.name, name]).first_or_initialize do |group|
           group.id = sektion.id + GROUP_ID_OFFSET
         end
+        group.name = name
         group.parent = Group::Kantonalverband.find(sektion.parent_id + GROUP_ID_OFFSET)
         group.code = sektion.code
         group.member_count = sektion.member_count
@@ -303,6 +317,14 @@ namespace :mv do
         end
         try_add_website(group, sektion)
       end
+    end
+
+    def group_name(intern_structure)
+      GROUP_NAMES.fetch(intern_structure.code.to_i, intern_structure.name)
+    end
+
+    def skipped_structure?(intern_structure)
+      intern_structure.sektion? && SKIPPED_SEKTION_CODES.include?(intern_structure.code.to_i)
     end
 
     def try_add_website(group, intern_structure)
@@ -443,6 +465,8 @@ namespace :mv do
 
     # The role type and group a membership is imported as, nil if it is not imported.
     def importable_role(membership)
+      return if skipped_structure?(membership.intern_structure)
+
       role_type = find_role(membership)
       return unless role_type.is_a?(Class) && !ended_admin_role?(role_type, membership)
 
@@ -493,6 +517,7 @@ namespace :mv do
       scope = Membership
       total = scope.count
       mapped_count = 0
+      skipped_count = 0
       unknown_mappings = []
       scope.includes(:role, :intern_structure).find_each do |membership|
         role_type = find_role(membership)
@@ -506,6 +531,11 @@ namespace :mv do
           next
         end
         next if ended_admin_role?(role_type, membership)
+
+        if skipped_structure?(membership.intern_structure)
+          skipped_count += 1
+          next
+        end
 
         group = role_group(membership, role_type)
         raise "No group for #{role_type} of membership #{membership.id}" unless group
@@ -528,7 +558,7 @@ namespace :mv do
       rescue StandardError => e
         puts e.message
       end
-      puts "Mapped #{mapped_count}/#{total} roles"
+      puts "Mapped #{mapped_count}/#{total} roles (#{skipped_count} on skipped sektionen)"
       puts "#{unknown_mappings.count} unknown mappings:"
       unknown_mappings.each do |role, structure_type|
         puts "#{role.name} (#{role.name_t}) on #{structure_type}"
