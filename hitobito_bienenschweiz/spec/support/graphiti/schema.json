@@ -745,6 +745,12 @@
           "writable": false,
           "description": null
         },
+        "description_html": {
+          "type": "string",
+          "readable": true,
+          "writable": false,
+          "description": null
+        },
         "application_conditions": {
           "type": "string",
           "readable": true,
@@ -1655,6 +1661,12 @@
           "description": null
         },
         "description": {
+          "type": "string",
+          "readable": true,
+          "writable": false,
+          "description": null
+        },
+        "description_html": {
           "type": "string",
           "readable": true,
           "writable": false,
@@ -3974,18 +3986,6 @@
           "writable": false,
           "description": null
         },
-        "start_on": {
-          "type": "date",
-          "readable": true,
-          "writable": false,
-          "description": null
-        },
-        "end_on": {
-          "type": "date",
-          "readable": true,
-          "writable": false,
-          "description": null
-        },
         "name": {
           "type": "string",
           "readable": true,
@@ -4016,6 +4016,18 @@
           "writable": true,
           "description": null
         },
+        "start_on": {
+          "type": "date",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
+        "end_on": {
+          "type": "date",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
         "export_to_website": {
           "type": "boolean",
           "readable": true,
@@ -4028,12 +4040,12 @@
         "id": {},
         "created_at": {},
         "updated_at": {},
-        "start_on": {},
-        "end_on": {},
         "person_id": {},
         "group_id": {},
         "type": {},
         "label": {},
+        "start_on": {},
+        "end_on": {},
         "export_to_website": {}
       },
       "filters": {
@@ -4070,28 +4082,6 @@
             "lte"
           ]
         },
-        "start_on": {
-          "type": "date",
-          "operators": [
-            "eq",
-            "not_eq",
-            "gt",
-            "gte",
-            "lt",
-            "lte"
-          ]
-        },
-        "end_on": {
-          "type": "date",
-          "operators": [
-            "eq",
-            "not_eq",
-            "gt",
-            "gte",
-            "lt",
-            "lte"
-          ]
-        },
         "person_id": {
           "type": "integer",
           "operators": [
@@ -4142,6 +4132,28 @@
             "not_suffix",
             "match",
             "not_match"
+          ]
+        },
+        "start_on": {
+          "type": "date",
+          "operators": [
+            "eq",
+            "not_eq",
+            "gt",
+            "gte",
+            "lt",
+            "lte"
+          ]
+        },
+        "end_on": {
+          "type": "date",
+          "operators": [
+            "eq",
+            "not_eq",
+            "gt",
+            "gte",
+            "lt",
+            "lte"
           ]
         },
         "active": {
