@@ -19,7 +19,7 @@ describe Person do
     end
 
     context "with one active role as an inspector" do
-      let(:group) { groups(:kader_380) }
+      let(:group) { groups(:fachpersonen_380) }
       let(:person) { Fabricate(:fachperson_produkte, group_id: group.id) }
 
       it "returns Sektion of that group" do
@@ -37,7 +37,7 @@ describe Person do
     end
 
     context "with multiple roles as both inspector and chairman" do
-      let(:group) { groups(:kader_380) }
+      let(:group) { groups(:fachpersonen_380) }
       let(:person) { Fabricate(:fachperson_produkte, group_id: group.id) }
       let(:other_verband) { Fabricate(:kantonalverband) }
       let!(:other_sektion) { Fabricate(:sektion, parent: other_verband, name: "AAA") }
@@ -54,14 +54,14 @@ describe Person do
     end
 
     context "with multiple active roles as inspector" do
-      let(:group) { groups(:kader_380) }
-      let(:other_kader_group) { groups(:kader_602) }
+      let(:group) { groups(:fachpersonen_380) }
+      let(:other_fachpersonen_group) { groups(:fachpersonen_602) }
       let(:person) { Fabricate(:fachperson_produkte, group_id: group.id) }
 
       let!(:other_inspector_role) {
         Fabricate(:role,
-          group_id: other_kader_group.id,
-          type: Group::Kader::FachpersonProdukte, person:)
+          group_id: other_fachpersonen_group.id,
+          type: Group::Fachpersonen::FachpersonProdukte, person:)
       }
       let(:other_verband) { Fabricate(:kantonalverband) }
       let!(:other_sektion) { Fabricate(:sektion, parent: other_verband, name: "AAA") }
@@ -82,7 +82,7 @@ describe Person do
 
   describe "#inspectable_intern_structures" do
     context "with one active role as an inspector" do
-      let(:group) { groups(:kader_380) }
+      let(:group) { groups(:fachpersonen_380) }
       let(:sektion) { groups(:aarau_und_umgebung) }
       let(:person) { Fabricate(:fachperson_produkte, group_id: group.id) }
 
@@ -154,12 +154,12 @@ describe Person do
     let(:aargau_canton) { groups(:aargauer_kantonalverband) }
     let(:bern_canton) { groups(:berner_kantonalverband) }
     let(:aarau) { groups(:aarau_und_umgebung) }
-    let(:aarau_kader) { groups(:kader_380) }
+    let(:aarau_fachpersonen) { groups(:fachpersonen_380) }
     let(:seetal) { groups(:aargauisches_seetal) }
     let(:aarberg) { groups(:aarberg) }
     let(:bern_mittelland) { groups(:bern_mittelland) }
     let(:aarau_inspector) do
-      Fabricate(:fachperson_produkte, group_id: aarau_kader.id, last_name: "Inspektor")
+      Fabricate(:fachperson_produkte, group_id: aarau_fachpersonen.id, last_name: "Inspektor")
     end
     let(:bern_inspector) do
       Fabricate(:honey_chairman, group_id: bern_canton.id)

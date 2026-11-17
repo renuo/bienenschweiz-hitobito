@@ -33,13 +33,13 @@ vorstand_379:
   rgt: 5
   name: Vorstand
   type: Group::SektionVorstand
-kader_380:
+fachpersonen_380:
   parent: aarau_und_umgebung
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
   lft: 6
   rgt: 7
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_381:
   parent: aarau_und_umgebung
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarau_und_umgebung)%>"
@@ -61,13 +61,13 @@ vorstand_382:
   rgt: 13
   name: Vorstand
   type: Group::SektionVorstand
-kader_383:
+fachpersonen_383:
   parent: aargauisches_seetal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
   lft: 14
   rgt: 15
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_384:
   parent: aargauisches_seetal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargauisches_seetal)%>"
@@ -89,13 +89,13 @@ vorstand_367:
   rgt: 21
   name: Vorstand
   type: Group::SektionVorstand
-kader_368:
+fachpersonen_368:
   parent: baden
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
   lft: 22
   rgt: 23
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_369:
   parent: baden
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:baden)%>"
@@ -138,13 +138,13 @@ vorstand_97:
   rgt: 123
   name: Vorstand
   type: Group::SektionVorstand
-kader_98:
+fachpersonen_98:
   parent: aarberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
   lft: 124
   rgt: 125
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_99:
   parent: aarberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aarberg)%>"
@@ -166,13 +166,13 @@ vorstand_61:
   rgt: 131
   name: Vorstand
   type: Group::SektionVorstand
-kader_62:
+fachpersonen_62:
   parent: bern_mittelland
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
   lft: 132
   rgt: 133
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_63:
   parent: bern_mittelland
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bern_mittelland)%>"
@@ -194,13 +194,13 @@ vorstand_601:
   rgt: 139
   name: Vorstand
   type: Group::SektionVorstand
-kader_602:
+fachpersonen_602:
   parent: bienengantrisch
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
   lft: 140
   rgt: 141
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_603:
   parent: bienengantrisch
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienengantrisch)%>"
@@ -229,13 +229,13 @@ vorstand_211:
   rgt: 309
   name: Vorstand
   type: Group::SektionVorstand
-kader_212:
+fachpersonen_212:
   parent: bienen_thal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
   lft: 310
   rgt: 311
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_213:
   parent: bienen_thal
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienen_thal)%>"
@@ -257,13 +257,13 @@ vorstand_199:
   rgt: 317
   name: Vorstand
   type: Group::SektionVorstand
-kader_200:
+fachpersonen_200:
   parent: bienendorneck
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
   lft: 318
   rgt: 319
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_201:
   parent: bienendorneck
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienendorneck)%>"
@@ -285,13 +285,13 @@ vorstand_205:
   rgt: 325
   name: Vorstand
   type: Group::SektionVorstand
-kader_206:
+fachpersonen_206:
   parent: bucheggberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
   lft: 326
   rgt: 327
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_207:
   parent: bucheggberg
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bucheggberg)%>"
@@ -320,13 +320,13 @@ vorstand_313:
   rgt: 399
   name: Vorstand
   type: Group::SektionVorstand
-kader_314:
+fachpersonen_314:
   parent: albula_surses
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
   lft: 400
   rgt: 401
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_315:
   parent: albula_surses
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:albula_surses)%>"
@@ -348,13 +348,13 @@ vorstand_316:
   rgt: 407
   name: Vorstand
   type: Group::SektionVorstand
-kader_317:
+fachpersonen_317:
   parent: bienenverein_am_hinterrhein
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
   lft: 408
   rgt: 409
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_318:
   parent: bienenverein_am_hinterrhein
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bienenverein_am_hinterrhein)%>"
@@ -376,13 +376,13 @@ vorstand_322:
   rgt: 415
   name: Vorstand
   type: Group::SektionVorstand
-kader_323:
+fachpersonen_323:
   parent: bregaglia_bergell
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
   lft: 416
   rgt: 417
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_324:
   parent: bregaglia_bergell
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:bregaglia_bergell)%>"
@@ -411,13 +411,13 @@ vorstand_184:
   rgt: 507
   name: Vorstand
   type: Group::SektionVorstand
-kader_185:
+fachpersonen_185:
   parent: deutschfreiburger_seebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
   lft: 508
   rgt: 509
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_186:
   parent: deutschfreiburger_seebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:deutschfreiburger_seebezirk)%>"
@@ -439,13 +439,13 @@ vorstand_181:
   rgt: 515
   name: Vorstand
   type: Group::SektionVorstand
-kader_182:
+fachpersonen_182:
   parent: freiburger_sensebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"
   lft: 516
   rgt: 517
-  name: Kader
-  type: Group::Kader
+  name: Fachpersonen
+  type: Group::Fachpersonen
 sektion_admin_183:
   parent: freiburger_sensebezirk
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:freiburger_sensebezirk)%>"

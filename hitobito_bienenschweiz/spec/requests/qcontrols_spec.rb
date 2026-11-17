@@ -22,9 +22,9 @@ RSpec.describe QcontrolsController, type: :request do
     sign_in(admin)
     Fabricate(:role, person: beekeeper, group: siegelimker_group,
       type: Group::Siegelimker::Siegelimker.sti_name)
-    kader = Fabricate(:group, parent: sektion, type: Group::Kader.sti_name)
-    Fabricate(:role, person: fachperson_produkte, group: kader,
-      type: Group::Kader::FachpersonProdukte.sti_name)
+    fachpersonen = Fabricate(:group, parent: sektion, type: Group::Fachpersonen.sti_name)
+    Fabricate(:role, person: fachperson_produkte, group: fachpersonen,
+      type: Group::Fachpersonen::FachpersonProdukte.sti_name)
   end
 
   describe "#index" do

@@ -9,7 +9,7 @@ require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::BeekeepersController, type: :request do
   let(:fachperson_produkte) do
-    Fabricate(:fachperson_produkte, group_id: groups(:kader_383).id)
+    Fabricate(:fachperson_produkte, group_id: groups(:fachpersonen_383).id)
   end
   let(:beekeepers) { Fabricate.times(10, :person).sort_by { |b| [b.last_name, b.first_name] } }
   let(:honey_chairman) { Fabricate(:honey_chairman, group_id: group1.parent.id) }

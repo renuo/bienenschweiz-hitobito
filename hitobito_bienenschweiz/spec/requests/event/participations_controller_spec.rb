@@ -315,19 +315,21 @@ RSpec.describe "Event::ParticipationsController", type: :request do
       end
 
       context "when the event's group is not a Sektion and the participant's primary " \
-        "group is a sub group like Kader" do
+        "group is a sub group like Fachpersonen" do
         let(:group) { groups(:aargauer_kantonalverband) }
         let(:sektion) { Fabricate(:sektion) }
-        let(:kader_group) { Fabricate(:group, parent: sektion, type: Group::Kader.sti_name) }
+        let(:fachpersonen_group) do
+          Fabricate(:group, parent: sektion, type: Group::Fachpersonen.sti_name)
+        end
         let!(:participant) { Fabricate(:person) }
 
         before do
           add_participant(participant)
-          participant.update_column(:primary_group_id, kader_group.id)
+          participant.update_column(:primary_group_id, fachpersonen_group.id)
           stub_kas_success
         end
 
-        it "sends the Sektion layer group instead of the Kader sub group" do
+        it "sends the Sektion layer group instead of the Fachpersonen sub group" do
           post_create_kas_fees
           expect(WebMock).to have_requested(:post, "#{kas_base_url}/api/v1/fees")
             .with { |req| JSON.parse(req.body)["fee"]["group_id"] == sektion.id }
@@ -340,9 +342,9 @@ RSpec.describe "Event::ParticipationsController", type: :request do
         let!(:participant) { Fabricate(:person) }
 
         before do
-          Fabricate(:role, person: participant, group: groups(:kader_383),
-            type: Group::Kader::FachpersonBildung.sti_name)
-          participant.update_column(:primary_group_id, groups(:kader_380).id)
+          Fabricate(:role, person: participant, group: groups(:fachpersonen_383),
+            type: Group::Fachpersonen::FachpersonBildung.sti_name)
+          participant.update_column(:primary_group_id, groups(:fachpersonen_380).id)
           add_participant(participant)
           stub_kas_success
         end
@@ -749,8 +751,8 @@ RSpec.describe "Event::ParticipationsController", type: :request do
           let(:spesen_sektion) { groups(:aargauisches_seetal) }
 
           before do
-            Fabricate(:role, person: leader, group: groups(:kader_383),
-              type: Group::Kader::FachpersonProdukte.sti_name)
+            Fabricate(:role, person: leader, group: groups(:fachpersonen_383),
+              type: Group::Fachpersonen::FachpersonProdukte.sti_name)
           end
 
           it "sends the leader's Spesen Sektion as group_id" do

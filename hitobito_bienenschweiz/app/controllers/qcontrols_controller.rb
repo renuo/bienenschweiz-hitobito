@@ -57,7 +57,7 @@ class QcontrolsController < CrudController
 
   def load_inspectors
     @inspectors = Person.joins(:roles)
-      .where(roles: {type: [Group::Kader::FachpersonProdukte.sti_name]})
+      .where(roles: {type: [Group::Fachpersonen::FachpersonProdukte.sti_name]})
   end
 
   def load_sektionen

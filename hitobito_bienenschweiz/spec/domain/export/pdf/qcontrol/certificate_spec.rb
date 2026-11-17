@@ -16,7 +16,7 @@ describe Export::Pdf::Qcontrol::Certificate do
   end
   let(:inspector) {
     Fabricate(:fachperson_produkte,
-      group_id: groups(:kader_380).id,
+      group_id: groups(:fachpersonen_380).id,
       first_name: "Ida",
       last_name: "Inspektorin")
   }

@@ -12,30 +12,31 @@ RSpec.describe PeopleController, type: :request do
   let(:person) { Fabricate(:person) }
   let(:sektion) { groups(:aarau_und_umgebung) }
   let(:other_sektion) { groups(:aargauisches_seetal) }
-  let(:kader) { groups(:kader_380) }
-  let(:other_kader) { groups(:kader_383) }
+  let(:fachpersonen) { groups(:fachpersonen_380) }
+  let(:other_fachpersonen) { groups(:fachpersonen_383) }
 
-  def add_role(group, type = Group::Kader::FachpersonBildung)
+  def add_role(group, type = Group::Fachpersonen::FachpersonBildung)
     Fabricate(:role, group:, person:, type: type.sti_name)
   end
 
   before do
     roles(:admin)
     sign_in(admin)
-    add_role(kader)
-    add_role(other_kader, Group::Kader::FachpersonZuchtVermehrung)
+    add_role(fachpersonen)
+    add_role(other_fachpersonen, Group::Fachpersonen::FachpersonZuchtVermehrung)
     add_role(groups(:vorstand_379), Group::SektionVorstand::Praesident)
   end
 
   describe "GET #show" do
     it "renders the Spesen Sektion toggle for groups with eligible roles only" do
-      get group_person_path(kader, person)
+      get group_person_path(fachpersonen, person)
 
       html = Capybara.string(response.body)
-      expect(html).to have_css("a.spesen-sektion-#{kader.id}[title='Spesen Sektion']")
-      expect(html).to have_css("a.spesen-sektion-#{kader.id} i.fas.fa-money-bill-1")
+      expect(html).to have_css("a.spesen-sektion-#{fachpersonen.id}[title='Spesen Sektion']")
+      expect(html).to have_css("a.spesen-sektion-#{fachpersonen.id} i.fas.fa-money-bill-1")
       expect(html).to have_css(
-        "a.spesen-sektion-#{other_kader.id}[title='Spesen Sektion setzen'] i.far.fa-money-bill-1"
+        "a.spesen-sektion-#{other_fachpersonen.id}[title='Spesen Sektion setzen'] " \
+        "i.far.fa-money-bill-1"
       )
       expect(html).not_to have_css("a.spesen-sektion-#{groups(:vorstand_379).id}")
     end
@@ -43,19 +44,19 @@ RSpec.describe PeopleController, type: :request do
 
   describe "PUT #spesen_sektion" do
     def put_spesen_sektion(id, **opts)
-      put spesen_sektion_group_person_path(kader, person, spesen_sektion_id: id), **opts
+      put spesen_sektion_group_person_path(fachpersonen, person, spesen_sektion_id: id), **opts
     end
 
     it "sets the Spesen Sektion" do
       put_spesen_sektion(other_sektion.id)
-      expect(response).to redirect_to(group_person_path(kader, person))
+      expect(response).to redirect_to(group_person_path(fachpersonen, person))
       expect(person.reload.spesen_sektion).to eq(other_sektion)
     end
 
     it "re-renders the roles via ajax" do
       put_spesen_sektion(other_sektion.id, xhr: true, as: :js)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("spesen-sektion-#{other_kader.id}")
+      expect(response.body).to include("spesen-sektion-#{other_fachpersonen.id}")
       expect(person.reload.spesen_sektion).to eq(other_sektion)
     end
 

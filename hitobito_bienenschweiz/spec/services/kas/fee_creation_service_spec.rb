@@ -10,8 +10,8 @@ require "spec_helper"
 describe Kas::FeeCreationService do
   let(:base_url) { "https://kas.example.com" }
   let(:group) { Fabricate(:sektion) }
-  let(:kader_group) { Fabricate(:group, parent: group, type: Group::Kader.sti_name) }
-  let(:inspector) { Fabricate(:fachperson_produkte, group_id: kader_group.id) }
+  let(:fachpersonen_group) { Fabricate(:group, parent: group, type: Group::Fachpersonen.sti_name) }
+  let(:inspector) { Fabricate(:fachperson_produkte, group_id: fachpersonen_group.id) }
   let(:person) { Fabricate(:person, first_name: "Maja", last_name: "Biene", town: "Bern") }
 
   # fee_creation_state starts at 'fee_ok' so fabricating the qcontrol does not itself
