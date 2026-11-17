@@ -10,11 +10,13 @@ require "spec_helper"
 describe GroupInspectionReminder do
   let(:kantonalverband) { Fabricate(:kantonalverband) }
   let(:sektion) { Fabricate(:sektion, parent: kantonalverband, name: "Testsektion") }
-  let(:kader_group) { Fabricate(:group, type: Group::Kader.sti_name, parent: sektion) }
+  let(:fachpersonen_group) do
+    Fabricate(:group, type: Group::Fachpersonen.sti_name, parent: sektion)
+  end
   let(:inspector_person) { Fabricate(:person) }
   let!(:inspector_role) do
-    Fabricate(:role, person: inspector_person, group: kader_group,
-      type: Group::Kader::FachpersonProdukte.sti_name)
+    Fabricate(:role, person: inspector_person, group: fachpersonen_group,
+      type: Group::Fachpersonen::FachpersonProdukte.sti_name)
   end
   let(:inspectors) { Person.where(id: inspector_person.id) }
 

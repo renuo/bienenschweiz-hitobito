@@ -8,7 +8,7 @@
 require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::InspectionPdfController, type: :request do
-  let(:group) { groups(:kader_380) }
+  let(:group) { groups(:fachpersonen_380) }
   let!(:fachperson_produkte) { Fabricate(:fachperson_produkte, group_id: group.id) }
   let(:beekeeper) { Fabricate(:beekeeper, group_id: group.parent.id) }
   let(:auth_headers) { {"Access-Token": fachperson_produkte.beeaudit_authentication_token} }
@@ -37,9 +37,9 @@ RSpec.describe Api::Mobile::V1::InspectionPdfController, type: :request do
     end
 
     context "with a qcontrol belonging to a non-inspectable beekeeper" do
-      let(:other_beekeeper) { Fabricate(:beekeeper, group_id: groups(:kader_383).parent.id) }
+      let(:other_beekeeper) { Fabricate(:beekeeper, group_id: groups(:fachpersonen_383).parent.id) }
       let!(:other_qcontrol) do
-        Fabricate(:qcontrol, person: other_beekeeper, group: groups(:kader_383).parent,
+        Fabricate(:qcontrol, person: other_beekeeper, group: groups(:fachpersonen_383).parent,
           control_date: Date.new(2024, 1, 1))
       end
 

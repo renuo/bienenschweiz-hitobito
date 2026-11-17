@@ -15,11 +15,12 @@ describe People::UpdateAfterRoleChangeJob do
   before { allow(Person).to receive(:root).and_return(people(:admin)) }
 
   def add_role(group, **attrs)
-    Fabricate(:role, group:, person:, type: Group::Kader::FachpersonBildung.sti_name, **attrs)
+    Fabricate(:role, group:, person:,
+      type: Group::Fachpersonen::FachpersonBildung.sti_name, **attrs)
   end
 
   it "un-sets the Spesen Sektion once the only eligible role has expired" do
-    add_role(groups(:kader_380), start_on: 1.month.ago, end_on: 1.day.from_now)
+    add_role(groups(:fachpersonen_380), start_on: 1.month.ago, end_on: 1.day.from_now)
     expect(person.reload.spesen_sektion).to eq(sektion)
 
     travel_to(2.days.from_now) { described_class.new.perform }
@@ -27,7 +28,7 @@ describe People::UpdateAfterRoleChangeJob do
   end
 
   it "sets the Spesen Sektion once an eligible role has started" do
-    add_role(groups(:kader_380), start_on: 1.day.from_now)
+    add_role(groups(:fachpersonen_380), start_on: 1.day.from_now)
     expect(person.reload.spesen_sektion).to be_nil
 
     travel_to(2.days.from_now) { described_class.new.perform }

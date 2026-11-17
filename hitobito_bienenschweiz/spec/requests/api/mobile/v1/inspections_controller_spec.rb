@@ -9,8 +9,8 @@ require "spec_helper"
 
 RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
   let!(:fachperson_produkte) { Fabricate(:fachperson_produkte, group_id: group.id) }
-  let(:group) { groups(:kader_380) }
-  let!(:other_group) { groups(:kader_383) }
+  let(:group) { groups(:fachpersonen_380) }
+  let!(:other_group) { groups(:fachpersonen_383) }
   let(:beekeeper) { Fabricate(:beekeeper, group_id: group.parent.id) }
   let(:auth_headers) { {"Access-Token": fachperson_produkte.beeaudit_authentication_token} }
 
@@ -191,7 +191,7 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
 
       before do
         Fabricate(:role,
-          type: Group::Kader::FachpersonProdukte, person: other_beekeeper,
+          type: Group::Fachpersonen::FachpersonProdukte, person: other_beekeeper,
           group_id: other_group.id, start_on: 1.year.ago, end_on: nil)
         siegelimker_group = Fabricate(:group, type: Group::Siegelimker.sti_name,
           parent: group.parent)
@@ -213,7 +213,7 @@ RSpec.describe Api::Mobile::V1::InspectionsController, type: :request do
 
       before do
         beekeeper.roles.first.update(end_on: 3.days.ago)
-        Fabricate(:role, type: Group::Kader::FachpersonProdukte, person: fachperson_produkte,
+        Fabricate(:role, type: Group::Fachpersonen::FachpersonProdukte, person: fachperson_produkte,
           group_id: other_group.id, start_on: 3.days.ago, end_on: nil)
         recent_siegelimker = Fabricate(:group, type: Group::Siegelimker.sti_name,
           parent: recent_group)

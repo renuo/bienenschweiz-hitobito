@@ -19,8 +19,8 @@ Role.where(type: Group::Siegelimker::Siegelimker.sti_name)
 
   sektion = role.group.parent
   inspector = Person.joins(:roles).where(roles: {
-    type: Group::Kader::FachpersonProdukte.sti_name,
-    group_id: sektion.children.where(type: Group::Kader.sti_name)
+    type: Group::Fachpersonen::FachpersonProdukte.sti_name,
+    group_id: sektion.children.where(type: Group::Fachpersonen.sti_name)
   }).first
 
   answers = current_questions.map do |question|
@@ -54,8 +54,8 @@ Group.where(type: Group::Siegelimker.sti_name).each do |group|
   end
   sektion = group.parent
   inspector = Person.joins(:roles).where(roles: {
-    type: Group::Kader::FachpersonProdukte.sti_name,
-    group_id: sektion.children.where(type: Group::Kader.sti_name)
+    type: Group::Fachpersonen::FachpersonProdukte.sti_name,
+    group_id: sektion.children.where(type: Group::Fachpersonen.sti_name)
   }).first
   Qcontrol.create!(
     group: sektion,

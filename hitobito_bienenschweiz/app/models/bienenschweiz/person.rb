@@ -9,7 +9,7 @@ module Bienenschweiz::Person
   extend ActiveSupport::Concern
 
   QCONTROLLER_ROLES = [
-    Group::Kader::FachpersonProdukte.sti_name,
+    Group::Fachpersonen::FachpersonProdukte.sti_name,
     Group::KantonalverbandVorstand::Produkte.sti_name
   ].freeze
 
@@ -20,9 +20,9 @@ module Bienenschweiz::Person
   # Roles eligible to request Spesen (KAS fees). The Sektion of one of these roles is used
   # as the person's Spesen Sektion when a course is not given by a specific Sektion.
   SPESEN_ROLES = [
-    Group::Kader::FachpersonBildung.sti_name,
-    Group::Kader::FachpersonProdukte.sti_name,
-    Group::Kader::FachpersonZuchtVermehrung.sti_name
+    Group::Fachpersonen::FachpersonBildung.sti_name,
+    Group::Fachpersonen::FachpersonProdukte.sti_name,
+    Group::Fachpersonen::FachpersonZuchtVermehrung.sti_name
   ].freeze
 
   included do # rubocop:disable Metrics/BlockLength
@@ -74,7 +74,7 @@ module Bienenschweiz::Person
 
     def inspectable_groups
       sorted_roles = roles.where(type: QCONTROLLER_ROLES).includes(:group).sort_by do |r|
-        [r.is_a?(Group::Kader::FachpersonProdukte) ? 0 : 1, -r.start_on.to_time.to_i]
+        [r.is_a?(Group::Fachpersonen::FachpersonProdukte) ? 0 : 1, -r.start_on.to_time.to_i]
       end
       sorted_roles.flat_map { |r| sektionen_for_role(r) }.uniq
     end

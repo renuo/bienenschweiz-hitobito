@@ -12,9 +12,9 @@ RSpec.describe "Login", type: :request do
     let!(:fachperson_produkte) {
       Fabricate(:person, email: sent_email, password:)
     }
-    let(:group) { groups(:kader_380) }
+    let(:group) { groups(:fachpersonen_380) }
     let!(:role) {
-      Fabricate(:role, type: Group::Kader::FachpersonProdukte.sti_name,
+      Fabricate(:role, type: Group::Fachpersonen::FachpersonProdukte.sti_name,
         person: fachperson_produkte,
         group:)
     }
