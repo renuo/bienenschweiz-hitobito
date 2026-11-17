@@ -27,9 +27,10 @@ pushd hitobito_bienenschweiz
   direnv exec bin/rails mv:import:documents
   direnv exec bin/rails mv:import:memos
   direnv exec bin/rails mv:import:fees
-  direnv exec bin/rails "mv:import:siegelimker_profiles[../hitobito_bienenschweiz/siegelimker-2026-10-23-145302.csv]"
+  direnv exec bin/rails "mv:import:siegelimker_profiles[../hitobito_bienenschweiz/siegelimker-2026-11-13-150838.csv]"
   direnv exec bin/rails "mv:import:magazine_subscriptions[../hitobito_bienenschweiz/export_abo.csv,../hitobito_bienenschweiz/invalid_members.csv]"
-  direnv exec bin/rails "mv:import:apiservice_events[../hitobito_bienenschweiz/bienen-veranstaltungen-2026-11-02-154709.csv]"
+  # skipped for now
+  #direnv exec bin/rails "mv:import:apiservice_events[../hitobito_bienenschweiz/bienen-veranstaltungen-2026-11-02-154709.csv]"
   direnv exec bin/rails mv:import:reset_id_sequences
 popd
 
