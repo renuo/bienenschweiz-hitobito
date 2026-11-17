@@ -358,11 +358,11 @@ namespace :mv do
       when "sektion"
         case membership.role.name_t
         when "B"
-          Group::Kader::FachpersonBildung
+          Group::Fachpersonen::FachpersonBildung
         when "B-PROV"
           # no longer a thing
         when "Z"
-          Group::Kader::FachpersonZuchtVermehrung
+          Group::Fachpersonen::FachpersonZuchtVermehrung
         when "Z-PROV"
           # no longer a thing
         when "P"
@@ -370,7 +370,7 @@ namespace :mv do
         when "K"
           Group::SektionVorstand::Kassier
         when "H"
-          Group::Kader::FachpersonProdukte
+          Group::Fachpersonen::FachpersonProdukte
         when "H-PROV"
           # no longer a thing
         when "SI"
@@ -551,9 +551,9 @@ namespace :mv do
       # Fachpersonen keep their qualification forever, even if the role has ended.
       # The start date is the start of their oldest role of that kind.
       {
-        Group::Kader::FachpersonBildung => "Fachperson Bildung",
-        Group::Kader::FachpersonProdukte => "Fachperson Produkte",
-        Group::Kader::FachpersonZuchtVermehrung => "Fachperson Zucht"
+        Group::Fachpersonen::FachpersonBildung => "Fachperson Bildung",
+        Group::Fachpersonen::FachpersonProdukte => "Fachperson Produkte",
+        Group::Fachpersonen::FachpersonZuchtVermehrung => "Fachperson Zucht"
       }.each do |role_type, label|
         kind = find_kind.call(label)
         count = 0
