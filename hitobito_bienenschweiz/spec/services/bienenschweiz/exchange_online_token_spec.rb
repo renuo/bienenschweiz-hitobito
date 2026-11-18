@@ -16,10 +16,11 @@ describe Bienenschweiz::ExchangeOnlineToken do
   let(:error_class) { Bienenschweiz::ExchangeOnlineToken::Error }
 
   before do
-    allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:[]).with("BIENENSCHWEIZ_IMAP_TENANT_ID").and_return(tenant)
-    allow(ENV).to receive(:[]).with("BIENENSCHWEIZ_IMAP_CLIENT_ID").and_return("test-client")
-    allow(ENV).to receive(:[]).with("BIENENSCHWEIZ_IMAP_CLIENT_SECRET").and_return(client_secret)
+    allow(Rails.configuration.x).to receive(:exchange_online_imap).and_return(
+      tenant_id: tenant,
+      client_id: "test-client",
+      client_secret: client_secret
+    )
   end
 
   it "can retry a malformed response and caches the recovered token" do
@@ -64,7 +65,7 @@ describe Bienenschweiz::ExchangeOnlineToken do
 
     it "reports the missing credential before making a request" do
       expect { client.access_token }
-        .to raise_error(error_class, /Missing BIENENSCHWEIZ_IMAP_CLIENT_SECRET/)
+        .to raise_error(error_class, "Missing client_secret for Exchange Online IMAP")
     end
   end
 
@@ -73,7 +74,7 @@ describe Bienenschweiz::ExchangeOnlineToken do
 
     it "rejects the tenant ID before making a request" do
       expect { client.access_token }
-        .to raise_error(error_class, "Invalid BIENENSCHWEIZ_IMAP_TENANT_ID")
+        .to raise_error(error_class, "Invalid Exchange Online IMAP tenant_id")
     end
   end
 end
