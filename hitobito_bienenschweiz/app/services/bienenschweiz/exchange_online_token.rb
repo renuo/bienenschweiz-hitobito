@@ -7,18 +7,13 @@ module Bienenschweiz
   class ExchangeOnlineToken
     class Error < StandardError; end
 
-    TENANT_ID = "BIENENSCHWEIZ_IMAP_TENANT_ID"
-    CLIENT_ID = "BIENENSCHWEIZ_IMAP_CLIENT_ID"
-    CLIENT_SECRET = "BIENENSCHWEIZ_IMAP_CLIENT_SECRET"
     SCOPE = "https://outlook.office365.com/.default"
     RENEWAL_MARGIN = 60
     LOCK = Mutex.new
 
     class << self
       def configured?
-        # rubocop:disable Rails/EnvironmentVariableAccess -- OAuth credentials come from deployment ENV
-        [TENANT_ID, CLIENT_ID, CLIENT_SECRET].any? { |name| ENV.key?(name) }
-        # rubocop:enable Rails/EnvironmentVariableAccess
+        configuration.values.any?
       end
 
       def access_token
@@ -57,8 +52,8 @@ module Bienenschweiz
         response = connection.post(token_path, {
           grant_type: "client_credentials",
           scope: SCOPE,
-          client_id: required_env(CLIENT_ID),
-          client_secret: required_env(CLIENT_SECRET)
+          client_id: required_config(:client_id),
+          client_secret: required_config(:client_secret)
         })
         return response.body if response.success?
 
@@ -68,16 +63,20 @@ module Bienenschweiz
       end
 
       def token_path
-        tenant_id = required_env(TENANT_ID)
-        raise Error, "Invalid #{TENANT_ID}" unless tenant_id.match?(/\A[0-9a-z][0-9a-z.-]*\z/i)
+        tenant_id = required_config(:tenant_id)
+        unless tenant_id.match?(/\A[0-9a-z][0-9a-z.-]*\z/i)
+          raise Error, "Invalid Exchange Online IMAP tenant_id"
+        end
 
         "/#{tenant_id}/oauth2/v2.0/token"
       end
 
-      def required_env(name)
-        # rubocop:disable Rails/EnvironmentVariableAccess -- OAuth credentials come from deployment ENV
-        ENV[name].presence || raise(Error, "Missing #{name} for Exchange Online IMAP")
-        # rubocop:enable Rails/EnvironmentVariableAccess
+      def required_config(name)
+        configuration[name].presence || raise(Error, "Missing #{name} for Exchange Online IMAP")
+      end
+
+      def configuration
+        Rails.configuration.x.exchange_online_imap
       end
 
       def monotonic_time
