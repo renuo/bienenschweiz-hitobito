@@ -9,6 +9,9 @@ describe "Exchange Online IMAP" do
   let(:token_client) { Bienenschweiz::ExchangeOnlineToken }
   let(:mailbox) { "lists@example.com" }
   let(:imap) { instance_double(Net::IMAP, disconnected?: false, disconnect: nil) }
+  let(:configuration) do
+    {tenant_id: "example.onmicrosoft.com", client_id: "test-client", client_secret: "test-secret"}
+  end
   let(:retriever) do
     Config::Options.new(type: "imap", interval: 1, config: Config::Options.new(
       address: "outlook.office365.com", user_name: mailbox, port: 993
@@ -19,16 +22,7 @@ describe "Exchange Online IMAP" do
     stub_const("MailConfig", Class.new(MailConfig))
     stub_const("Bienenschweiz::ExchangeOnlineToken", Class.new(token_client))
     allow(Settings.email).to receive(:retriever).and_return(retriever)
-    allow(ENV).to receive(:key?).and_call_original
-    allow(ENV).to receive(:[]).and_call_original
-    {
-      "BIENENSCHWEIZ_IMAP_TENANT_ID" => "example.onmicrosoft.com",
-      "BIENENSCHWEIZ_IMAP_CLIENT_ID" => "test-client",
-      "BIENENSCHWEIZ_IMAP_CLIENT_SECRET" => "test-secret"
-    }.each do |name, value|
-      allow(ENV).to receive(:key?).with(name).and_return(true)
-      allow(ENV).to receive(:[]).with(name).and_return(value)
-    end
+    allow(Rails.configuration.x).to receive(:exchange_online_imap).and_return(configuration)
   end
 
   it "selects the bulk mail retriever and renews tokens used by its IMAP connector" do
@@ -72,9 +66,17 @@ describe "Exchange Online IMAP" do
   end
 
   it "keeps the legacy retriever when OAuth is disabled and there is no mail.yml" do
-    allow(token_client).to receive(:configured?).and_return(false)
+    configuration.transform_values! { nil }
     allow(MailConfig).to receive(:load_file).and_return(nil)
 
     expect(JobManager.new.send(:mail_jobs)).to eq(MailRelayJob)
+  end
+
+  it "rejects incomplete OAuth configuration instead of falling back to legacy authentication" do
+    configuration[:client_secret] = nil
+
+    expect(token_client).to be_configured
+    expect { token_client.access_token }
+      .to raise_error(token_client::Error, "Missing client_secret for Exchange Online IMAP")
   end
 end
