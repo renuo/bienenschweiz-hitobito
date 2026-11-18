@@ -1254,7 +1254,7 @@ namespace :mv do
       end
 
       stats = Hash.new(0)
-      CSV.foreach(args[:path], headers: true, encoding: "bom|utf-8") do |row|
+      CSV.foreach(args[:path], headers: true, col_sep: ";", encoding: "bom|utf-8") do |row|
         stats[:total] += 1
         person = find_person.call(row)
         unless person
