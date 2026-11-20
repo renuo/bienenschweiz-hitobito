@@ -116,3 +116,54 @@ describe Bienenschweiz::MailingListPlusAddressing do
       {"UID" => 42, "ENVELOPE" => envelope, "RFC822" => source.encoded}))
   end
 end
+
+describe Bienenschweiz::MailingListPlusAddressing, ".list_name" do
+  let(:mailbox) { "mailingliste@example.com" }
+
+  before { allow(MailConfig).to receive(:retriever_imap).and_return(user_name: mailbox) }
+
+  def list_name(address) = described_class.list_name(address)
+
+  {
+    "mailingliste+mytest@example.com" => "mytest",
+    "MailingListe+MyTest@EXAMPLE.COM" => "mytest",
+    "  mailingliste+mytest@example.com\n" => "mytest",
+    "mailingliste+my.test-list_1@example.com" => "my.test-list_1"
+  }.each do |address, expected|
+    it "maps #{address.inspect} to #{expected.inspect}" do
+      expect(list_name(address)).to eq(expected)
+    end
+  end
+
+  [
+    nil,
+    "",
+    "mailingliste@example.com",
+    "mailingliste+@example.com",
+    "mailingliste+1test@example.com",
+    "mailingliste+my+test@example.com",
+    "mailingliste+my test@example.com",
+    "mailingliste+mytest@example.net",
+    "mailingliste+mytest@sub.example.com",
+    "mailingliste+mytest@example.com.evil.net",
+    "other+mytest@example.com",
+    "xmailingliste+mytest@example.com",
+    "mytest@example.com",
+    "Sender <mailingliste+mytest@example.com>",
+    "evil@example.net\nmailingliste+mytest@example.com"
+  ].each do |address|
+    it "does not map #{address.inspect}" do
+      expect(list_name(address)).to be_nil
+    end
+  end
+
+  context "with regexp metacharacters in the mailbox" do
+    let(:mailbox) { "mailing.liste@example.com" }
+
+    it "matches them literally" do
+      expect(list_name("mailing.liste+mytest@example.com")).to eq("mytest")
+      expect(list_name("mailingXliste+mytest@example.com")).to be_nil
+      expect(list_name("mailing.liste+mytest@exampleXcom")).to be_nil
+    end
+  end
+end
