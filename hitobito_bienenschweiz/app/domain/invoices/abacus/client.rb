@@ -25,6 +25,7 @@ module Invoices
       def initialize
         raise "Abacus is not configured" unless config.exist?
         @token_semaphore = Thread::Mutex.new
+        @throttle_semaphore = Thread::Mutex.new
       end
 
       def list(type, params = {})
@@ -54,6 +55,7 @@ module Invoices
 
         handle_bad_request do
           boundary = generate_batch_boundary
+          throttle
           response = RestClient::Request.execute(
             method: :post,
             url: url(BATCH_PATH),
@@ -97,7 +99,9 @@ module Invoices
 
       def json_request(method, path, params = nil)
         handle_bad_request do
-          response = RestClient.send(method, *request_args(method, path, params))
+          args = request_args(method, path, params)
+          throttle
+          response = RestClient.send(method, *args)
           decode_json(response.body)
         end
       end
@@ -184,6 +188,7 @@ module Invoices
       end
 
       def request_token
+        throttle
         response = RestClient.post(
           token_endpoint,
           {grant_type: "client_credentials"},
@@ -198,8 +203,27 @@ module Invoices
       end
 
       def token_endpoint
+        throttle
         response = RestClient.get(config.host + OPENID_CONFIG_PATH)
         JSON.parse(response.body)["token_endpoint"]
+      end
+
+      # Waits so that at most `Config.max_requests_per_minute` requests are sent,
+      # evenly spaced, to not get blocked by the firewall in front of Abacus.
+      def throttle
+        return unless config.max_requests_per_minute
+
+        @throttle_semaphore.synchronize do
+          interval = 60.0 / config.max_requests_per_minute
+          now = monotonic_now
+          wait = @last_request_at ? @last_request_at + interval - now : 0
+          sleep(wait) if wait.positive?
+          @last_request_at = [now, now + wait].max
+        end
+      end
+
+      def monotonic_now
+        Process.clock_gettime(Process::CLOCK_MONOTONIC)
       end
 
       def config

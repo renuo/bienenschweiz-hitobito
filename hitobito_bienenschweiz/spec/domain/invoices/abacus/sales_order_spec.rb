@@ -71,4 +71,16 @@ describe Invoices::Abacus::SalesOrder do
       expect(attrs).not_to have_key(:comment)
     end
   end
+
+  describe "payment" do
+    it "is not sent without configured payment_slip_internal_number" do
+      allow(Invoices::Abacus::Config).to receive(:payment_slip_internal_number).and_return(nil)
+      expect(attrs).not_to have_key(:payment)
+    end
+
+    it "sends the configured payment_slip_internal_number, also 0" do
+      allow(Invoices::Abacus::Config).to receive(:payment_slip_internal_number).and_return(0)
+      expect(attrs[:payment]).to eq(payment_slip_internal_number: 0)
+    end
+  end
 end

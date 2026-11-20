@@ -16,10 +16,12 @@ class Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob < RecurringJob
   SLICE_SIZE = 25 # number of invoices transmitted per abacus batch request
   RETRYABLE_STATES = %w[draft error].freeze
 
-  def perform_internal
+  # limit: only invoice the first n due subscriptions (e.g. to test the invoicing manually)
+  def perform_internal(limit: nil)
     return unless config.enabled
 
     subscriptions = due_subscriptions
+    subscriptions = subscriptions.first(limit) if limit
     return if subscriptions.empty?
 
     run_invoicing(subscriptions)
@@ -104,7 +106,7 @@ class Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob < RecurringJob
     invoice.update!(
       person: invoice_data.person,
       state: :draft,
-      total: invoice_data.invoice? ? invoice_data.total : 0,
+      total: 0, # set to the total calculated by Abacus once the invoice is created there
       issued_at: invoice_data.period_start,
       sent_at: today
     )

@@ -8,8 +8,10 @@
 module Invoices
   module Abacus
     # Invoice data for one period of a MagazineSubscription.
-    # Prices and article numbers per subscription type are configured in
-    # `Settings.magazine_subscription_invoicing.articles`.
+    # The article of each billable subscription type is configured in
+    # `Settings.magazine_subscription_invoicing.subscription_type_articles`, the article
+    # numbers in `Settings.magazine_subscription_invoicing.articles`. Prices are not sent,
+    # Abacus takes them from the article.
     class MagazineSubscriptionInvoice
       attr_reader :subscription, :period_start
 
@@ -17,17 +19,26 @@ module Invoices
 
       class << self
         def billable_types
-          articles.keys.map(&:to_s)
+          subscription_type_articles.keys.map(&:to_s)
         end
 
         def article(subscription_type)
-          articles[subscription_type.to_sym]
+          article_key = subscription_type_articles[subscription_type.to_sym]
+          articles[article_key.to_sym] if article_key.present?
         end
 
         private
 
         def articles
-          Settings.magazine_subscription_invoicing.articles.to_h
+          config.articles.to_h
+        end
+
+        def subscription_type_articles
+          config.subscription_type_articles.to_h
+        end
+
+        def config
+          Settings.magazine_subscription_invoicing
         end
       end
 
@@ -37,15 +48,11 @@ module Invoices
       end
 
       def invoice?
-        article.present? && article[:article_number].present? && article[:price].present?
+        article.present? && article[:article_number].present?
       end
 
       def positions
         @positions ||= [subscription_position]
-      end
-
-      def total
-        positions.sum(&:total)
       end
 
       def period_end
@@ -58,7 +65,6 @@ module Invoices
         InvoicePosition.new(
           name: position_name,
           article_number: article[:article_number],
-          amount: BigDecimal(article[:price].to_s),
           count: subscription.amount
         )
       end

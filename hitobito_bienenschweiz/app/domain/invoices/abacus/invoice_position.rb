@@ -10,17 +10,14 @@
 module Invoices
   module Abacus
     class InvoicePosition
-      attr_accessor :name, :amount, :count, :article_number
+      # The price is not part of the position, Abacus takes it from the article.
+      attr_accessor :name, :count, :article_number
 
       def initialize(attributes = {})
         @count = 1
         attributes.each do |k, v|
           send(:"#{k}=", v)
         end
-      end
-
-      def total
-        amount * count
       end
     end
   end

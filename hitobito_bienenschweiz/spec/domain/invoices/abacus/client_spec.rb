@@ -33,4 +33,65 @@ describe Invoices::Abacus::Client do
       expect(result).to eq([{id: 1}])
     end
   end
+
+  describe "throttling" do
+    before do
+      stub_request(:get, "#{api}/Subjects(Id=1)").to_return(status: 200, body: {Id: 1}.to_json)
+    end
+
+    it "does not wait without max_requests_per_minute" do
+      allow(Invoices::Abacus::Config).to receive(:max_requests_per_minute).and_return(nil)
+      expect(client).not_to receive(:sleep)
+
+      3.times { client.get(:subject, 1) }
+    end
+
+    it "spaces requests evenly according to max_requests_per_minute" do
+      allow(Invoices::Abacus::Config).to receive(:max_requests_per_minute).and_return(120)
+      allow(client).to receive(:monotonic_now).and_return(100.0)
+      sleeps = []
+      allow(client).to receive(:sleep) { |seconds| sleeps << seconds }
+
+      2.times { client.get(:subject, 1) }
+
+      # token endpoint, token, then two requests; every one 0.5s after the previous
+      expect(sleeps).to eq([0.5, 1.0, 1.5])
+    end
+
+    it "does not wait if the last request is long enough ago" do
+      allow(Invoices::Abacus::Config).to receive(:max_requests_per_minute).and_return(60)
+      times = [0.0, 10.0, 20.0, 30.0]
+      allow(client).to receive(:monotonic_now) { times.shift }
+      expect(client).not_to receive(:sleep)
+
+      client.get(:subject, 1)
+    end
+  end
+end
+
+describe Invoices::Abacus::Config do
+  describe ".max_requests_per_minute" do
+    it "is nil when blank or zero" do
+      allow(Settings.abacus).to receive(:max_requests_per_minute).and_return(nil)
+      expect(described_class.max_requests_per_minute).to be_nil
+      allow(Settings.abacus).to receive(:max_requests_per_minute).and_return(0)
+      expect(described_class.max_requests_per_minute).to be_nil
+    end
+
+    it "returns the configured integer" do
+      allow(Settings.abacus).to receive(:max_requests_per_minute).and_return("200")
+      expect(described_class.max_requests_per_minute).to eq(200)
+    end
+  end
+
+  describe ".payment_slip_internal_number" do
+    it "is nil when blank and an integer otherwise, also 0" do
+      allow(Settings.abacus).to receive(:payment_slip_internal_number).and_return(nil)
+      expect(described_class.payment_slip_internal_number).to be_nil
+      allow(Settings.abacus).to receive(:payment_slip_internal_number).and_return(0)
+      expect(described_class.payment_slip_internal_number).to eq(0)
+      allow(Settings.abacus).to receive(:payment_slip_internal_number).and_return("2")
+      expect(described_class.payment_slip_internal_number).to eq(2)
+    end
+  end
 end

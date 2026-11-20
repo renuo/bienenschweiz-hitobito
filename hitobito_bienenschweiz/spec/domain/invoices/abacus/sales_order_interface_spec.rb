@@ -21,7 +21,7 @@ describe Invoices::Abacus::SalesOrderInterface do
   end
   let(:positions) do
     [Invoices::Abacus::InvoicePosition.new(name: "Abo 01.12.2026 - 30.11.2027",
-      article_number: "4711", amount: 42.5, count: 2)]
+      article_number: "4711", count: 2)]
   end
   let(:sales_order) { Invoices::Abacus::SalesOrder.new(invoice, positions) }
   let(:interface) { described_class.new }
@@ -53,7 +53,7 @@ describe Invoices::Abacus::SalesOrderInterface do
             HTTP/1.1 201 Created\r
             Content-Type: application/json\r
             \r
-            {"SalesOrderId":42,"SalesOrderBacklogId":0}\r
+            {"SalesOrderId":42,"SalesOrderBacklogId":0,"TotalAmount":155.95}\r
             --#{response_boundary}--\r
           HTTP
         )
@@ -65,6 +65,7 @@ describe Invoices::Abacus::SalesOrderInterface do
       expect(parts.map(&:success?)).to eq([true])
       expect(invoice.reload.abacus_sales_order_key).to eq(42)
       expect(invoice).to be_open
+      expect(invoice.total).to eq(155.95)
     end
 
     it "sends the sales order with its positions" do
@@ -77,7 +78,6 @@ describe Invoices::Abacus::SalesOrderInterface do
           "CustomerId" => 7,
           "InvoiceDate" => "2027-01-01",
           "InvoiceValueDate" => "2027-01-01",
-          "TotalAmount" => 85.0,
           "Language" => "de",
           "DocumentCodeInvoice" => "R10",
           "Comment" => "Effektiv: Rechnung 07.10.2026, Valuta 01.12.2026",
@@ -88,10 +88,10 @@ describe Invoices::Abacus::SalesOrderInterface do
         expect(json["Positions"]).to eq([{
           "PositionNumber" => 1,
           "Type" => "Product",
-          "Pricing" => {"PriceAfterFinding" => 42.5},
           "Quantity" => {"Ordered" => 2, "Charged" => 2, "Delivered" => 2},
           "Product" => {"Description" => "Abo 01.12.2026 - 30.11.2027", "ProductNumber" => "4711"}
         }])
+        expect(json).not_to have_key("TotalAmount")
       end)
     end
   end
