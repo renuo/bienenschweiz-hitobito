@@ -56,7 +56,8 @@ module HitobitoBienenschweiz
           NavigationHelper::Item.new(model: Signature, path: :signatures_path),
           NavigationHelper::Item.new(label: "navigation.admin/magazine_subscription_reports",
             path: :magazine_subscription_reports_path,
-            if: ->(_) { can?(:index_report, MagazineSubscription) })
+            if: ->(_) { can?(:index_report, MagazineSubscription) }),
+          NavigationHelper::Item.new(model: ExternalInvoiceRun, path: :external_invoice_runs_path)
         ]
       }
 
@@ -126,9 +127,11 @@ module HitobitoBienenschweiz
       Ability.store.register FeedbackRoundAbility
       Ability.store.register SiegelimkerProfileAbility
       Ability.store.register ExternalInvoiceAbility
+      Ability.store.register ExternalInvoiceRunAbility
       ApiScopeAbility::REQUIRED_SCOPES[:ExternalInvoice] = :invoices
 
       HitobitoLogEntry.categories += [ExternalInvoice::ERROR_CATEGORY]
+      HitobitoLogEntry.include Bienenschweiz::HitobitoLogEntry
       JobManager.wagon_jobs += [Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob]
 
       TableDisplay.register_column(Person, TableDisplays::PublicColumn, :canton_short)

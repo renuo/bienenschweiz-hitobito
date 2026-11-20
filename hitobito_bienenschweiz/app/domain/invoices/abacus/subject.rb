@@ -34,24 +34,16 @@ module Invoices
         @errors[:zip_code] = :blank if entity.zip_code.blank?
       end
 
+      def address?
+        entity.town.present? && entity.zip_code.present?
+      end
+
       def subject_id
         entity.abacus_subject_key.to_i
       end
 
-      def subject_or_entity_id
-        (entity.abacus_subject_key || entity.id).to_i
-      end
-
       def assign_subject_key(data)
-        # Raise an error if abacus did not use the person.id as subject key
-        # (even though SubjectInterface checked that the person.id is not taken yet in Abacus)
-        if entity.id != data[:id].to_i
-          raise "Abacus created subject with id=#{data[:id]} but person has id=#{entity.id}"
-        end
-
-        unless entity.abacus_subject_key == data[:id]
-          entity.update_column(:abacus_subject_key, data[:id]) # rubocop:disable Rails/SkipsModelValidations
-        end
+        entity.update_column(:abacus_subject_key, data.fetch(:id)) # rubocop:disable Rails/SkipsModelValidations
       end
 
       def subject_attrs

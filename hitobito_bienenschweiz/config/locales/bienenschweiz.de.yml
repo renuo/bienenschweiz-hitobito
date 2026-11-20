@@ -52,6 +52,10 @@ de:
         one: Rechnung
         other: Rechnungen
 
+      external_invoice_run:
+        one: Rechnungslauf
+        other: Rechnungsläufe
+
       supervision:
         one: Supervision
         other: Supervisionen
@@ -196,6 +200,19 @@ de:
         total: Total
         sent_at: Rechnungsdatum
         abacus_sales_order_key: Abacus Auftragsnummer
+      hitobito_log_entry:
+        payload: Details
+      external_invoice_run:
+        state: Status
+        states:
+          running: Läuft
+          finished: Abgeschlossen
+          failed: Abgebrochen
+        started_at: Gestartet
+        finished_at: Beendet
+        due_count: Fällige Abos
+        created_count: Erstellte Rechnungen
+        error_count: Fehler
       signature:
         key: Dokument
         name: Name
@@ -301,6 +318,13 @@ de:
       article_missing: Rechnung konnte nicht erstellt werden, da für %{subscription_type} kein Abacus Artikel konfiguriert ist
       create_invoice_failed: Rechnung konnte nicht in Abacus erstellt werden
       cancel_invoice_failed: Rechnung konnte nicht in Abacus storniert werden
+      unexpected: Rechnung konnte wegen eines unerwarteten Fehlers nicht erstellt werden
+      run_failed: Rechnungslauf wurde wegen eines unerwarteten Fehlers abgebrochen
+
+  external_invoice_runs:
+    show:
+      errors: Fehler
+      no_errors: Keine Fehler
 
   people:
     roles_aside:
