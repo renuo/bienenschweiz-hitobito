@@ -96,6 +96,34 @@ describe Invoices::Abacus::SalesOrderInterface do
     end
   end
 
+  describe "#create_batch with rejected sales orders" do
+    let(:response_boundary) { "batch-boundary-response" }
+
+    it "does not assign an abacus key" do
+      stub_request(:post, "#{api}/$batch").to_return(
+        status: 202,
+        headers: {"Content-Type" => "multipart/mixed;boundary=#{response_boundary}"},
+        body: <<~HTTP
+          --#{response_boundary}\r
+          Content-Type: application/http\r
+          Content-Transfer-Encoding: binary\r
+          \r
+          HTTP/1.1 400 Bad Request\r
+          Content-Type: application/json\r
+          \r
+          {"error":{"message":"Invalid customer"}}\r
+          --#{response_boundary}--\r
+        HTTP
+      )
+
+      parts = interface.create_batch([sales_order])
+
+      expect(parts.map(&:error)).to eq(["Invalid customer"])
+      expect(invoice.reload.abacus_sales_order_key).to be_nil
+      expect(invoice).to be_draft
+    end
+  end
+
   describe "#cancel" do
     it "flags the sales order as cancelled in abacus" do
       invoice.update!(abacus_sales_order_key: 42, state: :open)

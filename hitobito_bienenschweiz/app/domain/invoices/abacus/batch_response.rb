@@ -94,7 +94,7 @@ module Invoices
         http = part.split(BLANK_LINE, 2).last
         io = Net::BufferedIO.new(StringIO.new(http))
         res = Net::HTTPResponse.read_new(io)
-        res.reading_body(io, true) { yield res if block_given? }
+        res.reading_body(io, true) { res.body }
         res
       end
 

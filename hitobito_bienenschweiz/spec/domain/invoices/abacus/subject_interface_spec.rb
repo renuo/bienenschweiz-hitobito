@@ -91,6 +91,13 @@ describe Invoices::Abacus::SubjectInterface do
     end
   end
 
+  describe "#fetch" do
+    it "returns nil without request for subject id 0" do
+      expect(interface.fetch(0)).to be_nil
+      expect(a_request(:any, /#{api}/)).not_to have_been_made
+    end
+  end
+
   context "with abacus subject key" do
     before { person.update!(abacus_subject_key: 100_000) }
 

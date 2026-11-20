@@ -115,6 +115,49 @@ describe Invoices::Abacus::KeyMapping do
       expect(ExternalInvoice.count).to eq(0)
     end
 
+    it "skips people that do not exist" do
+      data = exported
+      data["people"].first["id"] = -1
+
+      result = import(data)
+
+      expect(result.skipped).to include("Person -1: not found")
+    end
+
+    it "replaces a different key and logs it" do
+      data = exported
+      linked.update_column(:abacus_subject_key, 1234) # rubocop:disable Rails/SkipsModelValidations
+      log = []
+
+      result = import(data, logger: log.method(:<<))
+
+      expect(result.people).to eq(1)
+      expect(linked.reload.abacus_subject_key).to eq(4711)
+      expect(log).to include("Person #{linked.id}: replacing key 1234 with 4711")
+    end
+
+    it "skips invoices whose subscription does not exist" do
+      data = exported
+      data["external_invoices"].first["link_id"] = -1
+
+      result = import(data)
+
+      expect(result.invoices).to eq(0)
+      expect(result.skipped)
+        .to include(a_string_matching(/MagazineSubscription -1 .*: link not found/))
+    end
+
+    it "skips invoices with an unknown link type" do
+      data = exported
+      data["external_invoices"].first["link_type"] = "Unknown"
+      log = []
+
+      result = import(data, logger: log.method(:<<))
+
+      expect(result.invoices).to eq(0)
+      expect(log).to include(a_string_matching(/SKIPPED Invoice Unknown .*: link not found/))
+    end
+
     it "rejects unknown versions" do
       expect { import(exported.merge("version" => 2)) }.to raise_error(ArgumentError)
     end

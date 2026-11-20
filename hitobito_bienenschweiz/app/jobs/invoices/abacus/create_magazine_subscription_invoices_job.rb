@@ -28,7 +28,7 @@ class Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob < RecurringJob
   end
 
   def next_run
-    Time.zone.tomorrow.at_beginning_of_day.change(hour: 2, minute: 33).in_time_zone
+    Time.zone.tomorrow.at_beginning_of_day.change(hour: 2, min: 33).in_time_zone
   end
 
   private
@@ -151,7 +151,7 @@ class Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob < RecurringJob
     {
       error: "#{error.class}: #{error.message}",
       response: response.try(:body).presence,
-      backtrace: error.backtrace&.first(5)
+      backtrace: Array(error.backtrace).first(5)
     }.compact
   end
 

@@ -291,6 +291,17 @@ describe MagazineSubscription do
       expect(subscription.reload.cancellation_reason).to eq("kint")
     end
 
+    it "keeps the invoices when the end date is removed again" do
+      subscription.update!(end_date: Date.new(2026, 4, 30), cancellation_reason: "kint")
+      open = invoice(Date.new(2026, 5, 1), :open, 42)
+
+      expect do
+        subscription.update!(end_date: nil, cancellation_reason: nil)
+      end.not_to change { Delayed::Job.count }
+
+      expect(open.reload).to be_open
+    end
+
     it "keeps the invoice of the period that is still running" do
       open = invoice(Date.new(2026, 5, 1), :open, 42)
 

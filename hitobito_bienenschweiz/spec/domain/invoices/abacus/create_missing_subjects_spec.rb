@@ -74,5 +74,11 @@ describe Invoices::Abacus::CreateMissingSubjects do
       expect(result.failed[broken]).to eq("RuntimeError: unexpected")
       expect(log.size).to eq(3)
     end
+
+    it "runs without logger" do
+      result = described_class.new(client: double).run
+
+      expect(result.created).to eq([ok])
+    end
   end
 end

@@ -34,6 +34,50 @@ describe Invoices::Abacus::Client do
     end
   end
 
+  it "cannot be created without configuration" do
+    allow(Invoices::Abacus::Config).to receive(:host).and_return(nil)
+
+    expect { described_class.new }.to raise_error("Abacus is not configured")
+  end
+
+  describe "#delete" do
+    it "deletes the entity" do
+      request = stub_request(:delete, "#{api}/Subjects(Id=1)").to_return(status: 204, body: "")
+
+      expect(client.delete(:subject, 1)).to eq({})
+      expect(request).to have_been_requested
+    end
+  end
+
+  describe "bad requests" do
+    it "uses the error message of the response" do
+      stub_request(:get, "#{api}/Subjects(Id=1)")
+        .to_return(status: 400, body: {error: {message: "Invalid subject"}}.to_json)
+
+      expect { client.get(:subject, 1) }
+        .to raise_error(RestClient::BadRequest, "Invalid subject")
+    end
+
+    it "keeps the original message if the response contains none" do
+      stub_request(:get, "#{api}/Subjects(Id=1)").to_return(status: 400, body: "<html/>")
+
+      expect { client.get(:subject, 1) }.to raise_error(RestClient::BadRequest, "400 Bad Request")
+    end
+  end
+
+  describe "#batch" do
+    it "sends nothing if no requests are recorded" do
+      expect(client.batch {}).to eq([])
+      expect(a_request(:post, "#{api}/$batch")).not_to have_been_made
+    end
+
+    it "does not allow nested batches" do
+      expect { client.batch { client.batch {} } }
+        .to raise_error("Nested batch requests are not allowed")
+      expect(client).not_to be_in_batch
+    end
+  end
+
   describe "throttling" do
     before do
       stub_request(:get, "#{api}/Subjects(Id=1)").to_return(status: 200, body: {Id: 1}.to_json)
@@ -66,10 +110,36 @@ describe Invoices::Abacus::Client do
 
       client.get(:subject, 1)
     end
+
+    it "measures the time with the monotonic clock" do
+      allow(Invoices::Abacus::Config).to receive(:max_requests_per_minute).and_return(60)
+      allow(client).to receive(:sleep)
+      expect(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC)
+        .at_least(:once).and_call_original
+
+      client.get(:subject, 1)
+    end
   end
 end
 
 describe Invoices::Abacus::Config do
+  describe ".exist?" do
+    it "reads host and mandant from the settings" do
+      allow(Settings.abacus).to receive_messages(host: "https://abacus.example.com",
+        mandant: "1234")
+
+      expect(described_class.host).to eq("https://abacus.example.com")
+      expect(described_class.mandant).to eq("1234")
+      expect(described_class).to be_exist
+    end
+
+    it "is false without mandant" do
+      allow(Settings.abacus).to receive_messages(host: "https://abacus.example.com", mandant: nil)
+
+      expect(described_class).not_to be_exist
+    end
+  end
+
   describe ".max_requests_per_minute" do
     it "is nil when blank or zero" do
       allow(Settings.abacus).to receive(:max_requests_per_minute).and_return(nil)

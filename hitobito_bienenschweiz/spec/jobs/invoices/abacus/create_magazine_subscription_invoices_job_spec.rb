@@ -199,8 +199,20 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
     expect(ExternalInvoice.last).to be_error
   end
 
+  it "runs every night" do
+    expect(job.next_run).to eq(Time.zone.local(2026, 10, 8, 2, 33))
+  end
+
   describe "run" do
     let(:run) { ExternalInvoiceRun.last }
+
+    it "raises if the run cannot be recorded" do
+      subscription(Date.new(2025, 12, 1))
+      allow(ExternalInvoiceRun).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+
+      expect { job.perform_internal }.to raise_error(ActiveRecord::RecordInvalid)
+      expect(ExternalInvoice.count).to eq(0)
+    end
 
     it "is not recorded when no subscriptions are due" do
       subscription(Date.new(2026, 8, 1))

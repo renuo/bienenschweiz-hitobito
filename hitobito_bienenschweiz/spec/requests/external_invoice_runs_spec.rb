@@ -38,6 +38,14 @@ RSpec.describe ExternalInvoiceRunsController, type: :request do
       expect(response.body).to include(external_invoice_run_path(run))
     end
 
+    it "renders the admin left nav with the runs entry active" do
+      get external_invoice_runs_path
+
+      html = Nokogiri::HTML(response.body)
+      expect(html.css(".nav-left-section.active a[href='#{signatures_path}']")).to be_present
+      expect(html.css(".is-active a[href='#{external_invoice_runs_path}']")).to be_present
+    end
+
     it "shows the errors with links to person and subscriptions" do
       log_error(invoice, "Rechnung konnte nicht in Abacus erstellt werden", {"status" => 400})
       log_error(subscription, "Unerwarteter Fehler", {"error" => "NoMethodError: boom"})
@@ -54,6 +62,17 @@ RSpec.describe ExternalInvoiceRunsController, type: :request do
       )
       expect(response.body).to include("NoMethodError: boom")
       expect(response.body).to include("01.12.2026")
+    end
+
+    it "shows errors of the run itself without person and subscription" do
+      log_error(run, "Rechnungslauf wurde abgebrochen", {"error" => "db gone"})
+
+      get external_invoice_run_path(run)
+
+      html = Nokogiri::HTML(response.body)
+      expect(html.css("table tbody tr").size).to eq(1)
+      expect(html.css("table tbody a")).to be_empty
+      expect(response.body).to include("Rechnungslauf wurde abgebrochen")
     end
   end
 
