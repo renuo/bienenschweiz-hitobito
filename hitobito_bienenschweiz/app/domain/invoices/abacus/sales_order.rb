@@ -46,8 +46,10 @@ module Invoices
         {sales_order_id: entity.abacus_sales_order_key, sales_order_backlog_id: BACKLOG_ID}
       end
 
+      # Abacus calculates the total from the prices of the articles.
       def assign_abacus_key(data)
-        entity.update!(abacus_sales_order_key: data.fetch(:sales_order_id), state: :open)
+        entity.update!(abacus_sales_order_key: data.fetch(:sales_order_id), state: :open,
+          total: data[:total_amount] || entity.total)
       end
 
       def set_cancelled
@@ -69,13 +71,18 @@ module Invoices
           delivery_date: abacus_date(entity.sent_at),
           invoice_date: abacus_date(entity.sent_at),
           invoice_value_date: abacus_date(entity.issued_at),
-          total_amount: entity.total.to_f,
           language: entity.person.language,
           document_code_invoice: DOCUMENT_CODES.fetch(entity.invoice_kind),
           process_flow_number: PROCESS_FLOW_NUMBERS.fetch(entity.invoice_kind),
           comment: comment,
+          payment: payment_attrs,
           user_fields: order_user_fields
         }.compact
+      end
+
+      def payment_attrs
+        number = Config.payment_slip_internal_number
+        {payment_slip_internal_number: number} unless number.nil?
       end
 
       # Abacus only accepts dates from EARLIEST_DATE on. Earlier invoice dates are moved
@@ -110,7 +117,6 @@ module Invoices
         {
           position_number: index,
           type: TYPE,
-          pricing: {price_after_finding: position.amount.to_f.round(2)},
           quantity: {
             ordered: position.count,
             charged: position.count,

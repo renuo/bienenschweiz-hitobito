@@ -21,7 +21,8 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
     travel_to(today)
     allow(Settings.magazine_subscription_invoicing).to receive_messages(
       enabled: enabled,
-      articles: {abo: {article_number: "4711", price: 42.5}, online_abo: {article_number: "4712"}}
+      articles: {abo_biez: {article_number: "4711"}, no_number: {article_number: ""}},
+      subscription_type_articles: {abo: "abo_biez", online_abo: "no_number"}
     )
     allow(Invoices::Abacus::Client).to receive(:new)
     allow(Invoices::Abacus::SalesOrderInterface).to receive(:new).and_return(interface)
@@ -30,7 +31,8 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
     allow(interface).to receive(:create_batch) do |sales_orders|
       submitted.concat(sales_orders)
       sales_orders.map do |sales_order|
-        sales_order.assign_abacus_key(sales_order_id: 100 + sales_order.entity.id)
+        sales_order.assign_abacus_key(sales_order_id: 100 + sales_order.entity.id,
+          total_amount: 155.95)
         instance_double(Invoices::Abacus::BatchResponse::Part, success?: true)
       end
     end
@@ -52,13 +54,20 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
       period_start: Date.new(2026, 12, 1),
       issued_at: Date.new(2026, 12, 1),
       sent_at: today,
-      total: 85.0,
+      total: 155.95,
       abacus_sales_order_key: 100 + invoice.id
     )
 
     position = submitted.first.positions.first
-    expect(position).to have_attributes(article_number: "4711", amount: 42.5, count: 2,
+    expect(position).to have_attributes(article_number: "4711", count: 2,
       name: "Abo 01.12.2026 - 30.11.2027")
+  end
+
+  it "only invoices the given number of subscriptions with limit" do
+    3.times { subscription(Date.new(2025, 12, 1)) }
+
+    expect { job.perform_internal(limit: 1) }.to change { ExternalInvoice.count }.by(1)
+    expect(ExternalInvoiceRun.last.due_count).to eq(1)
   end
 
   it "does not invoice subscriptions whose next period starts later" do
@@ -157,7 +166,7 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
     expect(submitted).to be_empty
   end
 
-  it "marks the invoice as error when the article has no price" do
+  it "marks the invoice as error when the article has no article number" do
     subscription(Date.new(2025, 12, 1), subscription_type: "online_abo")
 
     job.perform_internal
