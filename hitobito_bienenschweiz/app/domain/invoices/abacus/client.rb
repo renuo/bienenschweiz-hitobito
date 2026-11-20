@@ -152,7 +152,7 @@ module Invoices
       def id_segment(id)
         if id.is_a?(Hash)
           "(#{camelize_keys(id).map { |k, v| "#{k}=#{v}" }.join(",")})"
-        elsif id
+        else
           "(Id=#{id})"
         end
       end

@@ -20,18 +20,18 @@ module Invoices
 
         # Returns nil if requests are not limited.
         def max_requests_per_minute
-          Settings.abacus&.max_requests_per_minute.to_i.nonzero?
+          Settings.abacus.max_requests_per_minute.to_i.nonzero?
         end
 
         # Returns nil if not set, so the default of the Abacus mandant is used.
         def payment_slip_internal_number
-          value = Settings.abacus&.payment_slip_internal_number
+          value = Settings.abacus.payment_slip_internal_number
           Integer(value.to_s) if value.present?
         end
 
         KEYS.each do |key|
           define_method(key) do
-            Settings.abacus&.public_send(key)
+            Settings.abacus.public_send(key)
           end
         end
       end

@@ -72,6 +72,19 @@ describe Invoices::Abacus::SalesOrder do
     end
   end
 
+  describe "#abacus_key" do
+    it "is nil without sales order key" do
+      expect(described_class.new(invoice).abacus_key).to be_nil
+    end
+
+    it "contains the sales order key and backlog id" do
+      invoice.update!(abacus_sales_order_key: 42)
+
+      expect(described_class.new(invoice).abacus_key)
+        .to eq(sales_order_id: 42, sales_order_backlog_id: 0)
+    end
+  end
+
   describe "payment" do
     it "is not sent without configured payment_slip_internal_number" do
       allow(Invoices::Abacus::Config).to receive(:payment_slip_internal_number).and_return(nil)

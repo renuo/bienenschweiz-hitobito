@@ -14,6 +14,10 @@ describe ExternalInvoice::Magazine do
       period_start: Date.new(2026, 5, 1), state: :open, abacus_sales_order_key: 42)
   end
 
+  it "is displayed with its id" do
+    expect(invoice.to_s).to eq("Rechnung #{invoice.id}")
+  end
+
   it "is invalid with an unknown state" do
     invoice.state = "unknown"
     expect(invoice).not_to be_valid

@@ -12,14 +12,6 @@ module Invoices
     class Entity
       attr_reader :entity, :errors
 
-      class << self
-        def wrap(entity)
-          return entity if entity.is_a?(self)
-
-          new(entity)
-        end
-      end
-
       def initialize(entity)
         @entity = entity
         @errors = {}
