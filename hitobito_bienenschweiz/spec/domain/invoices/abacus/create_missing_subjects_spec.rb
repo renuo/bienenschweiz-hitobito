@@ -60,7 +60,7 @@ describe Invoices::Abacus::CreateMissingSubjects do
         when invalid
           subject.errors[:town] = :blank
           false
-        when broken then raise RestClient::InternalServerError
+        when broken then raise "unexpected"
         end
       end
     end
@@ -71,7 +71,7 @@ describe Invoices::Abacus::CreateMissingSubjects do
       expect(result.created).to eq([ok])
       expect(result.failed.keys).to contain_exactly(invalid, broken)
       expect(result.failed[invalid]).to include("Ort")
-      expect(result.failed[broken]).to eq("Internal Server Error")
+      expect(result.failed[broken]).to eq("RuntimeError: unexpected")
       expect(log.size).to eq(3)
     end
   end

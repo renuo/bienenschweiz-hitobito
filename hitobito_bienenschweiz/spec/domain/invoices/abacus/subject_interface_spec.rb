@@ -19,9 +19,10 @@ describe Invoices::Abacus::SubjectInterface do
   let(:interface) { described_class.new }
 
   let(:remote_subject) do
-    {Id: person.id, Name: "Biene", FirstName: "Maja",
+    {Id: 100_000, Name: "Biene", FirstName: "Maja",
+     Addresses: [{Id: 1, City: "Bern"}],
      Communications: [{Id: 1, Type: "EMail", Value: "maja@example.com"}],
-     Customers: [{Id: person.id}]}
+     Customers: [{Id: 100_000}]}
   end
 
   before do
@@ -35,7 +36,7 @@ describe Invoices::Abacus::SubjectInterface do
 
   def stub_get_subject(id, response)
     stub_request(:get, "#{api}/Subjects(Id=#{id})")
-      .with(query: {"$expand" => "Communications,Customers"})
+      .with(query: {"$expand" => "Addresses,Communications,Customers"})
       .to_return(**response)
   end
 
@@ -45,110 +46,94 @@ describe Invoices::Abacus::SubjectInterface do
       .to_return(status: 201, body: response.to_json)
   end
 
+  let(:address_body) do
+    {SubjectId: 100_000, Street: "Bienenweg", HouseNumber: "3",
+     PostOfficeBoxText: "", AddressSupplement: "", PostCode: "3000", City: "Bern",
+     CountryId: "CH", ValidFrom: Time.zone.today}
+  end
+  let(:communication_body) do
+    {SubjectId: 100_000, Type: "EMail", Value: "maja@example.com", Category: "Private"}
+  end
+  let(:customer_body) { {SubjectId: 100_000, CustomerReminder: {DispatchType: "Letter"}} }
+
   context "without abacus subject key" do
-    context "when subject does not exist in abacus" do
-      before { stub_get_subject(person.id, status: 404, body: "{}") }
+    it "creates subject with the number assigned by abacus, address, communication and customer" do
+      requests = [
+        stub_create("Subjects",
+          {Type: "Person", Name: "Biene", FirstName: "Maja", SalutationId: 2, Language: "de"},
+          {Id: 100_000}),
+        stub_create("Addresses", address_body),
+        stub_create("Communications", communication_body),
+        stub_create("Customers", customer_body)
+      ]
 
-      it "creates subject, address, communication and customer" do
-        requests = [
-          stub_create("Subjects",
-            {Type: "Person", Name: "Biene", FirstName: "Maja", SalutationId: 2,
-             Language: "de", Id: person.id},
-            {Id: person.id}),
-          stub_create("Addresses",
-            {SubjectId: person.id, Street: "Bienenweg", HouseNumber: "3",
-             PostOfficeBoxText: "", AddressSupplement: "", PostCode: "3000", City: "Bern",
-             CountryId: "CH", ValidFrom: Time.zone.today}),
-          stub_create("Communications",
-            {SubjectId: person.id, Type: "EMail", Value: "maja@example.com",
-             Category: "Private"}),
-          stub_create("Customers",
-            {SubjectId: person.id, CustomerReminder: {DispatchType: "Letter"}})
-        ]
+      expect(interface.ensure_customer(subject)).to be(true)
 
-        expect(interface.ensure_customer(subject)).to be(true)
-
-        expect(requests).to all(have_been_requested)
-        expect(person.reload.abacus_subject_key).to eq(person.id)
-      end
-
-      it "returns false without address" do
-        person.update!(town: nil)
-
-        expect(interface.ensure_customer(subject)).to be(false)
-        expect(subject.errors).to eq(town: :blank)
-        expect(a_request(:post, /#{api}/)).not_to have_been_made
-      end
-
-      it "fails if abacus assigns a different subject key" do
-        stub_request(:post, "#{api}/Subjects")
-          .to_return(status: 201, body: {Id: 4711}.to_json)
-
-        expect { interface.ensure_customer(subject) }
-          .to raise_error("Abacus created subject with id=4711 but person has id=#{person.id}")
-      end
+      expect(requests).to all(have_been_requested)
+      expect(person.reload.abacus_subject_key).to eq(100_000)
     end
 
-    context "when subject with person id exists in abacus" do
-      it "assigns the key if it is the same person" do
-        stub_get_subject(person.id, status: 200, body: remote_subject.to_json)
+    it "keeps the subject key if creating the details fails" do
+      stub_create("Subjects", {Type: "Person", Name: "Biene", FirstName: "Maja",
+                               SalutationId: 2, Language: "de"}, {Id: 100_000})
+      stub_request(:post, "#{api}/Addresses").to_return(status: 500, body: "{}")
 
-        expect(interface.ensure_customer(subject)).to be(true)
-        expect(person.reload.abacus_subject_key).to eq(person.id)
-      end
+      expect { interface.ensure_customer(subject) }.to raise_error(RestClient::Exception)
+      expect(person.reload.abacus_subject_key).to eq(100_000)
+    end
 
-      it "creates the customer if missing" do
-        stub_get_subject(person.id, status: 200,
-          body: remote_subject.merge(Customers: []).to_json)
-        request = stub_create("Customers",
-          {SubjectId: person.id, CustomerReminder: {DispatchType: "Letter"}})
+    it "returns false without address" do
+      person.update!(town: nil)
 
-        expect(interface.ensure_customer(subject)).to be(true)
-        expect(request).to have_been_requested
-      end
-
-      it "returns false if it is another person" do
-        stub_get_subject(person.id, status: 200,
-          body: remote_subject.merge(FirstName: "Willi").to_json)
-
-        expect(interface.ensure_customer(subject)).to be(false)
-        expect(subject.errors).to eq(abacus_subject_key: :taken)
-        expect(person.reload.abacus_subject_key).to be_nil
-      end
-
-      it "returns false if it has another email" do
-        stub_get_subject(person.id, status: 200,
-          body: remote_subject.merge(Communications: [{Type: "EMail", Value: "x@example.com"}])
-            .to_json)
-
-        expect(interface.ensure_customer(subject)).to be(false)
-        expect(subject.errors).to eq(abacus_subject_key: :taken)
-      end
+      expect(interface.ensure_customer(subject)).to be(false)
+      expect(subject.errors).to eq(town: :blank)
+      expect(a_request(:any, /#{api}/)).not_to have_been_made
     end
   end
 
   context "with abacus subject key" do
-    before { person.update!(abacus_subject_key: 6) }
+    before { person.update!(abacus_subject_key: 100_000) }
 
-    it "does nothing if subject and customer exist" do
-      stub_get_subject(6, status: 200, body: remote_subject.merge(Id: 6).to_json)
+    it "does nothing if subject is complete" do
+      stub_get_subject(100_000, status: 200, body: remote_subject.to_json)
 
       expect(interface.ensure_customer(subject)).to be(true)
       expect(a_request(:post, /#{api}/)).not_to have_been_made
-      expect(person.reload.abacus_subject_key).to eq(6)
+      expect(person.reload.abacus_subject_key).to eq(100_000)
     end
 
     it "creates the customer if missing" do
-      stub_get_subject(6, status: 200, body: remote_subject.merge(Id: 6, Customers: []).to_json)
-      request = stub_create("Customers",
-        {SubjectId: 6, CustomerReminder: {DispatchType: "Letter"}})
+      stub_get_subject(100_000, status: 200, body: remote_subject.merge(Customers: []).to_json)
+      request = stub_create("Customers", customer_body)
 
       expect(interface.ensure_customer(subject)).to be(true)
       expect(request).to have_been_requested
     end
 
+    it "creates address, communication and customer of an incomplete subject" do
+      stub_get_subject(100_000, status: 200,
+        body: remote_subject.merge(Addresses: [{Id: 1, City: ""}], Communications: [],
+          Customers: []).to_json)
+      requests = [
+        stub_create("Addresses", address_body),
+        stub_create("Communications", communication_body),
+        stub_create("Customers", customer_body)
+      ]
+
+      expect(interface.ensure_customer(subject)).to be(true)
+      expect(requests).to all(have_been_requested)
+    end
+
+    it "does not create an address if the person has none" do
+      person.update!(town: nil)
+      stub_get_subject(100_000, status: 200, body: remote_subject.merge(Addresses: []).to_json)
+
+      expect(interface.ensure_customer(subject)).to be(true)
+      expect(a_request(:post, /#{api}/)).not_to have_been_made
+    end
+
     it "returns false if the subject does not exist in abacus" do
-      stub_get_subject(6, status: 404, body: "{}")
+      stub_get_subject(100_000, status: 404, body: "{}")
 
       expect(interface.ensure_customer(subject)).to be(false)
       expect(subject.errors).to eq(abacus_subject_key: :not_found_in_abacus)

@@ -189,4 +189,69 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
 
     expect(ExternalInvoice.last).to be_error
   end
+
+  describe "run" do
+    let(:run) { ExternalInvoiceRun.last }
+
+    it "is not recorded when no subscriptions are due" do
+      subscription(Date.new(2026, 8, 1))
+
+      expect { job.perform_internal }.not_to change { ExternalInvoiceRun.count }
+    end
+
+    it "records the created invoices and errors" do
+      subscription(Date.new(2025, 12, 1))
+      subscription(Date.new(2025, 12, 1), subscription_type: "online_abo")
+
+      expect { job.perform_internal }.to change { ExternalInvoiceRun.count }.by(1)
+
+      expect(run).to have_attributes(state: "finished", due_count: 2, created_count: 1,
+        error_count: 1, started_at: be_present, finished_at: be_present)
+      error = run.hitobito_log_entries.sole
+      expect(error.subject).to eq(ExternalInvoice.find_by(state: :error))
+      expect(error.message).to include("kein Abacus Artikel")
+    end
+
+    it "continues with other subscriptions after an unexpected exception" do
+      failing = subscription(Date.new(2025, 12, 1))
+      subscription(Date.new(2025, 11, 1))
+      allow(Invoices::Abacus::MagazineSubscriptionInvoice).to receive(:new).and_call_original
+      allow(Invoices::Abacus::MagazineSubscriptionInvoice).to receive(:new)
+        .with(failing, anything).and_raise(NoMethodError, "boom")
+
+      job.perform_internal
+
+      expect(run).to have_attributes(state: "finished", created_count: 1, error_count: 1)
+      error = run.hitobito_log_entries.sole
+      expect(error.subject).to eq(failing)
+      expect(error.payload["error"]).to eq("NoMethodError: boom")
+      expect(error.payload["backtrace"]).to be_present
+    end
+
+    it "logs the Abacus response of failed requests" do
+      subscription(Date.new(2025, 12, 1))
+      response = instance_double(RestClient::Response, body: "{\"error\":\"invalid\"}", code: 400)
+      allow(interface).to receive(:create_batch)
+        .and_raise(RestClient::BadRequest.new(response, 400))
+
+      job.perform_internal
+
+      expect(run).to have_attributes(created_count: 0, error_count: 1)
+      expect(run.hitobito_log_entries.sole.payload)
+        .to include("error" => a_string_including("RestClient::BadRequest"),
+          "response" => "{\"error\":\"invalid\"}")
+    end
+
+    it "is marked as failed when the run aborts" do
+      subscription(Date.new(2025, 12, 1))
+      allow(ExternalInvoice::Magazine).to receive(:find_or_initialize_by).and_call_original
+      allow(job).to receive(:submit).and_raise(ActiveRecord::ConnectionTimeoutError, "db gone")
+
+      expect { job.perform_internal }.to raise_error(ActiveRecord::ConnectionTimeoutError)
+
+      expect(run.state).to eq("failed")
+      expect(run.hitobito_log_entries.sole).to have_attributes(subject: run,
+        message: include("abgebrochen"))
+    end
+  end
 end

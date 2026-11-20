@@ -9,8 +9,7 @@ module Invoices
   module Abacus
     # Creates the Abacus subject (contact), address, communication and customer for every
     # person with an active role or an active magazine subscription that is not linked
-    # to an Abacus subject yet. Existing Abacus subjects with the person's id are adopted
-    # if they belong to the same person (see SubjectInterface#ensure_customer).
+    # to an Abacus subject yet. A failing person is logged and skipped.
     class CreateMissingSubjects
       Result = Struct.new(:created, :failed, keyword_init: true)
 
@@ -42,8 +41,8 @@ module Invoices
         else
           record_failure(person, result, subject.error_messages.join(", "))
         end
-      rescue RestClient::Exception, SocketError, Errno::ECONNREFUSED => e
-        record_failure(person, result, e.message)
+      rescue => e
+        record_failure(person, result, "#{e.class}: #{e.message}")
       end
 
       def record_failure(person, result, message)
