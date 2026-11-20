@@ -63,6 +63,24 @@ Run `bin/rails delayed_job:schedule` if the deployment hasn't already scheduled
 test list and check delivery. The original list address must arrive in the
 mailbox's `X-Original-To` header.
 
+To use the Exchange mailbox's plus-addresses as list addresses, set
+`BIENENSCHWEIZ_MAILING_LIST_PLUS_ADDRESSING=true` for the web app and worker.
+A list named `mytest` will use `mailingliste+mytest@bienenschweiz.ch`. The
+retriever matches the tagged address in `X-Original-To`, or in a single `To`
+address when that header is absent. For local broadcasts, keep SMTP pointed at
+MailCatcher on port 2025. Before using a production relay, verify that it accepts
+and preserves the tagged SMTP envelope sender for bounce delivery.
+
+Local `bin/dev` starts the delayed-jobs worker and clears its queue during
+startup. After startup finishes and the test list is ready, schedule just the
+mail retriever from the `hitobito` directory:
+
+```sh
+direnv exec . bin/rails runner 'MailingLists::MailRetrieverJob.new.schedule'
+```
+
+The first poll is due after one retrieval interval, which defaults to one minute.
+
 ### Inspection reminders
 
 ```
