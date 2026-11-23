@@ -10,3 +10,14 @@ Fabrication.configure do |config|
     "../hitobito_bienenschweiz/spec/fabricators"]
   config.path_prefix = Rails.root
 end
+
+# Plain events require an Anlasstyp (no DB default). The core :event fabricator
+# cannot be redefined, so the attribute is added to it here. Courses inherit the
+# :event definition but do not use the field.
+RSpec.configure do |config|
+  config.before(:suite) do
+    Fabrication.manager.load_definitions if Fabrication.manager.empty?
+    Fabrication.manager[:event].append_or_update_attribute(:event_type, "public")
+    Fabrication.manager[:course].append_or_update_attribute(:event_type, nil)
+  end
+end

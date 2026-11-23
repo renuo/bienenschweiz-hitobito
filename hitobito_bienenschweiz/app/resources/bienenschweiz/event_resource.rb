@@ -9,5 +9,6 @@ module Bienenschweiz::EventResource
   extend ActiveSupport::Concern
   included do
     attribute :export_to_website, :boolean
+    attribute :event_type, :string
   end
 end
