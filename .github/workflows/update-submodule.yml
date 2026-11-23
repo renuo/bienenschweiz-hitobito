@@ -10,6 +10,9 @@ jobs:
     runs-on: "ubuntu-24.04"
     env:
       GH_TOKEN: ${{ secrets.SUBMODULE_UPDATE_TOKEN }}
+      # Generating the Graphiti schema only boots the app, no database needed.
+      RAILS_DB_ADAPTER: nulldb
+      RAILS_ENV: test
 
     steps:
       - uses: actions/checkout@v6
@@ -18,23 +21,54 @@ jobs:
           submodules: true
 
       - name: "Update hitobito submodule"
-        run: git submodule update --remote hitobito
-
-      - name: "Create PR if there are changes"
+        id: submodule
         run: |
+          git submodule update --remote hitobito
           if git diff --quiet; then
             echo "No upstream changes."
-            exit 0
+          else
+            echo "sha=$(git -C hitobito rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
           fi
 
-          NEW_SHA=$(git -C hitobito rev-parse --short HEAD)
+      - name: "Install OS deps"
+        if: steps.submodule.outputs.sha
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get install -y libvips42
+
+      - uses: ruby/setup-ruby@v1
+        if: steps.submodule.outputs.sha
+
+      - name: "Copy files for wagon and update lockfile"
+        if: steps.submodule.outputs.sha
+        run: |
+          cp -v ../hitobito/.tool-versions ../hitobito/Gemfile.lock ./
+          bundle lock
+        working-directory: hitobito_bienenschweiz
+
+      - uses: ruby/setup-ruby@v1
+        if: steps.submodule.outputs.sha
+        with:
+          working-directory: hitobito_bienenschweiz
+          bundler-cache: true
+
+      - name: "Regenerate Graphiti schema"
+        if: steps.submodule.outputs.sha
+        run: bundle exec rake app:graphiti:schema:generate
+        working-directory: hitobito_bienenschweiz
+
+      - name: "Create PR"
+        if: steps.submodule.outputs.sha
+        env:
+          NEW_SHA: ${{ steps.submodule.outputs.sha }}
+        run: |
           BRANCH=chore/update-hitobito-submodule
 
           git config user.name "Hitobito Core Update Bot"
           git config user.email "<>"
 
           git checkout -B "$BRANCH"
-          git add hitobito
+          git add hitobito hitobito_bienenschweiz/spec/support/graphiti/schema.json
           git commit -m "Update hitobito submodule to $NEW_SHA"
           git push --force-with-lease origin "$BRANCH"
 
@@ -42,5 +76,5 @@ jobs:
             --base develop \
             --head "$BRANCH" \
             --title "Update hitobito submodule to $NEW_SHA" \
-            --body "Automated daily update of the \`hitobito/\` submodule to upstream \`master\` (\`$NEW_SHA\`)." \
+            --body "Automated daily update of the \`hitobito/\` submodule to upstream \`master\` (\`$NEW_SHA\`), including the regenerated Graphiti schema." \
             || gh pr edit "$BRANCH" --title "Update hitobito submodule to $NEW_SHA"
