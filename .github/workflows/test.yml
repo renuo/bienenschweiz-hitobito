@@ -86,6 +86,15 @@ jobs:
         run: bundle exec rake app:db:create app:db:schema:load db:migrate
         working-directory: hitobito_bienenschweiz
 
+      - name: "Check wagon schema is up to date"
+        run: |
+          SCHEMA="$PWD/db/schema.rb" bundle exec rake app:db:schema:dump
+          git diff --exit-code db/schema.rb || {
+            echo "::error file=hitobito_bienenschweiz/db/schema.rb::db/schema.rb is out of date. Regenerate it from a fresh database (db:drop db:create db:schema:load db:migrate wagon:migrate in hitobito/) and commit the result."
+            exit 1
+          }
+        working-directory: hitobito_bienenschweiz
+
       - name: "ci:setup:rspec"
         run: bundle exec rake app:ci:setup:rspec
         working-directory: hitobito_bienenschweiz
