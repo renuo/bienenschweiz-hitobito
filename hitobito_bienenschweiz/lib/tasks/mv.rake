@@ -183,8 +183,7 @@ namespace :mv do
             member.affix_3].map(&:presence).compact.join(", ")
           person.street = member.street
           person.housenumber = member.house_no
-          person.postbox = [member.pobox, member.pobox_zip,
-            member.pobox_zip_ex].map(&:presence).compact.join(", ")
+          person.postbox = member.pobox
           person.salutation = member.salutation
           person.hive_count = member.hive_count
           person.honey_yield = member.honey_yield
