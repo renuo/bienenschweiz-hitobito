@@ -16,7 +16,7 @@ module Bienenschweiz::GroupDecorator
 
     selected = person.spesen_sektion_id == model.layer_group_id
     title = I18n.t("people.roles_aside.#{selected ? "spesen_sektion" : "set_spesen_sektion"}")
-    icon = helpers.icon(:money_bill_1, filled: selected)
+    icon = helpers.icon(:clipboard, filled: selected)
     path = helpers.spesen_sektion_group_person_path(group, person,
       spesen_sektion_id: model.layer_group_id)
     attrs = {title: title, alt: title, class: "spesen-sektion-#{model.id}"}
