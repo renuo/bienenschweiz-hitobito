@@ -77,7 +77,7 @@ jobs:
         if: steps.submodule.outputs.sha
         run: |
           bundle exec rake app:db:create app:db:schema:load db:migrate
-          SCHEMA="$PWD/db/schema.rb" bundle exec rake app:db:schema:dump
+          SCHEMA="$PWD/db/schema.rb" bundle exec rake app:db:schema:dump bienenschweiz:strip_search_columns
         working-directory: hitobito_bienenschweiz
 
       - name: "Regenerate Graphiti schema"
