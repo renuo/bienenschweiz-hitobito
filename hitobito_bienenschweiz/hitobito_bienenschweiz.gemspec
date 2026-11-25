@@ -19,6 +19,6 @@ Gem::Specification.new do |s|
   s.dependencies << Gem::Dependency.new("haml", "~> 6.3.0")
   s.dependencies << Gem::Dependency.new("image_processing", "~> 1.14.0")
   s.dependencies << Gem::Dependency.new("onlylogs", ">= 0.11.0")
-  s.dependencies << Gem::Dependency.new("bootsnap", ">= 1.26.2")
+  s.dependencies << Gem::Dependency.new("bootsnap", ">= 1.26.1")
   # rubocop:enable Style/SingleSpaceBeforeFirstArg
 end
