@@ -85,6 +85,17 @@ describe MagazineSubscription do
       end
     end
 
+    it "is the billing person of gift subscriptions" do
+      gifter = Fabricate(:person)
+      subscription.assign_attributes(subscription_type: "geschenk_abo", gifter:)
+
+      expect(subscription.billing_person).to eq(gifter)
+    end
+
+    it "leaves the subscriber as billing person of other subscriptions" do
+      expect(subscription.billing_person).to eq(subscription.person)
+    end
+
     it "rejects a gift subscription referencing a nonexistent person" do
       subscription.subscription_type = "geschenk_abo"
       subscription.gifter_id = -1

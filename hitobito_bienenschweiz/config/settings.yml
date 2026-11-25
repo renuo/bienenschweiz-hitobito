@@ -95,3 +95,5 @@ magazine_subscription_invoicing:
     abo: abo_biez
     abo_eur: abo_biez_euro
     online_abo: abo_biez
+    # TODO: use a dedicated article once one exists in Abacus.
+    geschenk_abo: abo_biez

@@ -52,7 +52,7 @@ class Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob < RecurringJob
   def due_subscriptions
     MagazineSubscription.active(today)
       .where(subscription_type: Invoices::Abacus::MagazineSubscriptionInvoice.billable_types)
-      .includes(:person, :external_invoices)
+      .includes(:person, :gifter, :external_invoices)
       .select { |subscription| due?(subscription) }
   end
 
@@ -75,7 +75,7 @@ class Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob < RecurringJob
     if !invoice_data.invoice?
       assign_error(invoice, I18n.t("invoices.errors.article_missing",
         subscription_type: subscription.subscription_type_label))
-    elsif (subject_errors = ensure_customer(subscription.person))
+    elsif (subject_errors = ensure_customer(invoice_data.person))
       assign_error(invoice, I18n.t("invoices.errors.create_subject_failed"), subject_errors)
     else
       Invoices::Abacus::SalesOrder.new(invoice, invoice_data.positions)

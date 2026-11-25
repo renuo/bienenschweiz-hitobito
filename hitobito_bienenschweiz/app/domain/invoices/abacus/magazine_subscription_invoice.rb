@@ -12,10 +12,9 @@ module Invoices
     # `Settings.magazine_subscription_invoicing.subscription_type_articles`, the article
     # numbers in `Settings.magazine_subscription_invoicing.articles`. Prices are not sent,
     # Abacus takes them from the article.
+    # The invoice is addressed to the billing person (the gifter for gift subscriptions).
     class MagazineSubscriptionInvoice
       attr_reader :subscription, :period_start
-
-      delegate :person, to: :subscription
 
       class << self
         def billable_types
@@ -45,6 +44,11 @@ module Invoices
       def initialize(subscription, period_start)
         @subscription = subscription
         @period_start = period_start
+      end
+
+      # The person the invoice is addressed to.
+      def person
+        subscription.billing_person
       end
 
       def invoice?

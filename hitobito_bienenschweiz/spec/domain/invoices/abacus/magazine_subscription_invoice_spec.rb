@@ -17,7 +17,23 @@ describe Invoices::Abacus::MagazineSubscriptionInvoice do
     end
 
     it "only bills paid subscription types" do
-      expect(described_class.billable_types).to match_array(%w[abo abo_eur online_abo])
+      expect(described_class.billable_types).to match_array(%w[abo abo_eur online_abo geschenk_abo])
+    end
+  end
+
+  describe "#person" do
+    let(:subscription) { Fabricate.build(:magazine_subscription) }
+
+    it "is the subscriber" do
+      expect(described_class.new(subscription, Time.zone.today).person)
+        .to eq(subscription.person)
+    end
+
+    it "is the gifter for gift subscriptions" do
+      gifter = Fabricate.build(:person)
+      subscription.assign_attributes(subscription_type: "geschenk_abo", gifter:)
+
+      expect(described_class.new(subscription, Time.zone.today).person).to eq(gifter)
     end
   end
 

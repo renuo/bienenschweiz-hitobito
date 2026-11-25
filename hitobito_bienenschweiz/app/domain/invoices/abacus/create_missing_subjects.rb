@@ -8,8 +8,9 @@
 module Invoices
   module Abacus
     # Creates the Abacus subject (contact), address, communication and customer for every
-    # person with an active role or an active magazine subscription that is not linked
-    # to an Abacus subject yet. A failing person is logged and skipped.
+    # person with an active role, an active magazine subscription or an active gifted
+    # magazine subscription that is not linked to an Abacus subject yet.
+    # A failing person is logged and skipped.
     class CreateMissingSubjects
       Result = Struct.new(:created, :failed, keyword_init: true)
 
@@ -23,6 +24,8 @@ module Invoices
           .where(id: Role.select(:person_id))
           .or(Person.where(abacus_subject_key: nil)
             .where(id: MagazineSubscription.active.select(:person_id)))
+          .or(Person.where(abacus_subject_key: nil)
+            .where(id: MagazineSubscription.active.where.not(gifter_id: nil).select(:gifter_id)))
       end
 
       def run

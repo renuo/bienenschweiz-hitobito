@@ -33,13 +33,24 @@ describe Invoices::Abacus::CreateMissingSubjects do
         .tap { |person| person.update!(abacus_subject_key: 4711) }
     end
     let!(:without_anything) { Fabricate(:person) }
+    let!(:gifter) do
+      Fabricate(:person).tap do |gifter|
+        Fabricate(:magazine_subscription, subscription_type: "geschenk_abo", gifter:)
+      end
+    end
+    let!(:gifter_of_ended_subscription) do
+      Fabricate(:person).tap do |gifter|
+        Fabricate(:magazine_subscription, subscription_type: "geschenk_abo", gifter:,
+          start_date: 2.years.ago, end_date: 1.year.ago, cancellation_reason: "biwe")
+      end
+    end
 
-    it "includes unlinked people with an active role or subscription" do
+    it "includes unlinked people with an active role, subscription or gifted subscription" do
       people = described_class.people
 
-      expect(people).to include(with_role, with_subscription)
+      expect(people).to include(with_role, with_subscription, gifter)
       expect(people).not_to include(with_ended_role, with_ended_subscription, linked,
-        without_anything)
+        without_anything, gifter_of_ended_subscription)
     end
   end
 

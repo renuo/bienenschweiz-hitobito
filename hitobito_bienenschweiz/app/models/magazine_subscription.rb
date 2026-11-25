@@ -69,6 +69,11 @@ class MagazineSubscription < ApplicationRecord
 
   scope :active_on, ->(date) { active_between(date..date) }
 
+  # Gift subscriptions are invoiced to the gifter, all others to the subscriber.
+  def billing_person
+    gifter || person
+  end
+
   def to_s
     [subscription_type_label, start_date && I18n.l(start_date)].compact.join(", ")
   end

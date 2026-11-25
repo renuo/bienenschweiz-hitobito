@@ -63,6 +63,23 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
       name: "Abo 01.12.2026 - 30.11.2027")
   end
 
+  context "for gift subscriptions" do
+    let(:gifter) { Fabricate(:person, abacus_subject_key: 8) }
+
+    it "invoices the gifter" do
+      due = subscription(Date.new(2025, 12, 1), subscription_type: "geschenk_abo", gifter:)
+      allow(Settings.magazine_subscription_invoicing).to receive(:subscription_type_articles)
+        .and_return(geschenk_abo: "abo_biez")
+
+      expect { job.perform_internal }.to change { ExternalInvoice.count }.by(1)
+
+      expect(due.external_invoices.first).to have_attributes(person: gifter, state: "open")
+      expect(submitted.first.sales_order_attrs[:customer_id]).to eq(8)
+      expect(subject_interface).to have_received(:ensure_customer).once
+        .with(having_attributes(entity: gifter))
+    end
+  end
+
   it "only invoices the given number of subscriptions with limit" do
     3.times { subscription(Date.new(2025, 12, 1)) }
 
