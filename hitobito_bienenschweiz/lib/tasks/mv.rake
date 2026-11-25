@@ -329,7 +329,8 @@ namespace :mv do
     def try_add_website(group, intern_structure)
       @category ||= ContactAccountCategory.for(SocialAccount, Group).find_by!(key: :website)
       if intern_structure.url.present?
-        group.social_accounts.where(category: @category, name: intern_structure.url).first_or_create!
+        group.social_accounts.where(category: @category, name: intern_structure.url)
+          .first_or_initialize.update!(public: true)
       end
     end
 
