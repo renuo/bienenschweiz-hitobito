@@ -87,7 +87,7 @@ de:
         billing_address: Rechnungsadresse
         canceled: Abgesagt
         export_to_website: auf der Webseite von BienenSchweiz sichtbar
-        event_type: Anlasstyp
+        event_type: Veranstaltungstyp
         event_types:
           public: Öffentlich
           online: Online
