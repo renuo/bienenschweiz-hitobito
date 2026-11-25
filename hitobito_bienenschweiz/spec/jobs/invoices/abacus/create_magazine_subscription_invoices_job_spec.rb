@@ -163,10 +163,21 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
       expect(submitted).to be_empty
     end
 
-    it "retries the invoice on the next run" do
+    it "does not retry the invoice on the next run" do
       subscription(Date.new(2025, 12, 1))
       job.perform_internal
       allow(subject_interface).to receive(:ensure_customer).and_return(true)
+
+      expect { described_class.new.perform_internal }.not_to change { ExternalInvoiceRun.count }
+      expect(ExternalInvoice.last).to be_error
+      expect(submitted).to be_empty
+    end
+
+    it "creates the invoice again on the next run once it is set back to draft" do
+      subscription(Date.new(2025, 12, 1))
+      job.perform_internal
+      allow(subject_interface).to receive(:ensure_customer).and_return(true)
+      ExternalInvoice.last.update!(state: :draft)
 
       expect { described_class.new.perform_internal }.not_to change { ExternalInvoice.count }
       expect(ExternalInvoice.last).to be_open
@@ -213,6 +224,18 @@ describe Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob do
 
     job.perform_internal
 
+    expect(ExternalInvoice.last).to be_error
+  end
+
+  it "does not resubmit invoices that failed in Abacus on the next run" do
+    subscription(Date.new(2025, 12, 1))
+    allow(interface).to receive(:create_batch).and_raise(RestClient::RequestTimeout)
+    job.perform_internal
+
+    allow(interface).to receive(:create_batch).and_return([])
+    described_class.new.perform_internal
+
+    expect(interface).to have_received(:create_batch).once
     expect(ExternalInvoice.last).to be_error
   end
 

@@ -6,15 +6,18 @@
 #  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
 
 # Creates the invoices for the next period of all billable magazine subscriptions
-# in Abacus, a few months before that period starts. Invoices that failed are
-# retried on the next run.
+# in Abacus, a few months before that period starts.
+#
+# Failed invoices (state error) are not retried, as the error might have happened after
+# the invoice was already created in Abacus. They have to be resolved manually, e.g. by
+# setting them back to draft, which makes the next run create them again.
 #
 # Every run with due subscriptions is recorded as ExternalInvoiceRun, with an error
 # log entry per failed invoice. Unexpected exceptions only fail the affected
 # subscription or batch, the run continues with the others.
 class Invoices::Abacus::CreateMagazineSubscriptionInvoicesJob < RecurringJob
   SLICE_SIZE = 25 # number of invoices transmitted per abacus batch request
-  RETRYABLE_STATES = %w[draft error].freeze
+  RETRYABLE_STATES = %w[draft].freeze
 
   # limit: only invoice the first n due subscriptions (e.g. to test the invoicing manually)
   def perform_internal(limit: nil)
