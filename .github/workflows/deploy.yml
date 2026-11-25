@@ -20,7 +20,6 @@ jobs:
       NCTL_API_CLIENT_SECRET: ${{ secrets.NCTL_API_CLIENT_SECRET }}
       NCTL_ORGANIZATION: ${{ secrets.NCTL_ORGANIZATION }}
       NCTL_PROJECT: renuo-bienenschweiz
-      BUNDLE_COOLDOWN: 1
 
     steps:
       - name: "Pick target app"
