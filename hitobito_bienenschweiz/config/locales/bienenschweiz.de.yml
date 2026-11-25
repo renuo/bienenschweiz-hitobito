@@ -475,6 +475,8 @@ de:
     signatures: Unterschriften
     admin/magazine_subscription_reports: Bienen Abo Statistik
   events:
+    attrs_teaching_staff:
+      title: Leitung und Referenten
     course_materials:
       not_a_course: Kursunterlagen gibt es nur für Kurse.
     global:
