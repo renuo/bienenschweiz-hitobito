@@ -23,6 +23,7 @@ env:
   INSPECTION_BCC_EMAIL: 11@renuo.ch
   DEFAULT_FROM_EMAIL: 11@renuo.ch
   PRINTER_EMAIL: 11@renuo.ch
+  BUNDLE_COOLDOWN: 1
 
 jobs:
   wagon_specs:

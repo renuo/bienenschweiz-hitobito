@@ -13,6 +13,7 @@ jobs:
       # Generating the Graphiti schema only boots the app, no database needed.
       RAILS_DB_ADAPTER: nulldb
       RAILS_ENV: test
+      BUNDLE_COOLDOWN: 1
 
     steps:
       - uses: actions/checkout@v6
