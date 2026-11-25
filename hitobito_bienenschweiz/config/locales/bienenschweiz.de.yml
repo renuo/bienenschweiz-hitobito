@@ -293,7 +293,10 @@ de:
   magazine_subscription_reports:
     index:
       title: Bienen Abo Statistik
-      explanation: "Anzahl Abos (Summe der Anzahl) der letzten 18 Monate. Stichtag ist jeweils der 15. des Monats. Der aktuelle Monat wird ab dem 15. angezeigt."
+      explanation: |
+        Bezahlte Abos ist die Summe von Abo, Abo-EUR, Online-Abo und Geschenk-Abo.
+        Total ist die Summe von Bezahlte Abos, Gratis-Abo und Buchhändler-Abo.
+        Stichtag ist jeweils der 15. des Monats. Der aktuelle Monat wird ab dem 15. angezeigt. Es werden rückwirkend die letzten 18 Monate dargestellt.
       export: Adressliste als CSV exportieren (Druck)
       wemf_title: WEMF Zahlen
     table:
