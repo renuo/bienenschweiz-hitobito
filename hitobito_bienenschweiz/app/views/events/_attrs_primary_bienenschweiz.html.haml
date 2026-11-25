@@ -6,3 +6,5 @@
 
 %dl.dl-horizontal
   = labeled_attr(entry, :state)
+  - entry.used?(:event_type) do
+    = labeled_attr(entry, :event_type)

@@ -207,7 +207,8 @@ RSpec.describe EventsController, type: :request do
           external_applications: event_template["external_applications"],
           applications_cancelable: event_template["applications_cancelable"],
           globally_visible: event_template["globally_visible"],
-          export_to_website: event_template["export_to_website"]
+          export_to_website: event_template["export_to_website"],
+          event_type: event_template["event_type"]
         )
       end
 
@@ -341,6 +342,25 @@ RSpec.describe EventsController, type: :request do
       expect(response.body).to include(I18n.t("event.run_by"))
     end
 
+    it "offers the event type on the plain event form only" do
+      get new_group_event_path(kv1, event: {type: "Event"})
+      expect(response.body).to include("event_event_type")
+
+      get new_group_event_path(kv1, event: {type: "Event::Course"})
+      expect(response.body).not_to include("event_event_type")
+    end
+
+    it "persists the event type and rejects a missing one" do
+      params = {type: "Event", name: "Typisiert", group_ids: [kv1.id],
+                dates_attributes: {"0" => {start_at_date: Time.zone.today.to_s}}}
+
+      post group_events_path(kv1), params: {event: params}
+      expect(Event.find_by(name: "Typisiert")).to be_nil
+
+      post group_events_path(kv1), params: {event: params.merge(event_type: "online")}
+      expect(Event.find_by(name: "Typisiert").event_type).to eq "online"
+    end
+
     it "is still offered on the course form" do
       get new_group_event_path(kv1, event: {type: "Event::Course"})
       expect(response.body).to include("event_group_ids")
@@ -348,7 +368,7 @@ RSpec.describe EventsController, type: :request do
 
     it "persists several groups on a plain event" do
       post group_events_path(kv1), params: {event: {
-        type: "Event", name: "Mehrgruppig", group_ids: [kv1.id, kv2.id],
+        type: "Event", name: "Mehrgruppig", group_ids: [kv1.id, kv2.id], event_type: "public",
         dates_attributes: {"0" => {start_at_date: Time.zone.today.to_s}}
       }}
 
@@ -356,7 +376,7 @@ RSpec.describe EventsController, type: :request do
     end
 
     it "rejects groups of differing types" do
-      event = Event.new(name: "Gemischt", groups: [kv1, sektion])
+      event = Event.new(name: "Gemischt", groups: [kv1, sektion], event_type: "public")
       event.dates.build(start_at: Time.zone.today)
 
       expect(event).not_to be_valid
@@ -366,7 +386,7 @@ RSpec.describe EventsController, type: :request do
     end
 
     it "lists a multi-group event only once from a common ancestor" do
-      event = Event.new(name: "Mehrgruppig", groups: [kv1, kv2])
+      event = Event.new(name: "Mehrgruppig", groups: [kv1, kv2], event_type: "public")
       event.dates.build(start_at: Time.zone.today)
       event.save!
 

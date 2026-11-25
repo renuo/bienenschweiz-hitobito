@@ -857,6 +857,12 @@
           "writable": true,
           "description": null
         },
+        "event_type": {
+          "type": "string",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
         "state": {
           "type": "string",
           "readable": true,
@@ -909,7 +915,8 @@
       "extra_attributes": {},
       "sorts": {
         "id": {},
-        "export_to_website": {}
+        "export_to_website": {},
+        "event_type": {}
       },
       "filters": {
         "id": {
@@ -984,6 +991,21 @@
             "eq"
           ],
           "single": true
+        },
+        "event_type": {
+          "type": "string",
+          "operators": [
+            "eq",
+            "not_eq",
+            "eql",
+            "not_eql",
+            "prefix",
+            "not_prefix",
+            "suffix",
+            "not_suffix",
+            "match",
+            "not_match"
+          ]
         },
         "state": {
           "type": "string",
@@ -1783,12 +1805,19 @@
           "readable": true,
           "writable": true,
           "description": null
+        },
+        "event_type": {
+          "type": "string",
+          "readable": true,
+          "writable": true,
+          "description": null
         }
       },
       "extra_attributes": {},
       "sorts": {
         "id": {},
-        "export_to_website": {}
+        "export_to_website": {},
+        "event_type": {}
       },
       "filters": {
         "id": {
@@ -1863,6 +1892,21 @@
             "eq"
           ],
           "single": true
+        },
+        "event_type": {
+          "type": "string",
+          "operators": [
+            "eq",
+            "not_eq",
+            "eql",
+            "not_eql",
+            "prefix",
+            "not_prefix",
+            "suffix",
+            "not_suffix",
+            "match",
+            "not_match"
+          ]
         }
       },
       "relationships": {

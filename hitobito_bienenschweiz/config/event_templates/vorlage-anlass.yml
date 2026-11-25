@@ -13,6 +13,7 @@ applications_cancelable: false
 display_booking_info: true
 participations_visible: false
 export_to_website: true
+event_type: public
 required_contact_attrs:
 - country
 - language
