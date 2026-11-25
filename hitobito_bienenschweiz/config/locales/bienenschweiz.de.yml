@@ -87,7 +87,7 @@ de:
         billing_address: Rechnungsadresse
         canceled: Abgesagt
         export_to_website: auf der Webseite von BienenSchweiz sichtbar
-        event_type: Anlasstyp
+        event_type: Veranstaltungstyp
         event_types:
           public: Öffentlich
           online: Online
@@ -465,7 +465,7 @@ de:
       edit:
         title: "Antworten bearbeiten: %{event}"
         button: Administrationsangaben bearbeiten
-        no_questions: Dieses Event hat keine Fragen.
+        no_questions: Diese Veranstaltung hat keine Fragen.
         participant: Teilnehmer/-in
         answer: Antwort
       update:
@@ -480,7 +480,7 @@ de:
     global:
       link:
         new_from_kind: Kurs nach Vorlage erstellen
-        new_from_template: Anlass nach Vorlage erstellen
+        new_from_template: Veranstaltung nach Vorlage erstellen
     tabs:
       participants: Personen
     form_tabs:
