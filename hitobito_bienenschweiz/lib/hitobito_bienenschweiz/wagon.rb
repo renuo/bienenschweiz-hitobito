@@ -32,6 +32,15 @@ module HitobitoBienenschweiz
       PeopleController.prepend Bienenschweiz::PeopleController
       GroupDecorator.prepend Bienenschweiz::GroupDecorator
       People::UpdateAfterRoleChangeJob.prepend Bienenschweiz::UpdateAfterRoleChangeJob
+      MailConfig.singleton_class.prepend Bienenschweiz::MailConfig
+      Imap::Connector.prepend Bienenschweiz::ImapConnector
+      MailingList.prepend Bienenschweiz::MailingListPlusAddressing::ListAddress
+      Imap::Mail.prepend Bienenschweiz::MailingListPlusAddressing::InboundMail
+      MailingLists::BulkMail::Retriever.prepend Bienenschweiz::MailingListPlusAddressing::Retriever
+      MailingLists::BulkMail::ImapMailValidator.prepend(
+        Bienenschweiz::MailingListPlusAddressing::Validator
+      )
+      Messages::BulkMail::MailFactory.prepend Bienenschweiz::MailingListPlusAddressing::MailFactory
 
       # Additional gender option "divers".
       Bienenschweiz::Genders.register!

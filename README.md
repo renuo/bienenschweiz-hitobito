@@ -31,6 +31,56 @@ bundle exec rails db:seed wagon:seed
 The seed is idempotent, so it can be re-run to switch between generated and
 KAS-provided credentials. It prints both at the end.
 
+### Exchange Online mailing list inbox
+
+Register an Entra application with the **Office 365 Exchange Online** application
+permission `IMAP.AccessAsApp` and grant admin consent. Register its service principal
+in Exchange using the **Enterprise application** object ID, grant it `FullAccess`
+to the dedicated mailbox, and enable IMAP on that mailbox.
+[Microsoft’s app-only IMAP setup](https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth#use-client-credentials-grant-flow-to-authenticate-smtp-imap-and-pop-connections)
+
+Set these environment variables for the web app and delayed-jobs worker:
+
+```yaml
+RAILS_MAIL_RETRIEVER_TYPE: "imap"
+RAILS_MAIL_RETRIEVER_CONFIG: >-
+  address: outlook.office365.com, port: 993,
+  user_name: 'mailingliste@bienenschweiz.ch'
+BIENENSCHWEIZ_IMAP_TENANT_ID: "<directory tenant ID>"
+BIENENSCHWEIZ_IMAP_CLIENT_ID: "<application client ID>"
+BIENENSCHWEIZ_IMAP_CLIENT_SECRET: "<client secret value injected from the deployment secret store>"
+```
+
+The wagon uses TLS and obtains fresh access tokens as needed. To check IMAP
+access from the deployed app, run:
+
+```sh
+bin/rails runner 'Imap::Connector.new.fetch_mail_uids(:inbox); puts "IMAP access OK"'
+```
+
+Run `bin/rails delayed_job:schedule` if the deployment hasn't already scheduled
+`MailingLists::MailRetrieverJob`. Send a message from an authorized sender to a
+test list and check delivery. The original list address must arrive in the
+mailbox's `X-Original-To` header.
+
+To use the Exchange mailbox's plus-addresses as list addresses, set
+`BIENENSCHWEIZ_MAILING_LIST_PLUS_ADDRESSING=true` for the web app and worker.
+A list named `mytest` will use `mailingliste+mytest@bienenschweiz.ch`. The
+retriever matches the tagged address in `X-Original-To`, or in a single `To`
+address when that header is absent. For local broadcasts, keep SMTP pointed at
+MailCatcher on port 2025. Before using a production relay, verify that it accepts
+and preserves the tagged SMTP envelope sender for bounce delivery.
+
+Local `bin/dev` starts the delayed-jobs worker and clears its queue during
+startup. After startup finishes and the test list is ready, schedule just the
+mail retriever from the `hitobito` directory:
+
+```sh
+direnv exec . bin/rails runner 'MailingLists::MailRetrieverJob.new.schedule'
+```
+
+The first poll is due after one retrieval interval, which defaults to one minute.
+
 ### Inspection reminders
 
 ```
