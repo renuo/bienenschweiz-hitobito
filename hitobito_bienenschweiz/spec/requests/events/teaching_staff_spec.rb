@@ -51,8 +51,16 @@ RSpec.describe "Event teaching staff on event pages", type: :request do
       expect(text).not_to include("Paul Muster", "Teilnehmer-Bemerkung", "Inaktiv")
     end
 
-    it "does not show the participation remarks" do
-      expect(teaching_staff_section.text).not_to include("Bemerkung von")
+    it "shows the participation remarks of the teaching staff only" do
+      text = teaching_staff_section.text
+      expect(text).to include("Bemerkung von Hans", "Bemerkung von Lea", "Bemerkung von Rita")
+      expect(text).not_to include("Bemerkung von Paul", "Bemerkung von Inaktiv")
+    end
+
+    it "renders label and remark on their own lines" do
+      hans = teaching_staff_section.find("dd", text: "Hans Muster")
+      expect(hans).to have_css("p", text: "Leitet den Kurs")
+      expect(hans).to have_css("p.multiline", text: "Bemerkung von Hans")
     end
   end
 
