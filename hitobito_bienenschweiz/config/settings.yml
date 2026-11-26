@@ -89,6 +89,8 @@ magazine_subscription_invoicing:
       article_number: abo-biez
     abo_biez_euro:
       article_number: abo-biez-EURO
+    abo_biez_bh:
+      article_number: abo-biez-bh
   # Billable subscription types and the article (key of `articles`) they are invoiced with.
   # Types not listed here are not invoiced.
   subscription_type_articles:
@@ -97,3 +99,4 @@ magazine_subscription_invoicing:
     online_abo: abo_biez
     # TODO: use a dedicated article once one exists in Abacus.
     geschenk_abo: abo_biez
+    buchhaendler_abo: abo_biez_bh

@@ -9,15 +9,17 @@ require "spec_helper"
 
 describe Invoices::Abacus::MagazineSubscriptionInvoice do
   describe "configured articles" do
-    it "invoices the EURO abo with the EURO article and other billable types with abo-biez" do
+    it "invoices the EURO and Buchhändler abo with their own articles, others with abo-biez" do
       expect(described_class.article(:abo_eur)[:article_number]).to eq("abo-biez-EURO")
-      (described_class.billable_types - ["abo_eur"]).each do |type|
+      expect(described_class.article(:buchhaendler_abo)[:article_number]).to eq("abo-biez-bh")
+      (described_class.billable_types - %w[abo_eur buchhaendler_abo]).each do |type|
         expect(described_class.article(type)[:article_number]).to eq("abo-biez")
       end
     end
 
-    it "only bills paid subscription types" do
-      expect(described_class.billable_types).to match_array(%w[abo abo_eur online_abo geschenk_abo])
+    it "bills all subscription types except the Gratis-Abo" do
+      expect(described_class.billable_types)
+        .to match_array(MagazineSubscription::SUBSCRIPTION_TYPES - %w[gratis_abo])
     end
   end
 
