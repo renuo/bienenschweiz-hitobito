@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     # Define wagon routes here
     resources :supervision_types
     resources :signatures, only: [:index, :edit, :update]
+    resources :external_invoice_runs, only: [:index, :show]
     resources :magazine_subscription_reports, only: [:index] do
       collection do
         get :export
@@ -94,6 +95,11 @@ Rails.application.routes.draw do
         get :export
       end
     end
+  end
+
+  scope path: ApplicationResource.endpoint_namespace, module: :json_api,
+    constraints: {format: "jsonapi"}, defaults: {format: "jsonapi"} do
+    resources :external_invoices, only: [:index, :show, :update]
   end
 
   namespace :api, defaults: {formats: :json} do

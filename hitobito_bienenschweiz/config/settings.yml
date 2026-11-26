@@ -64,3 +64,39 @@ impersonate:
 groups:
   statistics:
     enabled: false
+
+# Abacus API to create invoices (see app/domain/invoices/abacus)
+abacus:
+  host: <%= ENV['ABACUS_HOST'] %>
+  mandant: <%= ENV['ABACUS_MANDANT'] %>
+  username: <%= ENV['ABACUS_USERNAME'] %>
+  password: <%= ENV['ABACUS_PASSWORD'] %>
+  # Maximum number of HTTP requests sent to Abacus per minute (blank or 0 = unlimited).
+  # The firewall in front of Abacus rejects requests when too many are sent at once.
+  max_requests_per_minute: <%= ENV['ABACUS_MAX_REQUESTS_PER_MINUTE'] %>
+  # QR procedure (VESR internal no.) of the sales orders. Blank uses the default of the
+  # Abacus mandant, 0 creates invoices without QR bill.
+  payment_slip_internal_number: <%= ENV['ABACUS_PAYMENT_SLIP_INTERNAL_NUMBER'] %>
+
+magazine_subscription_invoicing:
+  # Creates the yearly invoices of magazine subscriptions in Abacus if true.
+  enabled: <%= ENV['MAGAZINE_SUBSCRIPTION_INVOICING_ENABLED'] == 'true' %>
+  # Number of months before the next subscription period starts to create the invoice.
+  lead_time_months: 2
+  # Abacus articles used for the invoices. The prices are taken from the article in Abacus.
+  articles:
+    abo_biez:
+      article_number: abo-biez
+    abo_biez_euro:
+      article_number: abo-biez-EURO
+    abo_biez_bh:
+      article_number: abo-biez-bh
+  # Billable subscription types and the article (key of `articles`) they are invoiced with.
+  # Types not listed here are not invoiced.
+  subscription_type_articles:
+    abo: abo_biez
+    abo_eur: abo_biez_euro
+    online_abo: abo_biez
+    # TODO: use a dedicated article once one exists in Abacus.
+    geschenk_abo: abo_biez
+    buchhaendler_abo: abo_biez_bh
