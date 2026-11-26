@@ -12,3 +12,5 @@
           %strong= role.participation.participant.full_name
           - if role.label.present?
             %p= role.label
+          - if role.participation.additional_information.present?
+            %p.multiline= role.participation.additional_information
