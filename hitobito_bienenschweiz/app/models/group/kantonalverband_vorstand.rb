@@ -10,34 +10,42 @@ class Group::KantonalverbandVorstand < ::Group
 
   class Bildung < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Produkte < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Zucht < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Praesident < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Vizepraesident < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Kassier < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Aktuar < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Beisitzer < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   roles Bildung, Produkte, Zucht, Praesident, Vizepraesident, Kassier, Aktuar, Beisitzer

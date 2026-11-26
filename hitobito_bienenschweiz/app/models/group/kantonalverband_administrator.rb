@@ -10,14 +10,17 @@ class Group::KantonalverbandAdministrator < ::Group
 
   class AdminKanton < ::Role
     self.permissions = [:layer_full]
+    self.two_factor_authentication_enforced = true
   end
 
   class Kontakte < ::Role
     self.permissions = [:layer_contacts, :layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class VeranstaltungenKurse < ::Role
     self.permissions = [:layer_events, :layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   roles AdminKanton, Kontakte, VeranstaltungenKurse

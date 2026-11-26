@@ -18,6 +18,7 @@ class Group::ThemenbezogeneKontakte < ::Group
 
   class Supervisor < ::Role
     self.permissions = [:layer_and_below_read]
+    self.two_factor_authentication_enforced = true
   end
 
   roles Haendler, Inserenten, Supervisor

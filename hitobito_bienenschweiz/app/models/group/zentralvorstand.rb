@@ -10,18 +10,22 @@ class Group::Zentralvorstand < ::Group
 
   class Praesident < ::Role
     self.permissions = [:layer_and_below_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Vizepraesident < ::Role
     self.permissions = [:layer_and_below_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Finanzen < ::Role
     self.permissions = [:layer_and_below_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Beisitzer < ::Role
     self.permissions = [:layer_and_below_read]
+    self.two_factor_authentication_enforced = true
   end
 
   roles Praesident, Vizepraesident, Finanzen, Beisitzer
