@@ -361,6 +361,18 @@ RSpec.describe EventsController, type: :request do
       expect(Event.find_by(name: "Typisiert").event_type).to eq "online"
     end
 
+    it "offers and persists the Bienenzeitung flag" do
+      get new_group_event_path(kv1, event: {type: "Event"})
+      expect(response.body).to include("event_show_in_bienenzeitung")
+
+      post group_events_path(kv1), params: {event: {
+        type: "Event", name: "Zeitung", group_ids: [kv1.id], event_type: "public",
+        show_in_bienenzeitung: "1",
+        dates_attributes: {"0" => {start_at_date: Time.zone.today.to_s}}
+      }}
+      expect(Event.find_by(name: "Zeitung").show_in_bienenzeitung).to eq true
+    end
+
     it "is still offered on the course form" do
       get new_group_event_path(kv1, event: {type: "Event::Course"})
       expect(response.body).to include("event_group_ids")
