@@ -102,6 +102,10 @@ module HitobitoBienenschweiz
       Event.include Bienenschweiz::Event::EventType
       Event.used_attributes += [:event_type]
       EventsController.permitted_attrs += [:event_type]
+      # Event::Course keeps its own copy of used_attributes, so remove from both.
+      signature_attrs = [:signature, :signature_confirmation, :signature_confirmation_text]
+      Event.used_attributes -= signature_attrs + [:guest_limit]
+      Event::Course.used_attributes -= signature_attrs
       Event.prepend Bienenschweiz::ClearsArrayColumnValidators
       Event::Course.prepend Bienenschweiz::ClearsArrayColumnValidators
       Event::Kind.include Bienenschweiz::Event::Kind

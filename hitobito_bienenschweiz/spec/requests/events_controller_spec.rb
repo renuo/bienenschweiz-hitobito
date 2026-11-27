@@ -322,6 +322,33 @@ RSpec.describe EventsController, type: :request do
     end
   end
 
+  describe "hidden application fields" do
+    let(:signature_fields) do
+      %w[event_signature event_signature_confirmation event_signature_confirmation_text]
+    end
+
+    before do
+      roles(:admin)
+      sign_in(admin)
+    end
+
+    it "hides guest limit and signature fields on the event form" do
+      get new_group_event_path(group, event: {type: "Event"})
+      expect(response).to have_http_status(:ok)
+      (signature_fields + %w[event_guest_limit]).each do |field|
+        expect(response.body).not_to include(%(id="#{field}"))
+      end
+    end
+
+    it "hides signature fields on the course form" do
+      get new_group_event_path(group, event: {type: "Event::Course"})
+      expect(response).to have_http_status(:ok)
+      signature_fields.each do |field|
+        expect(response.body).not_to include(%(id="#{field}"))
+      end
+    end
+  end
+
   describe "group selection (Durchgefuehrt von)" do
     let(:kv1) { groups(:aargauer_kantonalverband) }
     let(:kv2) { groups(:berner_kantonalverband) }
