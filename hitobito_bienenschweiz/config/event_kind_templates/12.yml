@@ -32,3 +32,4 @@ application_questions:
   multiple_choices: false
   choices: Ja,Nein
 admin_questions: []
+waiting_list: false
