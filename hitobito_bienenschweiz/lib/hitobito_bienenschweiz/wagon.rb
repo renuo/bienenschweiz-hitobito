@@ -94,8 +94,10 @@ module HitobitoBienenschweiz
 
       GroupsController.permitted_attrs += [:code, :member_count]
       Role.used_attributes += [:export_to_website]
-      EventsController.permitted_attrs += [:export_to_website]
-      Event.used_attributes += [:export_to_website]
+      EventsController.permitted_attrs += [:export_to_website, :show_in_bienenzeitung]
+      Event.used_attributes += [:export_to_website, :show_in_bienenzeitung]
+      Event::Course.used_attributes += [:show_in_bienenzeitung]
+      Export::Tabular::Events::List.prepend Bienenschweiz::Export::Tabular::Events::List
       Event.used_attributes += [:group_ids]
       Event.include Bienenschweiz::Event::EventType
       Event.used_attributes += [:event_type]
