@@ -50,18 +50,6 @@ body {
   min-width: 220px;
 }
 
-// Rich text fields (e.g. event description). Core passes `class: form-control`
-// to rich_text_area, which drops Rails' default `trix-content` class, so lists
-// and quotes are unstyled while editing; `.form-control-sm`'s min-height also
-// overrides trix's, leaving a one-line editor.
-trix-editor {
-  @extend .trix-content;
-
-  &.form-control {
-    min-height: 8em;
-  }
-}
-
 // Trix's button row is wider than the form column and scrolls horizontally.
 // Tighten it so it fits in one row; still wrap on narrow screens.
 trix-toolbar {
