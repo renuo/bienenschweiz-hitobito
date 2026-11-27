@@ -10,6 +10,7 @@ class Group::Apiservice < ::Group
 
   class VeranstaltungenKurse < ::Role
     self.permissions = [:layer_and_below_events, :layer_and_below_read]
+    self.two_factor_authentication_enforced = true
   end
 
   roles VeranstaltungenKurse

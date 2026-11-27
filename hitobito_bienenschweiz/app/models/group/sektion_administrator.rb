@@ -10,14 +10,17 @@ class Group::SektionAdministrator < ::Group
 
   class AdminSektion < ::Role
     self.permissions = [:layer_and_below_full]
+    self.two_factor_authentication_enforced = true
   end
 
   class ErfassungVeranstaltungen < ::Role
     self.permissions = [:layer_events, :layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class Kontakte < ::Role
     self.permissions = [:layer_contacts, :layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   roles AdminSektion, ErfassungVeranstaltungen, Kontakte

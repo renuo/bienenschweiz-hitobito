@@ -20,6 +20,7 @@ class Group::Dachverband < ::Group
 
   class AdministratorBienenSchweiz < ::Role
     self.permissions = [:admin, :layer_and_below_full, :layer_and_below_events, :impersonation]
+    self.two_factor_authentication_enforced = true
   end
 
   roles AdministratorBienenSchweiz

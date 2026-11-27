@@ -10,14 +10,17 @@ class Group::Fachpersonen < ::Group
 
   class FachpersonBildung < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class FachpersonProdukte < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   class FachpersonZuchtVermehrung < ::Role
     self.permissions = [:layer_read]
+    self.two_factor_authentication_enforced = true
   end
 
   roles FachpersonBildung, FachpersonProdukte, FachpersonZuchtVermehrung
