@@ -36,8 +36,19 @@ def dump_value(value)
   value.is_a?(ActionText::RichText) ? value.body&.to_html : value
 end
 
+# Boolean columns not dumped fall back to their column default when the template
+# is opened (e.g. waiting_list defaults to true), so every boolean the event
+# type uses is dumped, false included. canceled is event state, not a setting.
+NON_TEMPLATE_BOOLEANS = %w[canceled].freeze
+
+def boolean_fields(event_class)
+  event_class.used_attributes.map(&:to_s).select do |attr|
+    event_class.columns_hash[attr]&.type == :boolean
+  end - NON_TEMPLATE_BOOLEANS
+end
+
 def dump_template(event, fields)
-  template = fields.each_with_object({}) do |field, hash|
+  template = (fields | boolean_fields(event.class)).each_with_object({}) do |field, hash|
     value = dump_value(event.public_send(field))
     hash[field] = value unless value.nil?
   end
