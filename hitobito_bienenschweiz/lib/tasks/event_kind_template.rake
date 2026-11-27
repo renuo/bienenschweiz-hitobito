@@ -17,7 +17,7 @@ TEMPLATE_FIELDS = %w[
 # Plain events have neither a kind nor the course specific booking fields.
 EVENT_TEMPLATE_FIELDS = (TEMPLATE_FIELDS - %w[
   requires_approval delivery_address billing_address
-] + %w[globally_visible]).freeze
+] + %w[globally_visible event_type]).freeze
 
 QUESTION_FIELDS = %w[question type required multiple_choices choices].freeze
 
@@ -30,9 +30,15 @@ def dump_questions(questions)
   end
 end
 
+# Rich text attributes (e.g. description) return an ActionText::RichText, which
+# must be dumped as its HTML body to keep the template safe_load-able.
+def dump_value(value)
+  value.is_a?(ActionText::RichText) ? value.body&.to_html : value
+end
+
 def dump_template(event, fields)
   template = fields.each_with_object({}) do |field, hash|
-    value = event.public_send(field)
+    value = dump_value(event.public_send(field))
     hash[field] = value unless value.nil?
   end
   template["application_questions"] = dump_questions(event.application_questions)
