@@ -12,7 +12,7 @@ RSpec.describe EventsController, type: :request do
   # than writing throw-away YAML files. Kind templates are keyed by Event::Kind
   # id, so the kind under test is fabricated with the id of a shipped template.
   let(:template_kind_id) { 4 }
-  let(:template_slug) { "vorlage-anlass" }
+  let(:template_slug) { "vorlage-verantstaltung" }
   let(:kind_template) { load_template("event_kind_templates", template_kind_id) }
   let(:event_template) { load_template("event_templates", template_slug) }
 
@@ -176,7 +176,7 @@ RSpec.describe EventsController, type: :request do
     end
   end
 
-  # config/event_templates/vorlage-anlass.yml
+  # config/event_templates/vorlage-verantstaltung.yml
   describe "GET #new_from_template" do
     context "as admin with create permission" do
       before do
@@ -318,6 +318,33 @@ RSpec.describe EventsController, type: :request do
         get edit_group_event_path(group, event)
         expect(response.body).not_to include("event_delivery_address")
         expect(response.body).not_to include("event_billing_address")
+      end
+    end
+  end
+
+  describe "hidden application fields" do
+    let(:signature_fields) do
+      %w[event_signature event_signature_confirmation event_signature_confirmation_text]
+    end
+
+    before do
+      roles(:admin)
+      sign_in(admin)
+    end
+
+    it "hides guest limit and signature fields on the event form" do
+      get new_group_event_path(group, event: {type: "Event"})
+      expect(response).to have_http_status(:ok)
+      (signature_fields + %w[event_guest_limit]).each do |field|
+        expect(response.body).not_to include(%(id="#{field}"))
+      end
+    end
+
+    it "hides signature fields on the course form" do
+      get new_group_event_path(group, event: {type: "Event::Course"})
+      expect(response).to have_http_status(:ok)
+      signature_fields.each do |field|
+        expect(response.body).not_to include(%(id="#{field}"))
       end
     end
   end
