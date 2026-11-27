@@ -52,6 +52,29 @@ RSpec.describe EventsController, type: :request do
     end
   end
 
+  describe "description field" do
+    def description_textarea(body)
+      body[/<textarea[^>]*name="event\[description\]"[^>]*>/]
+    end
+
+    it "renders the description as a rich text editor on new" do
+      get new_group_event_path(groups(:root), event: {type: "Event::Course"})
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<trix-editor")
+      expect(response.body).to match(/<input[^>]*type="hidden"[^>]*name="event\[description\]"/)
+      expect(description_textarea(response.body)).to be_nil
+    end
+
+    it "renders an existing description in the rich text editor instead of as raw html" do
+      course.update!(description: '<div>Mehr Infos <a href="https://bienen.ch">hier</a></div>')
+      get edit_group_event_path(group, course)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<trix-editor")
+      expect(description_textarea(response.body)).to be_nil
+      expect(response.body).not_to include("&lt;div class=&quot;trix-content&quot;&gt;")
+    end
+  end
+
   describe "GET /groups/:group_id/events/:id/edit" do
     it "renders a tom-select for group selection with the current group pre-selected" do
       get edit_group_event_path(group, course)

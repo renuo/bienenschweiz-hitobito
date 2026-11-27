@@ -49,3 +49,20 @@ body {
 #feedback-report-filter .select {
   min-width: 220px;
 }
+
+// Trix's button row is wider than the form column and scrolls horizontally.
+// Tighten it so it fits in one row; still wrap on narrow screens.
+trix-toolbar {
+  .trix-button-row {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+
+  .trix-button-group:not(:first-child) {
+    margin-left: 0.5em;
+  }
+
+  .trix-button--icon {
+    width: 2.3em;
+  }
+}

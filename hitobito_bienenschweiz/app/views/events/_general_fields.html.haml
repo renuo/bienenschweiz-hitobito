@@ -1,10 +1,13 @@
--#  Copyright (c) 2015, insieme Schweiz. This file is part of
+-#  Copyright (c) 2015-2026, insieme Schweiz. This file is part of
 -#  hitobito and licensed under the Affero General Public License version 3
 -#  or later. See the COPYING file at the top-level directory or at
 -#  https://github.com/hitobito/hitobito.
 
 = field_set_tag do
   = f.labeled_input_field(:name)
+
+  - if entry.template?
+    = f.labeled_input_field(:inherit, caption: t(".inherit_caption"))
 
   - entry.used?(:kind_id) do
     = f.labeled(:kind_id) do
@@ -24,7 +27,7 @@
     = f.labeled_input_field(:number, disabled: true)
 
   - entry.used?(:description) do
-    = f.labeled_input_field(:description)
+    = f.labeled_rich_text_area(:description)
     - if entry.kind_class == Event::Kind
       = field_inheritance_values(@kinds, { description: :general_information })
 
