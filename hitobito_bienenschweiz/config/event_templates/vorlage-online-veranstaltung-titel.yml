@@ -1,0 +1,27 @@
+#  Copyright (c) 2012-2026, BienenSchweiz. This file is part of
+#  hitobito_bienenschweiz and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/renuo/bienenschweiz-hitobito/tree/develop/hitobito_bienenschweiz.
+
+
+---
+label: VORLAGE ONLINE-Veranstaltung (Titel)
+description:
+location: ''
+cost: kostenlos
+maximum_participants: 1000
+minimum_participants: 10
+external_applications: true
+applications_cancelable: false
+display_booking_info: true
+participations_visible: false
+export_to_website: true
+required_contact_attrs: []
+hidden_contact_attrs: []
+visible_contact_attributes:
+- picture
+- name
+motto: Wie werde ich besser imkern lernen....
+globally_visible: true
+application_questions: []
+admin_questions: []
